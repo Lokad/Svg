@@ -294,6 +294,13 @@ source stroke independently of fill material. The
 retain original source/target identities and separate direct, group-inherited and
 use-supplied stroke routes.
 
+Complete instance placement decides whether source commands must survive lowering.
+Rectangle fills and path/point-list fills and strokes retain requested commands
+even when invisible; paint flags still suppress their output. Shader lowering
+uses the same retention contract as solid geometry. The
+[affine source controls](../tests/Research/affine-source-retention/README.md)
+preserve the independent visibility, material and definition-order routes.
+
 An unpainted source keeps its own opacity/mask/clip bindings inside its parent
 effects. A synthetic empty-scope carrier keeps ancestor bindings around generated
 output. These are explicit paint roles; bounds and pixel emptiness do not establish

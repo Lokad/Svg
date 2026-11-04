@@ -9,14 +9,12 @@ public sealed class SvgSourceVisibilityTests
         foreach (bool stroke in new[] { false, true })
         foreach (string visibility in new[] { "inherit", "omitted", "visible", "hidden" })
         foreach (string transform in new[] { "", "translate(.5 .25)", "matrix(1 .25 .125 1 0 0)" })
-            yield return [paint, shape, stroke, visibility, transform,
-                transform.StartsWith("matrix", StringComparison.Ordinal)
-                    && (shape == "rect" && !stroke || visibility == "hidden" && (shape == "path" || shape == "polyline" && !stroke))];
+            yield return [paint, shape, stroke, visibility, transform];
     }
 
     [Theory]
     [MemberData(nameof(ShaderSources))]
-    public void Copied_shader_sources_resolve_visibility_in_the_instance(string paint, string shape, bool stroke, string visibility, string transform, bool unsupported)
+    public void Copied_shader_sources_resolve_visibility_in_the_instance(string paint, string shape, bool stroke, string visibility, string transform)
     {
         string resource = paint switch
         {
@@ -36,16 +34,13 @@ public sealed class SvgSourceVisibilityTests
         string use = "<use href='#source'" + (transform.Length == 0 ? "" : " transform='" + transform + "'") + "/>";
         string expectedBody = visibility == "visible" ? "<g visibility='visible'>" + source + "</g>" + use : "<defs>" + source + "</defs>" + use;
         byte[] expectedInput = Document("<defs>" + resource + "</defs>" + expectedBody);
-        byte[] expected = [];
-        if (unsupported) Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(expectedInput, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-        else expected = SvgConverter.ConvertToPng(expectedInput, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(expectedInput, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         foreach (bool forward in new[] { false, true })
         {
             string body = "<g visibility='hidden'>" + source + "</g>" + use;
             string resources = "<defs>" + resource + "</defs>";
             byte[] input = Document(forward ? body + resources : resources + body);
-            if (unsupported) Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-            else Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+            Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         }
 
         static byte[] Document(string body) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>");

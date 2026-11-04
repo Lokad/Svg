@@ -184,7 +184,7 @@ internal static class SvgOrthogonalShapeParser
                 using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
                 using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
                 using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "path", true, false, maximumGeometryElements, budget, context.CancellationToken);
-                stroked = strokeLowering.LowerStrokePath(d, commandCount, hasCurve, pathStrokeShape, stroke.Value.Color, pathStrokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
+                stroked = strokeLowering.LowerStrokePath(d, commandCount, hasCurve, pathStrokeShape, stroke.Value.Color, pathStrokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, context.RetainInstanceStrokePath, budget);
                 try
                 {
                     if (paintPathOutline || paintPathRadial || paintPathPattern)
@@ -298,7 +298,7 @@ internal static class SvgOrthogonalShapeParser
         using BudgetedParserList<SvgPoint> emptyPoints = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
         using BudgetedParserList<int> emptyEnds = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(emptyPoints, emptyEnds, elementName, false, evenOdd, maximumGeometryElements, budget, context.CancellationToken);
-        filled = lowering.LowerPointListFill(points, shape, frame, budget) with { ElementCount = points.Count + 1 };
+        filled = lowering.LowerPointListFill(points, shape, frame, context.RetainInstanceStrokePath, budget) with { ElementCount = points.Count + 1 };
         try
         {
             if (shaderFill) filled = RepaintFill(filled);

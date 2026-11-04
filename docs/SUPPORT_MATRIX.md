@@ -120,6 +120,8 @@ independent paints and ordinary/non-scaling widths. Dashed non-scaling line,
 circle and curved-path strokes reject rotation/shear; dashed gradient line
 strokes require uniform scaling. CSS/inherited vector effects are unsupported.
 Local uses retain rectangle source strokes independently of fill/stroke material.
+Affine uses also retain rectangle fills and hidden path/point-list source commands;
+visibility continues to control painting independently of geometry retention.
 Nonuniform symbol viewBox maps preserve retained source fills and stroke outlines,
 including solid, gradient and pattern paints. Lowered polygons without retained
 source commands remain unsupported under nonuniform symbol scaling.

@@ -166,11 +166,14 @@ internal static class SvgReferenceResolver
             bool retainMappedContour = source.LocalName == "path" && definition.Geometries.Length > 0
                 && (definition.Geometries[0].Kind is SvgGeometryKind.OrthogonalBand or SvgGeometryKind.Rectangle
                     || definition.Geometries[0].AuthoredPath is { StrokeStyle: null })
-                || !reference.Transform.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline"
+                || !strokePlacement.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline"
                 || placedNativeStroke
                 || source.LocalName == "line" && strokePlacement != SvgAffineTransform.Identity;
             SvgSourceContourRetention retention = retainMappedContour ? SvgSourceContourRetention.Stroke : SvgSourceContourRetention.None;
-            if (source.LocalName == "rect" && reference.DrawMap is not null) retention |= SvgSourceContourRetention.Fill;
+            // Fill commands survive complete affine placement even when the source
+            // is unpainted; paint visibility does not decide replay geometry.
+            if (source.LocalName == "rect" && (reference.DrawMap is not null || !strokePlacement.IsAxisAligned))
+                retention |= SvgSourceContourRetention.Fill;
             if (source.AuthoredStyle.VectorEffect is not null || retention != SvgSourceContourRetention.None || state.FilterGroupDepth > 0 && definition.Geometries.Length == 0
                 || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers))
             {

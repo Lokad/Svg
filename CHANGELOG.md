@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve native fill and stroke commands for affine use instances independently
+  of source visibility and solid, gradient or pattern paint.
 - Preserve enclosing filter output when stroke-only children have zero element
   opacity; keep child opacity inside its parent filter.
 - Keep native source strokes for retained rectangles independently of solid or

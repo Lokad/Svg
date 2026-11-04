@@ -446,7 +446,7 @@ internal static class SvgGradientSyntax
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-        if (isPath && painted && !gradient.IsEmpty)
+        if (isPath && (painted || context.RetainInstanceStrokePath) && !gradient.IsEmpty)
         {
             using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.CancellationToken);
             string d = renderData.Value;
@@ -459,7 +459,7 @@ internal static class SvgGradientSyntax
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.CancellationToken);
             SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
-            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasCurve, mapping, curveShape, frame, false, budget);
+            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasCurve, mapping, curveShape, frame, context.RetainInstanceStrokePath, budget);
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             try
             {
@@ -560,7 +560,7 @@ internal static class SvgGradientSyntax
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-        if (isPath && painted && !gradient.IsEmpty)
+        if (isPath && (painted || context.RetainInstanceStrokePath) && !gradient.IsEmpty)
         {
             using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.CancellationToken);
             string d = renderData.Value;
@@ -575,7 +575,7 @@ internal static class SvgGradientSyntax
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.CancellationToken);
             SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
-            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasCurve, mapping, curveShape, frame, false, budget);
+            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasCurve, mapping, curveShape, frame, context.RetainInstanceStrokePath, budget);
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             try
             {
@@ -681,7 +681,7 @@ internal static class SvgGradientSyntax
             using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, true, false, maximumGeometryElements, budget, context.CancellationToken);
-            return strokeLowering.LowerStrokePath(d, commandCount, hasCurve, strokeShape, stroke.Color, strokeShape.Presentation.IsPainted, stroke.Width, stroke.MiterLimit, stroke.Cap, stroke.Join, stroke.DashPattern, stroke.DashOffset, stroke.PathLength, stroke.NonScalingStroke, frame, budget);
+            return strokeLowering.LowerStrokePath(d, commandCount, hasCurve, strokeShape, stroke.Color, strokeShape.Presentation.IsPainted, stroke.Width, stroke.MiterLimit, stroke.Cap, stroke.Join, stroke.DashPattern, stroke.DashOffset, stroke.PathLength, stroke.NonScalingStroke, frame, context.RetainInstanceStrokePath, budget);
         }
         catch { filled.Discard(); throw; }
     }

@@ -462,7 +462,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         points.Add(new(right, y));
         points.Add(new(right, bottom));
         points.Add(new(x, bottom));
-        return LowerPointListFill(points, element, frame, budget) with { ElementCount = 0 };
+        return LowerPointListFill(points, element, frame, true, budget) with { ElementCount = 0 };
     }
 
     /// <summary>Lowers rounded rectangles with retained native source conics and finite affine placement.</summary>
@@ -865,12 +865,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    /// <summary>Lowers fractional straight contours under composed affine placement and retains source verbs for filled output.</summary>
-    /// <remarks>Scene geometry preserves paint bounds and admission. A filled result owns immutable source
+    /// <summary>Lowers fractional straight contours under composed affine placement, retaining requested source verbs independently of visibility.</summary>
+    /// <remarks>Scene geometry preserves paint bounds and admission. A filled or explicitly retained result owns immutable source
     /// commands and its composed scene map, with storage reserved before allocation and cancellation
     /// checked through the shared budgeted list. Partial failure releases both scene and command owners.
     /// Explicit polygon closure stays distinct from the implicit fill closure of a polyline.</remarks>
-    internal SvgParsedGeometry LowerPointListFill(BudgetedParserList<SvgFractionalPoint> points, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerPointListFill(BudgetedParserList<SvgFractionalPoint> points, SvgResolvedPaintableElement element, SvgViewportFrame? frame, bool retainInstanceCenterline, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -931,7 +931,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
         try
         {
-            if (element.Presentation.HasFill && result.Geometries.Length == 1)
+            if ((element.Presentation.HasFill || retainInstanceCenterline) && result.Geometries.Length == 1)
             {
                 using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
                 for (int index = 0; index < points.Count; index++)
@@ -1436,7 +1436,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes path data with the caller cap and join styles into one nonzero outline fill, tracking explicit closepath seals.</summary>
-    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, bool retainInstanceCenterline, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
@@ -1459,7 +1459,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder builder = hasCurves ? SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity) : new(pointCapacity, contourCapacity);
         using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
-        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _cancellationToken, closedEnds, hasFill ? authored : null);
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _cancellationToken, closedEnds, hasFill || retainInstanceCenterline ? authored : null);
         if (authored.Count == 0)
             return LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget) with { ElementCount = commandCount + 1 };
         if (builder.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke point count exceeds the configured path-command limit.");

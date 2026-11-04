@@ -1,0 +1,222 @@
+{
+  "status": "No additional defect found; all inputs admitted and native exact on both hosts.",
+  "scope": "Focused empty linear/radial gradients and empty patterns under affine use placement, with hidden solid and nonempty gradient controls. This does not claim exhaustive resource coverage.",
+  "responsibility": "Optional research audit; no repeated API or ownership matrix.",
+  "developmentLibrarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+  "nativeComparisons": 72,
+  "independentHealthyProcesses": 6,
+  "launches": [
+    {
+      "host": "windows",
+      "attempt": 1,
+      "terminalExitCode": 0,
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 765,
+        "debuggerReadyMilliseconds": 418,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "windows",
+      "attempt": 2,
+      "terminalExitCode": 0,
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 445,
+        "debuggerReadyMilliseconds": 128,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "windows",
+      "attempt": 3,
+      "terminalExitCode": 0,
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 445,
+        "debuggerReadyMilliseconds": 135,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "linux",
+      "attempt": 1,
+      "terminalExitCode": 0,
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5096,
+        "debuggerReadyMilliseconds": 3636,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "linux",
+      "attempt": 2,
+      "terminalExitCode": 0,
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5068,
+        "debuggerReadyMilliseconds": 3447,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "linux",
+      "attempt": 3,
+      "terminalExitCode": 0,
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5267,
+        "debuggerReadyMilliseconds": 3747,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "path-l-visible",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path d='M2 2H26V26H2Z' id='s' fill='url(#l)' visibility='visible'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "e9b2ea629bb997263c66b7735f817ec34dac5af315db43dd50d863b79a09ac22",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "path-l-hidden",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path d='M2 2H26V26H2Z' id='s' fill='url(#l)' visibility='hidden'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "4c9af5fea3ce7bc762a7ea83643847f041053ce6ce375f6725ffa5bcfaa2e9f4",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "path-r-visible",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path d='M2 2H26V26H2Z' id='s' fill='url(#r)' visibility='visible'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "72d997151402ef6974773d8090cd968ccc25c3897945079430e911925fdf07a3",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "path-r-hidden",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path d='M2 2H26V26H2Z' id='s' fill='url(#r)' visibility='hidden'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "66eccb7282907ad9d04d395c5529e6c157b1e7a01f5338352268884b41be857f",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "path-p-visible",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path d='M2 2H26V26H2Z' id='s' fill='url(#p)' visibility='visible'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "5437f6f6c9aa00448d871beebe2f86c50c0793e7b23642a1616a1d945c7b0539",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "path-p-hidden",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path d='M2 2H26V26H2Z' id='s' fill='url(#p)' visibility='hidden'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "e0ca31de47734d2cb480d12c3f25d2490e51add14ddf520f5eeffd51c46c1edd",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "rect-l-visible",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><rect x='2' y='2' width='24' height='24' id='s' fill='url(#l)' visibility='visible'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "f545c393d8530ae92c53f1701c8aea629326d0df613dd2efede6bec21e895245",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "rect-p-hidden",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><rect x='2' y='2' width='24' height='24' id='s' fill='url(#p)' visibility='hidden'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "98b126310ca092b1dd3502339fff6d01b91f998c6952fffd465e29d4543ab760",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "polyline-r-visible",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><polyline points='2,2 26,2 14,26' id='s' fill='url(#r)' visibility='visible'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "2735a30c113d7dc1dd4090ec6ef592e25e1a4ff2b35e7e3c07edc33c7aae9e60",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "polyline-p-hidden",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><polyline points='2,2 26,2 14,26' id='s' fill='url(#p)' visibility='hidden'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "da2b12707a9ad6f3670493d1930656692141b6db789fd78753e1da24edf267aa",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "path-blue-hidden",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path d='M2 2H26V26H2Z' id='s' fill='blue' visibility='hidden'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "8b82b4e9b6e3d037dda61d1719f9122a0da13db81047cd229ab96cbde8e72d2a",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    },
+    {
+      "id": "path-c-hidden",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='l'/><radialGradient id='r'/><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'/><linearGradient id='c'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><path d='M2 2H26V26H2Z' id='s' fill='url(#c)' visibility='hidden'/></defs><use href='#s' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "3a69bb24e86bba3429fbf9a0441914254eeabaca615347a9542d642738878cac",
+      "outputScale": 1,
+      "nativeReference": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+      "nativePngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+      "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+    }
+  ]
+}

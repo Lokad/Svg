@@ -978,10 +978,11 @@
     }
   ],
   "nextActions": [
-    "Fix the shared no-ink source/filter-output cause using existing bounds, source and replay owners; avoid material-specific pixel fixes.",
-    "Review native source retention for affine rectangle fills and nonuniform outlines before relaxing the 84 visibility-family admissions.",
+    "The eight empty-source/filter residuals and 84 affine source-retention admissions are closed by the linked current qualifications; historical row observations remain unchanged.",
     "Keep the eight zero-scale transform cases as a separate precise boundary pending a singular-transform/source-domain design.",
-    "Preserve all source identities, naturally distinct platform references, original targets and failing-before observations."
+    "Audit remaining source-retention predicates against empty paint resources before adding special cases; continue the wider R85/R86 composition review.",
+    "Preserve all source identities, distinct platform references, original targets and failing-before observations."
   ],
-  "currentFilterQualification": "empty-source-qualification.json"
+  "currentFilterQualification": "empty-source-qualification.json",
+  "currentAffineQualification": "affine-source-qualification.json"
 }

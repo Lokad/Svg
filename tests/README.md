@@ -60,6 +60,12 @@ The [rectangle source controls](Research/rectangle-shader-frames/admission-revie
 keep 24 original admission regressions and six independent source-role images on
 the same canonical path. Six mechanisms cover cached and reconstructed strokes;
 existing rectangle ownership contracts retain refusal, cleanup and retry.
+The [affine source controls](Research/affine-source-retention/README.md) preserve
+84 failing-before native images across rectangle fills and hidden path/point-list
+fills and strokes. Canonical owned-PNG rendering protects material, visibility,
+source ownership and definition order; direct mechanisms inspect retained commands
+and maps. Existing point-list/stroke ownership contracts keep their distinct duties.
+
 The [unpainted filter sources](Research/filter-empty-sources/README.md) retain
 eight originals and twelve independent controls through one owned-PNG path.
 Two mechanisms distinguish source/scope roles and command order; one shared-budget

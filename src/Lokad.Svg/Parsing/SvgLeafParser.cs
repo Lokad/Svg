@@ -756,7 +756,7 @@ internal static class SvgLeafParser
             string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");
             return lowering.LowerStrokePath(path, 2, false, element, stroke.Value.Color, element.Presentation.IsPainted,
                 stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern,
-                stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, state.Budget);
+                stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, context.RetainInstanceStrokePath, state.Budget);
 
         }
 
@@ -830,7 +830,7 @@ internal static class SvgLeafParser
             string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");
             SvgParsedGeometry outlines = lowering.LowerStrokePath(path, 2, false, white, stroke.Value.Color, white.Presentation.IsPainted && !(useLinear && linear.IsEmpty) && !(useRadial && radial.IsEmpty),
                 stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset,
-                stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, state.Budget);
+                stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, context.RetainInstanceStrokePath, state.Budget);
             try
             {
                 using BudgetedGeometryBuilder painted = new(state.Budget, SvgMemoryCategory.Geometry, context.CancellationToken);

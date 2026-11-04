@@ -1,0 +1,2150 @@
+{
+  "license": "Repository-authored synthetic SVGs; browser PNG captures of those inputs.",
+  "scope": "All 84 previously rejected affine source visibility inputs, unchanged. Candidate/control roles and both definition orders remain distinct.",
+  "nativeValidation": {
+    "launches": [
+      {
+        "host": "windows",
+        "independentLaunch": 1,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "inputs": 84
+      },
+      {
+        "host": "windows",
+        "independentLaunch": 2,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "inputs": 84
+      },
+      {
+        "host": "windows",
+        "independentLaunch": 3,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "inputs": 84
+      },
+      {
+        "host": "linux",
+        "independentLaunch": 1,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "inputs": 84
+      },
+      {
+        "host": "linux",
+        "independentLaunch": 2,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "inputs": 84
+      },
+      {
+        "host": "linux",
+        "independentLaunch": 3,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "inputs": 84
+      }
+    ],
+    "comparisons": 504,
+    "stableReferences": true,
+    "platformDifferences": 0,
+    "evidence": "../release-baselines/r85-alias-review.json"
+  },
+  "cases": [
+    {
+      "id": "r85-visibility-10-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "284f5321ec78114d0ec8df5cb52ecea402a66779bd47e936d8b7396bb2c9cafc",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-10",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-rect-False-omitted-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-10-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "0127dc10eccf8011a525acb71b990887d4181d49906f3e1bad944a64a216f35c",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-10",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-rect-False-omitted-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-11-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "0aeb5591fa418dd7a8ecdfb8bfac1d183603c893637d514f1136ce47a8c63634",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-11",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-rect-False-omitted-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-11-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "e98205695fee245e2ed8cb1b44d4933f3edeb6982c320643153ab09522c141eb",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-11",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-rect-False-omitted-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-118-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "2b5822172d8cc03c677a2e5b99913494ae5e4634c2e3c4d4c583947b0ddee7eb",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-118",
+        "mode": "pattern",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-path-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-118-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><defs><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "e94445d07df762312a40fec1abed918c2ce21077c9210a0319f6451392a048b9",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-118",
+        "mode": "pattern",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-path-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-119-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "73447539398ffb8eeb71890aad66b7e7fef44ff990119d7c02296e444fe3a1ca",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-119",
+        "mode": "pattern",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-path-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-119-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "28a74fbeed8560e794beec9526fd786d9b9d91b73bc47e7b5d2ee60e5bd9daad",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-119",
+        "mode": "pattern",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-path-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-142-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "1d596a752185ead52292a7aa204534cb75d4984b724c885bf1374803a4be5ef2",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-142",
+        "mode": "pattern",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-path-True-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-142-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><defs><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "1eb1e949550470ab03f007df137e0d3f3508473c2bdb0a400b14cba2237580fb",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-142",
+        "mode": "pattern",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-path-True-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-143-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "85e45d66e76577e8c205cbe68635acd7c69f8e65613d87d15dfe883748ee0136",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-143",
+        "mode": "pattern",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-path-True-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-143-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "e92f035bdbf737dd8c2d71353849e84405e2b24c53586281ac781e7c8bbbb620",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-143",
+        "mode": "pattern",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-path-True-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-16-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "ae70a75978c1f28e0894800041b899c2fe098d24285f8b5d9d744084331d60d8",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-16",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-rect-False-visible-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7.png",
+        "pngSha256": "8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7",
+        "rgbaSha256": "207e9117461813dcb4f93a2bcec76f74fc64209652e479c6108be837dfa77513",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-16-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "76ef7f42b43348cc16e4fad22ab730971290c041abd28795a796f8653a3f5d42",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-16",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-rect-False-visible-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-166-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><g visibility='hidden'><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "44a83cf1a8274380e6a96d3105fb15026e5f155e0e66f6286a00c1fcf476c3a0",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-166",
+        "mode": "pattern",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-166-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><defs><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "e185e1a13a20ad232ea4d68438640b82f56647924771eaeb3a20519982d1f594",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-166",
+        "mode": "pattern",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-167-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "966d63ba6edf29c56b5dd94f627d3b23d74f36266536bf34583031795be1bb17",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-167",
+        "mode": "pattern",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-167-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "6e1456c6e4647480432a6db97877947bc210b95b02316ad6d4f3372abe575b7b",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-167",
+        "mode": "pattern",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "94dde8d14fea1ddf686b55529f567fef2f00ecb171bd685a0b8b6f8ed031e668",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-17-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "a703b0beddea4d45c3ee701172537add200532023f5f5d725ebf27dfe5d96355",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-17",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-rect-False-visible-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7.png",
+        "pngSha256": "8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7",
+        "rgbaSha256": "207e9117461813dcb4f93a2bcec76f74fc64209652e479c6108be837dfa77513",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-17-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "dc8075f711579f8457f7da0ddb61a5cfd1568bc948f069e08a457bb2326ba698",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-17",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-rect-False-visible-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-196-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "ebf25f922144f90fb6a8b5ea1daa4ca811e93c22c35576ab043f2017b80a0c40",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-196",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-rect-False-inherit-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-196-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "d27122cee8c8d7494ce2f9fff6bfefb975b770dc3572d14c39afae535bc11d82",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-196",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-rect-False-inherit-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-197-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "576dc03de8fb60d91a9e6b6f641a1cbf97db7541244e01299e5d486920ef0093",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-197",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-rect-False-inherit-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-197-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "8884f2b72b0dbb0787c2a5b405a935b85da769093e8dc506d952a0683475fc6a",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-197",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-rect-False-inherit-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-202-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "0b59beaa29d4ddc902c6fb206a8b0c3b3fea9bded6765d6199fdc78a918282bc",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-202",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-rect-False-omitted-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-202-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "c2291552f1fea49cb21341ebbb2fb13124dcee850a8414d44529a396f4da7c5a",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-202",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-rect-False-omitted-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-203-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "8abcf58a725f34e9f4d9f1d048b0797f1549de67c970aaab87c6480f25b9341d",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-203",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-rect-False-omitted-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-203-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "c143299336e32b9fdc1b0fee7e705dc86cbd68f09d82c483c64c177de7160197",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-203",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-rect-False-omitted-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-208-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "bf8462b27ff223a60fa79243f5303c9bc18f62caf293448c8203dd090c359415",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-208",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-rect-False-visible-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7.png",
+        "pngSha256": "8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7",
+        "rgbaSha256": "207e9117461813dcb4f93a2bcec76f74fc64209652e479c6108be837dfa77513",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-208-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "01063f7addf1bec36a530aa0f11d5b4e127f5eb84f74f6920716f84e7aaecb5a",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-208",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-rect-False-visible-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-209-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "9dc77e5ef0020b9aa00d51b040ff72add22637f9184d29e1f018f4e0eacb72de",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-209",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-rect-False-visible-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7.png",
+        "pngSha256": "8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7",
+        "rgbaSha256": "207e9117461813dcb4f93a2bcec76f74fc64209652e479c6108be837dfa77513",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-209-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "2947255ac8977f13fd92d5022fa46f1421588df21418dea9f5cf6a849a740fa3",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-209",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-rect-False-visible-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-214-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "bbf8aa617dd5a34dd034893ab89f1c8187099368a6f1e0bd8c2d2f2e1bfd9f5b",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-214",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-rect-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-214-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "e22da00cefd2859b1c4f9aead81926d2cf298178d10429420852fd2d6de68488",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-214",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-rect-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-215-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "60be5f5b78805231de4c2a4dd33b4cf9116c1e4f08bcc5d32e51250fedb678cb",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-215",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-rect-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-215-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "35c1fc09c914a44a0e518bfff478a36e154ba9c65acc3301a11c78f129de1be8",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-215",
+        "mode": "linear",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-rect-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "06949f5f369b134f1cc648258fbb4fb1a3b959b9de6b25df4b36536364c15629",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-22-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "9a334b5a8f390249f801107fedbd346f2f2e785c9ea111879e4f24cb588984fb",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-22",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-rect-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-22-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "801c687d42864c041c0b153b19afa72cb7e6455a40167a8d6e6b5b2b986b6b0d",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-22",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-rect-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-23-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "0a06c528d4724940956ccd04c2daf1f9d133fb935a391789662a8a951061eea5",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-23",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-rect-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-23-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "8ed2f7f4f4ee5b11cd6a86c98626ef5049596c874c942e29e5fafaa6780fb236",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-23",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-rect-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-310-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "c5789d907a68507f09da17b72452dce29d9fb1106708cc8bccd411fedb00bba8",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-310",
+        "mode": "linear",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-path-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-310-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "94be03450b9dede3845ee1c60cd9212b7806aa9b5e06f7bb87120051134e2718",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-310",
+        "mode": "linear",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-path-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-311-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "cc09d9cf5ea7da2229236e1bb062d9272428c8cdcc11d72223f1cab58793d093",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-311",
+        "mode": "linear",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-path-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-311-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "ceb8c2570c63840251e62f781dd0386779c7b4742120a14657b66a74445a00db",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-311",
+        "mode": "linear",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-path-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-334-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "cd0ac2efae06c036dbbd26fad19b96d57e27c09130ed85e474ec8e1b2aaef57c",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-334",
+        "mode": "linear",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-path-True-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-334-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "73a5b598bda134e5ff0acf083047531a1a4f62602712c38d8cc963fbef5f25a0",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-334",
+        "mode": "linear",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-path-True-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-335-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "f6653ee52dcb6cfa8ef659c00a68e23918d61525ae794f3b1875dfab013f80c2",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-335",
+        "mode": "linear",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-path-True-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-335-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "0ed9eef0c701685ce0cb7c139a8b0fe7faaeefb501a5896f05bb84cbbcab9666",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-335",
+        "mode": "linear",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-path-True-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-358-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g visibility='hidden'><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "73201a52bb1b33f1d64e83d8bf3ae88b6706a1f15e7b94da83932cb354d7866f",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-358",
+        "mode": "linear",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-358-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "fed985e641e1255b744cec733f784bf68c0dde6e82016dce1603a1ac9fb4534a",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-358",
+        "mode": "linear",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "linear-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-359-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "5f2fce0d5c0f1b79e26eaf3f76c6b771a2c4663be55ef9e394b311cd5fa78aae",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-359",
+        "mode": "linear",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-359-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><linearGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>",
+      "sourceSha256": "0ff80cd084bc47d3c163f58618eec2fb8c3ba9371a2230246b792e5ae690a64e",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-359",
+        "mode": "linear",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "linear-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "709a35318d649d38273f92e45564b88685d730959a675878659203a8732c8f71",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-388-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "67f5899e4d6bf25e50b613675faf1676374c0c8db8e6112daacab839f60a2b0e",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-388",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-rect-False-inherit-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-388-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "6e644965ce194125edc2937880c8d8969bcf2c2460f401c16eb3003f5a6adf7d",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-388",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-rect-False-inherit-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-389-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "368e1607a33af5153a8e8c8428175864ba2d5735e8acad916f408e556f995871",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-389",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-rect-False-inherit-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-389-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "f9e99c5bd4bf0f21e162197eee72d782969afd4f262d29e69ef3e09af2c7a3e7",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-389",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-rect-False-inherit-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-394-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "69f12d8c711355aa2b556bdb678d7543442312978b87f32b968939a223f18f37",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-394",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-rect-False-omitted-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-394-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "7069f160cc5b92008ee7641aa69ed436eb5a84713d064b502038f124590cc1ad",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-394",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-rect-False-omitted-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-395-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "3776acbb9da1a4b8dd676fe29be057dd8ddf59d6af14f078f2e092b4fec8739f",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-395",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-rect-False-omitted-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-395-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "7301a58ebdaa65420898e1319b3a542326e3a8fe34461e0fb4053d30789204df",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-395",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "omitted",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-rect-False-omitted-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-4-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "e5459caac3181a1d9f2da3ba13133eae251a79ed68d0028081e86ff5087688d2",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-4",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-rect-False-inherit-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-4-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "5d63c3c43eaaf9b992b1352616c51272732482ccf440e745d2e3a1486aa88a1f",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-4",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "pattern-rect-False-inherit-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-400-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "4e192efc752511fcb2db601a782ba264cc63a754cff659c67a4bbf480c587165",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-400",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-rect-False-visible-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7.png",
+        "pngSha256": "8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7",
+        "rgbaSha256": "207e9117461813dcb4f93a2bcec76f74fc64209652e479c6108be837dfa77513",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-400-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "b41911e67a4f535a7ea1168008c1a90009c2e0a2ff8e8d41f45a82c011410fe0",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-400",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-rect-False-visible-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-401-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "8c3faf234b1f57e5b5c9ce99cbbfb7f35d7e166775c1e7a04084e03d93d14a9b",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-401",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-rect-False-visible-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7.png",
+        "pngSha256": "8b2d86848ea9bfd1bbfcf2001172577f1eaae7f482f262ca93d7cf5d7fd765a7",
+        "rgbaSha256": "207e9117461813dcb4f93a2bcec76f74fc64209652e479c6108be837dfa77513",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-401-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='visible'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "cfbcd0bd55e076ec721fc006621e5cac44bfd63e44351fa9515e570c37d168d7",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-401",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "visible",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-rect-False-visible-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-406-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "bd43179568c8da00d1ef46a8f4a664e0c2f7e3c7c92f63ce6b3500694bbdde18",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-406",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-rect-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-406-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "ff8a3750358db6ca7927f0661080795164bbc1d28883c136003b3bcd40c38f07",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-406",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-rect-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-407-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "8e91310e6c7fa081fe49c267296f3e8aba3b17383bed4500391e333be44a9a47",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-407",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-rect-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-407-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "327cb0d0bbb2e5605075daad32e025be6e1b9b38bb2d41d51b6b8be4d576591f",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-407",
+        "mode": "radial",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-rect-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "64f50f0fc0fdedc3c0b40449b4bb6b2c2df0c4e5d9087b0dc012af113de7d8e8",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-5-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "e58ae247700749a8a94209a0d4510ce1d651220673966e7486d1d58df3efd831",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-5",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-rect-False-inherit-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-5-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect x='2' y='2' width='24' height='24' id='source' fill='url(#p)' visibility='inherit'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='blue'/></pattern></defs></svg>",
+      "sourceSha256": "f865ec93ee13615fdc7e3dacb34903e19b68271a98156b5c9d51f966e3c7abb0",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-5",
+        "mode": "pattern",
+        "shape": "rect",
+        "stroke": false,
+        "declaration": "inherit",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "pattern-rect-False-inherit-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "7db7dc096ce2b6b817800feb5842210747021f66da861e81008e5460f0d1c1c6",
+      "reference": {
+        "path": "references/731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a.png",
+        "pngSha256": "731333f88e014157c972b17de11bdfd5891b59bce2fbab9e150d3826badf629a",
+        "rgbaSha256": "12bbafb3c508dc276653173df8f8ecd18ea2178755ef643d92d69d432d244614",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-502-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "7c90335a2c1cf1e4e60bc0c4b927133c6a0d431cb80610c62e1f33dea950ebd8",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-502",
+        "mode": "radial",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-path-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-502-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><defs><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "c6f9b4df62703cee84d5b44f1aef2d39bd48756a7f3b0314fa12cef6d04560a9",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-502",
+        "mode": "radial",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-path-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-503-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "ad8f5b3333d2fbce809de2dce07d53b6be5dc009a927dbb058ec96ea946662e1",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-503",
+        "mode": "radial",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-path-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-503-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><path d='M2 2H26V26H2Z' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "c708e509f9152ab209158f20f1c068da9d0ada653d5bf9454aa419346ad1e863",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-503",
+        "mode": "radial",
+        "shape": "path",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-path-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-526-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "4c78563057118b851b247f9d3fe53a8bc026701d54fcb4bb0e03485b6c124a16",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-526",
+        "mode": "radial",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-path-True-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-526-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><defs><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "08c41adbb0f3977e695ca3f89d983c91c16a23a0f95ec1bfff281d28cb9a8416",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-526",
+        "mode": "radial",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-path-True-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-527-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "826a45085516827b843f3e843a4cf58bfeecbc3b68005ec910de5afc07d04e75",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-527",
+        "mode": "radial",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-path-True-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-527-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><path d='M2 2H26V26H2Z' id='source' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "64551e29a91bf2be39b9e43cc096835fc6531c61888bcd6cb46381974d556d45",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-527",
+        "mode": "radial",
+        "shape": "path",
+        "stroke": true,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-path-True-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-550-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><g visibility='hidden'><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "f67fd25676768e6b90699e916f200d62d7e4d37766eff4c2ba7ff3edcdc1b811",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-550",
+        "mode": "radial",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-550-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs><defs><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/></svg>",
+      "sourceSha256": "885731f05d1830059855093067134ed7f31988240b6bcfe608320f355d621d32",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-550",
+        "mode": "radial",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": false,
+        "group": "radial-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-False",
+        "role": "control"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-551-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g visibility='hidden'><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></g><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "2fe5985745f97783f98bd6825929054118900a12aa6ad6211c187982f704938e",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-551",
+        "mode": "radial",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "candidate"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r85-visibility-551-control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><polyline points='2,2 26,2 14,26' id='source' fill='url(#p)' visibility='hidden'/></defs><use href='#source' transform='matrix(1 .25 .125 1 0 0)'/><defs><radialGradient id='p'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></radialGradient></defs></svg>",
+      "sourceSha256": "ce8c2ba7500cd859004c01b2f23c3d85d87ed1b8d422c607558a410cba5f8fe9",
+      "outputScale": 1,
+      "metadata": {
+        "name": "r85-visibility-551",
+        "mode": "radial",
+        "shape": "polyline",
+        "stroke": false,
+        "declaration": "hidden",
+        "pose": "matrix(1 .25 .125 1 0 0)",
+        "forward": true,
+        "group": "radial-polyline-False-hidden-matrix(1 .25 .125 1 0 0)-True",
+        "role": "control"
+      },
+      "originalScriptSha256": "4f5fdfc83b3927e64c05bfd15d6c4e2a68862d25e9a250ced026ce24c9b72a3d",
+      "reference": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    }
+  ]
+}

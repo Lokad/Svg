@@ -98,7 +98,7 @@ internal static class SvgPatternSyntax
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-        if (isPath && painted && tile.HasContent && tile.TileWidth != 0 && tile.TileHeight != 0)
+        if (isPath && (painted || context.RetainInstanceStrokePath) && tile.HasContent && tile.TileWidth != 0 && tile.TileHeight != 0)
         {
             using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.CancellationToken);
             string d = renderData.Value;
@@ -112,7 +112,7 @@ internal static class SvgPatternSyntax
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.CancellationToken);
             SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
-            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasCurve, mapping, curveShape, frame, false, budget);
+            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasCurve, mapping, curveShape, frame, context.RetainInstanceStrokePath, budget);
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             try
             {

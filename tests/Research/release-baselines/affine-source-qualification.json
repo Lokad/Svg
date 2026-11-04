@@ -1,0 +1,565 @@
+{
+  "status": "Local source qualification closed; clean-commit package binding and matching CI remain to record.",
+  "baseCommit": "7b2b966cae443c9ca78341a48d35594dcf137bdd",
+  "productionSourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgGradientSyntax.cs": "334137629b633ee6cd36a646e534f86a7ebd7bce2a95c3dfb9ea326edab9c689",
+    "src/Lokad.Svg/Parsing/SvgLeafParser.cs": "c1d636e7c9df3afb6d839079c24ebc382833dc26dce35acd2292011bdf01bcee",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryLowerer.cs": "dcebe147225693bc560a2faa0b91d1854cce25fd2dfc49a2cd1a9ae37981790d",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalShapeParser.cs": "a106ac7f4066aa0e0d6d156437575432971acb65102bb552ee4327f2beb3e1f4",
+    "src/Lokad.Svg/Parsing/SvgPatternSyntax.cs": "c9a61c3525338fde35919eaeace37b5fb60ff88a0d21f4bf4b925d74e2e9f5aa",
+    "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs": "dc5e041cdc4cd90fc882db8af3d61f40169e253e6c26b9f3a54adc6944fe0670"
+  },
+  "developmentAssemblySha256": {
+    "net11.0": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+    "net10.0": "ec54118bdb63e3f82fd0e020d0ae21fc2d79c57d0f2f6076f44316e09419b0ac"
+  },
+  "change": {
+    "sharedCause": "Paint visibility suppressed native command retention needed by complete affine instance placement.",
+    "model": "Existing source contour retention, budgeted command arrays and scene owners; geometry retention is independent of painting.",
+    "closedOriginalAdmissions": {
+      "rectangleFills": 48,
+      "hiddenPathFills": 12,
+      "hiddenPathStrokes": 12,
+      "hiddenPolylineFills": 12
+    },
+    "textLayout": "Unchanged",
+    "frozenReferences": "Unchanged"
+  },
+  "regressions": {
+    "capture": "../affine-source-retention/capture.json",
+    "captureLfSha256": "6dc92d60fb2142657ba37e657ca6697917607685f600e613f6a894e1592d48e0",
+    "originalInputs": 84,
+    "deduplicatedNativePngFiles": 3,
+    "canonicalPath": "Synchronous owned PNG",
+    "directMechanismCases": 8,
+    "existingVisibilityCases": 288,
+    "originalCandidateControlAndForwardOrderPreserved": true,
+    "priorQualifiedPackage": {
+      "sourceCommit": "ae22e24864045046b6bada8b0ae98ddb5ec965e8",
+      "librarySha256": "953e1389e97c90bbac6139a299e5bb0a6c10eda04ef41a65bc8290e195e67383",
+      "perHost": [
+        {
+          "host": "windows",
+          "kind": "visual",
+          "framework": "net11.0",
+          "librarySha256": "953e1389e97c90bbac6139a299e5bb0a6c10eda04ef41a65bc8290e195e67383",
+          "testAssemblySha256": "d0501831376a93f271247df86d386ea75bf402cf7d5b5c4b930b45721a1172de",
+          "exitCode": 1,
+          "seconds": 15.545454600127414,
+          "counters": {
+            "executed": "84",
+            "passed": "0",
+            "failed": "84"
+          }
+        },
+        {
+          "host": "linux",
+          "kind": "visual",
+          "framework": "net11.0",
+          "librarySha256": "953e1389e97c90bbac6139a299e5bb0a6c10eda04ef41a65bc8290e195e67383",
+          "testAssemblySha256": "d0501831376a93f271247df86d386ea75bf402cf7d5b5c4b930b45721a1172de",
+          "exitCode": 1,
+          "seconds": 18.033139399951324,
+          "counters": {
+            "executed": "84",
+            "passed": "0",
+            "failed": "84"
+          }
+        }
+      ]
+    }
+  },
+  "native": {
+    "fullAliasInputsPerHost": 3416,
+    "comparisons": 20496,
+    "healthyIndependentProcesses": 6,
+    "meaningfulFontPlatformDifferences": 448,
+    "results": [
+      {
+        "host": "windows",
+        "inputs": 3416,
+        "nativeExact": 3408,
+        "newAdmissions": [
+          "r85-visibility-4-candidate",
+          "r85-visibility-4-control",
+          "r85-visibility-5-candidate",
+          "r85-visibility-5-control",
+          "r85-visibility-10-candidate",
+          "r85-visibility-10-control",
+          "r85-visibility-11-candidate",
+          "r85-visibility-11-control",
+          "r85-visibility-16-candidate",
+          "r85-visibility-16-control",
+          "r85-visibility-17-candidate",
+          "r85-visibility-17-control",
+          "r85-visibility-22-candidate",
+          "r85-visibility-22-control",
+          "r85-visibility-23-candidate",
+          "r85-visibility-23-control",
+          "r85-visibility-118-candidate",
+          "r85-visibility-118-control",
+          "r85-visibility-119-candidate",
+          "r85-visibility-119-control",
+          "r85-visibility-142-candidate",
+          "r85-visibility-142-control",
+          "r85-visibility-143-candidate",
+          "r85-visibility-143-control",
+          "r85-visibility-166-candidate",
+          "r85-visibility-166-control",
+          "r85-visibility-167-candidate",
+          "r85-visibility-167-control",
+          "r85-visibility-196-candidate",
+          "r85-visibility-196-control",
+          "r85-visibility-197-candidate",
+          "r85-visibility-197-control",
+          "r85-visibility-202-candidate",
+          "r85-visibility-202-control",
+          "r85-visibility-203-candidate",
+          "r85-visibility-203-control",
+          "r85-visibility-208-candidate",
+          "r85-visibility-208-control",
+          "r85-visibility-209-candidate",
+          "r85-visibility-209-control",
+          "r85-visibility-214-candidate",
+          "r85-visibility-214-control",
+          "r85-visibility-215-candidate",
+          "r85-visibility-215-control",
+          "r85-visibility-310-candidate",
+          "r85-visibility-310-control",
+          "r85-visibility-311-candidate",
+          "r85-visibility-311-control",
+          "r85-visibility-334-candidate",
+          "r85-visibility-334-control",
+          "r85-visibility-335-candidate",
+          "r85-visibility-335-control",
+          "r85-visibility-358-candidate",
+          "r85-visibility-358-control",
+          "r85-visibility-359-candidate",
+          "r85-visibility-359-control",
+          "r85-visibility-388-candidate",
+          "r85-visibility-388-control",
+          "r85-visibility-389-candidate",
+          "r85-visibility-389-control",
+          "r85-visibility-394-candidate",
+          "r85-visibility-394-control",
+          "r85-visibility-395-candidate",
+          "r85-visibility-395-control",
+          "r85-visibility-400-candidate",
+          "r85-visibility-400-control",
+          "r85-visibility-401-candidate",
+          "r85-visibility-401-control",
+          "r85-visibility-406-candidate",
+          "r85-visibility-406-control",
+          "r85-visibility-407-candidate",
+          "r85-visibility-407-control",
+          "r85-visibility-502-candidate",
+          "r85-visibility-502-control",
+          "r85-visibility-503-candidate",
+          "r85-visibility-503-control",
+          "r85-visibility-526-candidate",
+          "r85-visibility-526-control",
+          "r85-visibility-527-candidate",
+          "r85-visibility-527-control",
+          "r85-visibility-550-candidate",
+          "r85-visibility-550-control",
+          "r85-visibility-551-candidate",
+          "r85-visibility-551-control"
+        ],
+        "remainingBoundaries": [
+          "r74-intrinsics-48-candidate",
+          "r74-intrinsics-49-candidate",
+          "r74-intrinsics-50-candidate",
+          "r74-intrinsics-51-candidate",
+          "r74-intrinsics-52-candidate",
+          "r74-intrinsics-53-candidate",
+          "r74-intrinsics-54-candidate",
+          "r74-intrinsics-55-candidate"
+        ],
+        "priorPngsByteIdentical": 3324,
+        "changedPriorPngs": [],
+        "nativeResiduals": []
+      },
+      {
+        "host": "linux",
+        "inputs": 3416,
+        "nativeExact": 3408,
+        "newAdmissions": [
+          "r85-visibility-4-candidate",
+          "r85-visibility-4-control",
+          "r85-visibility-5-candidate",
+          "r85-visibility-5-control",
+          "r85-visibility-10-candidate",
+          "r85-visibility-10-control",
+          "r85-visibility-11-candidate",
+          "r85-visibility-11-control",
+          "r85-visibility-16-candidate",
+          "r85-visibility-16-control",
+          "r85-visibility-17-candidate",
+          "r85-visibility-17-control",
+          "r85-visibility-22-candidate",
+          "r85-visibility-22-control",
+          "r85-visibility-23-candidate",
+          "r85-visibility-23-control",
+          "r85-visibility-118-candidate",
+          "r85-visibility-118-control",
+          "r85-visibility-119-candidate",
+          "r85-visibility-119-control",
+          "r85-visibility-142-candidate",
+          "r85-visibility-142-control",
+          "r85-visibility-143-candidate",
+          "r85-visibility-143-control",
+          "r85-visibility-166-candidate",
+          "r85-visibility-166-control",
+          "r85-visibility-167-candidate",
+          "r85-visibility-167-control",
+          "r85-visibility-196-candidate",
+          "r85-visibility-196-control",
+          "r85-visibility-197-candidate",
+          "r85-visibility-197-control",
+          "r85-visibility-202-candidate",
+          "r85-visibility-202-control",
+          "r85-visibility-203-candidate",
+          "r85-visibility-203-control",
+          "r85-visibility-208-candidate",
+          "r85-visibility-208-control",
+          "r85-visibility-209-candidate",
+          "r85-visibility-209-control",
+          "r85-visibility-214-candidate",
+          "r85-visibility-214-control",
+          "r85-visibility-215-candidate",
+          "r85-visibility-215-control",
+          "r85-visibility-310-candidate",
+          "r85-visibility-310-control",
+          "r85-visibility-311-candidate",
+          "r85-visibility-311-control",
+          "r85-visibility-334-candidate",
+          "r85-visibility-334-control",
+          "r85-visibility-335-candidate",
+          "r85-visibility-335-control",
+          "r85-visibility-358-candidate",
+          "r85-visibility-358-control",
+          "r85-visibility-359-candidate",
+          "r85-visibility-359-control",
+          "r85-visibility-388-candidate",
+          "r85-visibility-388-control",
+          "r85-visibility-389-candidate",
+          "r85-visibility-389-control",
+          "r85-visibility-394-candidate",
+          "r85-visibility-394-control",
+          "r85-visibility-395-candidate",
+          "r85-visibility-395-control",
+          "r85-visibility-400-candidate",
+          "r85-visibility-400-control",
+          "r85-visibility-401-candidate",
+          "r85-visibility-401-control",
+          "r85-visibility-406-candidate",
+          "r85-visibility-406-control",
+          "r85-visibility-407-candidate",
+          "r85-visibility-407-control",
+          "r85-visibility-502-candidate",
+          "r85-visibility-502-control",
+          "r85-visibility-503-candidate",
+          "r85-visibility-503-control",
+          "r85-visibility-526-candidate",
+          "r85-visibility-526-control",
+          "r85-visibility-527-candidate",
+          "r85-visibility-527-control",
+          "r85-visibility-550-candidate",
+          "r85-visibility-550-control",
+          "r85-visibility-551-candidate",
+          "r85-visibility-551-control"
+        ],
+        "remainingBoundaries": [
+          "r74-intrinsics-48-candidate",
+          "r74-intrinsics-49-candidate",
+          "r74-intrinsics-50-candidate",
+          "r74-intrinsics-51-candidate",
+          "r74-intrinsics-52-candidate",
+          "r74-intrinsics-53-candidate",
+          "r74-intrinsics-54-candidate",
+          "r74-intrinsics-55-candidate"
+        ],
+        "priorPngsByteIdentical": 3324,
+        "changedPriorPngs": [],
+        "nativeResiduals": []
+      }
+    ],
+    "priorEvidence": "r85-alias-review.json"
+  },
+  "validation": {
+    "affectedIntegration": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "dfbfde7185785666a507007ef70a0f78ef6b551a17b3b67237412a874379a0c5",
+        "exitCode": 0,
+        "seconds": 19.181308100000024,
+        "counters": {
+          "executed": "7169",
+          "passed": "7169",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "dfbfde7185785666a507007ef70a0f78ef6b551a17b3b67237412a874379a0c5",
+        "exitCode": 0,
+        "seconds": 22.57166130002588,
+        "counters": {
+          "executed": "7169",
+          "passed": "7169",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "d0501831376a93f271247df86d386ea75bf402cf7d5b5c4b930b45721a1172de",
+        "exitCode": 0,
+        "seconds": 58.226880999980494,
+        "counters": {
+          "executed": "26943",
+          "passed": "26943",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "d0501831376a93f271247df86d386ea75bf402cf7d5b5c4b930b45721a1172de",
+        "exitCode": 0,
+        "seconds": 55.52659019990824,
+        "counters": {
+          "executed": "26943",
+          "passed": "26943",
+          "failed": "0"
+        }
+      }
+    ],
+    "fullNet11": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "dfbfde7185785666a507007ef70a0f78ef6b551a17b3b67237412a874379a0c5",
+        "exitCode": 0,
+        "seconds": 101.03798079979606,
+        "counters": {
+          "executed": "47592",
+          "passed": "47592",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "dfbfde7185785666a507007ef70a0f78ef6b551a17b3b67237412a874379a0c5",
+        "exitCode": 0,
+        "seconds": 96.49554769997485,
+        "counters": {
+          "executed": "47592",
+          "passed": "47592",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "d0501831376a93f271247df86d386ea75bf402cf7d5b5c4b930b45721a1172de",
+        "exitCode": 1,
+        "seconds": 353.5975679999683,
+        "counters": {
+          "executed": "70975",
+          "passed": "70974",
+          "failed": "1"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "d0501831376a93f271247df86d386ea75bf402cf7d5b5c4b930b45721a1172de",
+        "exitCode": 0,
+        "seconds": 375.72582789999433,
+        "counters": {
+          "executed": "70975",
+          "passed": "70975",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "64645b47ef8211f38962a5b69b6b63653eef46bc5a7a1ae8806d60bd3afbea2a",
+        "exitCode": 0,
+        "seconds": 2.624889299971983,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+        "testAssemblySha256": "64645b47ef8211f38962a5b69b6b63653eef46bc5a7a1ae8806d60bd3afbea2a",
+        "exitCode": 0,
+        "seconds": 1.1726180999539793,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        }
+      }
+    ],
+    "compatibilityNet10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "ec54118bdb63e3f82fd0e020d0ae21fc2d79c57d0f2f6076f44316e09419b0ac",
+        "testAssemblySha256": "54359899002f50517ccc45f592e083366358c6a8ff65c645d0d746abcbb4f2a8",
+        "exitCode": 0,
+        "seconds": 49.793470999924466,
+        "counters": {
+          "executed": "12847",
+          "passed": "12847",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "ec54118bdb63e3f82fd0e020d0ae21fc2d79c57d0f2f6076f44316e09419b0ac",
+        "testAssemblySha256": "54359899002f50517ccc45f592e083366358c6a8ff65c645d0d746abcbb4f2a8",
+        "exitCode": 0,
+        "seconds": 62.41849539987743,
+        "counters": {
+          "executed": "12847",
+          "passed": "12847",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "ec54118bdb63e3f82fd0e020d0ae21fc2d79c57d0f2f6076f44316e09419b0ac",
+        "testAssemblySha256": "39fa5e614b82b21fee66b208d495ba7f394a1d76fbf6da3f86d3bff118052635",
+        "exitCode": 0,
+        "seconds": 79.09416889981367,
+        "counters": {
+          "executed": "1104",
+          "passed": "1104",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "ec54118bdb63e3f82fd0e020d0ae21fc2d79c57d0f2f6076f44316e09419b0ac",
+        "testAssemblySha256": "39fa5e614b82b21fee66b208d495ba7f394a1d76fbf6da3f86d3bff118052635",
+        "exitCode": 0,
+        "seconds": 66.24799930001609,
+        "counters": {
+          "executed": "1104",
+          "passed": "1104",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "ec54118bdb63e3f82fd0e020d0ae21fc2d79c57d0f2f6076f44316e09419b0ac",
+        "testAssemblySha256": "3d77e1e8d9209cb1ecba202adb7c470f04f91e060280f8a69a750b9c0b355315",
+        "exitCode": 0,
+        "seconds": 2.8148421000223607,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "ec54118bdb63e3f82fd0e020d0ae21fc2d79c57d0f2f6076f44316e09419b0ac",
+        "testAssemblySha256": "3d77e1e8d9209cb1ecba202adb7c470f04f91e060280f8a69a750b9c0b355315",
+        "exitCode": 0,
+        "seconds": 2.717165300156921,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        }
+      }
+    ],
+    "knownWindowsFailure": "Unchanged SvgStaticTrueTypeFontTests dejavu frozen-reference mismatch; reference authority remains pending.",
+    "svgwebOriginals": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 167.53710419987328,
+      "librarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        }
+      }
+    },
+    "suppliedProgramContexts": 22,
+    "declaredStaticDiagnostics": 13,
+    "hostedSvgBodiesRetained": 0,
+    "allPriorContextImagesUnchanged": true
+  },
+  "ownership": {
+    "existingContracts": [
+      "../../Lokad.Svg.Tests/SvgPointListSourceTests.cs",
+      "../../Lokad.Svg.Tests/SvgNativeStrokeSourceTests.cs"
+    ],
+    "duties": "Distinct allocation paths, refusal, cancellation, disposal and retry remain covered. Mechanisms assert scene budgets return to zero. No API matrix repeated per rendering input."
+  },
+  "nextActions": [
+    "Bind deterministic packages to the committed source and qualify installed consumers on both runtimes and hosts.",
+    "Review eight zero-scale admissions through a singular-map/source-domain design; keep the current precise boundary separate.",
+    "The linked 12-input empty-paint audit is native exact; continue the wider R85/R86 composition review."
+  ],
+  "emptyPaintAudit": "../affine-source-retention/empty-paint-audit.json"
+}
