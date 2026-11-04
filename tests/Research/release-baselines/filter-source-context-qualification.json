@@ -1,5 +1,5 @@
 {
-  "status": "Named original source-context screen qualified locally on both runtimes/hosts. All original targets and existing exact regressions remain; matching committed-source packages and CI follow the source commit.",
+  "status": "Named original source-context screen, committed-source package binding and matching CI qualified. Ubuntu entire workflow passes; Windows retains only the unchanged DejaVu frozen-reference conflict. Broader shader/symbol review remains open.",
   "sourceBaseCommit": "f31bac57559d777f5bc47b6d28a4ca14f21ae694",
   "sourceLfSha256": {
     "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs": "b7dbe777f5a796fcf8701dbd8b8d4275be87e6243b065ed8678cd079cbbcdbd2",
@@ -727,5 +727,198 @@
     "The sole Windows DejaVu frozen-reference conflict remains unresolved; its assertion and reference are preserved.",
     "Broader original combined/symbol screens, shader and text/decorations/W1 admission review remain separate.",
     "No renderer performance claim or publication of development packages."
-  ]
+  ],
+  "sourceCommit": "9abf3b8bd9b6e47ee8731bbb7f9f7f4708c9f7f8",
+  "sourceLfHashesVerifiedAfterCommit": true,
+  "rendererSourceTreeGitId": "9c5af68a671b7494fe9f61baf73208a15ea3e6d5",
+  "packages": {
+    "sourceCommit": "9abf3b8bd9b6e47ee8731bbb7f9f7f4708c9f7f8",
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "07d626e14e364db8a70700b4671e2f70f79530d618e3f93a6febc7084a6d7afd"
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "04ebe701dfa0fd4fb01e85e836203bb7b19c9a81ad7ae3966942cfbfec5fda0a"
+      }
+    ],
+    "librarySha256": {
+      "net11.0": "67c8a7f8f158b01d19bac143302502df1b08176e764d2b1e80cde49f2971cb56",
+      "net10.0": "926e559b20ee267cf3dfaa49b5ca094037178c8d40a2b24d097263ef736ccb14"
+    },
+    "repeatPackagesByteIdentical": true,
+    "noRuntimeDependencies": true,
+    "noSvgFixtures": true,
+    "seconds": 4.388843399938196,
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 9.15764750004746
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 66.67532029980794
+      }
+    ],
+    "net11OriginalReplaysUsingExactPackagedLibrary": [
+      {
+        "host": "windows",
+        "inputs": 9216,
+        "exact": 9216,
+        "librarySha256": "67c8a7f8f158b01d19bac143302502df1b08176e764d2b1e80cde49f2971cb56",
+        "seconds": 8.7373146
+      },
+      {
+        "host": "linux",
+        "inputs": 9216,
+        "exact": 9216,
+        "librarySha256": "67c8a7f8f158b01d19bac143302502df1b08176e764d2b1e80cde49f2971cb56",
+        "seconds": 10.6759588
+      }
+    ],
+    "publication": false
+  },
+  "matchingCi": {
+    "runId": 41817262570,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41817262570",
+    "headSha": "9abf3b8bd9b6e47ee8731bbb7f9f7f4708c9f7f8",
+    "status": "completed",
+    "conclusion": "failure",
+    "closed": true,
+    "neverRepoll": true,
+    "logSha256": "b6cf30446288eb977c1130a772c1cf7aee523245c96ae77c6b32538620633da9",
+    "jobs": [
+      {
+        "name": "build-and-test (windows-latest)",
+        "status": "completed",
+        "conclusion": "failure",
+        "failedSteps": [
+          "Run dotnet test Lokad.Svg.slnx -c Release --no-build"
+        ],
+        "skippedSteps": [
+          ".NET 10 API, ownership and numerical compatibility",
+          ".NET 10 representative native rendering compatibility",
+          ".NET 10 font host compatibility",
+          "Run tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe",
+          "Run tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests",
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+          "Allow the pinned Chrome executable to create its sandbox",
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json",
+          "Run tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe",
+          "Run tools/validate-ci-artifacts.ps1 -Platform Windows -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe -RequireCurrentHost",
+          "Run tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/validator-selftest -Platform Windows",
+          "Run dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build",
+          "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+          "Post Run actions/setup-dotnet@v4",
+          "Post Run actions/setup-dotnet@v4"
+        ]
+      },
+      {
+        "name": "build-and-test (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "failedSteps": [],
+        "skippedSteps": [
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+          "Run actions/upload-artifact@v4"
+        ]
+      }
+    ],
+    "tests": [
+      {
+        "job": "build-and-test (windows-latest)",
+        "step": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+        "project": "Lokad.Svg.FontProbe.Tests",
+        "framework": "net11.0",
+        "failed": 0,
+        "passed": 10,
+        "skipped": 0,
+        "total": 10
+      },
+      {
+        "job": "build-and-test (windows-latest)",
+        "step": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+        "project": "Lokad.Svg.Tests",
+        "framework": "net11.0",
+        "failed": 0,
+        "passed": 47571,
+        "skipped": 0,
+        "total": 47571
+      },
+      {
+        "job": "build-and-test (windows-latest)",
+        "step": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net11.0",
+        "failed": 1,
+        "passed": 69863,
+        "skipped": 0,
+        "total": 69864
+      },
+      {
+        "job": "build-and-test (ubuntu-latest)",
+        "step": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+        "project": "Lokad.Svg.FontProbe.Tests",
+        "framework": "net11.0",
+        "failed": 0,
+        "passed": 10,
+        "skipped": 0,
+        "total": 10
+      },
+      {
+        "job": "build-and-test (ubuntu-latest)",
+        "step": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+        "project": "Lokad.Svg.Tests",
+        "framework": "net11.0",
+        "failed": 0,
+        "passed": 47571,
+        "skipped": 0,
+        "total": 47571
+      },
+      {
+        "job": "build-and-test (ubuntu-latest)",
+        "step": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net11.0",
+        "failed": 0,
+        "passed": 69864,
+        "skipped": 0,
+        "total": 69864
+      },
+      {
+        "job": "build-and-test (ubuntu-latest)",
+        "step": ".NET 10 API, ownership and numerical compatibility",
+        "project": "Lokad.Svg.Tests",
+        "framework": "net10.0",
+        "failed": 0,
+        "passed": 12819,
+        "skipped": 0,
+        "total": 12819
+      },
+      {
+        "job": "build-and-test (ubuntu-latest)",
+        "step": ".NET 10 representative native rendering compatibility",
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net10.0",
+        "failed": 0,
+        "passed": 920,
+        "skipped": 0,
+        "total": 920
+      },
+      {
+        "job": "build-and-test (ubuntu-latest)",
+        "step": ".NET 10 font host compatibility",
+        "project": "Lokad.Svg.FontProbe.Tests",
+        "framework": "net10.0",
+        "failed": 0,
+        "passed": 10,
+        "skipped": 0,
+        "total": 10
+      }
+    ],
+    "soleFailure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: dejavu); frozen reference and assertion preserved."
+  }
 }
