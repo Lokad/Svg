@@ -1,0 +1,108 @@
+{
+  "status": "Runtime-aware discovery and compilation qualified on both hosts/frameworks. Generated workload execution and all timed performance measurements remain pending a quiet VM.",
+  "benchmarkDotNet": "0.16.0-preview.2",
+  "lockFile": "../../../benchmarks/Lokad.Svg.Benchmarks/packages.lock.json",
+  "lockFileLfSha256": "c48dade84fed91a0a9937b685a706fd268d7ca611994951c04b291e7f15e1c52",
+  "before": {
+    "version": "0.14.0",
+    "command": "--list flat --runtimes net11.0",
+    "outcome": "The provided runtime net11.0 is invalid; the pinned version recognizes runtimes only through net9.0."
+  },
+  "after": {
+    "methods": 51,
+    "parameterizedCasesPerRuntime": 63,
+    "runtimes": [
+      "net10.0",
+      "net11.0"
+    ],
+    "caseIdentitySha256": "73a411ae9887c7f359800b9d701f516b589b943beb35bd3be48a72988704cbb0",
+    "discovery": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "seconds": 0.21178369992412627,
+        "exitCode": 0,
+        "stdoutSha256": "78f62c69ac657e8b40114815d7ac024e25c5549075e559a600d9b1ad8f28734a",
+        "dataType": "list",
+        "methods": 51,
+        "parameterizedCasesPerRuntime": 63,
+        "declaredRuntimes": [
+          "net10.0",
+          "net11.0"
+        ],
+        "identitySha256": "73a411ae9887c7f359800b9d701f516b589b943beb35bd3be48a72988704cbb0"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "seconds": 2.090810799971223,
+        "exitCode": 0,
+        "stdoutSha256": "78f62c69ac657e8b40114815d7ac024e25c5549075e559a600d9b1ad8f28734a",
+        "dataType": "list",
+        "methods": 51,
+        "parameterizedCasesPerRuntime": 63,
+        "declaredRuntimes": [
+          "net10.0",
+          "net11.0"
+        ],
+        "identitySha256": "73a411ae9887c7f359800b9d701f516b589b943beb35bd3be48a72988704cbb0"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "seconds": 5.984225899912417,
+        "exitCode": 0,
+        "stdoutSha256": "9dad3a3d28be6f9ac14f62020b5ffc05581c22168b5d37b6ae149777e43e21b1",
+        "dataType": "list",
+        "methods": 51,
+        "parameterizedCasesPerRuntime": 63,
+        "declaredRuntimes": [
+          "net10.0",
+          "net11.0"
+        ],
+        "identitySha256": "73a411ae9887c7f359800b9d701f516b589b943beb35bd3be48a72988704cbb0"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "seconds": 4.067310400074348,
+        "exitCode": 0,
+        "stdoutSha256": "9dad3a3d28be6f9ac14f62020b5ffc05581c22168b5d37b6ae149777e43e21b1",
+        "dataType": "list",
+        "methods": 51,
+        "parameterizedCasesPerRuntime": 63,
+        "declaredRuntimes": [
+          "net10.0",
+          "net11.0"
+        ],
+        "identitySha256": "73a411ae9887c7f359800b9d701f516b589b943beb35bd3be48a72988704cbb0"
+      }
+    ]
+  },
+  "upstream": [
+    {
+      "url": "https://github.com/dotnet/BenchmarkDotNet/pull/2911",
+      "purpose": "Merged explicit .NET11 runtime/toolchain support after stable0.15.8."
+    },
+    {
+      "url": "https://github.com/dotnet/BenchmarkDotNet/releases/tag/v0.16.0-preview.2",
+      "purpose": "Released development-only pin containing that support."
+    },
+    {
+      "url": "https://www.nuget.org/packages/BenchmarkDotNet/0.16.0-preview.2",
+      "purpose": "Exact package identity restored under the lock file."
+    }
+  ],
+  "validation": {
+    "lockedSolutionRestore": true,
+    "windowsSolutionBuild": true,
+    "windowsNet10BenchmarkBuild": true,
+    "isolatedLinuxNet11BenchmarkBuild": true,
+    "isolatedLinuxNet10BenchmarkBuild": true,
+    "zeroWarningsAndErrors": true,
+    "productionSourcesChanged": false,
+    "libraryRuntimeDependenciesAdded": false,
+    "timedBenchmarkExecutions": 0
+  },
+  "scope": "Discovery validates runtime selection and preserves all existing methods/parameters; it does not establish generated-workload validity, throughput or a speedup."
+}
