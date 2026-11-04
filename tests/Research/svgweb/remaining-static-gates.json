@@ -1568,6 +1568,6 @@
   ],
   "currentStaticQualification": "../image-fit-sampling/qualification.json",
   "entityQualification": "../xml-entities/qualification.json",
-  "currentQualification": "../release-baselines/decoration-clip-qualification.json",
+  "originalReplay": "originals.json",
   "textClipQualification": "../text-clip/qualification.json"
 }

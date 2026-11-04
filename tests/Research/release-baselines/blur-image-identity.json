@@ -1,5 +1,5 @@
 {
-  "status": "Shared blur-image classification is locally qualified on both hosts and runtimes; full source/package promotion follows.",
+  "status": "Shared blur-image identity is qualified locally and through clean-commit packages on both hosts/runtimes; all original/context replays are unchanged. Ubuntu entire CI succeeds; Windows retains solely the unchanged DejaVu reference assertion.",
   "sourceBaseCommit": "0e8d99878595b0a89f077af495681cfc07d44999",
   "assemblyIdentity": "Investigation assemblies carry sourceBaseCommit metadata; LF hashes bind the changed implementation.",
   "sourceLfSha256": {
@@ -215,5 +215,324 @@
       }
     }
   ],
-  "timingInterpretation": "Functional validation wall times include runner/discovery/TRX and changing workstation load. They do not establish renderer performance."
+  "timingInterpretation": "Functional validation wall times include runner/discovery/TRX and changing workstation load. They do not establish renderer performance.",
+  "promotion": {
+    "package": {
+      "sourceCommit": "ec8c8de7a1b9b4dac249bffd123f962f160f8b84",
+      "packageVersion": "0.4.0-dev.1",
+      "librarySha256": {
+        "net11.0": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+        "net10.0": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a"
+      },
+      "repeatPackagesByteIdentical": true,
+      "nupkgSha256": "07461c5b5c94cd2b938ba4c862eb48506f3b5c8ec3a0d5ed16b36e9ba280fb29",
+      "snupkgSha256": "794f52ee89eb8440e429586797cfcfeeacad66b88493330ba8743e8b4e8feef0"
+    },
+    "sourceHashesMatchCommit": true,
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.595039100153372,
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ],
+        "isolatedRestoreBuildAndExecution": true,
+        "packageAssetHashesMatch": true
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 57.33061609999277,
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ],
+        "isolatedRestoreBuildAndExecution": true,
+        "packageAssetHashesMatch": true
+      }
+    ],
+    "packagedFocusedChecks": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+        "testAssemblySha256": "4e6b741f851b9941e9d2bda5c8deb88109ef6e1da21f86a63e434c78311d855f",
+        "exitCode": 0,
+        "seconds": 11.543009399902076,
+        "counters": {
+          "executed": "216",
+          "passed": "216",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+        "testAssemblySha256": "4e6b741f851b9941e9d2bda5c8deb88109ef6e1da21f86a63e434c78311d855f",
+        "exitCode": 0,
+        "seconds": 15.30748700001277,
+        "counters": {
+          "executed": "216",
+          "passed": "216",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a",
+        "testAssemblySha256": "94f26c47c9393f4858884b233008ac7808e119ac10a637c02530b1ce3526923d",
+        "exitCode": 0,
+        "seconds": 10.159525000024587,
+        "counters": {
+          "executed": "216",
+          "passed": "216",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a",
+        "testAssemblySha256": "94f26c47c9393f4858884b233008ac7808e119ac10a637c02530b1ce3526923d",
+        "exitCode": 0,
+        "seconds": 10.232422100147232,
+        "counters": {
+          "executed": "216",
+          "passed": "216",
+          "failed": "0"
+        }
+      }
+    ],
+    "published": false
+  },
+  "liveIndexAudit": {
+    "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/",
+    "httpStatus": 200,
+    "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+    "directSvgFiles": 204,
+    "indexHashUnchanged": true,
+    "missingOriginals": [],
+    "additionalOriginals": [],
+    "retainedHtmlBodies": 0,
+    "retainedSvgBodies": 0
+  },
+  "hostedOriginalReplay": {
+    "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+    "framework": "net11.0",
+    "sourceCommit": "ec8c8de7a1b9b4dac249bffd123f962f160f8b84",
+    "originals": 204,
+    "sourceIdentitySha256": "98ecf4d5a1cf3e31dff4873101e6e5521726d264407793e9086d74e8e6b058aa",
+    "outcomeAndPngRecordSha256": "342e9bcc7fd937df15f22d8e1998e5aba06e1aea08a2d08a791b098b11b39a72",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "allSourceHashesAndDiagnosticMetadataUnchanged": true,
+    "defaultSeconds": 136.1889935999643,
+    "suppliedOriginalContexts": {
+      "inputs": 22,
+      "exactPerHost": 22,
+      "unchangedQualifiedPngsPerHost": 22,
+      "identityAndOutputSha256": "c3f3a619d219e4da3430e4669546338e07c17a35a22e7d9dd9c4ed90282b17e0",
+      "evidence": [
+        "../svgweb/supplied-original-contexts.json",
+        "../svgweb/supplied-original-contexts-additional.json",
+        "../xml-entities/qualification.json"
+      ]
+    },
+    "staticDiagnostics": {
+      "inputs": 13,
+      "exactPerHost": 13,
+      "projectedInputAndOutputSha256": "0a5be1bfa6bcd5049ecef84ddb720618afc192664b3aedc9a56f143989f2a96b",
+      "evidence": "../svgweb/remaining-static-gates.json"
+    },
+    "retention": {
+      "hostedSvgFiles": 0,
+      "hostedFragments": 0,
+      "rawSourceAttributes": 0
+    },
+    "scope": "Replays all original default outcomes and the existing supplied-program/projected contexts against unchanged independent native targets. Default admissions remain168 rendered/35Unsupported/1Malformed. Font bindings, legacy SVG-font transport, diagnostic repairs, resources and animation/static-state limitations remain distinct; whole-corpus support is not closed."
+  },
+  "ci": {
+    "runId": 41913438900,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41913438900",
+    "sourceCommit": "ec8c8de7a1b9b4dac249bffd123f962f160f8b84",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 71311,
+            "skipped": 0,
+            "total": 71311
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12865,
+            "skipped": 0,
+            "total": 12865
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "skipped": 0,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          }
+        ],
+        "logSha256": "7d9acbfeaba20d3ea9991b51d1220d46d270857bd7c633beb326ffcf1d2e21ad",
+        "steps": [
+          {
+            "name": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 API, ownership and numerical compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 representative native rendering compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 font host compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 71310,
+            "skipped": 0,
+            "total": 71311
+          }
+        ],
+        "logSha256": "078003d7119181034e803cfa2b8e1dfcbb5bddfaa5e56318577cbbbb823bf199",
+        "steps": [
+          {
+            "name": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+            "conclusion": "failure"
+          },
+          {
+            "name": ".NET 10 API, ownership and numerical compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": ".NET 10 representative native rendering compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": ".NET 10 font host compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    },
+    "boundary": "Windows .NET10 and package steps are skipped after the existing net11 visual failure. Local affected checks retain both runtimes/hosts against the matching ec8c8de7a package. Frozen DejaVu target/assertion remain unchanged; reference authority is pending."
+  },
+  "replayEvidenceOwnership": {
+    "ledger": "../svgweb/originals.json",
+    "currentBinding": "currentReview",
+    "admissionMapUsesExistingOriginalsLink": true,
+    "diagnosticRecordUsesStableOriginalReplayLink": true,
+    "removedDuplicateLatestReportFields": [
+      "admission-boundaries.currentReplayQualification",
+      "remaining-static-gates.currentQualification"
+    ],
+    "auditedOriginals": 204,
+    "auditedBoundaryContexts": 36,
+    "sourceAndContextHashesMatch": true,
+    "supportAnchorsExist": true
+  },
+  "remaining": [
+    "Wider source/bounds/map contracts and historical R85/R86 rows remain separate from this shared Gaussian classification refactor.",
+    "Original font/resource/animation contexts retain their declared limitations; supplied programs and projected diagnostics do not establish whole-corpus support.",
+    "Windows DejaVu reference authority and dedicated quiet-VM performance remain pending."
+  ]
 }

@@ -10,6 +10,8 @@ The current default conversion renders 168 originals per host: **168 exploratory
 exact**, with 35 UnsupportedFeature and 1 MalformedInput outcome. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
+`originals.json.currentReview` owns the current renderer and replay qualification;
+stage records retain their source identities and link back to that ledger.
 Its `currentReview.contextPartition` joins all 204 source identities and hashes:
 168 default exact, 22 supplied-program contexts, 11 other static diagnostics and
 three separate source reviews. This partition records the declared context for
