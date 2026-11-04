@@ -1,48 +1,51 @@
 # Current text paint precision review
 
-The [39 retained originals](../text-paint-bounds/precision-residuals.json) were
-replayed at `e5b42ff6e13af92ff0943b1c34b336fe28043e12`. Production is unchanged
-since the text-clip milestone. The .NET 11 library is stamped `ccb2c5bdf` with
-SHA-256 `e29b2720f85f4395db10580db550eaac75925d1eba6522d4d45110c9746e5914`.
-The [78 platform results](precision-current.csv) bind every source, selected
-reference, current PNG and exact difference. No source, reference or tolerance changed.
+The [39 retained originals](../text-paint-bounds/precision-residuals.json) now have
+35 exact inputs on both hosts and four unresolved witnesses. The
+[current results](precision-current.csv), [before results](precision-before-stroke.csv)
+and [qualification](stroke-drawing-qualification.json) preserve every source,
+option, platform reference and exact difference. No reference or tolerance changed.
 
-Replay uses the existing `r99-fonts` catalog, pinned Noto Sans regular/Mono bold,
-each original's scale, transparent output and one public `ConvertToPng` call.
-Reference PNG and decoded pixel hashes are checked before comparison. Linux uses
-the existing scalar-selected CORE-MATH companions for four inputs; their source
-and native-input hashes must match. Original legacy references remain untouched.
-The existing comparer retains exact canonical RGBA, including every alpha byte.
+Stroke construction now forwards the existing fragment drawing map separately
+from fitted glyph placement, consistently with fills. This closes the original
+`spacing-paint-219-control`, `spacing-paint-479-candidate` and
+`spacing-paint-479-control` inputs on both hosts/runtimes, including the 479 pair's
+red/blue discontinuity and the Windows control's separate alpha difference.
+Layout, shaping, ink maps, contour transfer and existing owners remain unchanged.
+Three direct mechanisms cover linear/radial/pattern forwarding; three canonical
+rendering regressions reuse the original sources and native PNGs. All six fail
+before the fix against the previously qualified library.
 
-32 inputs match both hosts. Seven remain inexact, versus eight in the preceding
-shared-paint review. Both `spacing-paint-233` inputs now match; the previously
-exact `spacing-paint-479-candidate` has a newly observed difference.
+[Fresh native verification](precision-native-verification.json) reproduces all 39
+original targets in three healthy, profile-cleaned processes per host: 234 exact
+comparisons. The original two-style regular/400 and Mono/700 font graph, Image
+decode, transparent canvas, each row's scale and DPR1 remain. Both 1x and 1.5x
+contexts are retained. Linux uses the existing scalar-selected CORE-MATH companions
+for four inputs; original legacy references remain untouched. No new reference
+files are needed.
 
-| Input suffix | Windows changed pixels | Linux changed pixels |
+| Remaining input suffix | Windows changed pixels | Linux changed pixels |
 | --- | ---: | ---: |
-| 219-control | 1 | 0 |
 | 224-control | 1 | 0 |
 | 232-control | 0 | 1 |
 | 430-candidate | 1 | 1 |
 | 430-control | 1 | 1 |
-| 479-candidate | 4 | 4 |
-| 479-control | 5 | 4 |
 
-The 479 pair differs at x=107, y=38–41: the reference is blue, current output red,
-with identical alpha at those pixels on both hosts. The ungrouped Windows control
-also retains one separate alpha/color difference at (137,27). Other residuals are
-single-pixel color differences. These observations locate paint/sampling work;
-they do not establish a text-layout cause.
+All remaining differences affect color only. No previously exact result is lost;
+Windows changes only the three closed inputs and Linux only the 479 pair.
+The earlier 233 pair remains exact. Broader R48/R49/R60/R61, R103/R104 and decoration
+work remains open; this closes the shared stroke-drawing cause and named witnesses.
 
-This is a current rendering replay against frozen independent targets, not new
-browser qualification or reference admission. It does not close the broader
-R48/R49/R60/R61, R103/R104 or decoration review. The preceding 960-input audit and
-all original observations remain intact. Replay took 2.26 s Windows and 5.17 s
-Linux, including process startup; these functional costs are not benchmarks.
+Focused checks pass 175 mechanism/ownership and 572 native/provenance cases per
+runtime/host. Full .NET 11 passes 47,548 core cases on each host and 46,696 Linux
+rendering cases; Windows retains only its unchanged DejaVu reference conflict.
+All 204 original outcomes/diagnostics and 168 rendered PNGs remain unchanged;
+22 supplied-program contexts and 13 declared static diagnostics remain exact.
+Local installed-package checks pass both runtimes on Windows/Linux. Matching
+committed-head CI remains separate. Timings in qualification are functional
+validation costs, not renderer benchmarks.
 
-Next: reproduce the seven witnesses and matched controls with three healthy native
-captures per host, preserving the original two-style font graph and canvas-scale
-recipe. Trace texture preparation, drawing maps, repeat addresses and rounding
-through shared stages; retain the 479 pair's alpha and geometry while isolating
-its color discontinuity. Reuse existing numerical mechanisms and canonical images
-before adding any context-specific rule or API matrix.
+Next: isolate the 430 pair's shared interpolation/coverage stages and the two
+platform-specific one-channel rounding witnesses, preserving layout, native
+contexts and exact targets. Use direct numerical mechanisms before adding any
+rendering or API matrix.

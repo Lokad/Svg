@@ -1572,5 +1572,5 @@
   ],
   "currentStaticQualification": "../image-fit-sampling/qualification.json",
   "entityQualification": "../xml-entities/qualification.json",
-  "currentQualification": "../text-clip/qualification.json"
+  "currentQualification": "../release-baselines/stroke-drawing-qualification.json"
 }

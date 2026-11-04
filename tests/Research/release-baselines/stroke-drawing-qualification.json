@@ -1,0 +1,397 @@
+{
+  "status": "Local shared stroke-drawing milestone qualified; Windows retains only the unchanged DejaVu reference conflict. Matching committed-head CI is separate.",
+  "sourceBaseCommit": "29c8254e70a8c8730ab9b2b26a4a48e3156087dc",
+  "assemblyIdentity": "Worktree DLLs are stamped from sourceBaseCommit; the two LF source hashes identify the changed implementation.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgRoot.cs": "c4a86bdae37819dcbe7ff1c50c7068de41ba684ca2593531c9801561966f985d",
+    "src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs": "f5bda52aec3963dff5c39b89be8666788adf95fdd7bb18aeb035bea218ef5094"
+  },
+  "librarySha256": {
+    "net11.0": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+    "net10.0": "1081345a9fd3adc4c4087eb6dfb4f7ad6ec7752e05c7dafa9da082725aa374de"
+  },
+  "change": "Forward the existing fragment drawing map through stroke construction, independently of fitted glyph placement. Reuse scene-owned drawing metadata, contour/source transfer, sampling and existing owners; no coordinate framework, new allocation path, public API or runtime dependency.",
+  "nativeVerification": "precision-native-verification.json",
+  "currentReplay": "precision-current.csv",
+  "beforeReplay": "precision-before-stroke.csv",
+  "closedOriginalInputs": [
+    "spacing-paint-219-control",
+    "spacing-paint-479-candidate",
+    "spacing-paint-479-control"
+  ],
+  "remainingOriginalInputs": [
+    "spacing-paint-224-control",
+    "spacing-paint-232-control",
+    "spacing-paint-430-candidate",
+    "spacing-paint-430-control"
+  ],
+  "exactOnBothHosts": 35,
+  "previousExactLosses": 0,
+  "changedCandidatePngs": {
+    "windows": [
+      "spacing-paint-219-control",
+      "spacing-paint-479-candidate",
+      "spacing-paint-479-control"
+    ],
+    "linux": [
+      "spacing-paint-479-candidate",
+      "spacing-paint-479-control"
+    ]
+  },
+  "failingBefore": {
+    "mechanisms": {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "e29b2720f85f4395db10580db550eaac75925d1eba6522d4d45110c9746e5914",
+      "testAssemblySha256": "d8bd4b880cae26dfe6c5b4f4be55e638283d57cb767c29b1f854b2037ce7ce1b",
+      "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain_the_same_fragment_shader_drawing",
+      "exitCode": 1,
+      "seconds": 8.262265200028196,
+      "counters": {
+        "executed": "3",
+        "passed": "0",
+        "failed": "3"
+      }
+    },
+    "rendering": {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "e29b2720f85f4395db10580db550eaac75925d1eba6522d4d45110c9746e5914",
+      "testAssemblySha256": "d1d6a4ab26b4c2b638416a3a14787bc37fbe7008ed3323572985cebd92fe211a",
+      "selection": "FullyQualifiedName~Stroke_paints_retain_the_fragment_drawing_stage|FullyQualifiedName~Stroke_drawing_cases_retain_original_context_and_fresh_native_triples",
+      "exitCode": 1,
+      "seconds": 7.6265769000165164,
+      "counters": {
+        "executed": "4",
+        "passed": "1",
+        "failed": "3"
+      }
+    }
+  },
+  "validation": {
+    "focused": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+        "testAssemblySha256": "d8bd4b880cae26dfe6c5b4f4be55e638283d57cb767c29b1f854b2037ce7ce1b",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests",
+        "exitCode": 0,
+        "seconds": 8.68567269993946,
+        "counters": {
+          "executed": "175",
+          "passed": "175",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+        "testAssemblySha256": "d1d6a4ab26b4c2b638416a3a14787bc37fbe7008ed3323572985cebd92fe211a",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 16.703123199986294,
+        "counters": {
+          "executed": "572",
+          "passed": "572",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+        "testAssemblySha256": "d8bd4b880cae26dfe6c5b4f4be55e638283d57cb767c29b1f854b2037ce7ce1b",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests",
+        "exitCode": 0,
+        "seconds": 16.527230700012296,
+        "counters": {
+          "executed": "175",
+          "passed": "175",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+        "testAssemblySha256": "d1d6a4ab26b4c2b638416a3a14787bc37fbe7008ed3323572985cebd92fe211a",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 20.23177030007355,
+        "counters": {
+          "executed": "572",
+          "passed": "572",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "1081345a9fd3adc4c4087eb6dfb4f7ad6ec7752e05c7dafa9da082725aa374de",
+        "testAssemblySha256": "8de948fef2de2db98f8af1b42e9bb71f599fd96bd1666f794e3ffd62115a0386",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests",
+        "exitCode": 0,
+        "seconds": 9.14714469993487,
+        "counters": {
+          "executed": "175",
+          "passed": "175",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "1081345a9fd3adc4c4087eb6dfb4f7ad6ec7752e05c7dafa9da082725aa374de",
+        "testAssemblySha256": "1c6a5d07e5aa878a2f38c9d99fe4db0470b60568b19a6d80580d1e32778874d7",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 17.25193789997138,
+        "counters": {
+          "executed": "572",
+          "passed": "572",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "1081345a9fd3adc4c4087eb6dfb4f7ad6ec7752e05c7dafa9da082725aa374de",
+        "testAssemblySha256": "8de948fef2de2db98f8af1b42e9bb71f599fd96bd1666f794e3ffd62115a0386",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests",
+        "exitCode": 0,
+        "seconds": 14.920933000044897,
+        "counters": {
+          "executed": "175",
+          "passed": "175",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "1081345a9fd3adc4c4087eb6dfb4f7ad6ec7752e05c7dafa9da082725aa374de",
+        "testAssemblySha256": "1c6a5d07e5aa878a2f38c9d99fe4db0470b60568b19a6d80580d1e32778874d7",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 21.09804380009882,
+        "counters": {
+          "executed": "572",
+          "passed": "572",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fullNet11": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+        "testAssemblySha256": "d8bd4b880cae26dfe6c5b4f4be55e638283d57cb767c29b1f854b2037ce7ce1b",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 51.47876559989527,
+        "counters": {
+          "executed": "47548",
+          "passed": "47548",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+        "testAssemblySha256": "d8bd4b880cae26dfe6c5b4f4be55e638283d57cb767c29b1f854b2037ce7ce1b",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 54.52209410001524,
+        "counters": {
+          "executed": "47548",
+          "passed": "47548",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+        "testAssemblySha256": "d1d6a4ab26b4c2b638416a3a14787bc37fbe7008ed3323572985cebd92fe211a",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 66.08095770003274,
+        "counters": {
+          "executed": "46696",
+          "passed": "46695",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+        "testAssemblySha256": "d1d6a4ab26b4c2b638416a3a14787bc37fbe7008ed3323572985cebd92fe211a",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 176.29901499999687,
+        "counters": {
+          "executed": "46696",
+          "passed": "46696",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "originals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 130.28461410012096,
+    "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "outcomesOptionsDimensionsAndDiagnosticsUnchanged": true
+  },
+  "declaredStaticDiagnostics": {
+    "cases": 13,
+    "exactOnBothHosts": true,
+    "seconds": 37.14695159997791
+  },
+  "suppliedProgramContexts": {
+    "originals": 19,
+    "additionalNoto": 2,
+    "originalXmlNoto": 1,
+    "unchangedQualifiedPngsOnBothHosts": true
+  },
+  "packages": {
+    "identity": "0.4.0-dev.1",
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "45c4eb37ddfff25ccd983dfda1e1b190784d5f11b994e37f84187a8c185967cf"
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "ac77f45c4fff4a7bd53a7261f15f7944a40270e92a6c76141204d0eb101755ed"
+      }
+    ],
+    "assetsMatchQualifiedDlls": true,
+    "checks": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 10.327851200010628
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 65.12618859997019
+      }
+    ],
+    "sourceIdentity": "Local worktree functional qualification, stamped at sourceBaseCommit; matching committed-source package/CI is separate. No publication."
+  },
+  "hostedSvgBodiesRetained": 0,
+  "rawSourceAttributeValuesRetained": 0,
+  "referenceFilesChanged": 0,
+  "timingScope": "Functional elapsed times, not renderer throughput or quiet-VM measurements.",
+  "testIdentityAudit": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "previousCases": 47545,
+      "currentCases": 47548,
+      "removedOrRenamedCases": 0,
+      "addedCaseIds": [
+        "128115d6-fed6-545f-d873-633061257b69",
+        "27b999f8-435f-ed36-a72a-99af4d1e5546",
+        "f92428eb-2cb6-9902-735a-5e47ce7cb21e"
+      ]
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "previousCases": 46692,
+      "currentCases": 46696,
+      "removedOrRenamedCases": 0,
+      "addedCaseIds": [
+        "3c37862b-1a6d-2f0f-ffb2-75a9134d70ec",
+        "43044480-88d4-cce8-c501-39ffcfee4796",
+        "76578270-27a2-e3c9-c33e-c77b800449db",
+        "e4b6a8fc-b219-dada-38a6-0ca13f520dcf"
+      ]
+    },
+    {
+      "host": "glibc243",
+      "kind": "core",
+      "previousCases": 47545,
+      "currentCases": 47548,
+      "removedOrRenamedCases": 0,
+      "addedCaseIds": [
+        "128115d6-fed6-545f-d873-633061257b69",
+        "27b999f8-435f-ed36-a72a-99af4d1e5546",
+        "f92428eb-2cb6-9902-735a-5e47ce7cb21e"
+      ]
+    },
+    {
+      "host": "glibc243",
+      "kind": "visual",
+      "previousCases": 46692,
+      "currentCases": 46696,
+      "removedOrRenamedCases": 0,
+      "addedCaseIds": [
+        "3c37862b-1a6d-2f0f-ffb2-75a9134d70ec",
+        "43044480-88d4-cce8-c501-39ffcfee4796",
+        "76578270-27a2-e3c9-c33e-c77b800449db",
+        "e4b6a8fc-b219-dada-38a6-0ca13f520dcf"
+      ]
+    }
+  ]
+}

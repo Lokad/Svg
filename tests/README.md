@@ -30,6 +30,11 @@ keep one allowance across parsing and rasterization, the complete refusal sweep,
 explicit viewports and exact retry pixels. Their 54 named cases use `Layer=Contract`;
 the existing separate-parser/raster lifetime checks remain independent.
 
+The [stroke-drawing correction](Research/release-baselines/precision-current.md)
+uses three direct paint mechanisms, three canonical original images and separate
+native provenance checks. Stroke and fill share drawing coordinates while fitted
+glyph placement and ownership retain their existing paths.
+
 The [alpha and gradient layer map](Research/release-baselines/alpha-gradient-responsibilities.json)
 keeps 35 numerical mechanisms independently selectable from nine storage, API and
 cleanup contracts. All 44 original cases, inputs and assertions remain unchanged.

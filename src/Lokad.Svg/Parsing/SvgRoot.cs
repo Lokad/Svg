@@ -658,11 +658,14 @@ internal sealed class SvgGlyphGeometry : ISvgGeometryContent
     internal SvgAffineTransform ShaderDrawingMap { get; }
     internal double StrokeBoundsInflation { get; private set; }
 
+    /// <summary>Adopts stroke contours while retaining fragment shader drawing separately from fitted glyph placement.</summary>
+    /// <remarks>Source construction, budget admission and failed ownership transfer follow Create; no separate drawing owner is retained.</remarks>
     internal static SvgGlyphGeometry CreateStroke(SvgGlyphContourStorage contours, SvgTextStrokePaint paint,
-        SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget)
+        SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap,
+        SvgAffineTransform shaderDrawingMap, RenderBudget budget)
     {
         SvgColor color = paint.Resolve()?.Color ?? throw new InvalidOperationException("A painted text stroke requires a color.");
-        SvgGlyphGeometry geometry = Create(contours, color, font, position, fontSize, glyphMap, null, glyphMap, budget);
+        SvgGlyphGeometry geometry = Create(contours, color, font, position, fontSize, glyphMap, null, shaderDrawingMap, budget);
         geometry.StrokePaint = paint;
         double scale = Math.Max(Math.Sqrt(glyphMap.A * glyphMap.A + glyphMap.B * glyphMap.B), Math.Sqrt(glyphMap.C * glyphMap.C + glyphMap.D * glyphMap.D));
         double strokeScale = paint.NonScaling ? 1 / paint.FontScale : 1;

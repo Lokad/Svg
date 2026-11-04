@@ -51,6 +51,57 @@ public sealed class SvgTextPaintBoundsReferenceTests
     public Task Shared_paint_stages_match_each_native_image(string id)
         => AssertNativeImage("paint-stage-images.json", id, false);
 
+    public static IEnumerable<object[]> StrokeDrawingCases() => CaptureCases("precision-stroke-images.json");
+
+    [Theory]
+    [MemberData(nameof(StrokeDrawingCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Stroke_paints_retain_the_fragment_drawing_stage(string id)
+        => AssertNativeImage("precision-stroke-images.json", id, false);
+
+    [Fact]
+    [Trait("Layer", "Integrity")]
+    public void Stroke_drawing_cases_retain_original_context_and_fresh_native_triples()
+    {
+        using JsonDocument source = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "precision-residuals.json")));
+        using JsonDocument bank = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "precision-stroke-images.json")));
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), Required(bank.RootElement, "nativeVerification"))));
+        string original = File.ReadAllText(Path.Combine(Folder(), "precision-residuals.json")).Replace("\r\n", "\n", StringComparison.Ordinal);
+        Assert.Equal(Required(native.RootElement, "sourceManifestLfSha256"), Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(original))));
+        Dictionary<string, JsonElement> cases = source.RootElement.GetProperty("cases").EnumerateArray().ToDictionary(row => Required(row, "id"), StringComparer.Ordinal);
+        Assert.Equal(39, cases.Count);
+        Assert.Equal(3, bank.RootElement.GetProperty("cases").GetArrayLength());
+        foreach (JsonElement row in bank.RootElement.GetProperty("cases").EnumerateArray())
+            Assert.True(JsonElement.DeepEquals(cases[Required(row, "id")], row));
+        Assert.Equal(new[] { "linux", "windows" }, native.RootElement.GetProperty("hosts").EnumerateArray()
+            .Select(host => Required(host, "host")).Order(StringComparer.Ordinal));
+        foreach (JsonElement host in native.RootElement.GetProperty("hosts").EnumerateArray())
+        {
+            Assert.Equal(3, host.GetProperty("captures").GetArrayLength());
+            foreach (JsonElement process in host.GetProperty("captures").EnumerateArray())
+            {
+                Assert.Equal(0, process.GetProperty("terminalExitCode").GetInt32());
+                JsonElement health = process.GetProperty("health");
+                Assert.Equal("healthy", Required(health, "startupHealth"));
+                Assert.True(health.GetProperty("profileCleaned").GetBoolean());
+                Assert.False(health.GetProperty("stderrTruncated").GetBoolean());
+                Assert.Equal(0, health.GetProperty("sandboxAccessFailures").GetInt32());
+                Assert.Equal(0, health.GetProperty("networkServiceCrashes").GetInt32());
+            }
+            Assert.Equal(cases.Keys.Order(StringComparer.Ordinal), host.GetProperty("cases").EnumerateArray().Select(row => Required(row, "id")).Order(StringComparer.Ordinal));
+            foreach (JsonElement row in host.GetProperty("cases").EnumerateArray())
+            {
+                Assert.Equal(Required(cases[Required(row, "id")], "nativeSourceSha256"), Required(row, "nativeInputSha256"));
+                JsonElement pngHashes = row.GetProperty("freshPngSha256s");
+                Assert.Equal(3, pngHashes.GetArrayLength());
+                foreach (JsonElement hash in pngHashes.EnumerateArray()) Assert.Equal(pngHashes[0].GetString(), hash.GetString());
+                byte[] png = File.ReadAllBytes(Path.Combine(Folder(), Required(row, "reference")));
+                Assert.Equal(Required(row, "referenceSha256"), Convert.ToHexStringLower(SHA256.HashData(png)));
+                Assert.Equal(Required(row, "rgbaSha256"), Convert.ToHexStringLower(SHA256.HashData(PngRgbaDecoder.Decode(png, 32_768).Pixels)));
+            }
+        }
+    }
+
     private static IEnumerable<object[]> CaptureCases(string file)
     {
         using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), file)));

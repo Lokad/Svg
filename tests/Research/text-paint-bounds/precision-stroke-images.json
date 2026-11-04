@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original stroke-paint inputs closed by forwarding the existing fragment drawing map independently of glyph ink. No source, reference, font, option or tolerance changes.",
+  "nativeVerification": "../release-baselines/precision-native-verification.json",
+  "cases": [
+    {
+      "id": "spacing-paint-219-control",
+      "originalName": "spacing-paint-219",
+      "role": "control",
+      "group": "end-linear-objectBoundingBox-stroke-1.5",
+      "input": "precision-residuals/inputs/spacing-paint-219-control.svg",
+      "sourceSha256": "dc8603aafebe55242278e2fb4a7e4afacc52e367d9ef49afffc75ac419a26af8",
+      "nativeSourceSha256": "1b7e18620e290998a7d9d13209072aaf32b60d90d772f2d6cb96e85f4ce02c12",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "precision-residuals/references/8d2e9759b6d4a3c2a5363ca3d13ad6d49c07c1ca5aba97195379ac54297224c0.png",
+          "sha256": "8d2e9759b6d4a3c2a5363ca3d13ad6d49c07c1ca5aba97195379ac54297224c0",
+          "rgbaSha256": "79d4a1e4ba77b6bee8c2dbaecd467889339d4c1e39302639136f5fca46dcbf9b",
+          "width": 240,
+          "height": 120,
+          "observation": {
+            "changedPixels": 1,
+            "alphaChangedPixels": 0,
+            "sum": 1
+          }
+        },
+        "linux": {
+          "path": "precision-residuals/references/c4e2d332645ed43be1f0b1f3548edbab6148163fa25dd92c1caec421ceeeb667.png",
+          "sha256": "c4e2d332645ed43be1f0b1f3548edbab6148163fa25dd92c1caec421ceeeb667",
+          "rgbaSha256": "69dce081948f3bfee986a904184d628d9cd65289a9ba67a1ae028631d871343e",
+          "width": 240,
+          "height": 120,
+          "observation": {
+            "changedPixels": 0,
+            "alphaChangedPixels": 0,
+            "sum": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "spacing-paint-479-candidate",
+      "originalName": "spacing-paint-479",
+      "role": "candidate",
+      "group": "negative-width-pattern-userSpaceOnUse-stroke-1.5",
+      "input": "precision-residuals/inputs/spacing-paint-479-candidate.svg",
+      "sourceSha256": "89133e7717dd29ec5f6290192bd92cc088b1ab0c36d6f726e1e0378aad4d2aa4",
+      "nativeSourceSha256": "9f789ff117c120326931c4ca77966e6cc847db26b85dc3321cfb28534b894284",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "precision-residuals/references/9343ac68c32d7521fe05d64b4c25bd83c81cdb738154770dae2bb2b4c5cb4ece.png",
+          "sha256": "9343ac68c32d7521fe05d64b4c25bd83c81cdb738154770dae2bb2b4c5cb4ece",
+          "rgbaSha256": "c937da94c649e1e5e57bef7274a44145fc9af6cb7d847c090e387cd7816cfcb8",
+          "width": 240,
+          "height": 120,
+          "observation": {
+            "changedPixels": 79,
+            "alphaChangedPixels": 78,
+            "sum": 7946
+          }
+        },
+        "linux": {
+          "path": "precision-residuals/references/f77806849e3400788d93022170302d679bcfbbb976c3d2be2efa689a2f3b6ce8.png",
+          "sha256": "f77806849e3400788d93022170302d679bcfbbb976c3d2be2efa689a2f3b6ce8",
+          "rgbaSha256": "13c38c82f5ba03db3eb873be9e140628309e1cbd5a0d983649ec15edeb432f6b",
+          "width": 240,
+          "height": 120,
+          "observation": {
+            "changedPixels": 57,
+            "alphaChangedPixels": 56,
+            "sum": 5885
+          }
+        }
+      }
+    },
+    {
+      "id": "spacing-paint-479-control",
+      "originalName": "spacing-paint-479",
+      "role": "control",
+      "group": "negative-width-pattern-userSpaceOnUse-stroke-1.5",
+      "input": "precision-residuals/inputs/spacing-paint-479-control.svg",
+      "sourceSha256": "e84a9594ef9ea6ea81ae7e6d720fc2fc93d7ec49693f9151582626bb53d6414b",
+      "nativeSourceSha256": "67999977c2087918d5f6c695a7bdac0a3cb31191794d466d18f6195ecb84e1c4",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "precision-residuals/references/c5f269fbd186028facf8f35dcfc7e87f310cb4a025c3562b6236c38a89106a52.png",
+          "sha256": "c5f269fbd186028facf8f35dcfc7e87f310cb4a025c3562b6236c38a89106a52",
+          "rgbaSha256": "803de83e007a7450a509424d51be84ac8222b0587148aa3682c9c035725698b9",
+          "width": 240,
+          "height": 120,
+          "observation": {
+            "changedPixels": 81,
+            "alphaChangedPixels": 78,
+            "sum": 9009
+          }
+        },
+        "linux": {
+          "path": "precision-residuals/references/9694149aa1c4ec68cebe7373f1907a58aa129805eb49bf917699d517c0b4c6f5.png",
+          "sha256": "9694149aa1c4ec68cebe7373f1907a58aa129805eb49bf917699d517c0b4c6f5",
+          "rgbaSha256": "1b85d86c49306919c2b23cdfddcea0f90909c120843bf645f9377a2585eb3888",
+          "width": 240,
+          "height": 120,
+          "observation": {
+            "changedPixels": 57,
+            "alphaChangedPixels": 56,
+            "sum": 6501
+          }
+        }
+      }
+    }
+  ]
+}

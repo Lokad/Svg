@@ -190,7 +190,8 @@ internal static class SvgTextGlyphPainter
                 using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, placed.Position, font.FontSize, placed.Map, budget, token);
                 if (contours.Contours.Length == 0) continue;
                 stroke = stroke with { FontScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(state.TextFontTransform(placement)) };
-                SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, budget);
+                SvgAffineTransform shaderDrawingMap = paths.IsEmpty ? placed.Map : placed.Drawing.Map;
+                SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, shaderDrawingMap, budget);
                 glyph.Shader = shader;
                 try
                 {

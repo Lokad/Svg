@@ -8,6 +8,28 @@ namespace Lokad.Svg.Tests;
 public sealed partial class OpenTypeFontTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("<linearGradient id='p' gradientUnits='userSpaceOnUse' x2='160'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>")]
+    [InlineData("<radialGradient id='p' gradientUnits='userSpaceOnUse' r='100'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient>")]
+    [InlineData("<pattern id='p' patternUnits='userSpaceOnUse' width='8' height='8'><rect width='4' height='8' fill='red'/></pattern>")]
+    public async Task Curved_glyph_fill_and_stroke_retain_the_same_fragment_shader_drawing(string paint)
+    {
+        byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'><defs><path id='baseline' d='M4 36Q70 8 140 36'/>"
+            + paint + "</defs><text font-family='Example' font-size='24' fill='url(#p)' stroke='url(#p)' stroke-width='.75'><textPath href='#baseline' startOffset='80'>A</textPath></text></svg>");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+        {
+            SvgGlyphGeometry[] glyphs = root.Geometries.ToArray().Where(geometry => geometry.Kind == SvgGeometryKind.GlyphContours)
+                .Select(geometry => geometry.Glyph).ToArray();
+            SvgGlyphGeometry fill = Assert.Single(glyphs, glyph => glyph.StrokePaint is null);
+            SvgGlyphGeometry stroke = Assert.Single(glyphs, glyph => glyph.StrokePaint is not null);
+            Assert.Equal(fill.ShaderDrawingMap, stroke.ShaderDrawingMap);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("linearGradient", "x1='0' x2='125'")]
     [InlineData("radialGradient", "cx='62' cy='4' r='62'")]
     [InlineData("pattern", "width='4' height='4'")]
