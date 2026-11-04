@@ -1,0 +1,418 @@
+{
+  "status": "Named original full-screen cohort and shared rendering setup pass local full rendering plus both-host/runtime focused qualification. New-head CI follows promotion.",
+  "sourceBaseCommit": "5ae7b8e16fb1d95016daa3900d693fe3919e4c0e",
+  "rendererSourceTreeGitId": "921084460e39aa378f87a567480b3c6c09e59598",
+  "rendererSourceUnchanged": true,
+  "sourceLfSha256": {
+    "tests/Lokad.Svg.VisualTests/PaintReferenceBank.cs": "70dd53c2c90d3e2bf0d1187123fdc6c8ab26c7bdd1ada0609b842ed5557d9efb",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.cs": "22a20446e853c59114b96e949f54d8dde230e11e4de21b56550218bcd9c8023c",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Screening.cs": "b046dcddb52effc1f84108f9ed54ec25d9963b33857cf49118ef75ffc595c76c"
+  },
+  "manifest": "../text-paint-bounds/precision-screening.json",
+  "manifestLfSha256": "1b04ca7cc7fbc837b5dc668fe2b78b6ca127eed2d025a5a969176557affb9fe1",
+  "scope": "The named original 960-input screen is closed against qualified platform/math targets. Other node/anchor/phase, shader and decoration findings remain separate.",
+  "originals": {
+    "inputs": 960,
+    "sourceByteIdentities": 480,
+    "pairs": 480,
+    "configurations": 20,
+    "paints": 3,
+    "coordinateSystems": 2,
+    "fillStrokeRoles": 2,
+    "outputScales": [
+      1,
+      1.5
+    ],
+    "opacityRoles": 2,
+    "exactPerHost": 960,
+    "priorExactLosses": 0,
+    "oldRoutineWitnessesUnchanged": 39
+  },
+  "references": {
+    "authority": "Original independent native PNG and canonical RGBA identities, never candidate-rendered goldens.",
+    "nativeComparisons": 5760,
+    "unchangedQualifiedPixelTargets": 5760,
+    "freshProcessesPerHost": 3,
+    "allFreshCaseDigestsByteStable": true,
+    "originalPngIdentitiesPreserved": 1920,
+    "newSvgFiles": 0,
+    "newPngReferenceFiles": 0,
+    "hashContract": "Width/height checked separately; SHA256 covers every canonical straight RGBA8 byte. RGB under zero alpha follows the existing PixelComparer contract. All original native zero-alpha RGB bytes are already zero.",
+    "mathCompanions": "../native-math-profiles/image-capture.json",
+    "encodedPngDifferences": [
+      {
+        "host": "linux",
+        "attempt": 1,
+        "id": "spacing-paint-453-candidate",
+        "frozenPngSha256": "ff586fb11cd5d8b3e8cf5b11f0610a010d20becc71775720f53135950fba2b91",
+        "freshPngSha256": "1702a4b6de8f7f66abdc3ccff5b4ba8379805bc2a8f0095d6a78c56bb14643c1"
+      },
+      {
+        "host": "linux",
+        "attempt": 1,
+        "id": "spacing-paint-453-control",
+        "frozenPngSha256": "52d4a5edbf7bef078defd68dca8a06410a5557709d3604df1dba96a3e73b0945",
+        "freshPngSha256": "36aed2adc506b09e42d7acb1782b2740de25b58c091fa337d51ba3df8ddb6b41"
+      },
+      {
+        "host": "linux",
+        "attempt": 1,
+        "id": "spacing-paint-455-candidate",
+        "frozenPngSha256": "ae823e1ed137e0261a9e4406081c64aa222ab30624e4f0c53b9d713364608e6e",
+        "freshPngSha256": "36cfcf56725775d7841a2aa05da0480d48287fbc0bc04bbf502e59533e2a451c"
+      },
+      {
+        "host": "linux",
+        "attempt": 1,
+        "id": "spacing-paint-455-control",
+        "frozenPngSha256": "da1b3a6662e420fcb3921cb14727d95089e764450eaf9309d0945102b0b17a43",
+        "freshPngSha256": "10b04a74b4e85249a429a2ab0af5b8839074b2f697b9920d4ec74c2c57f446a8"
+      },
+      {
+        "host": "linux",
+        "attempt": 2,
+        "id": "spacing-paint-453-candidate",
+        "frozenPngSha256": "ff586fb11cd5d8b3e8cf5b11f0610a010d20becc71775720f53135950fba2b91",
+        "freshPngSha256": "1702a4b6de8f7f66abdc3ccff5b4ba8379805bc2a8f0095d6a78c56bb14643c1"
+      },
+      {
+        "host": "linux",
+        "attempt": 2,
+        "id": "spacing-paint-453-control",
+        "frozenPngSha256": "52d4a5edbf7bef078defd68dca8a06410a5557709d3604df1dba96a3e73b0945",
+        "freshPngSha256": "36aed2adc506b09e42d7acb1782b2740de25b58c091fa337d51ba3df8ddb6b41"
+      },
+      {
+        "host": "linux",
+        "attempt": 2,
+        "id": "spacing-paint-455-candidate",
+        "frozenPngSha256": "ae823e1ed137e0261a9e4406081c64aa222ab30624e4f0c53b9d713364608e6e",
+        "freshPngSha256": "36cfcf56725775d7841a2aa05da0480d48287fbc0bc04bbf502e59533e2a451c"
+      },
+      {
+        "host": "linux",
+        "attempt": 2,
+        "id": "spacing-paint-455-control",
+        "frozenPngSha256": "da1b3a6662e420fcb3921cb14727d95089e764450eaf9309d0945102b0b17a43",
+        "freshPngSha256": "10b04a74b4e85249a429a2ab0af5b8839074b2f697b9920d4ec74c2c57f446a8"
+      },
+      {
+        "host": "linux",
+        "attempt": 3,
+        "id": "spacing-paint-453-candidate",
+        "frozenPngSha256": "ff586fb11cd5d8b3e8cf5b11f0610a010d20becc71775720f53135950fba2b91",
+        "freshPngSha256": "1702a4b6de8f7f66abdc3ccff5b4ba8379805bc2a8f0095d6a78c56bb14643c1"
+      },
+      {
+        "host": "linux",
+        "attempt": 3,
+        "id": "spacing-paint-453-control",
+        "frozenPngSha256": "52d4a5edbf7bef078defd68dca8a06410a5557709d3604df1dba96a3e73b0945",
+        "freshPngSha256": "36aed2adc506b09e42d7acb1782b2740de25b58c091fa337d51ba3df8ddb6b41"
+      },
+      {
+        "host": "linux",
+        "attempt": 3,
+        "id": "spacing-paint-455-candidate",
+        "frozenPngSha256": "ae823e1ed137e0261a9e4406081c64aa222ab30624e4f0c53b9d713364608e6e",
+        "freshPngSha256": "36cfcf56725775d7841a2aa05da0480d48287fbc0bc04bbf502e59533e2a451c"
+      },
+      {
+        "host": "linux",
+        "attempt": 3,
+        "id": "spacing-paint-455-control",
+        "frozenPngSha256": "da1b3a6662e420fcb3921cb14727d95089e764450eaf9309d0945102b0b17a43",
+        "freshPngSha256": "10b04a74b4e85249a429a2ab0af5b8839074b2f697b9920d4ec74c2c57f446a8"
+      }
+    ],
+    "nativeCapture": [
+      {
+        "host": "windows",
+        "attempt": 1,
+        "cases": 960,
+        "seconds": 62.97237259987742,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 53692,
+          "debuggerReadyMilliseconds": 163,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "windows",
+        "attempt": 2,
+        "cases": 960,
+        "seconds": 61.82505039987154,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 53133,
+          "debuggerReadyMilliseconds": 165,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "windows",
+        "attempt": 3,
+        "cases": 960,
+        "seconds": 57.07806089986116,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 48301,
+          "debuggerReadyMilliseconds": 156,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 1,
+        "cases": 960,
+        "seconds": 74.2842803997919,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 60539,
+          "debuggerReadyMilliseconds": 3005,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 2,
+        "cases": 960,
+        "seconds": 72.67552400007844,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 60919,
+          "debuggerReadyMilliseconds": 3613,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 3,
+        "cases": 960,
+        "seconds": 68.40857530012727,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 57288,
+          "debuggerReadyMilliseconds": 2740,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      }
+    ]
+  },
+  "responsibilities": {
+    "routine": "All 572 prior class cases and their identities/PNG comparisons remain unchanged; this includes every failing-before routine witness.",
+    "research": "960 individually discovered canonical rendering cases and one integrity case under Category=Research; no API/destination multiplication.",
+    "integrity": "All source/options/native-input hashes, font programs, platform/pair distinctions and healthy capture triples remain checked. Sources are generated from one fixed C# template.",
+    "setup": "Reuse the existing typed lazy bank loader for nine named manifests; retain immutable catalogs and program bytes once per process. Every case still acquires, validates and disposes its own snapshot; no shared snapshot, glyph cache, memory allowance or resource owner is introduced."
+  },
+  "caseIdentityAudit": {
+    "casesBefore": 1533,
+    "casesAfter": 1533,
+    "removedOrRenamed": 0,
+    "beforeAfterIdentitySha256": "27e14b3874025631334737478fe93f23d6b006852fca2d7b49620cfd16f496e0",
+    "routineBefore": 572,
+    "routineAfter": 572,
+    "fullSuite": [
+      {
+        "host": "windows",
+        "previousCases": 46706,
+        "currentCases": 47667,
+        "addedResearchRendering": 960,
+        "addedResearchIntegrity": 1,
+        "removedOrRenamed": 0
+      },
+      {
+        "host": "glibc243",
+        "previousCases": 46706,
+        "currentCases": 47667,
+        "addedResearchRendering": 960,
+        "addedResearchIntegrity": 1,
+        "removedOrRenamed": 0
+      }
+    ]
+  },
+  "validation": {
+    "beforeAfter": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "cases": 1533,
+        "beforeSeconds": 19.191355800023302,
+        "afterSeconds": 19.727231200085953
+      },
+      {
+        "host": "glibc243",
+        "framework": "net11.0",
+        "cases": 1533,
+        "beforeSeconds": 30.219454400008544,
+        "afterSeconds": 27.811280299909413
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "cases": 1533,
+        "beforeSeconds": 19.65407589985989,
+        "afterSeconds": 17.997863200027496
+      },
+      {
+        "host": "glibc243",
+        "framework": "net10.0",
+        "cases": 1533,
+        "beforeSeconds": 33.788697599899024,
+        "afterSeconds": 20.93142809998244
+      }
+    ],
+    "routine": [
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4db44dc9eb6f4371547b9213d0a7b9f30c88640c29e52960334cc6c8e6fdbe2f",
+        "testAssemblySha256": "d3a77760840d4161be3276ad13024218ad0b9f6deaa33ae1fdcff58fd5198815",
+        "selection": "(FullyQualifiedName~SvgTextPaintBoundsReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 15.535189900081605,
+        "counters": {
+          "executed": "572",
+          "passed": "572",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4db44dc9eb6f4371547b9213d0a7b9f30c88640c29e52960334cc6c8e6fdbe2f",
+        "testAssemblySha256": "d3a77760840d4161be3276ad13024218ad0b9f6deaa33ae1fdcff58fd5198815",
+        "selection": "(FullyQualifiedName~SvgTextPaintBoundsReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 21.072613400174305,
+        "counters": {
+          "executed": "572",
+          "passed": "572",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "46be6938939bf246c9ecfd9849c38af7a570810b7709db7dddec7828ad1375aa",
+        "testAssemblySha256": "4e0a523d45a8f2cbfd1fa353b75d22a1be9dc19a64474c2d38ccff9fb20d8a80",
+        "selection": "(FullyQualifiedName~SvgTextPaintBoundsReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 16.694456400116906,
+        "counters": {
+          "executed": "572",
+          "passed": "572",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "46be6938939bf246c9ecfd9849c38af7a570810b7709db7dddec7828ad1375aa",
+        "testAssemblySha256": "4e0a523d45a8f2cbfd1fa353b75d22a1be9dc19a64474c2d38ccff9fb20d8a80",
+        "selection": "(FullyQualifiedName~SvgTextPaintBoundsReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 25.102837500162423,
+        "counters": {
+          "executed": "572",
+          "passed": "572",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fullNet11": [
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4db44dc9eb6f4371547b9213d0a7b9f30c88640c29e52960334cc6c8e6fdbe2f",
+        "testAssemblySha256": "d3a77760840d4161be3276ad13024218ad0b9f6deaa33ae1fdcff58fd5198815",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 63.63556450000033,
+        "counters": {
+          "executed": "47667",
+          "passed": "47666",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4db44dc9eb6f4371547b9213d0a7b9f30c88640c29e52960334cc6c8e6fdbe2f",
+        "testAssemblySha256": "d3a77760840d4161be3276ad13024218ad0b9f6deaa33ae1fdcff58fd5198815",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 149.6148204000201,
+        "counters": {
+          "executed": "47667",
+          "passed": "47667",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "timingScope": "Single functional observations include discovery, host startup and TRX, excluding build. .NET11 Windows does not improve. No statistical speedup or renderer-performance claim. Quiet-VM work remains open.",
+  "productionDependenciesAdded": 0,
+  "referenceImagesRewritten": 0,
+  "build": "Release solution and explicit .NET10 visual builds pass with zero warnings/errors. No timed benchmarks run."
+}

@@ -29,7 +29,7 @@ The outstanding review starts at these committed collections:
 
 | Findings | Evidence and next review |
 | --- | --- |
-| R48/R49/R60/R61; R103/R104/R108 | [Text acceptance](text-acceptance.md), [path baselines](text-baseline-paint.md), [pattern matrices](text-pattern-matrices.md) and [shared drawing](paint-stages.md) close their named cohorts. The [39-input precision cohort](precision-current.md) is exact on both hosts; broader node/anchor/phase work remains open. All original inputs and targets are retained. |
+| R48/R49/R60/R61; R103/R104/R108 | [Text acceptance](text-acceptance.md), [path baselines](text-baseline-paint.md), [pattern matrices](text-pattern-matrices.md) and [shared drawing](paint-stages.md) close their named cohorts. The [full 960-input screen](text-screen-qualification.json), including the 39 routine witnesses, is exact on both hosts against qualified platform/math targets. Broader node/anchor/phase work remains open; all original identities and targets remain. |
 | R54/R55/R69; R85/R86 | [Color alpha](../gradient-color-alpha/README.md), [shader strokes](../shader-hairlines/capture.json): bounds/maps, focal arithmetic and nonconstant paints. |
 | R70 | [Decorations](../stroked-decorations/README.md): glyph intersections through paint, font and effect scopes. |
 | R74/C04 | [Reviewed selection failures closed](resource-selection.md); nested SVG in retained definitions remains a documented exclusion with its native control. |

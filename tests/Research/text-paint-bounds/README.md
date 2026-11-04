@@ -61,3 +61,20 @@ These image origins remain separate from tight ink capture and shader coordinate
 Dedicated contracts cover copied scope storage, borrowed range views, scratch
 refusal/work/cancellation cleanup and a prepared asynchronous stream retry.
 The image collection does not repeat the destination/ownership matrix.
+
+The [full precision screen](precision-screening.json) retains all 480 original
+candidate/control pairs as separately discovered `Category=Research` cases.
+[Generated sources](../../Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Screening.cs)
+reproduce every original byte hash without adding 960 SVG files. Complete canonical
+RGBA digests come from independent native images; dimensions are checked separately
+and RGB under zero alpha follows the existing comparer contract. Original PNG hashes,
+font/context bindings, platform differences and qualified math companions remain.
+Three fresh healthy captures per host agree with every qualified target.
+
+The 39 routine regressions keep their existing sources, PNGs and test identities.
+The broader screen adds one canonical conversion per input, without another API or
+ownership matrix. Select it with `FullyQualifiedName~Full_text_paint_screen`;
+`Category!=Research` keeps the routine development selection unchanged. Shared
+metadata, immutable catalogs and font bytes avoid repeated setup; snapshots remain
+independent per case. [Qualification](../release-baselines/text-screen-qualification.json)
+records source/context joins, retained identities and validation costs.

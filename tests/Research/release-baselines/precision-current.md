@@ -38,3 +38,9 @@ installed consumers on both runtimes and hosts. Matching CI passes the full Ubun
 workflow. Windows retains only DejaVu; its later steps are skipped. The run is
 terminal and closed.
 Validation timings in qualification are functional costs, not renderer benchmarks.
+
+The [full original screen](text-screen-qualification.json) now closes all 960
+R103/R104 inputs against their qualified platform/math targets. It retains the
+same sources/options and all 39 routine witnesses. Broader exploratory coverage
+is separately selectable research; this does not close unrelated text or shader
+findings.

@@ -13,12 +13,16 @@ namespace Lokad.Svg.VisualTests;
 /// </summary>
 internal sealed class PaintReferenceBank
 {
+    private readonly string _captureFile;
     private readonly Lazy<Selection> _selection;
     private readonly Lazy<FrozenDictionary<string, JsonElement>> _rows;
 
-    public PaintReferenceBank(string name)
+    public PaintReferenceBank(string name) : this(name, "capture.json") { }
+
+    public PaintReferenceBank(string name, string captureFile)
     {
         Name = name;
+        _captureFile = captureFile;
         _selection = new Lazy<Selection>(ReadSelection);
         _rows = new Lazy<FrozenDictionary<string, JsonElement>>(ReadRows);
     }
@@ -32,7 +36,7 @@ internal sealed class PaintReferenceBank
 
     private Selection ReadSelection()
     {
-        byte[] bytes = File.ReadAllBytes(Path.Combine(Folder, "capture.json"));
+        byte[] bytes = File.ReadAllBytes(Path.Combine(Folder, _captureFile));
         CaptureIndex data = JsonSerializer.Deserialize<CaptureIndex>(bytes)
             ?? throw new InvalidDataException("Missing native capture index.");
         List<string> ordered = new();
@@ -88,7 +92,7 @@ internal sealed class PaintReferenceBank
     private FrozenDictionary<string, JsonElement> ReadRows()
     {
         Selection selection = _selection.Value;
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder, "capture.json")));
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder, _captureFile)));
         // One shared immutable clone per bank, rather than a separate document per case.
         JsonElement root = data.RootElement.Clone();
         Dictionary<string, JsonElement> rows = new(StringComparer.Ordinal);

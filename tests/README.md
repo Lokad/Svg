@@ -40,6 +40,11 @@ direct matrix/source-box mechanisms, all 39 original images across four banks an
 three independent vector controls. Each image uses one canonical conversion;
 output-density and opacity companions retain distinct interactions. Separate ownership
 checks admit retained drawing stages before contour allocation and verify retry.
+The [full 960-input screen](Research/release-baselines/text-screen-qualification.json)
+remains `Category=Research`, with generated sources and exact native RGBA digests.
+It retains all 39 routine PNG witnesses. The shared typed bank loader, catalog and
+immutable font bytes remove repeated setup; every snapshot and its lifetime stay
+independent.
 
 The [alpha and gradient layer map](Research/release-baselines/alpha-gradient-responsibilities.json)
 keeps 35 numerical mechanisms independently selectable from nine storage, API and

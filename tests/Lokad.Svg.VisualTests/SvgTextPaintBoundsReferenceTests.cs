@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Lokad.Svg.Fonts;
@@ -6,8 +7,19 @@ using Lokad.Svg.Testing;
 
 namespace Lokad.Svg.VisualTests;
 
-public sealed class SvgTextPaintBoundsReferenceTests
+public sealed partial class SvgTextPaintBoundsReferenceTests
 {
+    // Discovery reads identities only. Immutable metadata/catalog/program bytes are
+    // shared; every rendering case still creates and disposes its own snapshot.
+    private static readonly FrozenDictionary<string, PaintReferenceBank> Banks = new[]
+    {
+        "image-capture.json", "shared-layout-images.json", "filter-source-images.json",
+        "precision-pattern-images.json", "paint-stage-images.json", "precision-stroke-images.json",
+        "fragment-stages.json", "precision-source-images.json", "precision-screening.json"
+    }.ToFrozenDictionary(static file => file,
+        static file => new PaintReferenceBank("text-paint-bounds", file), StringComparer.Ordinal);
+    private static readonly Lazy<SvgFontPackCatalog> TextCatalog = new(static () =>
+        SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(Folder(), "font-pack.json")), "r99-fonts"));
     public static IEnumerable<object[]> Cases()
         => CaptureCases("image-capture.json");
 
@@ -120,9 +132,7 @@ public sealed class SvgTextPaintBoundsReferenceTests
 
     private static IEnumerable<object[]> CaptureCases(string file)
     {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), file)));
-        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing native case id.")];
+        foreach (string id in Banks[file].CaseIds) yield return [id];
     }
 
     [Fact]
@@ -260,27 +270,43 @@ public sealed class SvgTextPaintBoundsReferenceTests
 
     private static async Task AssertNativeImage(string captureFile, string id, bool replayPrepared)
     {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), captureFile)));
-        JsonElement row = data.RootElement.GetProperty("cases").EnumerateArray().Single(item => item.GetProperty("id").GetString() == id);
+        JsonElement row = Banks[captureFile].GetCase(id);
         JsonElement image = row.GetProperty("references").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
         string referenceDirectory = Folder();
-        using JsonDocument? coreMath = NativeMathProfile.Atan2 == NativeAtan2Profile.CoreMath && captureFile == "precision-pattern-images.json"
+        using JsonDocument? coreMath = NativeMathProfile.Atan2 == NativeAtan2Profile.CoreMath && (captureFile is "precision-pattern-images.json" or "precision-screening.json")
             ? JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "native-math-profiles", "image-capture.json"))) : null;
         if (coreMath is {} current && current.RootElement.GetProperty("cases").TryGetProperty(id, out JsonElement companion))
         {
+            Assert.Equal(Required(row, "sourceSha256"), Required(companion, "sourceSha256"));
+            Assert.Equal(Required(row, "nativeSourceSha256"), Required(companion, "nativeInputSha256"));
             image = companion.GetProperty("reference");
             referenceDirectory = Path.Combine(ResearchCorpus.Root, "native-math-profiles");
         }
-        byte[] input = File.ReadAllBytes(Path.Combine(Folder(), row.GetProperty("input").GetString() ?? throw new InvalidDataException()));
-        byte[] reference = File.ReadAllBytes(Path.Combine(referenceDirectory, image.GetProperty("path").GetString() ?? throw new InvalidDataException()));
+        byte[] input = captureFile == "precision-screening.json"
+            ? CreateScreeningSource(row.GetProperty("screenIndex").GetInt32(), Required(row, "role"))
+            : File.ReadAllBytes(Path.Combine(Folder(), row.GetProperty("input").GetString() ?? throw new InvalidDataException()));
+        byte[]? reference = captureFile == "precision-screening.json" && !image.TryGetProperty("path", out _)
+            ? null : File.ReadAllBytes(Path.Combine(referenceDirectory, Required(image, "path")));
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
-        Assert.Equal(image.GetProperty("sha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(reference)));
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(Folder(), "font-pack.json")), "r99-fonts");
+        if (reference is not null)
+            Assert.Equal(image.GetProperty("sha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(reference)));
+        SvgFontPackCatalog catalog = TextCatalog.Value;
         FontPrograms provider = new();
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
         SvgRenderOptions options = new(null, row.GetProperty("outputScale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] actual = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
-        Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 1_048_576), PngRgbaDecoder.Decode(actual, 1_048_576)).IsExact, id);
+        RgbaImage decoded = PngRgbaDecoder.Decode(actual, 1_048_576);
+        if (reference is not null)
+            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 1_048_576), decoded).IsExact, id);
+        else
+        {
+            Assert.Equal(image.GetProperty("width").GetInt32(), decoded.Width);
+            Assert.Equal(image.GetProperty("height").GetInt32(), decoded.Height);
+            // Match PixelComparer: RGB under zero alpha is unspecified.
+            for (int offset = 0; offset < decoded.Pixels.Length; offset += 4)
+                if (decoded.Pixels[offset + 3] == 0) decoded.Pixels.AsSpan(offset, 3).Clear();
+            Assert.Equal(Required(image, "rgbaSha256"), Convert.ToHexStringLower(SHA256.HashData(decoded.Pixels)));
+        }
         if (!replayPrepared) return;
         using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider,
             new(null, options.OutputScale, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
@@ -291,13 +317,24 @@ public sealed class SvgTextPaintBoundsReferenceTests
 
     private sealed class FontPrograms : ISvgFontProgramSourceProvider
     {
+        private static readonly Lazy<byte[]> Regular = new(static () => File.ReadAllBytes(
+            Path.Combine(ResearchCorpus.Root, "supplied-font-labels/fonts/NotoSans-Regular.ttf")));
+        private static readonly Lazy<byte[]> Mono = new(static () => File.ReadAllBytes(
+            Path.Combine(ResearchCorpus.Root, "supplied-font-documents/fonts/NotoSansMono-Bold.ttf")));
+
+        /// <summary>Returns immutable process-lifetime borrowed bytes, observes cancellation and permits concurrent requests.</summary>
+        /// <remarks>The fixture owns the host input bytes; each snapshot retains its ordinary acquisition,
+        /// admission and disposal. Sharing these inputs retains no renderer reservations.</remarks>
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            string name = file.RelativePath == "sans.ttf" ? "supplied-font-labels" : "supplied-font-documents";
-            string font = file.RelativePath == "sans.ttf" ? "NotoSans-Regular.ttf" : "NotoSansMono-Bold.ttf";
-            return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource(file.RelativePath,
-                File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, name, "fonts", font))));
+            byte[] bytes = file.RelativePath switch
+            {
+                "sans.ttf" => Regular.Value,
+                "mono.ttf" => Mono.Value,
+                _ => throw new InvalidDataException("Unknown fixture font program.")
+            };
+            return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource(file.RelativePath, bytes));
         }
     }
 }
