@@ -1,5 +1,5 @@
 {
-  "status": "Local singular-source qualification closed; clean-commit package binding and matching CI remain to record.",
+  "status": "Singular-source qualification closed: all original alias inputs, orthogonal controls, historical admissions, deterministic packages and installed consumers qualify. Matching CI is terminal: Ubuntu passes; Windows retains only unchanged DejaVu.",
   "baseCommit": "6dcb5c0d61c51c57929c467a0bb6b40694e74b18",
   "productionSourceLfSha256": {
     "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "10c1e1834aecae61865e07283b02571cbaef44956ebb339c9734cba1086f2422",
@@ -490,7 +490,253 @@
     "Paint-server transforms retain their existing inversion/admission rules."
   ],
   "nextActions": [
-    "Commit/push the coherent source, bind deterministic packages and installed consumers to that commit, then record matching CI.",
-    "Resume the wider historical R85/R86 composition review; retain all source/frame/sampling distinctions."
-  ]
+    "Continue the wider historical R85/R86 composition review from exact original source/native joins; retain independently unequal controls.",
+    "Keep the Windows DejaVu frozen-reference authority boundary open without modifying the target or assertion."
+  ],
+  "promotion": {
+    "sourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
+    "sourceGitTree": "693ace0e8a130c4aab3a097c95e5d7aa7d64f6f6",
+    "allQualifiedSourceHashesMatchCommit": true,
+    "packageIdentity": {
+      "sourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "aa44db65744d6ddec46048d6045d83eb7d9bc72a8a8197d35603103958617d73"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "f3aa8c93637fda4626fc4e08c66cf45a0addd33aa6181cc17c6a6212e9b035fb"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "net10.0": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 10.19482049997896
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "librarySha256": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "librarySha256": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12"
+      }
+    ],
+    "consumerScenarios": "Shared admission, retained result ownership, synchronous/asynchronous conversion, overlap rejection, dimensions, font-free inspection, bounded output, diagnostics, font catalog and HTTP selection/reuse/cancellation/shutdown/borrowers/refusal.",
+    "packagedRegressions": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc",
+        "exitCode": 0,
+        "seconds": 16.04281589994207,
+        "counters": {
+          "executed": "46",
+          "passed": "46",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc",
+        "exitCode": 0,
+        "seconds": 17.61351520009339,
+        "counters": {
+          "executed": "46",
+          "passed": "46",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12",
+        "testAssemblySha256": "4f03ea6e97eb2bcab7907891f12fd3674023d431f84d14c502be73590f5af2d0",
+        "exitCode": 0,
+        "seconds": 13.380850400077179,
+        "counters": {
+          "executed": "46",
+          "passed": "46",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12",
+        "testAssemblySha256": "4f03ea6e97eb2bcab7907891f12fd3674023d431f84d14c502be73590f5af2d0",
+        "exitCode": 0,
+        "seconds": 11.794930999865755,
+        "counters": {
+          "executed": "46",
+          "passed": "46",
+          "failed": "0"
+        }
+      }
+    ],
+    "ci": {
+      "runId": 41871359784,
+      "url": "https://github.com/Lokad/Svg/actions/runs/41871359784",
+      "sourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
+      "status": "completed",
+      "conclusion": "failure",
+      "terminalClosed": true,
+      "doNotRepoll": true,
+      "logSha256": "8c8edb24d4aa0e83471897c5c4318805a1db84ae44216aadf0de427ad83e4c41",
+      "jobs": [
+        {
+          "name": "build-and-test (ubuntu-latest)",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "name": "build-and-test (windows-latest)",
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run dotnet test Lokad.Svg.slnx -c Release --no-build"
+          ]
+        }
+      ],
+      "testResults": [
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.FontProbe.Tests",
+          "failed": 0,
+          "passed": 10,
+          "skipped": 0,
+          "total": 10
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.Tests",
+          "failed": 0,
+          "passed": 47610,
+          "skipped": 0,
+          "total": 47610
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.VisualTests",
+          "failed": 0,
+          "passed": 71021,
+          "skipped": 0,
+          "total": 71021
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "assembly": "Lokad.Svg.Tests",
+          "failed": 0,
+          "passed": 12865,
+          "skipped": 0,
+          "total": 12865
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "assembly": "Lokad.Svg.VisualTests",
+          "failed": 0,
+          "passed": 1150,
+          "skipped": 0,
+          "total": 1150
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "assembly": "Lokad.Svg.FontProbe.Tests",
+          "failed": 0,
+          "passed": 10,
+          "skipped": 0,
+          "total": 10
+        },
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.FontProbe.Tests",
+          "failed": 0,
+          "passed": 10,
+          "skipped": 0,
+          "total": 10
+        },
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.Tests",
+          "failed": 0,
+          "passed": 47610,
+          "skipped": 0,
+          "total": 47610
+        },
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.VisualTests",
+          "failed": 1,
+          "passed": 71020,
+          "skipped": 0,
+          "total": 71021
+        }
+      ],
+      "windowsLaterNet10AndPackageSteps": "Skipped after unchanged full-suite DejaVu failure; separately qualified locally on matching source/package assets."
+    },
+    "published": false
+  },
+  "followupReview": {
+    "scope": "Original R85 nonconstant composition collection: 1,152 extended pairs and 576 integer pairs, both members compared independently.",
+    "sourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
+    "results": [
+      {
+        "host": "windows",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "originalInputs": 3456,
+        "originalPairs": 1728,
+        "nativeExact": 3456,
+        "errors": [],
+        "residuals": []
+      },
+      {
+        "host": "linux",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "originalInputs": 3456,
+        "originalPairs": 1728,
+        "nativeExact": 3456,
+        "errors": [],
+        "residuals": []
+      }
+    ],
+    "status": "Current packaged canonical replay is exact against every frozen native target. Fresh healthy browser triples on both hosts remain before broader cohort closure.",
+    "originalSourcesAndTargetsRewritten": 0
+  }
 }
