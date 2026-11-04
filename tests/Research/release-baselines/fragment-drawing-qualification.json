@@ -1,5 +1,5 @@
 {
-  "status": "Locally qualified shared fragment-stage milestone; matching source package/CI is next. Windows preserves the unchanged DejaVu reference conflict.",
+  "status": "Shared fragment-stage milestone passes local qualification, matching committed-source packages and Ubuntu full CI. Windows retains only the unchanged DejaVu reference conflict.",
   "sourceBaseCommit": "df8a844bce8723a33d65ea544286c99e875eeaa2",
   "assemblyIdentity": "Worktree libraries carry sourceBaseCommit; LF source hashes bind the changed implementation.",
   "sourceLfSha256": {
@@ -455,5 +455,373 @@
       }
     ]
   },
-  "build": "Release solution and explicit .NET 10 core/rendering builds pass with warnings treated as errors; zero warnings/errors. Compiling the benchmark project runs no benchmark."
+  "build": "Release solution and explicit .NET 10 core/rendering builds pass with warnings treated as errors; zero warnings/errors. Compiling the benchmark project runs no benchmark.",
+  "committedPackage": {
+    "sourceCommit": "2348b91722655081bf29bbae851982cde73a3ca8",
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "7a80a12b7153793d94502f80528b754bb12585881f0806940418e3146afe862e"
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "63d467648c3792ca7b0473ecbba8d351e814100f31d986ed683649c774989df0"
+      }
+    ],
+    "librarySha256": {
+      "net11.0": "2152d92140eba39fea5becbd07ed10291f9350f823623195032e345ba8761ca9",
+      "net10.0": "bbc68bed0e4314f97356d43a5f9cc943561b57911ffb5f7784ad670d56865820"
+    },
+    "repeatPackagesByteIdentical": true,
+    "noPublication": true,
+    "checks": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 6.492574499920011
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 47.352905799867585
+      }
+    ]
+  },
+  "ci": {
+    "run": 41777244642,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41777244642",
+    "sourceCommit": "2348b91722655081bf29bbae851982cde73a3ca8",
+    "terminal": true,
+    "conclusion": "failure",
+    "linux": "Full workflow success, including both supported runtime selections, developer tools and installed packages.",
+    "windows": {
+      "corePassed": 47549,
+      "fontHostPassed": 10,
+      "renderingPassed": 46700,
+      "renderingFailed": 1,
+      "soleFailure": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "laterSteps": "Skipped after the full-test failure; local matching-source packages pass both runtimes separately."
+    },
+    "action": "CLOSED: do not repoll this run. Preserve the existing DejaVu reference and assertion pending the earlier authority decision; no whole-CI green claim."
+  },
+  "remainingBoxDiagnosis": {
+    "status": "Open; diagnostic only, no further production or reference change.",
+    "sourceCommit": "2348b91722655081bf29bbae851982cde73a3ca8",
+    "recipe": "In each fresh browser, first render the exact embedded two-style SVG through Image to the original transparent 160x80 canvas and reproduce its frozen PNG. Then import the same SVG into the inline DOM, await font readiness and explicit 24px ReviewFont loading, and query the text object getBBox/character geometry. Inline numeric observations are a distinct context from original Image rendering.",
+    "scope": "224-control and 232 candidate/control at output scale 1; original source hashes/font programs/target PNGs remain unchanged.",
+    "observation": "On both hosts and all three inputs, object-box X/Y match; library width is four float steps larger and height one float step larger. Three fresh healthy native processes per host reproduce the observations.",
+    "source": {
+      "url": "https://github.com/chromium/chromium/blob/153.0.8010.52/third_party/blink/renderer/core/layout/inline/fragment_item.cc",
+      "contract": "ObjectBoundingBox offsets source ink into the physical fragment rectangle, unions it there, applies BuildSvgTransformForBoundingBox, then scales rectangle components back to source units."
+    },
+    "hosts": [
+      {
+        "host": "windows",
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captures": [
+          {
+            "terminalExitCode": 0,
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome.exe",
+              "elapsedMilliseconds": 690,
+              "debuggerReadyMilliseconds": 138,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            },
+            "seconds": 0.7744017001241446
+          },
+          {
+            "terminalExitCode": 0,
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome.exe",
+              "elapsedMilliseconds": 675,
+              "debuggerReadyMilliseconds": 123,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            },
+            "seconds": 0.7501300999429077
+          },
+          {
+            "terminalExitCode": 0,
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome.exe",
+              "elapsedMilliseconds": 680,
+              "debuggerReadyMilliseconds": 134,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            },
+            "seconds": 0.7517912001349032
+          }
+        ],
+        "cases": [
+          {
+            "id": "spacing-paint-224-control",
+            "nativeInputSha256": "eef68fbf98d0ef51117b875ccfaceda6a722b06789fefefad2685ffa29b355b0",
+            "unchangedNativeImageSha256": "4d5a40def9ca7a5b2ec3643a925e5d3e6087bd135d0d79dcd504d304d622febe",
+            "nativeBox": [
+              90.90333557128906,
+              -2.4720852375030518,
+              43.64524841308594,
+              40.35708999633789
+            ],
+            "nativeBoxBits": [
+              1119211138,
+              3223205541,
+              1110348988,
+              1109487017
+            ],
+            "libraryBox": [
+              90.90333557128906,
+              -2.4720852375030518,
+              43.645263671875,
+              40.357093811035156
+            ],
+            "libraryBoxBits": [
+              1119211138,
+              3223205541,
+              1110348992,
+              1109487018
+            ]
+          },
+          {
+            "id": "spacing-paint-232-candidate",
+            "nativeInputSha256": "aa5561f3888ff428f3b80af9121d9ecc05c8cefa33def47860ea1fef3bd8022f",
+            "unchangedNativeImageSha256": "ef7b3ff31279ce435fdce8bf816cd76f068b179c9bf0253d714292bf140ee198",
+            "nativeBox": [
+              90.90333557128906,
+              -2.4720852375030518,
+              43.64524841308594,
+              40.35708999633789
+            ],
+            "nativeBoxBits": [
+              1119211138,
+              3223205541,
+              1110348988,
+              1109487017
+            ],
+            "libraryBox": [
+              90.90333557128906,
+              -2.4720852375030518,
+              43.645263671875,
+              40.357093811035156
+            ],
+            "libraryBoxBits": [
+              1119211138,
+              3223205541,
+              1110348992,
+              1109487018
+            ]
+          },
+          {
+            "id": "spacing-paint-232-control",
+            "nativeInputSha256": "b2dbc804d1e6e41c7e981604cf7e2726edd981efabce89e732b9f1ab7fae491a",
+            "unchangedNativeImageSha256": "b87f9812ab9bbf324f4ed6ee554eb8e823ec7d4ae938066313b92f6e7e38e8c3",
+            "nativeBox": [
+              90.90333557128906,
+              -2.4720852375030518,
+              43.64524841308594,
+              40.35708999633789
+            ],
+            "nativeBoxBits": [
+              1119211138,
+              3223205541,
+              1110348988,
+              1109487017
+            ],
+            "libraryBox": [
+              90.90333557128906,
+              -2.4720852375030518,
+              43.645263671875,
+              40.357093811035156
+            ],
+            "libraryBoxBits": [
+              1119211138,
+              3223205541,
+              1110348992,
+              1109487018
+            ]
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captures": [
+          {
+            "terminalExitCode": 0,
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 4187,
+              "debuggerReadyMilliseconds": 2678,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            },
+            "seconds": 8.275056299986318
+          },
+          {
+            "terminalExitCode": 0,
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 4749,
+              "debuggerReadyMilliseconds": 3133,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            },
+            "seconds": 5.8343406999483705
+          },
+          {
+            "terminalExitCode": 0,
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 4127,
+              "debuggerReadyMilliseconds": 2348,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            },
+            "seconds": 5.57940399996005
+          }
+        ],
+        "cases": [
+          {
+            "id": "spacing-paint-224-control",
+            "nativeInputSha256": "eef68fbf98d0ef51117b875ccfaceda6a722b06789fefefad2685ffa29b355b0",
+            "unchangedNativeImageSha256": "e9591f183bf46f619656f37bb8e1662389d878aa8737a6c8f3fbc5a74ce20997",
+            "nativeBox": [
+              91.88868713378906,
+              -2.301560163497925,
+              42.65989685058594,
+              40.18656539916992
+            ],
+            "nativeBoxBits": [
+              1119340290,
+              3222490307,
+              1110090684,
+              1109442315
+            ],
+            "libraryBox": [
+              91.88868713378906,
+              -2.301560163497925,
+              42.659912109375,
+              40.18656921386719
+            ],
+            "libraryBoxBits": [
+              1119340290,
+              3222490307,
+              1110090688,
+              1109442316
+            ]
+          },
+          {
+            "id": "spacing-paint-232-candidate",
+            "nativeInputSha256": "aa5561f3888ff428f3b80af9121d9ecc05c8cefa33def47860ea1fef3bd8022f",
+            "unchangedNativeImageSha256": "4d9175161a2aede2a6183ef6b4969f16e469c1b3279d4fca5495ad8fd5864654",
+            "nativeBox": [
+              91.88868713378906,
+              -2.301560163497925,
+              42.65989685058594,
+              40.18656539916992
+            ],
+            "nativeBoxBits": [
+              1119340290,
+              3222490307,
+              1110090684,
+              1109442315
+            ],
+            "libraryBox": [
+              91.88868713378906,
+              -2.301560163497925,
+              42.659912109375,
+              40.18656921386719
+            ],
+            "libraryBoxBits": [
+              1119340290,
+              3222490307,
+              1110090688,
+              1109442316
+            ]
+          },
+          {
+            "id": "spacing-paint-232-control",
+            "nativeInputSha256": "b2dbc804d1e6e41c7e981604cf7e2726edd981efabce89e732b9f1ab7fae491a",
+            "unchangedNativeImageSha256": "d17ceca721d4f3d28743063839f05018f9d324da9580f073920ff40b74a74756",
+            "nativeBox": [
+              91.88868713378906,
+              -2.301560163497925,
+              42.65989685058594,
+              40.18656539916992
+            ],
+            "nativeBoxBits": [
+              1119340290,
+              3222490307,
+              1110090684,
+              1109442315
+            ],
+            "libraryBox": [
+              91.88868713378906,
+              -2.301560163497925,
+              42.659912109375,
+              40.18656921386719
+            ],
+            "libraryBoxBits": [
+              1119340290,
+              3222490307,
+              1110090688,
+              1109442316
+            ]
+          }
+        ]
+      }
+    ],
+    "isolatedTrial": {
+      "promoted": false,
+      "change": "Offset the source fragment rectangle to its physical float origin before rotation and append the inverse origin to the existing source map. Samplers and production assemblies were unchanged.",
+      "results": [
+        {
+          "host": "windows",
+          "exactOriginals": 39,
+          "newlyExact": [
+            "spacing-paint-224-control"
+          ],
+          "previousExactLosses": []
+        },
+        {
+          "host": "linux",
+          "exactOriginals": 37,
+          "newlyExact": [
+            "spacing-paint-232-control"
+          ],
+          "previousExactLosses": [
+            "spacing-paint-233-candidate",
+            "spacing-paint-233-control"
+          ]
+        }
+      ],
+      "reasonRejected": "It closes both remaining original witnesses but loses the previously exact Linux 233 pair at scale 1.5. No scale-specific exception or rounding epsilon is promoted."
+    },
+    "nextAction": "Represent the physical source rectangle and bounding-box transform consistently across scale 1/1.5, preserving the Linux 233 pair and every existing native numeric/image case. Qualify the shared cause before changing production."
+  }
 }

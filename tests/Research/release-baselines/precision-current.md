@@ -36,8 +36,16 @@ both runtimes and hosts. Full .NET 11 passes all 47,549 core cases per host and
 46,701 Linux rendering cases. Windows retains only its unchanged DejaVu conflict.
 All previous test identities remain. All 204 default outcomes/diagnostics and 168
 rendered PNGs are unchanged; 22 supplied-font contexts and 13 static diagnostics
-remain exact. Package and matching committed-head CI qualification are separate.
+remain exact. Matching committed-source packages pass both runtimes on Windows/Linux,
+and repeated runtime/symbol packages are byte-identical.
+[Matching CI](https://github.com/Lokad/Svg/actions/runs/41777244642) passes the full
+Ubuntu workflow; Windows retains only DejaVu, with its later steps skipped.
+The run is terminal/closed.
 Timings in qualification are functional validation costs, not renderer benchmarks.
 
-Next: isolate the two remaining object-box/channel boundaries with direct
-independent controls, preserving source layout, font profiles and exact targets.
+The remaining cases share an object-box discrepancy: origins match, but width
+is four float steps larger than the browser's and height one step larger. Fresh
+native triples reproduce this on both hosts. An isolated source-origin trial
+closes both inputs but loses the Linux 233 pair at scale 1.5; it is not promoted.
+Next: resolve physical source rectangles and bounding-box transforms across both
+scales, preserving source layout, font profiles and every exact target.
