@@ -41,11 +41,22 @@ runtime/host. Full .NET 11 passes 47,548 core cases on each host and 46,696 Linu
 rendering cases; Windows retains only its unchanged DejaVu reference conflict.
 All 204 original outcomes/diagnostics and 168 rendered PNGs remain unchanged;
 22 supplied-program contexts and 13 declared static diagnostics remain exact.
-Local installed-package checks pass both runtimes on Windows/Linux. Matching
-committed-head CI remains separate. Timings in qualification are functional
-validation costs, not renderer benchmarks.
+Installed-package checks also pass both runtimes on Windows/Linux from committed
+implementation `3b609957f`; repeated runtime/symbol packages are byte-identical.
+[Matching CI](https://github.com/Lokad/Svg/actions/runs/41773828741) passes the full
+Ubuntu workflow. Windows passes all core/font-host tests and retains only the
+unchanged DejaVu rendering conflict. Its later workflow steps are skipped; the
+local installed-package checks above remain separate. The run is terminal/closed.
+Timings in qualification are validation costs, not renderer benchmarks.
 
-Next: isolate the 430 pair's shared interpolation/coverage stages and the two
-platform-specific one-channel rounding witnesses, preserving layout, native
-contexts and exact targets. Use direct numerical mechanisms before adding any
-rendering or API matrix.
+The 430 pair samples the same 9x9 texture on both hosts at coverage 130/255.
+A separately compiled pinned-stage arithmetic control reproduces its coordinate,
+fraction and color bits, including the current premultiplied bytes `[27,0,103,130]`.
+This checks downstream arithmetic for the supplied matrix; it does not establish
+that the browser uses that matrix. The opacity group carries the same difference.
+
+Next: isolate fragment/reference/local/picture matrix preparation with a small
+independent transform control, then the two platform-specific channel witnesses.
+Preserve the original targets and half-byte boundaries. The
+[qualification record](stroke-drawing-qualification.json) retains the exact bits,
+operation order and source pin; no rounding adjustment is justified by this trace.

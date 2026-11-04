@@ -1,5 +1,5 @@
 {
-  "status": "Local shared stroke-drawing milestone qualified; Windows retains only the unchanged DejaVu reference conflict. Matching committed-head CI is separate.",
+  "status": "Shared stroke-drawing milestone qualified locally and by matching committed-head CI on Ubuntu. Windows full CI retains only the unchanged DejaVu reference conflict; its assertion and reference remain.",
   "sourceBaseCommit": "29c8254e70a8c8730ab9b2b26a4a48e3156087dc",
   "assemblyIdentity": "Worktree DLLs are stamped from sourceBaseCommit; the two LF source hashes identify the changed implementation.",
   "sourceLfSha256": {
@@ -393,5 +393,116 @@
         "e4b6a8fc-b219-dada-38a6-0ca13f520dcf"
       ]
     }
-  ]
+  ],
+  "remainingStageDiagnosis": {
+    "sourceCommit": "3b609957f895afe9b95384f858b02c03f6448d0b",
+    "inputs": [
+      "spacing-paint-430-candidate",
+      "spacing-paint-430-control"
+    ],
+    "status": "Open: both original targets remain different; no rendering, blending, rounding or reference change promoted.",
+    "observation": "Both hosts and group/direct contexts have the same pattern coordinates and sample. Coverage is 130/255 over transparent black; the group independently applies opacity .5.",
+    "samplingMatrixBits": {
+      "ScaleX": 1066643771,
+      "SkewX": 3186380482,
+      "TranslateX": 3211546309,
+      "SkewY": 3197350204,
+      "ScaleY": 1066643772,
+      "TranslateY": 3221306133
+    },
+    "textureDimensions": [
+      9,
+      9
+    ],
+    "sample": {
+      "First": 68,
+      "Second": 36,
+      "Third": 104,
+      "Fourth": 72,
+      "FractionX": 0.21153831,
+      "FractionY": 0.25961685
+    },
+    "control": {
+      "pointXBits": 1104523579,
+      "pointYBits": 1100878770,
+      "fractionXBits": 1045994880,
+      "fractionYBits": 1048898688,
+      "redBits": 1045994880,
+      "blueBits": 1061804192,
+      "coverage": 130,
+      "storedPremultiplied": [
+        27,
+        0,
+        103,
+        130
+      ]
+    },
+    "tracedPngsByteIdenticalToQualifiedLibraryPerHost": 39,
+    "qualifiedProductionAssembliesTouchedByTrace": false,
+    "arithmeticControl": {
+      "compiler": "13.3.0",
+      "options": "-std=c++20 -O2 -ffp-contract=off; explicit std::fma; nearest-even std::lrintf",
+      "stages": [
+        "matrix_2x3 with the recorded matrix bits and destination center (26.5f,25.5f)",
+        "fract(center + .5f), four independently repeated taps",
+        "NX/NY, PX/NY, NX/PY, PX/PY weights and fused accumulation; opaque blue/red/blue/red texels",
+        "coverage * (1f/255f), source-over transparent black, nearest-even RGBA8 storage"
+      ],
+      "upstream": {
+        "url": "https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkRasterPipeline_opts.h",
+        "sha256": "849ecf600bf6181fc44f101e4c84c451fba13b00f12dbfbe64bd035fc1803541"
+      },
+      "comparison": "All recorded coordinate/fraction/red/blue bits agree with the managed trace. Stored premultiplied bytes are [27,0,103,130]. This verifies stage arithmetic for the supplied matrix; it does not establish the browser uses that matrix."
+    },
+    "nextAction": "Independently isolate fragment/reference/local/picture matrix preparation with a small authored transform control. Preserve original SVGs, platform targets and half-byte boundaries; do not replace rounding with an epsilon."
+  },
+  "committedPackage": {
+    "sourceCommit": "3b609957f895afe9b95384f858b02c03f6448d0b",
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "7ec9d3cb444e65765549cd6c4cab31b0c85d2343af513c96d4a988b2a2421aae"
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "6d57969e27d712e5d3624c1df8a693e61146c5071c9aa26dcb2f13037606b29d"
+      }
+    ],
+    "librarySha256": {
+      "net11.0": "729bea3e8c2958987a73d98779b51cfd442930b834472896f29806df6c6d1f8e",
+      "net10.0": "8f2fc16c1d69f6db468bc7060ac0cac2856007dd2f7be5d249c6e3b352b7bdcb"
+    },
+    "byteIdenticalRepeatedPackages": true,
+    "noPublication": true,
+    "checks": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 6.5359174001496285
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 43.17958280001767
+      }
+    ],
+    "scope": "Matching committed source, isolated installed-consumer restore/build/execution on both runtimes and hosts; repeat packages byte-identical. Separate from the earlier worktree qualification and hosted CI."
+  },
+  "ci": {
+    "run": 41773828741,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41773828741",
+    "sourceCommit": "3b609957f895afe9b95384f858b02c03f6448d0b",
+    "terminal": true,
+    "conclusion": "failure",
+    "linux": "Full workflow success, including both runtime compatibility selections, developer tools and installed packages.",
+    "windows": {
+      "corePassed": 47548,
+      "fontHostPassed": 10,
+      "renderingPassed": 46695,
+      "renderingFailed": 1,
+      "soleFailure": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "laterSteps": "Skipped after the full-test failure; local matching-source checks qualify packages on both runtimes separately."
+    },
+    "action": "CLOSED: never repoll this terminal run. Preserve the DejaVu reference/assertion pending the existing authority decision; no whole-CI green claim."
+  }
 }
