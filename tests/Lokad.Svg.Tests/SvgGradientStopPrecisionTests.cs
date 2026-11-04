@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGradientStopPrecisionTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(".27", .27f, 69)]
     [InlineData("27%", .27f, 69)]
     [InlineData(".999", .999f, 255)]
@@ -22,12 +23,14 @@ public sealed class SvgGradientStopPrecisionTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Stop_alpha_uses_existing_padding_on_x64()
     {
         if (IntPtr.Size == 8) Assert.Equal(16, Unsafe.SizeOf<SvgGradientStop>());
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Offset_clamping_and_monotonicity_preserve_source_alpha()
     {
         using SvgRoot root = Parse("<linearGradient id='p'><stop offset='-.125' stop-opacity='.27'/><stop offset='.6' stop-opacity='.81'/><stop offset='.4' stop-opacity='.46'/><stop offset='1.25' stop-opacity='.999'/></linearGradient>");
@@ -37,6 +40,7 @@ public sealed class SvgGradientStopPrecisionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Finite_offsets_keep_clamping_when_native_place_values_overflow()
     {
         foreach ((string token, double expected) in new (string, double)[]
@@ -55,6 +59,7 @@ public sealed class SvgGradientStopPrecisionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Forward_href_and_stop_style_preserve_source_alpha()
     {
         using SvgRoot root = Parse("<linearGradient id='p' href='#base'/><linearGradient id='base'><stop offset='0' stop-opacity='.9' style='stop-opacity:27% !important'/><stop offset='1' stop-opacity='.999'/></linearGradient>");
@@ -64,6 +69,7 @@ public sealed class SvgGradientStopPrecisionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Encoded_color_alpha_multiplies_authored_stop_opacity()
     {
         using SvgRoot root = Parse("<linearGradient id='p'><stop offset='0' stop-color='#46596d80' stop-opacity='.27'/><stop offset='1'/></linearGradient>");
@@ -73,6 +79,7 @@ public sealed class SvgGradientStopPrecisionTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("rgba(0,0,255,.27)", .27058825f)]
     [InlineData("rgba(0,0,255,27%)", .27058825f)]
     [InlineData("rgb(0 0 255 / .27)", .27058825f)]
@@ -94,6 +101,7 @@ public sealed class SvgGradientStopPrecisionTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("linear")]
     [InlineData("radial")]
     [InlineData("pattern")]
@@ -116,6 +124,7 @@ public sealed class SvgGradientStopPrecisionTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("linear")]
     [InlineData("radial")]
     [InlineData("pattern")]

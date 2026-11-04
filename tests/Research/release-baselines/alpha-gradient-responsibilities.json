@@ -1,0 +1,222 @@
+{
+  "status": "All 44 original cases retain their identities, inputs and assertions; 35 numerical mechanisms and nine contracts are independently selectable.",
+  "sourceBaseCommit": "f4779ea1c81c34302227b2b88df764f770a2696b",
+  "change": "Only 15 Layer traits added. No helpers, framework, fixture, reference, tolerance, production or test-body changes.",
+  "casesBefore": 44,
+  "casesAfter": 44,
+  "mechanismCases": 35,
+  "contractCases": 9,
+  "caseIdentitySha256": "fe82c4fecc00f77ac1ac8b9fe891364eaee9de6ab7f7f314d189dc8fb59df61e",
+  "caseIdentityEncoding": "Sorted [TRX testId, testName] pairs encoded as compact ensure_ascii JSON in UTF-8.",
+  "sourceBodiesAndDataIdenticalAfterRemovingTraits": true,
+  "productionHashEvidence": "../text-clip/qualification.json",
+  "productionSourceUnchanged": true,
+  "mapping": [
+    {
+      "file": "../../Lokad.Svg.Tests/SvgCoverageAlphaTests.cs",
+      "beforeLfSha256": "153f54acb72b00a1442f30bc2bc156b3d5bea9b78942bf2977e5cb624e3700ab",
+      "afterLfSha256": "020623d073af817ac793cf13fd500b00c854a10e9972f4656c30659ab5125b50",
+      "methods": {
+        "Mechanism": [
+          "Opaque_coverage_truncates_times_256",
+          "Translucent_coverage_keeps_rounding"
+        ],
+        "Contract": []
+      }
+    },
+    {
+      "file": "../../Lokad.Svg.Tests/SvgGradientStopPrecisionTests.cs",
+      "beforeLfSha256": "3b2717c501a202965dfeeb743a384993de06b36ca482a86a147c2ae4c9ca09fb",
+      "afterLfSha256": "be6be421e855441bc7cdd9f63271413794aceab456159cf8331bc5def12b9fef",
+      "methods": {
+        "Mechanism": [
+          "Parsed_stops_retain_source_alpha_alongside_byte_color",
+          "Offset_clamping_and_monotonicity_preserve_source_alpha",
+          "Finite_offsets_keep_clamping_when_native_place_values_overflow",
+          "Forward_href_and_stop_style_preserve_source_alpha",
+          "Encoded_color_alpha_multiplies_authored_stop_opacity",
+          "Functional_color_alpha_preserves_native_precision_before_stop_opacity"
+        ],
+        "Contract": [
+          "Stop_alpha_uses_existing_padding_on_x64",
+          "Six_outputs_agree_for_polygon_shader_replay",
+          "Cancellation_between_shader_events_releases_replay_storage"
+        ]
+      }
+    },
+    {
+      "file": "../../Lokad.Svg.Tests/SvgGradientRampTests.cs",
+      "beforeLfSha256": "5607ccc6f52096bc7d8026415fadeaf15cdf8cf04a6ec5c58e2dc2f157453c10",
+      "afterLfSha256": "d15a72dc26dfe05fb971e3fbca22327bb7d904f95690a4d4ba223020cd2186d4",
+      "methods": {
+        "Mechanism": [
+          "Inline_coefficients_preserve_absolute_float_lanes_without_owned_storage",
+          "Arbitrary_coefficients_preserve_repeated_and_float_collapsed_stop_boundaries",
+          "Uniform_large_ramp_needs_no_segment_storage_and_keeps_nonfinite_positions_constant"
+        ],
+        "Contract": [
+          "Clipped_out_gradient_rectangles_do_not_reserve_unused_coefficients",
+          "Preparation_observes_memory_and_cancellation_and_releases_partial_storage"
+        ]
+      }
+    }
+  ],
+  "coverage": {
+    "mechanism": "Source alpha/byte precision, parser syntax/clamping/offsets, exact float lanes, repeated/collapsed ramp boundaries, constant/nonfinite positions and direct coverage rounding. Existing loop axes and independent numerical expectations stay intact.",
+    "contract": "x64 stop footprint; all six public outputs for linear/radial/pattern polygons; cancellation between shader replay events; coefficient admission, cancellation, cleanup and retry; clipped-out coefficient allocation. Distinct paths stay routine.",
+    "rendering": "Existing independent paint/alpha/filter references and PNG representatives remain unchanged. This label-only change does not prune or reclassify the large numerical/context banks."
+  },
+  "validation": {
+    "before": [
+      {
+        "profile": "windows",
+        "framework": "net11.0",
+        "seconds": 6.819064800161868,
+        "counters": {
+          "executed": "44",
+          "passed": "44",
+          "failed": "0"
+        },
+        "librarySha256": "c5db73b3a5f9abf3324dda0138b96912bd0d10303cce58be2038aa14cfda9735",
+        "testAssemblySha256": "7b46a2fee7792f04f1399750b1ee43df04ef6b3ce11b02e1c8b6db00c61cc0b3"
+      },
+      {
+        "profile": "glibc243",
+        "framework": "net11.0",
+        "seconds": 12.638126499950886,
+        "counters": {
+          "executed": "44",
+          "passed": "44",
+          "failed": "0"
+        },
+        "librarySha256": "c5db73b3a5f9abf3324dda0138b96912bd0d10303cce58be2038aa14cfda9735",
+        "testAssemblySha256": "7b46a2fee7792f04f1399750b1ee43df04ef6b3ce11b02e1c8b6db00c61cc0b3"
+      },
+      {
+        "profile": "windows",
+        "framework": "net10.0",
+        "seconds": 6.324946800014004,
+        "counters": {
+          "executed": "44",
+          "passed": "44",
+          "failed": "0"
+        },
+        "librarySha256": "eea8571ec6a7d687196912037f7fbc7bde03547d9582ee3953fff0c076a781be",
+        "testAssemblySha256": "7c95c5236358d233e7355d8fb6437bd044b760d6f2f57154dd4a73d884966dcc"
+      },
+      {
+        "profile": "glibc243",
+        "framework": "net10.0",
+        "seconds": 9.47295009996742,
+        "counters": {
+          "executed": "44",
+          "passed": "44",
+          "failed": "0"
+        },
+        "librarySha256": "eea8571ec6a7d687196912037f7fbc7bde03547d9582ee3953fff0c076a781be",
+        "testAssemblySha256": "7c95c5236358d233e7355d8fb6437bd044b760d6f2f57154dd4a73d884966dcc"
+      }
+    ],
+    "after": [
+      {
+        "profile": "windows",
+        "framework": "net11.0",
+        "seconds": 8.309858199907467,
+        "counters": {
+          "executed": "44",
+          "passed": "44",
+          "failed": "0"
+        },
+        "librarySha256": "07326057d27940f6d3c848b4a1a2685421f6d5761c1fa335c965ce4d81b5b502",
+        "testAssemblySha256": "edd68fd11b256c385eb8da1eaf0519c681415663e3993746fc0e736625b42ec2"
+      },
+      {
+        "profile": "glibc243",
+        "framework": "net11.0",
+        "seconds": 12.128862600075081,
+        "counters": {
+          "executed": "44",
+          "passed": "44",
+          "failed": "0"
+        },
+        "librarySha256": "07326057d27940f6d3c848b4a1a2685421f6d5761c1fa335c965ce4d81b5b502",
+        "testAssemblySha256": "edd68fd11b256c385eb8da1eaf0519c681415663e3993746fc0e736625b42ec2"
+      },
+      {
+        "profile": "windows",
+        "framework": "net10.0",
+        "seconds": 7.8381548000033945,
+        "counters": {
+          "executed": "44",
+          "passed": "44",
+          "failed": "0"
+        },
+        "librarySha256": "cf9c02678120b340b33d178666510fe01885feed4f0b612c785cb6e46ed13ab0",
+        "testAssemblySha256": "cb5c32b82986acef00bd43707c60bf2e48e5bc98b156d74ad4a9449254921483"
+      },
+      {
+        "profile": "glibc243",
+        "framework": "net10.0",
+        "seconds": 10.05479839979671,
+        "counters": {
+          "executed": "44",
+          "passed": "44",
+          "failed": "0"
+        },
+        "librarySha256": "cf9c02678120b340b33d178666510fe01885feed4f0b612c785cb6e46ed13ab0",
+        "testAssemblySha256": "cb5c32b82986acef00bd43707c60bf2e48e5bc98b156d74ad4a9449254921483"
+      }
+    ],
+    "mechanism": [
+      {
+        "profile": "windows",
+        "framework": "net11.0",
+        "seconds": 6.270057600224391,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "librarySha256": "07326057d27940f6d3c848b4a1a2685421f6d5761c1fa335c965ce4d81b5b502",
+        "testAssemblySha256": "edd68fd11b256c385eb8da1eaf0519c681415663e3993746fc0e736625b42ec2"
+      },
+      {
+        "profile": "glibc243",
+        "framework": "net11.0",
+        "seconds": 8.70228169998154,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "librarySha256": "07326057d27940f6d3c848b4a1a2685421f6d5761c1fa335c965ce4d81b5b502",
+        "testAssemblySha256": "edd68fd11b256c385eb8da1eaf0519c681415663e3993746fc0e736625b42ec2"
+      },
+      {
+        "profile": "windows",
+        "framework": "net10.0",
+        "seconds": 5.717562800040469,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "librarySha256": "cf9c02678120b340b33d178666510fe01885feed4f0b612c785cb6e46ed13ab0",
+        "testAssemblySha256": "cb5c32b82986acef00bd43707c60bf2e48e5bc98b156d74ad4a9449254921483"
+      },
+      {
+        "profile": "glibc243",
+        "framework": "net10.0",
+        "seconds": 8.666951300110668,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "librarySha256": "cf9c02678120b340b33d178666510fe01885feed4f0b612c785cb6e46ed13ab0",
+        "testAssemblySha256": "cb5c32b82986acef00bd43707c60bf2e48e5bc98b156d74ad4a9449254921483"
+      }
+    ]
+  },
+  "timing": "Single functional observations include discovery, host startup and TRX; exclude build. The complete selection is not faster on Windows. Focused mechanisms skip nine contracts; no renderer throughput or statistically established speedup is claimed."
+}

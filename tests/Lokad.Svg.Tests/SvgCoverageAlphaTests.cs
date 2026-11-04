@@ -1,4 +1,5 @@
 namespace Lokad.Svg.Tests;
+[Trait("Layer", "Mechanism")]
 public sealed class SvgCoverageAlphaTests
 {
     [Theory]

@@ -30,6 +30,10 @@ keep one allowance across parsing and rasterization, the complete refusal sweep,
 explicit viewports and exact retry pixels. Their 54 named cases use `Layer=Contract`;
 the existing separate-parser/raster lifetime checks remain independent.
 
+The [alpha and gradient layer map](Research/release-baselines/alpha-gradient-responsibilities.json)
+keeps 35 numerical mechanisms independently selectable from nine storage, API and
+cleanup contracts. All 44 original cases, inputs and assertions remain unchanged.
+
 Core output copies the 24 selected text-node contract inputs and two separate
 API/ownership fixtures. The visual suite still reads the complete bank from the
 repository. [Copy qualification](Research/release-baselines/text-node-copy.json)

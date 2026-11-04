@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGradientRampTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(2)]
@@ -39,6 +40,7 @@ public sealed class SvgGradientRampTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Arbitrary_coefficients_preserve_repeated_and_float_collapsed_stop_boundaries()
     {
         SvgColor first = new(23, 169, 205, 255), second = new(195, 213, 55, 255), third = new(149, 17, 233, 255);
@@ -61,6 +63,7 @@ public sealed class SvgGradientRampTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Clipped_out_gradient_rectangles_do_not_reserve_unused_coefficients()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop stop-color='red'/><stop offset='.5' stop-color='green'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect x='100' y='100' width='4' height='4' fill='url(#g)'/></svg>"u8.ToArray();
@@ -72,6 +75,7 @@ public sealed class SvgGradientRampTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Preparation_observes_memory_and_cancellation_and_releases_partial_storage()
     {
         SvgGradientStop[] stops = [new(0, new(0, 0, 0, 255)), new(.5, new(255, 0, 0, 255)), new(1, new(255, 255, 255, 255))];
@@ -93,6 +97,7 @@ public sealed class SvgGradientRampTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Uniform_large_ramp_needs_no_segment_storage_and_keeps_nonfinite_positions_constant()
     {
         SvgColor color = new(192, 64, 128, 255);
