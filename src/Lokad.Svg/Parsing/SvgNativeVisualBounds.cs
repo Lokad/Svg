@@ -5,13 +5,13 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Applies native drawing bounds to point lists and non-scaling strokes after the complete source and its markers are lowered.</summary>
+/// <summary>Retains native drawing bounds and culls point lists and non-scaling strokes after the complete source and its markers are lowered.</summary>
 /// <remarks>Replaces culled geometry with inert anchors, retaining object bounds for
 /// enclosing resources and eligible filters. Failure releases the batch. Temporary command storage
 /// shares the parser memory budget and cancellation token. Calls are parser-thread confined; no caller storage is retained.</remarks>
 internal static class SvgNativeVisualBounds
 {
-    internal static SvgParsedGeometry Cull(SvgParsedGeometry parsed, XmlReader reader, SvgPaintableElementContext context,
+    internal static SvgParsedGeometry Apply(SvgParsedGeometry parsed, XmlReader reader, SvgPaintableElementContext context,
         SvgRecordedPaintStyle paint, SvgViewportFrame? frame, int maximumCommands, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
@@ -123,12 +123,36 @@ internal static class SvgNativeVisualBounds
             }
             if (visual.Width > 0 && visual.Height > 0)
             {
-                if (picture) return parsed;
                 // SVG drawing records enclose in bounded integer coordinates before
                 // the property-tree map and viewport intersection. Keep the size
                 // separate from the origin through the native axis-map fast path.
                 (double left, double width) = Enclose(visual.X, visual.Width);
                 (double top, double height) = Enclose(visual.Y, visual.Height);
+                if (style.NonScalingStroke)
+                {
+                    SvgPaintBounds localVisual = new((float)visual.X, (float)visual.Y, (float)visual.Right, (float)visual.Bottom);
+                    SvgPaintBounds recorded = new((float)left, (float)top, (float)(left + width), (float)(top + height));
+                    SvgPaintBounds sceneVisual = recorded.Map(placement, token);
+                    foreach (SvgGeometry geometry in parsed.Geometries)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        Update(geometry.RecordedPaint);
+                        Update(geometry.RecordedStrokePaint);
+                    }
+
+                    void Update(SvgRecordedPaint identity)
+                    {
+                        if (identity.Identity <= 0) return;
+                        SvgRecordedPaintValue value = state.Scene.GetRecordedPaintValue(identity);
+                        if (value.IsEffectAnchor || value.IsMarkerContent) return;
+                        state.Scene.ChangeRecordedPaint(identity, value with
+                        {
+                            VisualBounds = sceneVisual, SourceVisualBounds = sceneVisual,
+                            SourceObjectBounds = value.SourceObjectBounds is {} source ? source with { VisualBounds = localVisual } : null
+                        });
+                    }
+                }
+                if (picture) return parsed;
                 SvgClipBox mapped = Map(new(left, top, width, height), host, true);
                 if (state.OutputClip is {} clip)
                 {

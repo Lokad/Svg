@@ -48,8 +48,13 @@ internal readonly record struct SvgFilterRasterPlacement(SvgCpuBitmapOrigin Sour
 /// <summary>Maps primitive coordinates to the bounded source grid, separately from Gaussian distances.</summary>
 internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordinates, SvgViewportLengthBases LengthBases, SvgPaintBounds FilterRegion)
 {
-    /// <summary>Retains the native source-image hint, including transparent image padding.</summary>
+    /// <summary>Retains the materialized source-image view, including transparent image padding.</summary>
     internal SvgPaintBounds? SourceBounds { get; init; }
+    /// <summary>Retains SourceGraphic's picture sampling rectangle before its storage view was cropped.</summary>
+    /// <remarks>Sampling does not change result bounds or pixel ownership. Manual contexts may omit
+    /// this rectangle to sample SourceBounds; all coordinates belong to the playback grid.
+    /// SourceAlpha's shader and stored graph results use their materialized image views.</remarks>
+    internal SvgPaintBounds? SourceSamplingBounds { get; init; }
     /// <summary>Retains the captured source subset in the playback grid, separately from the native image hint and scratch allocation.</summary>
     /// <remarks>Manual playback contexts that omit this subset use SourceBounds. This metadata owns no storage.</remarks>
     internal SvgPaintBounds? CapturedSourceBounds { get; init; }
@@ -154,7 +159,10 @@ internal static class SvgFilterPlayback
 
 
     private readonly record struct UniformColor(bool Known, SvgShaderPaint Paint, bool HighPrecision);
-    private readonly record struct OffsetImageSource(SvgPaintBounds? Bounds, bool IsResolvedView);
+    private readonly record struct OffsetImageSource(SvgPaintBounds? Bounds, bool IsResolvedView)
+    {
+        internal SvgPaintBounds? SamplingBounds { get; init; }
+    }
 
     private static bool IsAlignedImageTransform(SvgShaderMatrix transform)
     {
@@ -1085,7 +1093,9 @@ internal static class SvgFilterPlayback
                             inputLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
                         }
                         else Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY,
-                            new(inputBounds, primitive.Input.Index >= 0 && resolvedViews[primitive.Input.Index]), null, nativeTransform, imagePaint, new(inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb), new(0, 0, width, height));
+                            new(inputBounds, primitive.Input.Index >= 0 && resolvedViews[primitive.Input.Index])
+                                { SamplingBounds = primitive.Input == SvgFilterInput.SourceGraphic ? map.Regions?.SourceSamplingBounds : null },
+                            null, nativeTransform, imagePaint, new(inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb), new(0, 0, width, height));
                         if (map.Regions is not null)
                             RetainSampledImage(index, primitive.Input, placed, nativeTransform, bounds, aligned,
                                 primitive.Input.Index >= 0 && resolvedViews[primitive.Input.Index]);
@@ -1724,6 +1734,8 @@ internal static class SvgFilterPlayback
             // drawable bounds. Its transparent padding must stay in the image;
             // nearest sampling clamps to this capture, not to painted geometry.
             if (!sourceView.IsResolvedView) bounds = OffsetSamplingBounds(bounds, (float)dx, (float)dy);
+            SvgPaintBounds samplingBounds = sourceView.SamplingBounds is {} samplingView
+                ? sourceView.IsResolvedView ? samplingView : OffsetSamplingBounds(samplingView, (float)dx, (float)dy) : bounds;
             if (fractional && nativeTransform is null)
             {
                 token.ThrowIfCancellationRequested();
@@ -1740,10 +1752,10 @@ internal static class SvgFilterPlayback
             }
             SvgRectangleCoverage coverage = SvgRectangleCoverage.Create(bounds.Left + (float)dx,
                 bounds.Top + (float)dy, bounds.Right + (float)dx, bounds.Bottom + (float)dy, width, height);
-            int imageLeft = (int)MathF.Floor(Math.Clamp(bounds.Left, 0, width));
-            int imageTop = (int)MathF.Floor(Math.Clamp(bounds.Top, 0, height));
-            int imageRight = (int)MathF.Ceiling(Math.Clamp(bounds.Right, 0, width));
-            int imageBottom = (int)MathF.Ceiling(Math.Clamp(bounds.Bottom, 0, height));
+            int imageLeft = (int)MathF.Floor(Math.Clamp(samplingBounds.Left, 0, width));
+            int imageTop = (int)MathF.Floor(Math.Clamp(samplingBounds.Top, 0, height));
+            int imageRight = (int)MathF.Ceiling(Math.Clamp(samplingBounds.Right, 0, width));
+            int imageBottom = (int)MathF.Ceiling(Math.Clamp(samplingBounds.Bottom, 0, height));
             if (imageRight <= imageLeft || imageBottom <= imageTop) return;
             if (fractional) token.ThrowIfCancellationRequested();
             if (fractional && imagePaint is OffsetImagePaint.Floating or OffsetImagePaint.FloatingSamples or OffsetImagePaint.SourceAlpha)
@@ -1845,10 +1857,10 @@ internal static class SvgFilterPlayback
             void OffsetTransformed(ReadOnlySpan<byte> image, Span<byte> target, SvgPaintBounds imageBounds, SvgShaderMatrix transform)
             {
                 if (!transform.TryInvert(out SvgShaderMatrix inverse)) return;
-                int firstX = (int)MathF.Floor(Math.Clamp(imageBounds.Left, 0, width));
-                int firstY = (int)MathF.Floor(Math.Clamp(imageBounds.Top, 0, height));
-                int lastX = (int)MathF.Ceiling(Math.Clamp(imageBounds.Right, 0, width));
-                int lastY = (int)MathF.Ceiling(Math.Clamp(imageBounds.Bottom, 0, height));
+                int firstX = (int)MathF.Floor(Math.Clamp(samplingBounds.Left, 0, width));
+                int firstY = (int)MathF.Floor(Math.Clamp(samplingBounds.Top, 0, height));
+                int lastX = (int)MathF.Ceiling(Math.Clamp(samplingBounds.Right, 0, width));
+                int lastY = (int)MathF.Ceiling(Math.Clamp(samplingBounds.Bottom, 0, height));
                 if (lastX <= firstX || lastY <= firstY) return;
                 Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
                 points[0] = Point(imageBounds.Left, imageBounds.Top);

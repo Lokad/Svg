@@ -44,6 +44,14 @@ internal static class SvgHairlineStroke
         cancellationToken.ThrowIfCancellationRequested();
         SvgAffineTransform map = drawingMap.MapScene(path.SceneMap);
         SvgAffineTransform widthMap = drawingMap.MapScene(style.WidthMap);
+        if (style.NonScalingMap is {} nonScaling)
+        {
+            // Width reduction observes the native canvas product before the
+            // non-scaling inverse; simplifying this product changes byte alpha.
+            if (!nonScaling.StrokeTransform.TryInvert(out SvgAffineTransform inverse))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-scaling stroke transform must be invertible.");
+            widthMap = drawingMap.MapScene(nonScaling.SourceMap).ComposeNative(inverse);
+        }
         float strokeWidth = (float)style.Width;
         float lengthX = FastLength((float)widthMap.A * strokeWidth, (float)widthMap.B * strokeWidth);
         float lengthY = FastLength((float)widthMap.C * strokeWidth, (float)widthMap.D * strokeWidth);

@@ -6,6 +6,20 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgRasterScopeTests
 {
     [Theory]
+    [InlineData(-1, 0)]
+    [InlineData(0, -1)]
+    [InlineData(9, 9)]
+    public void Cropped_storage_does_not_rebase_its_logical_bitmap(int x, int y)
+    {
+        SvgCpuRasterContext tile = new(new(0, 0, 8, 8), new(0, 0, 8, 8));
+        SvgCpuRasterScope scope = new(new(2, 3, 6, 7), true) { NativeOrigin = new(x, y) };
+        SvgCpuRasterContext bound = scope.Bind(tile);
+        Assert.Equal(scope.Bounds, bound.BitmapClip);
+        Assert.Equal(scope.Bounds, bound.Interior);
+        Assert.Equal(new SvgCpuBitmapOrigin(x, y), bound.Origin);
+    }
+
+    [Theory]
     [InlineData(false, 260, 7)]
     [InlineData(true, 254, 0)]
     public void Narrowed_layers_and_source_content_retain_distinct_bitmap_origins(bool retained, int x, int y)

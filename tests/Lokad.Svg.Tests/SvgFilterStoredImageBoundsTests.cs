@@ -7,6 +7,35 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterStoredImageBoundsTests
 {
     [Theory]
+    [InlineData("SourceGraphic", 0)]
+    [InlineData("SourceAlpha", 64)]
+    public void Picture_padding_is_distinct_from_the_materialized_alpha_view(string input, byte edgeAlpha)
+    {
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
+        RenderBudget scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = Parse("<feOffset in='" + input + "' dx='.5' dy='0'/>", parser))
+        {
+            byte[] source = Source(128), unchanged = source.ToArray();
+            SvgFilterDeviceMap map = new(1, 1)
+            {
+                Regions = new(SvgAffineTransform.Identity, new(8, 8), new(-20, -20, 20, 20))
+                {
+                    SourceBounds = new(2, 2, 6, 6), SourceSamplingBounds = new(1, 1, 7, 7)
+                }
+            };
+            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 8, 8, Resource(scene), map, scratch, CancellationToken.None))
+            {
+                Assert.Equal(edgeAlpha, result.Pixels[(3 * 8 + 2) * 4 + 3]);
+                Assert.Equal(128, result.Pixels[(3 * 8 + 3) * 4 + 3]);
+                Assert.Equal(0, result.Pixels[(3 * 8 + 1) * 4 + 3]);
+            }
+            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+            Assert.Equal(unchanged, source);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData(1, .25, 192)]
     [InlineData(3, .25, 192)]
     [InlineData(17, .25, 192)]

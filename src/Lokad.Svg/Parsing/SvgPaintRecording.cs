@@ -148,7 +148,7 @@ internal static class SvgPaintRecording
         {
             SvgParsedGeometry recorded = Attach(parsed, source, reader.LocalName, state, context.CancellationToken);
             return (style.NonScalingStroke || reader.LocalName is "polygon" or "polyline") && !SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers
-                ? SvgNativeVisualBounds.Cull(recorded, reader, context, source, frame, maximumCommands, state) : recorded;
+                ? SvgNativeVisualBounds.Apply(recorded, reader, context, source, frame, maximumCommands, state) : recorded;
         }
         try
         {

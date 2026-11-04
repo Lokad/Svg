@@ -1333,7 +1333,8 @@ internal ref partial struct SvgAnalyticCoverage
         ArgumentNullException.ThrowIfNull(budget);
         if (paintClip is not (SvgAnalyticPaintClip.Binary or SvgAnalyticPaintClip.Antialiased)) throw new ArgumentOutOfRangeException(nameof(paintClip));
         if (window.Left < 0 || window.Right > outputWidth || window.Right < window.Left) throw new ArgumentOutOfRangeException(nameof(window));
-        if (bitmapOrigin.X < 0 || bitmapOrigin.Y < 0 || bitmapOrigin.X > outputWidth || bitmapOrigin.Y > outputHeight) throw new ArgumentOutOfRangeException(nameof(bitmapOrigin));
+        // A logical bitmap origin can lie outside compact pixel storage. Only
+        // the scan and clip windows index the destination; construction is local.
         if (constructionClip is {} context && (context.Bounds.Left < 0 || context.Bounds.Top < 0 || context.Bounds.Right > outputWidth || context.Bounds.Bottom > outputHeight || context.Bounds.Right < context.Bounds.Left || context.Bounds.Bottom < context.Bounds.Top)) throw new ArgumentOutOfRangeException(nameof(constructionClip));
         ReadOnlySpan<int> votes = isEvenOdd ? nestingSigns : (signs is int[] roles ? roles : ReadOnlySpan<int>.Empty);
         bool hasVotes = isEvenOdd || signs is not null;

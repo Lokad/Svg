@@ -42,6 +42,10 @@ output-density and opacity companions retain distinct interactions. Separate own
 checks admit retained drawing stages before contour allocation and verify retry.
 The [full 960-input screen](Research/release-baselines/text-screen-qualification.json)
 remains `Category=Research`, with generated sources and exact native RGBA digests.
+The [shader-context screen](Research/shader-contexts/README.md) keeps 42 routine
+stage witnesses and 12,924 individually discovered research inputs. Both original
+source roles remain, even when independently captured pixels agree; numerical
+mechanisms and existing ownership contracts protect their separate responsibilities.
 It retains all 39 routine PNG witnesses. The shared typed bank loader, catalog and
 immutable font bytes remove repeated setup; every snapshot and its lifetime stay
 independent.

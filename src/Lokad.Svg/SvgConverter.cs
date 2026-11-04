@@ -1077,9 +1077,11 @@ public static partial class SvgConverter
                 (float)(region.Right - frameLeft), (float)(region.Bottom - frameTop));
             SvgPaintBounds sourceImageExtent = new((float)Math.Max(left, requestedSourceImage.Left), (float)Math.Max(top, requestedSourceImage.Top),
                 (float)Math.Min(right, requestedSourceImage.Right), (float)Math.Min(bottom, requestedSourceImage.Bottom));
+            SvgPaintBounds sourceSamplingBounds = new((float)(requestedSourceImage.Left - frameLeft), (float)(requestedSourceImage.Top - frameTop),
+                (float)(requestedSourceImage.Right - frameLeft), (float)(requestedSourceImage.Bottom - frameTop));
             primitiveMap = primitiveMap with { Regions = new(primitiveCoordinates,
                 objectPrimitiveUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), gridRegion)
-                { DeferFinalColorTransfer = frame?.FilterSourceMap is not null && frame?.FilterBinding is {} colorBinding && colorBinding.Index == command.MaskContentIndex, PictureOutput = surfaceMode == RasterSurfaceMode.PremultipliedPattern, RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(sourceImageExtent.Left - frameLeft), (float)(sourceImageExtent.Top - frameTop), (float)(sourceImageExtent.Right - frameLeft), (float)(sourceImageExtent.Bottom - frameTop)), DeferFinalOffset = frame?.FilterBinding is {} deferredBinding && deferredBinding.Index == command.MaskContentIndex && frame?.FilterSourceMap is not null } };
+                { DeferFinalColorTransfer = frame?.FilterSourceMap is not null && frame?.FilterBinding is {} colorBinding && colorBinding.Index == command.MaskContentIndex, PictureOutput = surfaceMode == RasterSurfaceMode.PremultipliedPattern, RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(sourceImageExtent.Left - frameLeft), (float)(sourceImageExtent.Top - frameTop), (float)(sourceImageExtent.Right - frameLeft), (float)(sourceImageExtent.Bottom - frameTop)), SourceSamplingBounds = sourceSamplingBounds, DeferFinalOffset = frame?.FilterBinding is {} deferredBinding && deferredBinding.Index == command.MaskContentIndex && frame?.FilterSourceMap is not null } };
             cancellationToken.ThrowIfCancellationRequested();
             SvgRenderLimits limits = options.Limits;
             SvgRenderLimits sourceLimits = limits;
@@ -2515,9 +2517,9 @@ public static partial class SvgConverter
         {
             // An isolated child owns its shader bitmap. The enclosing filter's
             // padded image bounds seed only draws directly into that source.
-            SvgCpuBitmapOrigin? source = isolatedBitmapScope is null && surfaceMode == RasterSurfaceMode.PremultipliedFilter
+            SvgCpuBitmapOrigin? source = isolatedBitmapScope?.NativeOrigin ?? (isolatedBitmapScope is null && surfaceMode == RasterSurfaceMode.PremultipliedFilter
                 && frame is { NativeSourceBounds: null, ImageShaderOrigin: {} sourceOrigin } sourceFrame
-                ? new(sourceOrigin.X - sourceFrame.CaptureOrigin.X, sourceOrigin.Y - sourceFrame.CaptureOrigin.Y) : null;
+                ? new(sourceOrigin.X - sourceFrame.CaptureOrigin.X, sourceOrigin.Y - sourceFrame.CaptureOrigin.Y) : null);
             SvgAffineTransform device = drawingMap.Device;
             return new(rasterGrid, layerBounds, layerClipCoverage, isolatedBitmapScope is null ? frame?.NativeSourceBounds : null, source,
                 sourceInverse, device.A, device.D, device.E, device.F);
@@ -2539,7 +2541,7 @@ public static partial class SvgConverter
             => RasterScope().Bind(tile);
 
         SvgCpuRasterScope RasterScope()
-            => new(LayerRasterBounds(layerBounds, frame), frame?.ContentClip is not null);
+            => isolatedBitmapScope ?? new(LayerRasterBounds(layerBounds, frame), frame?.ContentClip is not null);
 
         // Source layout/request bounds can be tighter than numerical curve coverage.
         // The admitted raster window governs geometry and clip resources.
@@ -2641,8 +2643,9 @@ public static partial class SvgConverter
 
         }
 
-        SvgAnalyticClipBounds LayerPaintBounds(int first, SvgAnalyticClipBounds parent, SvgClipBox? retainedRegion, SvgLayerRegionKind regionKind)
+        SvgAnalyticClipBounds LayerPaintBounds(int first, SvgAnalyticClipBounds parent, SvgClipBox? retainedRegion, SvgLayerRegionKind regionKind, out SvgCpuBitmapOrigin? nativeOrigin)
         {
+            nativeOrigin = null;
             double left = double.PositiveInfinity, top = double.PositiveInfinity;
             double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
             SvgAffineTransform outputMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
@@ -2784,6 +2787,13 @@ public static partial class SvgConverter
                 }
             }
             if (double.IsPositiveInfinity(left)) return parent;
+            if (frame is { ImageShaderOrigin: {} imageOrigin } capturedFrame)
+            {
+                int nativeLeft = isolatedBitmapScope?.NativeOrigin?.X ?? imageOrigin.X - capturedFrame.CaptureOrigin.X + 1;
+                int nativeTop = isolatedBitmapScope?.NativeOrigin?.Y ?? imageOrigin.Y - capturedFrame.CaptureOrigin.Y + 1;
+                nativeOrigin = new((int)Math.Clamp(Math.Floor(left), nativeLeft, Math.Max(nativeLeft, parent.Right)),
+                    (int)Math.Clamp(Math.Floor(top), nativeTop, Math.Max(nativeTop, parent.Bottom)));
+            }
             return new((int)Math.Clamp(Math.Floor(left), parent.Left, parent.Right),
                 (int)Math.Clamp(Math.Floor(top), parent.Top, parent.Bottom),
                 (int)Math.Clamp(Math.Ceiling(right), parent.Left, parent.Right),
@@ -2985,7 +2995,8 @@ public static partial class SvgConverter
                         bool affineMaskTarget = command.MaskContentIndex >= 0 && root.SceneStorage is {} maskStorage
                             && (uint)command.MaskContentIndex < (uint)maskStorage.MaskContents.Length && maskStorage.MaskContents[command.MaskContentIndex].UsesAffineTarget;
                         bool paintedClipMask = command.RegionKind == SvgLayerRegionKind.ClipMask;
-                        SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion, command.RegionKind);
+                        SvgCpuBitmapOrigin? nativeLayerOrigin = null;
+                        SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion, command.RegionKind, out nativeLayerOrigin);
                         SvgAnalyticClipBounds constructionLayer = layer;
                         if (activeViewport.Bounds is {} inheritedBounds)
                         {
@@ -3111,7 +3122,7 @@ public static partial class SvgConverter
                         RenderBudget.BudgetReservation? sourcePaintClipOwner = null;
                         activeViewport = paintedClipMask ? parentViewport : parentViewport with { Pixels = [], Rectangle = null, ParentRectangle = null };
                         layerBounds = layer;
-                        isolatedBitmapScope = new(layer, false);
+                        isolatedBitmapScope = new(layer, false) { NativeOrigin = nativeLayerOrigin };
                         // An inner isolated surface paints before its parent's clip;
                         // folded single paints keep the existing consumer instead.
                         maskClipAntialiased = false;

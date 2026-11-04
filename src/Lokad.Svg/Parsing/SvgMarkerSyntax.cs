@@ -269,7 +269,7 @@ internal static class SvgMarkerRenderer
                     { Antialiasing = SvgClipAntialiasing.None };
             }
             SvgPaintRecording.WrapInstance(output.AsMutableSpan(), paint.ElementOpacity, state.NewRecordingScope(), layerRegion, state, token);
-            return SvgNativeVisualBounds.Cull(new(output.Detach(), body.ElementCount), reader, context, paint, frame, maximumCommands, state);
+            return SvgNativeVisualBounds.Apply(new(output.Detach(), body.ElementCount), reader, context, paint, frame, maximumCommands, state);
 
             void AddBody(bool strokeOperation)
             {

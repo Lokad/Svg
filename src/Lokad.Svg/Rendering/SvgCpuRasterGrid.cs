@@ -14,9 +14,13 @@ internal readonly record struct SvgCpuRasterContext(SvgAnalyticClipBounds Bitmap
 /// <summary>Binds a draw's construction window and owned pixels to the existing compositor grid.</summary>
 /// <remarks>Pure borrowed values own no storage. A captured source can retain each grid bitmap's
 /// origin while narrowing its content window; ordinary isolated layers use the narrowed bitmap
-/// origin. Callers keep all bounds inside the destination and observe cancellation between visits.</remarks>
+/// origin. Storage windows stay inside the destination; a logical bitmap origin
+/// may precede that cropped window. Callers observe cancellation between visits.</remarks>
 internal readonly record struct SvgCpuRasterScope(SvgAnalyticClipBounds Bounds, bool RetainsGridOrigin)
 {
+    /// <summary>Retains a captured bitmap's logical origin independently of its compact storage window.</summary>
+    internal SvgCpuBitmapOrigin? NativeOrigin { get; init; }
+
     internal SvgCpuRasterContext Bind(SvgCpuRasterContext tile)
     {
         int left = Math.Max(tile.BitmapClip.Left, Bounds.Left), top = Math.Max(tile.BitmapClip.Top, Bounds.Top);
@@ -25,7 +29,7 @@ internal readonly record struct SvgCpuRasterScope(SvgAnalyticClipBounds Bounds, 
         left = Math.Max(tile.Interior.Left, Bounds.Left); top = Math.Max(tile.Interior.Top, Bounds.Top);
         SvgAnalyticClipBounds interior = new(left, top, Math.Max(left, Math.Min(tile.Interior.Right, Bounds.Right)),
             Math.Max(top, Math.Min(tile.Interior.Bottom, Bounds.Bottom)));
-        return new(bitmap, interior) { ConstructionOrigin = RetainsGridOrigin ? tile.Origin : null };
+        return new(bitmap, interior) { ConstructionOrigin = NativeOrigin ?? (RetainsGridOrigin ? tile.Origin : null) };
     }
 }
 

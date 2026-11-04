@@ -5,6 +5,30 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgCpuRasterContextTests
 {
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Non_scaling_recording_retains_local_stroke_bounds_without_inflating_object_bounds()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='translate(.5 .25)'><path d='M4 4H24V24H4Z' fill='red' stroke='blue' stroke-width='1' vector-effect='non-scaling-stroke'/></g></svg>"u8.ToArray();
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None, 2, 2, null))
+        {
+            SvgSceneStorage scene = root.SceneStorage ?? throw new InvalidOperationException("Expected retained paint metadata.");
+            Assert.NotEmpty(root.Geometries);
+            foreach (SvgGeometry geometry in root.Geometries)
+            {
+                SvgRecordedPaintValue paint = scene.RecordedPaintValues[geometry.RecordedPaint.Identity - 1];
+                SvgSourceObjectBounds source = Assert.IsType<SvgSourceObjectBounds>(paint.SourceObjectBounds);
+                Assert.Equal(new SvgPaintBounds(4, 4, 24, 24), source.Bounds);
+                Assert.Equal(new SvgPaintBounds(3, 3, 25, 25), source.VisualBounds);
+                Assert.Equal(new SvgPaintBounds(4.5f, 4.25f, 24.5f, 24.25f), paint.ObjectBounds);
+                Assert.Equal(new SvgPaintBounds(3.5f, 3.25f, 25.5f, 25.25f), paint.SourceVisualBounds);
+                Assert.Equal(paint.SourceVisualBounds, paint.VisualBounds);
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     private const string Curve = "M24,36 C190,-4 440,76 612,34 L612,270 C490,296 405,208 330,254 L300,164 L270,252 C180,212 92,304 24,270 Z";
     private const string Input = "<svg xmlns='http://www.w3.org/2000/svg' width='640' height='320'><path d='" + Curve + "' fill='#003478'/></svg>";
 

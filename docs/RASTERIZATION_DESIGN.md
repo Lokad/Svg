@@ -451,6 +451,11 @@ padding independently of captured-content extents and nested filter requests;
 cancellation/refusal restores the enclosing invocation clip.
 Content clips limit painting without moving the source bitmap's shader coordinates
 or dither origin, including when compact capture omits part of its transparent border.
+Isolated children retain that logical bitmap origin independently of their storage
+window and use the same scope for geometry and shader construction. The origin can
+lie outside compact storage; scan windows and owned interiors remain bounded.
+SourceGraphic's nearest shader retains picture padding separately from its result
+extent. SourceAlpha and stored graph results sample their materialized image views.
 Affine image edges are constructed and walked against the bitmap clip; requested
 output bounds govern row storage and restoration separately.
 The RGBA8 clamp fast path rounds each bilinear product before accumulation. Generic
@@ -464,6 +469,10 @@ image origin. Geometry keeps its canvas placement. Materialized and deferred
 images share that map order; enclosing opacity stores covered, converted pixels
 before applying packed row alpha, as ordinary layers do.
 Packed and floating shader samplers retain their independent matrix arithmetic.
+Non-scaling strokes retain local visual bounds without enlarging object boxes;
+hairline width reduction keeps the native canvas/inverse product and its rounding.
+The [context controls](../tests/Research/shader-contexts/README.md) protect these
+stages through instances, symbols, clips, masks, filters and isolated opacity.
 An inverse tile enclosure can reach a source whose restored image misses the tile;
 empty destination areas return before capture or edge preparation.
 Zero-effect aliases retain their sampling color filter across ordinary and fast paths.

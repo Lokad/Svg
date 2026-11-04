@@ -65,7 +65,7 @@ internal sealed class PaintReferenceBank
                 throw new InvalidDataException("Resolved paint status names an unknown historical input.");
         }
 
-        if (Name is "gradient-color-alpha" or "filter-uniform-precision" or "filter-source-composition")
+        if (Name is "gradient-color-alpha" or "filter-uniform-precision" or "filter-source-composition" or "shader-contexts")
         {
             using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder, "research-cases.json")));
             foreach (JsonElement selected in selection.RootElement.GetProperty("cases").EnumerateArray())

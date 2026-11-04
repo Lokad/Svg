@@ -7,6 +7,40 @@ public sealed class SvgAnalyticStorageWindowTests
 {
     [Theory]
     [Trait("Layer", "Mechanism")]
+    [InlineData(-2, -1)]
+    [InlineData(1, -1)]
+    [InlineData(9, 9)]
+    public void Signed_bitmap_origins_preserve_exact_integer_translation_of_representable_edges(int x, int y)
+    {
+        SvgDevicePoint[] points = [new(.25, .5), new(6.25, .5), new(6.25, 6.5), new(.25, 6.5)];
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        byte[] expected = Render(points, new(0, 0), budget);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Contains(expected, value => value != 0);
+        Assert.Equal(expected, Render(points, new(x, y), budget));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+
+        static byte[] Render(SvgDevicePoint[] vertices, SvgCpuBitmapOrigin origin, RenderBudget renderBudget)
+        {
+            SvgAnalyticContourPreparation preparation = new(vertices, [4], [], false, null, SvgPolygonMapping.NativeFillEdges,
+                [], [], new(0, 0, 7, 7), 8, 8);
+            using SvgAnalyticCoverage coverage = SvgAnalyticCoverage.Prepare(ref preparation,
+                0, 8, 0, 8, new(0, 8), origin, null, SvgAnalyticPaintClip.Binary, renderBudget, out bool eligible, CancellationToken.None);
+            Assert.True(eligible);
+            byte[] pixels = new byte[8 * 8 * 4];
+            for (int row = 0; row < 8; row++)
+            {
+                coverage.PrepareRow(row, CancellationToken.None);
+                for (int column = 0; column < 8; column++)
+                    coverage.PaintPixel(column, pixels.AsSpan((row * 8 + column) * 4, 4),
+                        SvgAnalyticPaint.Solid(new(255, 255, 255, 255)), SvgAnalyticClipCoverage.Full);
+            }
+            return pixels;
+        }
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0, 11, 7, 182)]
     [InlineData(1, 11, 7, 182)]
     [InlineData(1, 2, 7, 182)]
