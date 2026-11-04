@@ -268,7 +268,7 @@ samples do not define the source drawing's bounds.
 | Root image layout/projection | Keep CSS subpixel layout, recorded projection and the outer image destination separate. Uniform output density joins the recorded projection; its image boundary is independent of raster allocation. |
 | Parameter/device mapping | The [drawing map](../src/Lokad.Svg/Rendering/SvgDrawingMap.cs) keeps unrounded filter/bounds coordinates separate from native device coefficients. Recorded source transforms narrow before destination concatenation; fitted device paths consume that placement once. |
 | Source/instance map | Preserve authored placement and resource inheritance; local aliases exclude source ancestors. Clip children materialize into resource coordinates before reference placement and device mapping. |
-| Canvas boundary | Retain parent rounding before child concatenation. A clip's resource normalization does not transform its consumer; mask construction uses the incoming canvas. |
+| Canvas boundary | The [canvas map](../src/Lokad.Svg/Parsing/SvgCanvasDrawMap.cs) retains parent, boundary and source separately, rounding the parent before child concatenation. A clip's resource normalization does not transform its consumer; mask construction uses the incoming canvas. |
 | Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
 | Visual/drawing enclosure | Includes stroke/effect extents before placement. A clip child's stroke can enlarge the resource enclosure while contributing no silhouette coverage. |
 | Raster window | Bounds admitted geometry, clip-resource construction and stored numerical coverage. Curve rasterization can paint beyond tight continuous extrema. |
@@ -375,8 +375,10 @@ Mapping an ink enclosure back from scene coordinates changes the source bitmap
 origin and subsequent clipping and image sampling. The existing font and stroke
 regressions protect this [shared bounds contract](../tests/Research/svgweb/filter-recording-bounds.json).
 
-Mask paint clips enclose the union of the resource region and target visual bounds
-in source space. Instance replay transfers local visual bounds and materialized
+The [mask target](../src/Lokad.Svg/Parsing/SvgMaskTarget.cs) retains pre-placement
+object bounds; [instance masks](../src/Lokad.Svg/Parsing/SvgLeafMaskComposition.cs)
+keep local visual bounds beside their placement. Paint clips enclose the union of
+the resource region and target visual bounds in source space. Replay transfers local visual bounds and materialized
 clip dependencies into the final scene owner without changing the source paint
 arena. Alpha masks consume that clip during replay; luminance pictures preserve
 their color context and clip at restore.

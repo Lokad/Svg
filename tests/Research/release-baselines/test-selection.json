@@ -1,5 +1,5 @@
 {
-  "status": "Selection-axis correction and native-witness relocation locally qualified; source bodies, data providers, assertions and full case coverage remain unchanged.",
+  "status": "Selection axes and native-witness relocation closed: affected/fast/native checks qualify, Ubuntu full/runtime/package CI passes and Windows retains only unchanged DejaVu. Full .NET11 and .NET10 compatibility counts are preserved.",
   "baseCommit": "835940c6b",
   "sourceLfSha256": {
     "tests/Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs": "b6c603ef6f094836ec2440c3eb5e9fb2c88b8bc0b8cb8d854180b2f8ddaa02db",
@@ -80,5 +80,100 @@
     "overlappingLayerValues": 0,
     "scope": "Ordinary Fact/Theory method definitions; theory data is not expanded for metadata counts. Unclassified methods still require affected/full validation."
   },
-  "next": "Continue measured classification and shared clip/mask/marker/text bounds review; this selection correction does not close P2 or broader correctness requirements."
+  "next": "Continue measured classification and shared clip/mask/marker/text bounds review; this selection correction does not close P2 or broader correctness requirements.",
+  "ci": {
+    "runId": 41928387623,
+    "sourceCommit": "54c7062494a68892fa21e2d16b76497f0c5a6b62",
+    "allQualifiedSourceHashesMatchCommit": true,
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "skipped": 0,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12865,
+            "skipped": 0,
+            "total": 12865
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "skipped": 0,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          }
+        ],
+        "logSha256": "b7f3314bbe6af4d534e79d8333fc96744573244121ef87c297da606feda3644c"
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "skipped": 0,
+            "total": 73312
+          }
+        ],
+        "logSha256": "44723ad00a604c5e280ae2e7cd833f8044a521c6abddf53a83e8598a7f22e7c3"
+      }
+    },
+    "boundary": "Windows .NET10/package steps skip after the existing net11 visual failure. Local affected/native checks retain both runtimes/hosts against unchanged qualified package assets. DejaVu target/assertion remain unchanged pending reference authority."
+  }
 }
