@@ -26,6 +26,12 @@ Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Sv
 while retaining separate names, inputs and allocation paths. Add one representative
 contract for a distinct path; rendering fixtures keep their canonical conversion.
 
+Core output copies the 24 selected text-node contract inputs and two separate
+API/ownership fixtures. The visual suite still reads the complete bank from the
+repository. [Copy qualification](Research/release-baselines/text-node-copy.json)
+checks fresh output, unchanged test identities, ownership coverage and measured
+before/after validation; reducing copied data does not remove rendering coverage.
+
 [Canonical shaping](Research/svgweb/text-canonical-shaping.json) separates Unicode,
 substitution, attachment and fitting mechanisms from two representative storage
 contracts. Complete Turkic/Lithuanian controls, a four-row mark control and one

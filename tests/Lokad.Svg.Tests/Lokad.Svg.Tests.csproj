@@ -104,7 +104,31 @@
     <None Update="TestData/pattern-selection-acceptance.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="../Research/text-node-boundaries/*.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Representative contracts use these inputs; the complete bank stays in canonical rendering tests. -->
+    <None Include="../Research/text-node-boundaries/anchored-rectangle-subgrid-70-control.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/cluster-fiA-8-unit-start-rotate-candidate.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/element-direct-fit-spacing-fi-span.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/element-path-fit-scale-fi-span.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/element-quarter-turn-span-AVA.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/element-reflection-span-AVA.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/element-scale150-span-fi.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/node-cdata-x2_5.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/node-comment-x2_5.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/node-empty-span-x2.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/path-position-activation-41-candidate.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/path-position-activation-62-candidate.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/path-position-y-only-1-candidate.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/path-unpainted-original-0.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/path-unpainted-symbol-63.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/replay-mask-fill-return.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/replay-pattern-visibility-return.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/replay-symbol-fill-return.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/replay-use-visibility-return.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/shape-long-chunk-middle-middle.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/shape-span-AV.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/shape-span-fi.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/source-items-span-ffi-16-start-gradient-candidate.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-node-boundaries/source-prefixes-relative-span-fiA-neg16-start-fit-scale-candidate.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-node-boundaries/capture.json" Link="TestData/text-node-boundaries/capture.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-paint-bounds/precision-residuals/inputs/spacing-paint-45-control.svg" Link="TestData/text-node-boundaries/pattern-texture-resize.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-paint-bounds/shared-layout-inputs/r144-consumer-6-candidate.svg" Link="TestData/text-node-boundaries/shared-layout.svg" CopyToOutputDirectory="PreserveNewest" />

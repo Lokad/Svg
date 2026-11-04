@@ -1,0 +1,165 @@
+{
+  "status": "Core copy scope narrowed; test identities, production, native references and visual-bank membership unchanged.",
+  "sourceBaseCommit": "cc1ba2ffa60bd14f21b08d29c25ffd585acbdc13",
+  "project": "../../Lokad.Svg.Tests/Lokad.Svg.Tests.csproj",
+  "contracts": "../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs",
+  "canonicalRendering": "../../Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+  "retainedInputs": [
+    "anchored-rectangle-subgrid-70-control.svg",
+    "cluster-fiA-8-unit-start-rotate-candidate.svg",
+    "element-direct-fit-spacing-fi-span.svg",
+    "element-path-fit-scale-fi-span.svg",
+    "element-quarter-turn-span-AVA.svg",
+    "element-reflection-span-AVA.svg",
+    "element-scale150-span-fi.svg",
+    "node-cdata-x2_5.svg",
+    "node-comment-x2_5.svg",
+    "node-empty-span-x2.svg",
+    "path-position-activation-41-candidate.svg",
+    "path-position-activation-62-candidate.svg",
+    "path-position-y-only-1-candidate.svg",
+    "path-unpainted-original-0.svg",
+    "path-unpainted-symbol-63.svg",
+    "replay-mask-fill-return.svg",
+    "replay-pattern-visibility-return.svg",
+    "replay-symbol-fill-return.svg",
+    "replay-use-visibility-return.svg",
+    "shape-long-chunk-middle-middle.svg",
+    "shape-span-AV.svg",
+    "shape-span-fi.svg",
+    "source-items-span-ffi-16-start-gradient-candidate.svg",
+    "source-prefixes-relative-span-fiA-neg16-start-fit-scale-candidate.svg"
+  ],
+  "separateAliases": [
+    "pattern-texture-resize.svg",
+    "shared-layout.svg"
+  ],
+  "before": {
+    "totalCopiedItems": 2463,
+    "totalSvgFiles": 2312,
+    "totalSvgBytes": 1083980,
+    "textNodeSvgFiles": 857,
+    "textNodeSvgBytes": 246435
+  },
+  "after": {
+    "evaluatedCopyItems": 1632,
+    "svgCopyItems": 1481,
+    "svgLogicalBytes": 853558,
+    "textNodeFreshOutputSvgs": 26,
+    "textNodeFreshOutputBytes": 16013,
+    "evaluationSeconds": 0.3448554000351578
+  },
+  "removedCopiedFiles": 831,
+  "removedCopiedSvgBytes": 230422,
+  "removedTests": 0,
+  "referenceChanges": 0,
+  "productionChanges": 0,
+  "freshOutput": true,
+  "validation": {
+    "selection": "FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgGlyphSamplingDimensionTests",
+    "identicalCaseNamesBeforeAfter": 168,
+    "before": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "16af28ecfa5454307a2c0af9888112f2cd46a06c7f37cc0d260453d90f3125ea",
+        "testAssemblySha256": "cf3ad84f65376941aafdea4a8123587991ef84c51c4642374214120acb62d5a8",
+        "selection": "FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgGlyphSamplingDimensionTests",
+        "exitCode": 0,
+        "seconds": 8.031262000091374,
+        "counters": {
+          "executed": "168",
+          "passed": "168",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "16af28ecfa5454307a2c0af9888112f2cd46a06c7f37cc0d260453d90f3125ea",
+        "testAssemblySha256": "cf3ad84f65376941aafdea4a8123587991ef84c51c4642374214120acb62d5a8",
+        "selection": "FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgGlyphSamplingDimensionTests",
+        "exitCode": 0,
+        "seconds": 13.384109199978411,
+        "counters": {
+          "executed": "168",
+          "passed": "168",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "after": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7737959f492fada1dbfbe69147a30127b9642d11bed59893bec95d54b0695055",
+        "testAssemblySha256": "504562d670bb0ba00c59bf3bf312e6246af3dfb1128910c7c86bf8a18713866a",
+        "selection": "FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgGlyphSamplingDimensionTests",
+        "exitCode": 0,
+        "seconds": 8.791955600026995,
+        "counters": {
+          "executed": "168",
+          "passed": "168",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7737959f492fada1dbfbe69147a30127b9642d11bed59893bec95d54b0695055",
+        "testAssemblySha256": "504562d670bb0ba00c59bf3bf312e6246af3dfb1128910c7c86bf8a18713866a",
+        "selection": "FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgGlyphSamplingDimensionTests",
+        "exitCode": 0,
+        "seconds": 12.284675700124353,
+        "counters": {
+          "executed": "168",
+          "passed": "168",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fullFreshCore": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7737959f492fada1dbfbe69147a30127b9642d11bed59893bec95d54b0695055",
+        "testAssemblySha256": "504562d670bb0ba00c59bf3bf312e6246af3dfb1128910c7c86bf8a18713866a",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 51.720406899927184,
+        "counters": {
+          "executed": "47545",
+          "passed": "47545",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7737959f492fada1dbfbe69147a30127b9642d11bed59893bec95d54b0695055",
+        "testAssemblySha256": "504562d670bb0ba00c59bf3bf312e6246af3dfb1128910c7c86bf8a18713866a",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 55.65506640006788,
+        "counters": {
+          "executed": "47545",
+          "passed": "47545",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "elapsedInterpretation": "Single functional observations including discovery/process startup on a shared machine. Windows 8.03 to 8.79 seconds; Linux 13.38 to 12.28 for the same 168 cases. Full fresh core passes 47,545 cases per host. Reduced copied data is established; elapsed observations do not establish a speed improvement or renderer throughput change. Broader runtime/package/native gates remain milestone duties."
+}
