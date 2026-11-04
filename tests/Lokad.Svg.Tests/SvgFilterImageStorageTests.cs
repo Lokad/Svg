@@ -96,10 +96,11 @@ public sealed class SvgFilterImageStorageTests
 
     [Fact]
     [Trait("Layer", "Mechanism")]
-    public void Materialization_uses_the_same_float_deviation_boundary_as_the_kernel()
+    public void Image_alias_boundary_is_distinct_from_copying_kernel_identity()
     {
         foreach (float sigma in new[] { .03f, float.BitIncrement(.03f) })
         {
+            Assert.True(SvgGaussianBlur.HasIdentityKernel(new(sigma, sigma)));
             RenderBudget scratch = new(new HostMemoryBudget(1_000_000));
             using SvgFilterResource resource = new(new(new(0, false), new(0, false), new(16, false), new(16, false), SvgFilterUnits.UserSpace),
                 SvgFilterUnits.UserSpace, SvgFilterColorSpace.Srgb,

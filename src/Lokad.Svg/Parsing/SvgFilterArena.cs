@@ -28,7 +28,7 @@ internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, 
 
     /// <summary>Identifies native pixel-image construction; aliases and uniform flood paint retain their prior representation.</summary>
     internal bool MaterializesImage(SvgGaussianDeviation deviation)
-        => Kind == SvgFilterPrimitiveKind.GaussianBlur && (deviation.Horizontal > .03f || deviation.Vertical > .03f)
+        => Kind == SvgFilterPrimitiveKind.GaussianBlur && !deviation.PreservesSourceImage
             || Kind == SvgFilterPrimitiveKind.Merge && MergeCount != 1
             || Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend or SvgFilterPrimitiveKind.DropShadow;
 }

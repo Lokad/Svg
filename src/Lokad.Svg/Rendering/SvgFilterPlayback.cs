@@ -299,8 +299,8 @@ internal static class SvgFilterPlayback
                 float rx = 3f * sigmaX, ry = 3f * sigmaY;
                 if (kind == SvgFilterBoundsKind.StoredImage)
                 {
-                    rx = sigmaX <= .03f ? 0 : MathF.Ceiling(rx);
-                    ry = sigmaY <= .03f ? 0 : MathF.Ceiling(ry);
+                    rx = sigmaX <= SvgGaussianDeviation.ImageIdentityThreshold ? 0 : MathF.Ceiling(rx);
+                    ry = sigmaY <= SvgGaussianDeviation.ImageIdentityThreshold ? 0 : MathF.Ceiling(ry);
                 }
                 output = new(input.Left + dx - rx, input.Top + dy - ry, input.Right + dx + rx, input.Bottom + dy + ry);
                 if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow) output = Union(input, output);
@@ -401,7 +401,8 @@ internal static class SvgFilterPlayback
             token.ThrowIfCancellationRequested();
             SvgFilterPrimitive alias = resource.Primitives.Items[reference.Index];
             SvgFilterInput next;
-            if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && (float)Math.Abs(alias.SigmaX * map.ScaleX) <= .03f && (float)Math.Abs(alias.SigmaY * map.ScaleY) <= .03f
+            if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && SvgGaussianDeviation.IsImageIdentity(
+                    (float)Math.Abs(alias.SigmaX * map.ScaleX), (float)Math.Abs(alias.SigmaY * map.ScaleY))
                 || alias.Kind == SvgFilterPrimitiveKind.Offset && alias.OffsetX == 0 && alias.OffsetY == 0) next = alias.Input;
             else if (alias.Kind == SvgFilterPrimitiveKind.Merge && alias.MergeCount == 1) next = resource.MergeInputs.Items[alias.MergeFirst];
             else break;
@@ -647,7 +648,7 @@ internal static class SvgFilterPlayback
                     SvgPaintBounds wanted = requests[index];
                     SvgPaintBounds sampleDemand = new(wanted.Left - sampleRadiusX, wanted.Top - sampleRadiusY, wanted.Right + sampleRadiusX, wanted.Bottom + sampleRadiusY);
                     SvgShaderMatrix sampleInverse = default;
-                    bool resolvesSample = (deviation.Horizontal > .03f || deviation.Vertical > .03f)
+                    bool resolvesSample = !deviation.PreservesSourceImage
                         && TryPrepareSample(primitive.Input, sampleDemand, out sampleInverse);
                     using SvgConverter.RasterizedSurface? sampledInput = resolvesSample ? Allocate() : null;
                     if (sampledInput is {} resolved)
@@ -664,15 +665,15 @@ internal static class SvgFilterPlayback
                         input = resolved.Pixels;
                         inputLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
                     }
-                    if (SvgGaussianBlur.IsIdentity(deviation))
+                    if (SvgGaussianBlur.HasIdentityKernel(deviation))
                     {
                         SvgPaintBounds inputBounds = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index]
                             : map.Regions?.SourceBounds ?? new(0, 0, width, height);
-                        if (deviation.Horizontal > .03f || deviation.Vertical > .03f)
+                        if (!deviation.PreservesSourceImage)
                         {
                             token.ThrowIfCancellationRequested();
-                            float radiusX = deviation.Horizontal <= .03f ? 0 : MathF.Ceiling(3f * deviation.Horizontal);
-                            float radiusY = deviation.Vertical <= .03f ? 0 : MathF.Ceiling(3f * deviation.Vertical);
+                            float radiusX = deviation.Horizontal <= SvgGaussianDeviation.ImageIdentityThreshold ? 0 : MathF.Ceiling(3f * deviation.Horizontal);
+                            float radiusY = deviation.Vertical <= SvgGaussianDeviation.ImageIdentityThreshold ? 0 : MathF.Ceiling(3f * deviation.Vertical);
                             inputBounds = new(MathF.Floor(inputBounds.Left - radiusX), MathF.Floor(inputBounds.Top - radiusY),
                                 MathF.Ceiling(inputBounds.Right + radiusX), MathF.Ceiling(inputBounds.Bottom + radiusY));
                         }
@@ -709,7 +710,7 @@ internal static class SvgFilterPlayback
                         input = convertedSrgb.Pixels;
                         inputLinear = false;
                     }
-                    if (colorSpace == SvgFilterColorSpace.LinearRgb && (deviation.Horizontal > .03f || deviation.Vertical > .03f))
+                    if (colorSpace == SvgFilterColorSpace.LinearRgb && !deviation.PreservesSourceImage)
                     {
                         if (inputLinear) linear[index] = true;
                         else
@@ -981,7 +982,8 @@ internal static class SvgFilterPlayback
                             {
                                 token.ThrowIfCancellationRequested();
                                 SvgFilterPrimitive alias = resource.Primitives.Items[tail];
-                                if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && (float)Math.Abs(alias.SigmaX * map.ScaleX) <= .03f && (float)Math.Abs(alias.SigmaY * map.ScaleY) <= .03f) tail = alias.Input.Index;
+                                if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && SvgGaussianDeviation.IsImageIdentity(
+                                    (float)Math.Abs(alias.SigmaX * map.ScaleX), (float)Math.Abs(alias.SigmaY * map.ScaleY))) tail = alias.Input.Index;
                                 else if (alias.Kind == SvgFilterPrimitiveKind.Merge && alias.MergeCount == 1) tail = resource.MergeInputs.Items[alias.MergeFirst].Index;
                                 else break;
                             }
@@ -1151,7 +1153,7 @@ internal static class SvgFilterPlayback
                     double shadowX = primitive.OffsetX * map.ScaleX, shadowY = primitive.OffsetY * map.ScaleY;
                     bool fractionalShadow = shadowX != Math.Truncate(shadowX) || shadowY != Math.Truncate(shadowY);
                     bool retainedColorFilter = colorSpace == SvgFilterColorSpace.LinearRgb && !inputLinear
-                        && deviation.Horizontal <= .03f && deviation.Vertical <= .03f;
+                        && deviation.PreservesSourceImage;
                     SvgConstantShaderPaint tint = default;
                     if (fractionalShadow && !retainedColorFilter)
                     {
@@ -1235,7 +1237,7 @@ internal static class SvgFilterPlayback
                     Clip(output, wanted);
                 }
                 if (primitive.Kind == SvgFilterPrimitiveKind.Offset
-                    || primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur && deviation.Horizontal <= .03f && deviation.Vertical <= .03f)
+                    || primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur && deviation.PreservesSourceImage)
                     RetainSampling(index, primitive.Input, nearestSampling);
                 SvgFilterInput viewInput = primitive.Kind == SvgFilterPrimitiveKind.Merge && primitive.MergeCount == 1
                     ? resource.MergeInputs.Items[primitive.MergeFirst] : primitive.Input;

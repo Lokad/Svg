@@ -1,0 +1,219 @@
+{
+  "status": "Shared blur-image classification is locally qualified on both hosts and runtimes; full source/package promotion follows.",
+  "sourceBaseCommit": "0e8d99878595b0a89f077af495681cfc07d44999",
+  "assemblyIdentity": "Investigation assemblies carry sourceBaseCommit metadata; LF hashes bind the changed implementation.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Rendering/SvgGaussianBlur.cs": "2ac87f26e20140d03e1020221499461dc8bbedfba67a6b892999b4310532e7f4",
+    "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs": "3ef437a7095a3fe62e3f42bb091f038aa1dc898d593380a6d558d61ba5fde0a4",
+    "src/Lokad.Svg/Parsing/SvgFilterArena.cs": "e9733454f30e9de04b215e0db23c9a1d9acdf6d6835558c3399e43b24aea3f9e"
+  },
+  "testSourceLfSha256": {
+    "tests/Lokad.Svg.Tests/SvgFilterImageStorageTests.cs": "eb8c69be9cebf3724e5ee8394888850ad40ff2da929af566d4b299824060e150"
+  },
+  "baselinePackage": {
+    "sourceCommit": "a203b26eb5a6240bd5abff7a594df603c6734da2",
+    "packageVersion": "0.4.0-dev.1",
+    "nupkgSha256": "dc1f26d8ac336f82f366362e3b1befdfb903aaf99fa32bf9d9b4b3654df240b2",
+    "snupkgSha256": "c72c5a739d981d9efc00aefd6e6f85eae4dc9f92e537e181bd274889eb485d6a",
+    "librarySha256": {
+      "net11.0": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "net10.0": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c"
+    }
+  },
+  "change": "SvgGaussianDeviation owns the inclusive 0.03f image-alias cutoff and its classification. Kernel copying has an explicitly separate HasIdentityKernel query. Bounds, alias resolution, sampling, storage and primitive materialization consume the shared rule.",
+  "preserved": [
+    "Mapped deviations retain their original float narrowing and finite admission; pre-admission alias classification still accepts absolute mapped values without constructing a validated deviation.",
+    "A copying pixel kernel can materialize an image. Both original boundary vectors (0.03f and its immediate successor) retain their distinct storage classifications and assert copying-kernel identity.",
+    "Capture hints retain 3*sigma; backward requests retain ceil(3*sigma), including effective-zero aliases; stored bounds retain per-axis cutoff and integer enclosure. No rounding stage is merged.",
+    "Source maps, clipping, sampling, color transfer, alpha rounding, text layout, allocations and ownership are unchanged. No native source, reference, tolerance, public API or dependency changes."
+  ],
+  "testNameMapping": {
+    "testClass": "SvgFilterImageStorageTests",
+    "before": "Materialization_uses_the_same_float_deviation_boundary_as_the_kernel",
+    "after": "Image_alias_boundary_is_distinct_from_copying_kernel_identity",
+    "existingVectorsUnchanged": true
+  },
+  "validation": [
+    {
+      "stage": "before",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+      "exitCode": 0,
+      "seconds": 12.713313200045377,
+      "counters": {
+        "executed": "216",
+        "passed": "216",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+      "exitCode": 0,
+      "seconds": 17.245905099902302,
+      "counters": {
+        "executed": "216",
+        "passed": "216",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "ad9e924770115dd2a4b74514f206c1aa8ab56669c9b2271db3750370288afb57",
+      "testAssemblySha256": "4e6b741f851b9941e9d2bda5c8deb88109ef6e1da21f86a63e434c78311d855f",
+      "exitCode": 0,
+      "seconds": 10.93323940015398,
+      "counters": {
+        "executed": "216",
+        "passed": "216",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "ad9e924770115dd2a4b74514f206c1aa8ab56669c9b2271db3750370288afb57",
+      "testAssemblySha256": "4e6b741f851b9941e9d2bda5c8deb88109ef6e1da21f86a63e434c78311d855f",
+      "exitCode": 0,
+      "seconds": 13.47757439990528,
+      "counters": {
+        "executed": "216",
+        "passed": "216",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "ad9e924770115dd2a4b74514f206c1aa8ab56669c9b2271db3750370288afb57",
+      "testAssemblySha256": "4e6b741f851b9941e9d2bda5c8deb88109ef6e1da21f86a63e434c78311d855f",
+      "exitCode": 0,
+      "seconds": 17.98483660002239,
+      "counters": {
+        "executed": "1984",
+        "passed": "1984",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "ad9e924770115dd2a4b74514f206c1aa8ab56669c9b2271db3750370288afb57",
+      "testAssemblySha256": "4e6b741f851b9941e9d2bda5c8deb88109ef6e1da21f86a63e434c78311d855f",
+      "exitCode": 0,
+      "seconds": 16.945345799904317,
+      "counters": {
+        "executed": "1984",
+        "passed": "1984",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net11",
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "ad9e924770115dd2a4b74514f206c1aa8ab56669c9b2271db3750370288afb57",
+      "testAssemblySha256": "e6ba865bc39a92e6a24d93dc2195ca59a6576e22f02c28fe5e0922264c5d0d1e",
+      "exitCode": 0,
+      "seconds": 107.6373819001019,
+      "counters": {
+        "executed": "21791",
+        "passed": "21791",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net11",
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "ad9e924770115dd2a4b74514f206c1aa8ab56669c9b2271db3750370288afb57",
+      "testAssemblySha256": "e6ba865bc39a92e6a24d93dc2195ca59a6576e22f02c28fe5e0922264c5d0d1e",
+      "exitCode": 0,
+      "seconds": 107.05301390006207,
+      "counters": {
+        "executed": "21791",
+        "passed": "21791",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "d3cfccd0957aba81c95cb2c39324e1fecc5e15d11f90951c04b96cc8c56a32ce",
+      "testAssemblySha256": "94f26c47c9393f4858884b233008ac7808e119ac10a637c02530b1ce3526923d",
+      "exitCode": 0,
+      "seconds": 21.581304999999702,
+      "counters": {
+        "executed": "1984",
+        "passed": "1984",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "d3cfccd0957aba81c95cb2c39324e1fecc5e15d11f90951c04b96cc8c56a32ce",
+      "testAssemblySha256": "94f26c47c9393f4858884b233008ac7808e119ac10a637c02530b1ce3526923d",
+      "exitCode": 0,
+      "seconds": 15.433213599957526,
+      "counters": {
+        "executed": "1984",
+        "passed": "1984",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net10",
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "d3cfccd0957aba81c95cb2c39324e1fecc5e15d11f90951c04b96cc8c56a32ce",
+      "testAssemblySha256": "fc309620cd603b98bf2f288069de76f5dc7815cf05bdefc3f73bab10669465f2",
+      "exitCode": 0,
+      "seconds": 32.4821140000131,
+      "counters": {
+        "executed": "21791",
+        "passed": "21791",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net10",
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "d3cfccd0957aba81c95cb2c39324e1fecc5e15d11f90951c04b96cc8c56a32ce",
+      "testAssemblySha256": "fc309620cd603b98bf2f288069de76f5dc7815cf05bdefc3f73bab10669465f2",
+      "exitCode": 0,
+      "seconds": 56.06670830002986,
+      "counters": {
+        "executed": "21791",
+        "passed": "21791",
+        "failed": "0"
+      }
+    }
+  ],
+  "timingInterpretation": "Functional validation wall times include runner/discovery/TRX and changing workstation load. They do not establish renderer performance."
+}

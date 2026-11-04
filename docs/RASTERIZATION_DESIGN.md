@@ -463,6 +463,11 @@ in the parent picture's image hint and dither origin; parent capture separately
 includes their filtered output. Rescaled kernels read the captured subset;
 offsets/aliases can retain deferred sampled images until a
 consumer requires pixels.
+Blur image aliases share the inclusive `0.03f` device-deviation cutoff in
+`SvgGaussianDeviation`. A copying pixel kernel above that cutoff still materializes
+an image and rounds its bounds; kernel identity does not authorize image aliasing.
+The [classification checks](../tests/Research/release-baselines/blur-image-identity.json)
+retain the exact float boundary and independent image/storage responsibilities.
 Deferred storage includes the input view needed before the offset as well as the
 final output. Request planning limits that view by primitive crops and possible
 image extents; planning and playback share alias resolution.

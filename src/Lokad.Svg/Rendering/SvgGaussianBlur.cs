@@ -5,6 +5,9 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Describes device-space Gaussian deviations before choosing a bounded native kernel.</summary>
 internal readonly record struct SvgGaussianDeviation
 {
+    /// <summary>Native blur-image alias cutoff; copying pixel kernels can extend beyond this value.</summary>
+    internal const float ImageIdentityThreshold = .03f;
+
     internal SvgGaussianDeviation(float horizontal, float vertical)
     {
         if (!float.IsFinite(horizontal) || horizontal < 0) throw new ArgumentOutOfRangeException(nameof(horizontal));
@@ -15,6 +18,13 @@ internal readonly record struct SvgGaussianDeviation
 
     internal float Horizontal { get; }
     internal float Vertical { get; }
+
+    /// <summary>Identifies a blur that retains its input image rather than materializing rounded image bounds.</summary>
+    internal bool PreservesSourceImage => IsImageIdentity(Horizontal, Vertical);
+
+    /// <summary>Classifies absolute mapped deviations before finite admission, without constructing a kernel or image.</summary>
+    internal static bool IsImageIdentity(float horizontal, float vertical)
+        => horizontal <= ImageIdentityThreshold && vertical <= ImageIdentityThreshold;
 }
 
 /// <summary>Blurs borrowed premultiplied RGBA pixels with transparent samples outside their frame.</summary>
@@ -350,13 +360,13 @@ internal static class SvgGaussianBlur
     }
 
     /// <summary>Identifies a copying pixel kernel; nonzero blurs can still materialize and round image bounds.</summary>
-    internal static bool IsIdentity(SvgGaussianDeviation deviation)
+    internal static bool HasIdentityKernel(SvgGaussianDeviation deviation)
         => deviation.Horizontal <= 135 && deviation.Vertical <= 135
             && Kernel(deviation.Horizontal).Identity && Kernel(deviation.Vertical).Identity;
 
     private static BoxKernel Kernel(float sigma)
     {
-        if (sigma <= 0.03f) return default;
+        if (sigma <= SvgGaussianDeviation.ImageIdentityThreshold) return default;
         if (sigma > 135) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gaussian filter rescaling requires the placed image path.");
         int window = (int)MathF.Floor(sigma * 3f * MathF.Sqrt(2f * MathF.PI) / 4f + 0.5f);
         if (window <= 1) return default;
