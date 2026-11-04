@@ -142,5 +142,62 @@
   "frozenTargetsChanged": 0,
   "protectedExecutionTreeInspected": false,
   "legacyProducersExecuted": false,
-  "remaining": "The separate 11468-pair wide lineage requires its own source/options/outcome inventory. This join does not qualify unsupported originals or all historical shader behavior."
+  "remaining": "All3481 stroke-final pairs are joined. The separate11468-pair wide lineage has36 source-bound qualified inputs;22900 others retain unresolved upstream source provenance. This is deferred research with an explicit next diagnostic, not evidence of22900 renderer defects.",
+  "wideLineage": {
+    "originalPairs": 11468,
+    "originalInputs": 22936,
+    "renameStages": [
+      {
+        "fromPrefix": "stroke-wide",
+        "toPrefix": "primitive-wide",
+        "pairs": 11468,
+        "mappingSha256": "7c07be54e5c7b6eebaa35836363e2479ddbe7d965532c8ef7836d11bccc77538"
+      },
+      {
+        "fromPrefix": "primitive-wide",
+        "toPrefix": "r74-channel-wide",
+        "pairs": 11468,
+        "mappingSha256": "86b16cccb267c39c472e2cb6da8d29346fa205da984e3be421b425ccfa298d37"
+      },
+      {
+        "fromPrefix": "r74-channel-wide",
+        "toPrefix": "r65-final-wide",
+        "pairs": 11468,
+        "mappingSha256": "2192d594480579cdd27066fe4213d7f3879884c95451bf09643923242adbfdb7"
+      }
+    ],
+    "recoveredOriginals": {
+      "pairs": 18,
+      "inputs": 36,
+      "strokeWideIndices": [
+        3200,
+        3201,
+        3202,
+        3296,
+        3297,
+        3298,
+        3704,
+        3705,
+        3706,
+        3800,
+        3801,
+        3802,
+        4208,
+        4209,
+        4210,
+        4304,
+        4305,
+        4306
+      ],
+      "sourceOptionsAndNativeTargetsMatch": true,
+      "qualification": "rectangle-source-qualification.json",
+      "sourceAndTargetJoinSha256": "b7c8a5b671c360ba27f7991162fe6a5c2bcd162220d34065453d2a5d56b15161"
+    },
+    "upstreamSourceBank": "r65-final-wide",
+    "unresolvedSourceProvenanceInputs": 22900,
+    "decision": "Deferred provenance research, not an established renderer defect. Three complete rename mappings recover IDs but do not recover original source/options bytes or independently qualify native pixels. Historical unchanged-PNG/admission audits are not native qualification.",
+    "nextDiagnostic": "Recover a source-bound upstream recipe or independent source/native archive outside protected generated storage before replaying or claiming full wide coverage. Keep all historical material. The 36 source-bound clip admissions are already qualified; no duplicate API/rendering matrix is needed.",
+    "protectedExecutionTreeInspected": false,
+    "legacyProducersExecuted": false
+  }
 }

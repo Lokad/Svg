@@ -67,4 +67,7 @@ The [stroke lineage join](r85-stroke-lineage.json) accounts for all 3,481 origin
 pairs through those existing qualifications and the retained rectangle replay.
 Source bytes, scale, font context and each native target are joined individually;
 the 448 platform-specific font targets remain distinct. Rename-only provenance
-is separate from a new rendering run. The 11,468-pair wide lineage remains open.
+is separate from a new rendering run. The separate 11,468-pair wide inventory
+recovers three rename stages and 36 source-bound qualified inputs. The other
+22,900 inputs need an upstream source-bound recipe or archive before replay;
+historical unchanged-output audits alone do not establish native fidelity.
