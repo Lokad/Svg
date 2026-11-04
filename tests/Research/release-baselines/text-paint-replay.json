@@ -244,5 +244,39 @@
     "licenses": 0,
     "newFrameworks": 0
   },
-  "remaining": "P2 suite-wide inventory, font-document API products and alpha/filter context selection remain separate. Broader text/shader/decoration correctness is not closed by this test change."
+  "remaining": "P2 suite-wide inventory, font-document API products and alpha/filter context selection remain separate. Broader text/shader/decoration correctness is not closed by this test change.",
+  "matchingCI": {
+    "runId": 41884221079,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41884221079",
+    "sourceCommit": "304f13f3a7fee095f13c879d0be53fb81101ffdc",
+    "status": "Terminal CLOSED; never repoll.",
+    "conclusion": "failure",
+    "logSha256": "6a7b981c674806dc9f0ff3928789a007b74ec604b7f201642211f77a493df8ce",
+    "ubuntu": {
+      "conclusion": "success",
+      "net11": {
+        "core": 47610,
+        "visual": 71264,
+        "font": 10
+      },
+      "net10": {
+        "core": 12865,
+        "visual": 1150,
+        "font": 10
+      },
+      "packageAndInstalledConsumers": "Passed"
+    },
+    "windows": {
+      "conclusion": "failure",
+      "net11": {
+        "corePassed": 47610,
+        "visualPassed": 71263,
+        "visualFailed": 1,
+        "fontPassed": 10
+      },
+      "soleFailure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "laterRuntimeAndPackageSteps": "Skipped; affected local checks pass on both runtimes."
+    },
+    "authority": "Preserve the unchanged Windows DejaVu reference/assertion. This test milestone creates no runtime, source-image, target-image or tolerance change."
+  }
 }

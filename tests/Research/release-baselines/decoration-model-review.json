@@ -1,0 +1,390 @@
+{
+  "status": "Shared decoration-style audit: all thirteen authored inputs are native exact on both hosts. No new discrepancy or implementation change is established; broader R70 ink/viewport/effect interactions remain open.",
+  "productionSourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
+  "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+  "implementation": "../../../src/Lokad.Svg/Parsing/SvgTextDecorationRenderer.cs",
+  "existingRegressions": "../stroked-decorations/manifest.json",
+  "scope": [
+    "Declaring versus glyph paint-order in four controlled combinations, plus an undecorated glyph control.",
+    "Inherited versus explicitly redeclared paint, partial alpha, mixed decoration lines and group declarations.",
+    "Different parent/child font sizes while retaining glyph-scoped decoration metrics.",
+    "Solid-color decorations only. Paint-server decoration fills/strokes retain their existing explicit unsupported boundary."
+  ],
+  "interpretation": "The native controls support the existing declaring-paint propagation, repeated-line alpha and glyph-stage paint-order/font-metric behavior. Source inspection alone did not justify removing or replacing these paths. Equal pairs remain separate controlled inputs.",
+  "conversion": "Existing FontProbe: SvgPreparedDocument.CreateAsync using the explicit local catalog/provider, followed by ConvertToPngAsync(Stream). Default viewport/options; authored 160x72 dimensions, scale1, transparent.",
+  "font": {
+    "path": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "catalog": "../text-paint-bounds/font-pack.json",
+    "license": "../supplied-font-labels/fonts/OFL.txt"
+  },
+  "nativeProtocol": {
+    "pins": [
+      "../../../tools/chrome-for-testing.json",
+      "../../../tools/chrome-for-testing.linux64.json"
+    ],
+    "command": "Lokad.Svg.Chrome <pinned-browser> 160 72 --image-viewport 160 72",
+    "fontTransport": "Replace the authored serif family with ReviewFont, then insert one style element immediately after the root start tag: @font-face{font-family:ReviewFont;src:url(data:font/ttf;base64,<declared font bytes>)}. The recorded native hash covers that exact UTF-8 input.",
+    "capturesPerInputPerHost": 3,
+    "healthyIndependentProcesses": 78,
+    "sourceRecipeLicense": "MIT"
+  },
+  "specContext": {
+    "reference": "https://www.w3.org/TR/SVG/text.html",
+    "section": "11.11 Text decoration",
+    "role": "Declaration-point painting is the review question. These finite pinned-browser observations qualify existing behavior; they do not establish general specification or R70 closure."
+  },
+  "hosts": [
+    {
+      "host": "windows",
+      "inputs": 13,
+      "nativeExact": 13,
+      "healthyIndependentProcesses": 39,
+      "profilesCleaned": 39,
+      "networkServiceCrashes": 0,
+      "sandboxAccessFailures": 0,
+      "truncatedLogs": 0,
+      "unstableInputs": 0,
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+    },
+    {
+      "host": "linux",
+      "inputs": 13,
+      "nativeExact": 13,
+      "healthyIndependentProcesses": 39,
+      "profilesCleaned": 39,
+      "networkServiceCrashes": 0,
+      "sandboxAccessFailures": 0,
+      "truncatedLogs": 0,
+      "unstableInputs": 0,
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  ],
+  "controlledPairs": [
+    {
+      "host": "windows",
+      "first": "declared-normal-glyph-stroke-first",
+      "second": "declared-stroke-first-glyph-stroke-first",
+      "nativeEqual": true,
+      "libraryEqual": true
+    },
+    {
+      "host": "windows",
+      "first": "declared-normal-glyph-normal",
+      "second": "declared-stroke-first-glyph-normal",
+      "nativeEqual": true,
+      "libraryEqual": true
+    },
+    {
+      "host": "linux",
+      "first": "declared-normal-glyph-stroke-first",
+      "second": "declared-stroke-first-glyph-stroke-first",
+      "nativeEqual": true,
+      "libraryEqual": true
+    },
+    {
+      "host": "linux",
+      "first": "declared-normal-glyph-normal",
+      "second": "declared-stroke-first-glyph-normal",
+      "nativeEqual": true,
+      "libraryEqual": true
+    },
+    {
+      "host": "windows",
+      "first": "inherited-paint",
+      "second": "redeclared-paint",
+      "nativeEqual": false,
+      "libraryEqual": false
+    },
+    {
+      "host": "windows",
+      "first": "inherited-alpha",
+      "second": "redeclared-alpha",
+      "nativeEqual": false,
+      "libraryEqual": false
+    },
+    {
+      "host": "linux",
+      "first": "inherited-paint",
+      "second": "redeclared-paint",
+      "nativeEqual": false,
+      "libraryEqual": false
+    },
+    {
+      "host": "linux",
+      "first": "inherited-alpha",
+      "second": "redeclared-alpha",
+      "nativeEqual": false,
+      "libraryEqual": false
+    }
+  ],
+  "cases": [
+    {
+      "id": "declared-normal-glyph-normal",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' stroke='#2040c0' stroke-width='3' text-decoration='underline' paint-order='normal'><tspan paint-order='normal'>AAA</tspan></text></svg>",
+      "sourceSha256": "f4f2e90d07c4f7a96b1256de6727999e7bcb99a140fc340c4d119d8fc299142a",
+      "nativeInputSha256": "40c1f920125f8033ed267b87c57761ce9a339d65af25799aaafcc60be3a38273",
+      "results": {
+        "windows": {
+          "nativePngSha256": "fe3d08b2f924f81674a5ba4328881b5559b1bbded9ab7009e2e90179c2fa0da3",
+          "libraryPngSha256": "d446c28c426dbc8ddfa7460d2a5b6dcb397a83020dd7ccca8225653a0297f501",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "21af66cb6443e6cf0a26abb3bae7c5eafefb58b81f8246a2300fcf206ae3856b",
+          "libraryPngSha256": "4cadebd6b688248aad0b957927e1a984f9b4d1a5f3dc854d45365057284c56ae",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "declared-normal-glyph-stroke-first",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' stroke='#2040c0' stroke-width='3' text-decoration='underline' paint-order='normal'><tspan paint-order='stroke fill'>AAA</tspan></text></svg>",
+      "sourceSha256": "39e2044dc078836041f1b8f53244563cde1f79964e13063ef249cfe70941abb2",
+      "nativeInputSha256": "1ec9d25637fd57a56ee300e212159861341b816584a9da00e0a9a8f4816ae7b3",
+      "results": {
+        "windows": {
+          "nativePngSha256": "80217c8f1d3143d36090a1ee1b3d0646e50df62b575f7b459427d3613fa632cf",
+          "libraryPngSha256": "a7b7b65eb7b03e2fc40554c3dd9a8f597db281889c221fb63d19b44c3513deeb",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "6171915a1cfe1455c05b9e857926c44ddda9735d3a2e57db01c0ce4f5a79f641",
+          "libraryPngSha256": "be32873999eff621703bb81b79fc9e23539e2f88d14aab08a37a3992096b98c3",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "declared-stroke-first-glyph-normal",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' stroke='#2040c0' stroke-width='3' text-decoration='underline' paint-order='stroke fill'><tspan paint-order='normal'>AAA</tspan></text></svg>",
+      "sourceSha256": "c0fee1dcb4e61765b3047c00b342993cc190d341fe5f6d54ca8194f3a9b36447",
+      "nativeInputSha256": "8cfb4f1fd00394bcebd7dbce494539bcd7b41ce0d9c79f1de8e2585e73965d46",
+      "results": {
+        "windows": {
+          "nativePngSha256": "fe3d08b2f924f81674a5ba4328881b5559b1bbded9ab7009e2e90179c2fa0da3",
+          "libraryPngSha256": "d446c28c426dbc8ddfa7460d2a5b6dcb397a83020dd7ccca8225653a0297f501",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "21af66cb6443e6cf0a26abb3bae7c5eafefb58b81f8246a2300fcf206ae3856b",
+          "libraryPngSha256": "4cadebd6b688248aad0b957927e1a984f9b4d1a5f3dc854d45365057284c56ae",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "declared-stroke-first-glyph-stroke-first",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' stroke='#2040c0' stroke-width='3' text-decoration='underline' paint-order='stroke fill'><tspan paint-order='stroke fill'>AAA</tspan></text></svg>",
+      "sourceSha256": "ca3fb64af55baaa6b83273f6a4610477cad761a3a675920ecc559dbf7097c16b",
+      "nativeInputSha256": "6b6be71e3b1644d8aae9fc8e250b6b43b294639d6b1f629625ceb500b3d6dbb0",
+      "results": {
+        "windows": {
+          "nativePngSha256": "80217c8f1d3143d36090a1ee1b3d0646e50df62b575f7b459427d3613fa632cf",
+          "libraryPngSha256": "a7b7b65eb7b03e2fc40554c3dd9a8f597db281889c221fb63d19b44c3513deeb",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "6171915a1cfe1455c05b9e857926c44ddda9735d3a2e57db01c0ce4f5a79f641",
+          "libraryPngSha256": "be32873999eff621703bb81b79fc9e23539e2f88d14aab08a37a3992096b98c3",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "undecorated-glyph-control",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' stroke='#2040c0' stroke-width='3' text-decoration='none' paint-order='normal'><tspan paint-order='stroke fill'>AAA</tspan></text></svg>",
+      "sourceSha256": "b4eb87d62858008cc1ebf9069fa3a273fb2df554c5c2a459c90a7f077fd63b3b",
+      "nativeInputSha256": "a8ac087da2739d89e324965e0915d72fe13a1841343edb3bacf3fb4d31d51ace",
+      "results": {
+        "windows": {
+          "nativePngSha256": "b0c17aaf1dfa11b32de8df9c16b979ef30469ccf0a67759d27ba520bec4e1f7e",
+          "libraryPngSha256": "d457f0128e2f036e66ccea0b84ef2ebb5f4454e1630d069b01bef3c915134a59",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "3d74c522df2b778633108a113a0001e70e30b7efbe1b55e2a5f76b33b67018e1",
+          "libraryPngSha256": "9b0a580f1407b0eef6e262559595c75c1d758a1e0e4ee7cec2a1d11e36c9b138",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "group-redeclared-alpha",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><g fill='#e03020' fill-opacity='.5' text-decoration='underline'><text x='8' y='44' font-family='serif' font-size='32' fill='#2040c0' text-decoration='underline'>AAA</text></g></svg>",
+      "sourceSha256": "3d9730f023f1767b75864a07355f4e0a756b74ab6e03f81de9d627f9055bc03f",
+      "nativeInputSha256": "e0519a4de794944f5e685e42934a248a6ec4e1a4034fe3b1759462fc78966d8c",
+      "results": {
+        "windows": {
+          "nativePngSha256": "12aede39097209a5f7938cffbf4fe70f63e3dd7e2e7f4c38b4e832b0ea9ea4ae",
+          "libraryPngSha256": "4745dd69d89a2c38e3d18f71d0661895f967cee9ce6644ad0b2f44b11833e10e",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "f48ac38b8f510e9f266179cc3941da13d86644becf52f0fd32343de06b45937f",
+          "libraryPngSha256": "471e3b62df5b19865867b0b4c9d335d431e3b171222035e1f470895f045ea260",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "inherited-alpha",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' text-decoration='underline' fill-opacity='.5'><tspan fill='#2040c0' >AAA</tspan></text></svg>",
+      "sourceSha256": "101df35065862433afbfb590acba15d3044aa542ca415de45b67b36311d6c7e0",
+      "nativeInputSha256": "dff632d8f92fff245e2c8650f453f012a119754df2cc1fa817c18d032d987244",
+      "results": {
+        "windows": {
+          "nativePngSha256": "01c02fcd56a254a01c232adbbfc8e51df7a5b60d66b68f5997d6e92e64144c97",
+          "libraryPngSha256": "af6d93fa6ee1c9e6dfad06b5f70431ef001ac5ea0c106f34ecdeb84ae08f1993",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "0317e776bc7a61dc778bfc0dbb8238636a462ab3efdd0477c0a0a9c71fa5b905",
+          "libraryPngSha256": "360e02b2b16f92706a9a847143fdb72895d80379209eace64e0c8de682b54771",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "inherited-paint",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' text-decoration='underline' ><tspan fill='#2040c0' >AAA</tspan></text></svg>",
+      "sourceSha256": "70ba4f1fb9af508366112f6646b3fb6575aeb500a148987ccaf3992efe54645b",
+      "nativeInputSha256": "effd7477e901ebb122915bb439b4859a58d81aa78a53092b975bba9a2e8fb336",
+      "results": {
+        "windows": {
+          "nativePngSha256": "1afefbdda77e16a653348599cd8bb71a9a5962ada9080d9dc2392d5eda72bd90",
+          "libraryPngSha256": "19d131a25f90c3237f97a1374226c0e64cad4609127ea4cfaf7af28b7de18efb",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "ba232407ce406179d32c7e519027bc4e889f51f333532402bdf3254b2c722414",
+          "libraryPngSha256": "e1fede4f9b01cef5b2c9d60f211d0c1882e2d4d271a66a483a81b708caa858e1",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "mixed-lines-alpha",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' text-decoration='underline' fill-opacity='.5'><tspan fill='#2040c0' text-decoration='overline'>AAA</tspan></text></svg>",
+      "sourceSha256": "4690719256aa45be5f2db98c0c7af8845ab0b57e0e21ead13a6233d2f6fe5fcc",
+      "nativeInputSha256": "c5f47534c5bbd5e7baf29b5c0565258fe15b74b425837b4fe5e94be45be4149d",
+      "results": {
+        "windows": {
+          "nativePngSha256": "5812670e9a32200fcc0cf56ff3d2f8b4eac68a12bb5905a5d72b04bd5374ef19",
+          "libraryPngSha256": "9feabd160efd7468be954ff022ac1cddaaf3aa0ad3092eebf210ecc893e55e95",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "f8c6732663a4c66517c64c813f1931387000ebc2570d77a27438c1668947306c",
+          "libraryPngSha256": "a886c1eb482aa162f474daa408d4a91517bc3f177176e1f206bd818ba7b5866c",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "parent-large-child-small",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' text-decoration='underline' ><tspan fill='#2040c0' font-size='16'>AAA</tspan></text></svg>",
+      "sourceSha256": "303c27853ecec5e5046056e3c581c14443742db6f8ec0c05d55af122d117c17f",
+      "nativeInputSha256": "66c5bbef9d4d3e9c2225bced1a98f105515f2bade0d0c053a8bf0f85252dd617",
+      "results": {
+        "windows": {
+          "nativePngSha256": "b11e7caa1e098b86114a75c02bcc7772a53801c7549639778f416068994f8d50",
+          "libraryPngSha256": "8a46bc2f70e1a8f31723dfeca962714c7ff8d01334c6968b1386ff12f0fa60b5",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "1cd2a48aeeb515c45fffe0fd9b41cb269b062f2de17ecb6a23c3da2103c2fb23",
+          "libraryPngSha256": "965a4e5d3bdf2600ba9ae48fe59ca88ec0ffe1a3cc44d1f5b9498683d4d00411",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "parent-small-child-large",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='16' fill='#e03020' text-decoration='underline' ><tspan fill='#2040c0' font-size='32'>AAA</tspan></text></svg>",
+      "sourceSha256": "e31cb2665ceba28060ce163d8f72f7de7efaaa298c2fb0f10b7ff27d416b66d9",
+      "nativeInputSha256": "bd79352a98d12b72a1c038a650ffb4d121a2a3785b164bd14f8caeb55da1217b",
+      "results": {
+        "windows": {
+          "nativePngSha256": "1afefbdda77e16a653348599cd8bb71a9a5962ada9080d9dc2392d5eda72bd90",
+          "libraryPngSha256": "19d131a25f90c3237f97a1374226c0e64cad4609127ea4cfaf7af28b7de18efb",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "ba232407ce406179d32c7e519027bc4e889f51f333532402bdf3254b2c722414",
+          "libraryPngSha256": "e1fede4f9b01cef5b2c9d60f211d0c1882e2d4d271a66a483a81b708caa858e1",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "redeclared-alpha",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' text-decoration='underline' fill-opacity='.5'><tspan fill='#2040c0' text-decoration='underline'>AAA</tspan></text></svg>",
+      "sourceSha256": "668660abce7778f4be48737cf890f66451e89e747e0ba21a32e82b9fd1469d8d",
+      "nativeInputSha256": "5ba20ce105343135b830d1468b19a34f3eba87b067e0aeb1a357013ad2d0a2a4",
+      "results": {
+        "windows": {
+          "nativePngSha256": "12aede39097209a5f7938cffbf4fe70f63e3dd7e2e7f4c38b4e832b0ea9ea4ae",
+          "libraryPngSha256": "4745dd69d89a2c38e3d18f71d0661895f967cee9ce6644ad0b2f44b11833e10e",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "f48ac38b8f510e9f266179cc3941da13d86644becf52f0fd32343de06b45937f",
+          "libraryPngSha256": "471e3b62df5b19865867b0b4c9d335d431e3b171222035e1f470895f045ea260",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    },
+    {
+      "id": "redeclared-paint",
+      "inputUtf8": "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='72'><text x='8' y='44' font-family='serif' font-size='32' fill='#e03020' text-decoration='underline' ><tspan fill='#2040c0' text-decoration='underline'>AAA</tspan></text></svg>",
+      "sourceSha256": "51eca9c57d3eb0e11bc41b8ac9ade5abef99a8fd5ec86dbbc30ed3b22f128d04",
+      "nativeInputSha256": "6f77d816199b0af4f90d8ae20f8378386c8c4fed41a7e088d8263c727d980578",
+      "results": {
+        "windows": {
+          "nativePngSha256": "82cf4d76cff63b59438563ab16e4175c97632723380a30258213ea67b7751d15",
+          "libraryPngSha256": "5b3c041fd726fefca945eb5badb210492809f045966164c8ba494ac287ff3aff",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        },
+        "linux": {
+          "nativePngSha256": "a36affbe86d20fea3683dd41a503bf9b8d824d894e39dd779c5c7a16fcddd954",
+          "libraryPngSha256": "f8d248c3e9f6fbb25a69a9024321415a330ba79712c00cb2cb1c05c5519ed385",
+          "matchingHealthyCaptures": 3,
+          "nativeExact": true
+        }
+      }
+    }
+  ],
+  "changes": {
+    "production": 0,
+    "routineTestCases": 0,
+    "existingSourcesOrTargets": 0,
+    "tolerances": 0,
+    "newGoldenImages": 0
+  }
+}

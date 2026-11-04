@@ -430,7 +430,7 @@ keep this boundary separate from supplied-program rendering.
 | Programs | Standalone static TrueType, face index 0, composites and bounded hinting; unsupported executed instructions fail. |
 | Characters | Horizontal LTR ASCII, covered Latin combining sequences and supplementary scalars; no bidi, joining or general complex-script shaping. |
 | Layout | Ordered text/CDATA/whitespace, nested spans, inherited/per-span styles, scalar/list x/y/dx/dy/rotate, anchors, spacing, explicit lines, textLength spacing/spacingAndGlyphs and alphabetic/middle/hanging baselines. |
-| Painting | Affine solid/gradient/pattern fills and strokes, dashes/non-scaling widths/paint order and solid underline/overline/line-through. |
+| Painting | Affine solid/gradient/pattern fills and strokes, dashes/non-scaling widths/paint order and solid-color underline/overline/line-through. |
 | Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, length/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
 | Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and 2–8 components in font order. |
 
