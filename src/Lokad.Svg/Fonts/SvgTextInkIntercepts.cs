@@ -48,8 +48,10 @@ internal static class SvgTextInkIntercepts
                 float begin = (float)left * pathScale, end = (float)right * pathScale;
                 float start = (float)originX + begin * (float)glyphStretch;
                 float width = (end - begin) * (float)glyphStretch;
-                float x = start - (float)dilation;
-                float extent = width + 2 * (float)dilation;
+                // SVG length adjustment stretches the padding with the glyph ink.
+                float padding = (float)dilation * (float)glyphStretch;
+                float x = start - padding;
+                float extent = width + 2 * padding;
                 gaps.Add(new(x, x + extent));
             }
         }

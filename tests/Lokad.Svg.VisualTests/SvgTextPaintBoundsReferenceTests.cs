@@ -15,7 +15,8 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     {
         "image-capture.json", "shared-layout-images.json", "filter-source-images.json",
         "precision-pattern-images.json", "paint-stage-images.json", "precision-stroke-images.json",
-        "fragment-stages.json", "precision-source-images.json", "precision-screening.json"
+        "fragment-stages.json", "precision-source-images.json", "precision-screening.json",
+        "decoration-ink-images.json"
     }.ToFrozenDictionary(static file => file,
         static file => new PaintReferenceBank("text-paint-bounds", file), StringComparer.Ordinal);
     public static IEnumerable<object[]> Cases()
@@ -128,6 +129,14 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [Trait("Layer", "Rendering")]
     public Task Source_rectangles_and_pattern_origins_retain_each_original_native_image(string id)
         => AssertNativeImage("precision-source-images.json", id);
+
+    public static IEnumerable<object[]> DecorationInkCases() => CaptureCases("decoration-ink-images.json");
+
+    [Theory]
+    [MemberData(nameof(DecorationInkCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Decoration_extents_and_ink_exclusions_preserve_glyph_layout(string id)
+        => AssertNativeImage("decoration-ink-images.json", id);
 
     private static IEnumerable<object[]> CaptureCases(string file)
     {

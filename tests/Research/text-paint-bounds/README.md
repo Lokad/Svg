@@ -27,6 +27,13 @@ the full platform and package gates at a coherent milestone. Older captures in
 this folder cover direct/path boxes, spacing, strikes and drawing enclosures.
 Shared shader bounds do not replace each fragment's local drawing enclosure.
 
+The four [decoration ink regressions](decoration-ink-images.json) use canonical
+conversion: negative trailing spacing and glyph-stretched ink gaps each retain an
+independent glyph-only companion. The [shared-model review](../release-baselines/decoration-ink-review.json)
+binds their failing-before results to three healthy native captures per host and
+retains the broader 39-input investigation. Affine and Linux path decoration
+rounding remain open; glyph layout and existing targets are unchanged.
+
 The 242 [paint-box images](image-capture.json) each keep one routine canonical
 conversion and their original platform references. Prepared replay is a separate
 contract: the [selection](prepared-replay.json) retains 63 routine material, font,

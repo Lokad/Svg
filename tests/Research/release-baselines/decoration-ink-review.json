@@ -1,0 +1,1649 @@
+{
+  "status": "Two observed shared decoration defects are fixed; affine and Linux path drawing residuals remain open. No text-layout, contour-intersection, existing reference or tolerance change.",
+  "baselineProductionSource": "70d38675b3279748043a27449a7bdbe33f3b1508",
+  "baselineLibrarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+  "candidateSourceFilesLfSha256": {
+    "src/Lokad.Svg/Fonts/SvgTextInkIntercepts.cs": "c62a56865577521beeb5760b31a71a75c37b3d2427e2f36d330fbe148a4b396b",
+    "src/Lokad.Svg/Parsing/SvgTextDecorationRenderer.cs": "3c2ec5628a449007f4a32fa07c1107908bc123e71ae0f95624f1a0975b3d024c"
+  },
+  "changes": [
+    "Use the retained scaled-font source extent, including trailing letter spacing, instead of the logical advance width for direct decoration rectangles.",
+    "Apply SVG glyph stretching to ink-gap padding as well as contour intervals."
+  ],
+  "scope": [
+    "34 authored stripe/descender/spacing/stretch/rotation/path/viewport/retained-source/filter/mask/stroke controls.",
+    "Five glyph-only companions isolate each observed decoration discrepancy from text layout and glyph drawing.",
+    "Four routine rendering regressions retain negative-spacing/stretch failing-before inputs and their independent glyph-only companions through canonical synchronous conversion; no repeated destination matrix.",
+    "Existing decoration ownership contracts and original direct/path/stroke/native controls remain independent and unchanged."
+  ],
+  "font": {
+    "path": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "license": "../supplied-font-labels/fonts/OFL.txt",
+    "catalog": "../text-paint-bounds/font-pack.json"
+  },
+  "nativeProtocol": {
+    "pins": [
+      "../../../tools/chrome-for-testing.json",
+      "../../../tools/chrome-for-testing.linux64.json"
+    ],
+    "command": "Lokad.Svg.Chrome <pinned-browser> 360 180 --image-viewport 360 180",
+    "fontTransport": "Replace font-family='serif' with font-family='ReviewFont'; insert <style>@font-face{font-family:ReviewFont;src:url(data:font/ttf;base64,<declared font bytes>)}</style> immediately after the root start tag.",
+    "capturesPerInputPerHost": 3,
+    "freshHealthyProcesses": 234,
+    "sourceRecipeLicense": "MIT"
+  },
+  "conversion": "Existing FontProbe prepared-document async stream conversion with the explicit catalog/provider, one selected program per input, default viewport/options, scale1 and transparent background. Native PNGs remain unchanged during candidate replay.",
+  "sourceRecipe": {
+    "description": "Concatenate sourcePrefix with each case sourceSuffix as UTF-8, without a BOM or final newline.",
+    "sourcePrefix": "<svg xmlns='http://www.w3.org/2000/svg' width='360' height='180'><defs><path id='h' d='M16 64H310'/><path id='q' d='M16 108Q160 4 310 108'/><path id='c' d='M16 108C80 0 240 160 310 36'/><path id='l' d='M16 108L100 40L180 108L310 50'/><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='360' height='180'><feOffset dx='4.5' dy='.25'/></filter><filter id='z' filterUnits='userSpaceOnUse' x='0' y='0' width='360' height='180'><feOffset dx='0' dy='0'/></filter><mask id='m' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='360' height='180'><rect width='360' height='180' fill='white' fill-opacity='.5'/></mask><"
+  },
+  "hosts": [
+    {
+      "host": "windows",
+      "inputs": 39,
+      "exactBefore": 36,
+      "exactAfter": 38,
+      "freshHealthyProcesses": 117,
+      "profilesCleaned": 117,
+      "networkServiceCrashes": 0,
+      "sandboxAccessFailures": 0,
+      "truncatedLogs": 0,
+      "unstableInputs": 0,
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+    },
+    {
+      "host": "linux",
+      "inputs": 39,
+      "exactBefore": 34,
+      "exactAfter": 36,
+      "freshHealthyProcesses": 117,
+      "profilesCleaned": 117,
+      "networkServiceCrashes": 0,
+      "sandboxAccessFailures": 0,
+      "truncatedLogs": 0,
+      "unstableInputs": 0,
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  ],
+  "regressions": "../text-paint-bounds/decoration-ink-images.json",
+  "remaining": [
+    {
+      "id": "parent-affine",
+      "hosts": [
+        "windows",
+        "linux"
+      ],
+      "changedPixels": 1,
+      "next": "Compare physical stripe construction and the source-to-device drawing frame before changing any curve or layout logic."
+    },
+    {
+      "id": "path-l",
+      "hosts": [
+        "linux"
+      ],
+      "changedPixels": 2,
+      "next": "Compare source-font/path decoration rectangles and their native transform/numerical stages; glyph-only output is exact."
+    },
+    {
+      "id": "path-rotation",
+      "hosts": [
+        "linux"
+      ],
+      "changedPixels": 1,
+      "next": "Retain character rotation and compare decoration drawing precision separately from exact glyph layout."
+    }
+  ],
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "94ea6a0cd19c17a63efda4cafaeebd70cb528813fa1507a479ab442af403870b",
+        "selection": "FullyQualifiedName~Decoration_extents_and_ink_exclusions_preserve_glyph_layout",
+        "exitCode": 1,
+        "seconds": 14.923597999848425,
+        "counters": {
+          "executed": "4",
+          "passed": "2",
+          "failed": "2"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_extents_and_ink_exclusions_preserve_glyph_layout(id: \"ink-glyph-stretch\")",
+            "message": "ink-glyph-stretch"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_extents_and_ink_exclusions_preserve_glyph_layout(id: \"ink-negative-spacing\")",
+            "message": "ink-negative-spacing"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "94ea6a0cd19c17a63efda4cafaeebd70cb528813fa1507a479ab442af403870b",
+        "selection": "FullyQualifiedName~Decoration_extents_and_ink_exclusions_preserve_glyph_layout",
+        "exitCode": 1,
+        "seconds": 16.486171399941668,
+        "counters": {
+          "executed": "4",
+          "passed": "2",
+          "failed": "2"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_extents_and_ink_exclusions_preserve_glyph_layout(id: \"ink-negative-spacing\")",
+            "message": "ink-negative-spacing"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_extents_and_ink_exclusions_preserve_glyph_layout(id: \"ink-glyph-stretch\")",
+            "message": "ink-glyph-stretch"
+          }
+        ]
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "3a5ebede1a0adf1e5f8978c14416d44de08fea8cb552be72a0fb3c9e67b7a93b",
+        "testAssemblySha256": "94ea6a0cd19c17a63efda4cafaeebd70cb528813fa1507a479ab442af403870b",
+        "selection": "FullyQualifiedName~Decoration_extents_and_ink_exclusions_preserve_glyph_layout",
+        "exitCode": 0,
+        "seconds": 11.858663399936631,
+        "counters": {
+          "executed": "4",
+          "passed": "4",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "3a5ebede1a0adf1e5f8978c14416d44de08fea8cb552be72a0fb3c9e67b7a93b",
+        "testAssemblySha256": "94ea6a0cd19c17a63efda4cafaeebd70cb528813fa1507a479ab442af403870b",
+        "selection": "FullyQualifiedName~Decoration_extents_and_ink_exclusions_preserve_glyph_layout",
+        "exitCode": 0,
+        "seconds": 12.200968499993905,
+        "counters": {
+          "executed": "4",
+          "passed": "4",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "integration": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "3a5ebede1a0adf1e5f8978c14416d44de08fea8cb552be72a0fb3c9e67b7a93b",
+        "testAssemblySha256": "585482e1f1d8245fb8eadfd4b54e716504ed19fe8c93e91e0b2acbab19d199c1",
+        "selection": "FullyQualifiedName~SvgTextDecorationTests|FullyQualifiedName~SvgGlyphDeviceMetricsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextPaint|FullyQualifiedName~SvgTextShared|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgSourceVisibility|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests",
+        "exitCode": 0,
+        "seconds": 15.396330800140277,
+        "counters": {
+          "executed": "555",
+          "passed": "555",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "3a5ebede1a0adf1e5f8978c14416d44de08fea8cb552be72a0fb3c9e67b7a93b",
+        "testAssemblySha256": "585482e1f1d8245fb8eadfd4b54e716504ed19fe8c93e91e0b2acbab19d199c1",
+        "selection": "FullyQualifiedName~SvgTextDecorationTests|FullyQualifiedName~SvgGlyphDeviceMetricsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextPaint|FullyQualifiedName~SvgTextShared|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgSourceVisibility|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests",
+        "exitCode": 0,
+        "seconds": 17.677206499967724,
+        "counters": {
+          "executed": "555",
+          "passed": "555",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "3a5ebede1a0adf1e5f8978c14416d44de08fea8cb552be72a0fb3c9e67b7a93b",
+        "testAssemblySha256": "94ea6a0cd19c17a63efda4cafaeebd70cb528813fa1507a479ab442af403870b",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)|FullyQualifiedName~SvgFontLayoutDiagramTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests",
+        "exitCode": 0,
+        "seconds": 39.31110089994036,
+        "counters": {
+          "executed": "2872",
+          "passed": "2872",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "3a5ebede1a0adf1e5f8978c14416d44de08fea8cb552be72a0fb3c9e67b7a93b",
+        "testAssemblySha256": "94ea6a0cd19c17a63efda4cafaeebd70cb528813fa1507a479ab442af403870b",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)|FullyQualifiedName~SvgFontLayoutDiagramTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests",
+        "exitCode": 0,
+        "seconds": 34.59038250008598,
+        "counters": {
+          "executed": "2872",
+          "passed": "2872",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "integration-net10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "76676dd568abec99e5c7a8287dae84e27fce62955cf97813db83809ebee38ceb",
+        "testAssemblySha256": "71557ded95855074d120ce7782a6830d4711f2a6c5cf2424fc5cc3c41d6b0bdc",
+        "selection": "FullyQualifiedName~SvgTextDecorationTests|FullyQualifiedName~SvgGlyphDeviceMetricsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextPaint|FullyQualifiedName~SvgTextShared|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgSourceVisibility|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests",
+        "exitCode": 0,
+        "seconds": 13.945983600104228,
+        "counters": {
+          "executed": "555",
+          "passed": "555",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "76676dd568abec99e5c7a8287dae84e27fce62955cf97813db83809ebee38ceb",
+        "testAssemblySha256": "71557ded95855074d120ce7782a6830d4711f2a6c5cf2424fc5cc3c41d6b0bdc",
+        "selection": "FullyQualifiedName~SvgTextDecorationTests|FullyQualifiedName~SvgGlyphDeviceMetricsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextPaint|FullyQualifiedName~SvgTextShared|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgSourceVisibility|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests",
+        "exitCode": 0,
+        "seconds": 15.367245800094679,
+        "counters": {
+          "executed": "555",
+          "passed": "555",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "76676dd568abec99e5c7a8287dae84e27fce62955cf97813db83809ebee38ceb",
+        "testAssemblySha256": "a1368934e5bb42ed93ce4291e2a236c63e163fef649a8edb86019666e6f97393",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)|FullyQualifiedName~SvgFontLayoutDiagramTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests",
+        "exitCode": 0,
+        "seconds": 37.95303710014559,
+        "counters": {
+          "executed": "2872",
+          "passed": "2872",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "76676dd568abec99e5c7a8287dae84e27fce62955cf97813db83809ebee38ceb",
+        "testAssemblySha256": "a1368934e5bb42ed93ce4291e2a236c63e163fef649a8edb86019666e6f97393",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)|FullyQualifiedName~SvgFontLayoutDiagramTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests",
+        "exitCode": 0,
+        "seconds": 27.384000400081277,
+        "counters": {
+          "executed": "2872",
+          "passed": "2872",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "validationScope": "Focused failing-before/after regressions and affected mechanism, API/ownership, text-node, paint, document/path/CSS, original acceptance and decoration integration on Windows/Linux for both supported runtimes. Full source/package CI is a separate milestone; local functional wall times include discovery/startup and are not renderer performance.",
+  "cases": [
+    {
+      "id": "direct-size-16",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='16' fill='#804020' text-decoration='underline' >gjpqy</text></svg>",
+      "sourceSha256": "e9454076ee345d6accea57ef50cad13f41ea46a7c3dcb46a7f699222fda05454",
+      "nativeInputSha256": "5c98f6baecc5b15c26dad9c1c93c54aa45b1d0f7864260bd7d0e736467a89479",
+      "duty": "Canonical ink-stripe boundaries through descender curves at four useful strike sizes.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "a9e7a6692c681e74452f3f80c84a16917d9643295890fefd32a98dd81be39b02",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "b7677ffaaa5ba80889b3b76f3ace7f6290ace8c7a2ff3099267e162785bdb683",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-size-24",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></svg>",
+      "sourceSha256": "9786ee350cc79643e45faac2a3443aad61efbcc1b5fec8f75e4e41e71ee44151",
+      "nativeInputSha256": "5e7ee3702e37a92ecbd6c8017321f9d8faa02dc8ab829486abdbc05eec17f73f",
+      "duty": "Canonical ink-stripe boundaries through descender curves at four useful strike sizes.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "d46c16a35e4ebf377fa446d310b37fbe0b9c5be453469912cafaa13fb46a0c27",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "332ac8bd5b8415b358feeb475134c934ba67cacd2e084ae680869795cab66e46",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-size-32",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='32' fill='#804020' text-decoration='underline' >gjpqy</text></svg>",
+      "sourceSha256": "f53cbd5e9d4ab13f72ca54b028429ddad3b3a97fdfe7c6f23dfcd2605da23b06",
+      "nativeInputSha256": "43b352833e000d3be672334a5e8b3404feb2cd48c8621a190630cba981958aee",
+      "duty": "Canonical ink-stripe boundaries through descender curves at four useful strike sizes.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "cf91e990ee38beef78c8eb05bc1e556f97933368287f7fcf3f45a762965b23a1",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "66d4b633d83648ce92e6ea92e28a8d76edade54173dea54794494dbae3c086b8",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-size-48",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='48' fill='#804020' text-decoration='underline' >gjpqy</text></svg>",
+      "sourceSha256": "789fba2cd18bdacf5ae9996c4aa5b2561f540f1cd513b9ee4f0167857f69772d",
+      "nativeInputSha256": "43432c7ac3f5420e867dfbe3b11c652665d3ab9ab34cf534325d56de8480bd59",
+      "duty": "Canonical ink-stripe boundaries through descender curves at four useful strike sizes.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "597e224b11632b62843745008f2038667331d3fa1dc56ee8fcab6370472a558f",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "113466b2a6184621ba892fc49dfe5ac5daae2f2289415411db5458afc25045e3",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "direct-glyph-control",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='none' >gjpqy</text></svg>",
+      "sourceSha256": "daaa37eecdd6bdde627ffffce46f097daee77ecf574f61fc182551ce8bffa45d",
+      "nativeInputSha256": "324a90d54360d232ef281abdbcb9ee81320e5148fc61fb3b6cd194dfc3cc532d",
+      "duty": "Neutral glyph reference to separate contour/hinting loss from decoration clipping.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "fb0f6e7dc3343d9bae3074408e91fbb233b491c3de4cc23270d20e21e41f8668",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "f1eb51f98aa708221acd74d304f54c96a2ef622d683d6e1ae291a0c8aca548cf",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "baseline-64.25",
+      "sourceSuffix": "/defs><text x='16' y='64.25' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></svg>",
+      "sourceSha256": "2cab94f3d36f8e4bb78df0a83d45c76a3799720ac796d52274f2178a73ce2ca0",
+      "nativeInputSha256": "f99e8346172b59ed4ea70f64d8c93cbc5e1f1c1bada14bb74b8030145e85f185",
+      "duty": "Fractional stripe phase without multiplying consumers.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "47baba146bb4f7f2c83a884ced5e5c7ce4485adb9441cecbf885ff1c7ea577d1",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "acfe87c1c3f0c50d9433278086ec4b1fa70493c9f1fe53119f71cd80a7835e3e",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "baseline-64.5",
+      "sourceSuffix": "/defs><text x='16' y='64.5' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></svg>",
+      "sourceSha256": "50d4cb4ca4bbea896205b5059085a3b858e95d3bdf2c6355746737e16472d8cc",
+      "nativeInputSha256": "8d0487db5172b78c245fe3a09c3980922d7988ead007bc7c2e72a94541f70c71",
+      "duty": "Fractional stripe phase without multiplying consumers.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "ea2d24b025c312ca99cdb916a626fd2d550601b766195ee8bb0baba8e8196f1b",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "9fd7adc2f28cb4a6cfbd8fed92949d5ded80853fecd28733b473c932fc13a6bb",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "lines-overline",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='overline' >gjpqy</text></svg>",
+      "sourceSha256": "b62f90ba3c2e0bc50ec60f05c2f4911259b5432b30873b285ed999d625014d01",
+      "nativeInputSha256": "91a95c7f4a603a897e9bd1835c9e34cc06669e852559d3ec9d2ae1c929041631",
+      "duty": "Distinct stripe and ordered post-glyph line-through paths.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "a535c417df28d3f244967d9aa070e83dbca757a61263caf0cdc68467128aa716",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "b429233d5ecbd3f5e04e98cdf28a6b1d6e4b48fbb041eab54e74366b3b074b4b",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "lines-line-through",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='line-through' >gjpqy</text></svg>",
+      "sourceSha256": "9695d489755a39ea4dd7bd2064ead1cf5740434e90e4f0918b286b00548ce19c",
+      "nativeInputSha256": "a4eb7ff90b91bdb5a28d236a36843170d17d0d0b3899433f5dd0d48cf6c91af2",
+      "duty": "Distinct stripe and ordered post-glyph line-through paths.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "2a85d559ead2b13d27cb3e9d8b4328ac51b9890dc90ab9a0eb23a94124508656",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "4ad6838f3ad6b7e50bbd523ade5dd74f9a8fb009380f231890f4af8c136679b5",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "lines-underline-overline-line-through",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline overline line-through' >gjpqy</text></svg>",
+      "sourceSha256": "f0a6b2aff4c65efed7dcda0fc662f2e48e36bea34ae0b622b740b08d4d773e4a",
+      "nativeInputSha256": "3c7d43e280afd30888ff7417c79e15cb9067e65197578596d9ad12a5c229185c",
+      "duty": "Distinct stripe and ordered post-glyph line-through paths.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "7f5b875c7d369cccf7e6a13fb2331eb64ddf8ccd41f5c96dff27a501d605a99d",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "d2ecc323d42b435255222036a06a2d5be49927aeae2c3597ac1df81215efa526",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "fractional-x",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' dx='.25'>gjpqy</text></svg>",
+      "sourceSha256": "bf523a340528ddafea5c0c286d83122ad4ec626f6a15adcf4fb3b28454a239bb",
+      "nativeInputSha256": "e3af80868b72c18aa306b46cb3f6f7a864dab75bb8313b4ae2fdf61f19a45f94",
+      "duty": "Fractional contour/stripe source origin.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "5912e071bb067c200123f6bb0007911ef58d1ddb8bfa31d9b0971b91a90a4265",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "6bfd06478b89c4021277e2ac3b5dd74a4ce6e897d1b4aaf534bb6ccb884a01cb",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "negative-spacing",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' letter-spacing='-1.5'>gjpqy</text></svg>",
+      "sourceSha256": "e5aaf4915532945702cd7fe603803c0877ab8944ebb73cc9e20b5a09432fc911",
+      "nativeInputSha256": "e4020d7f46db583eac156ee29aeab71fb392eb37e8d8980d73d65c876de29d96",
+      "duty": "Overlapping glyph intercept intervals and merged holes.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "372872d3e6977d6679550b41fc5f9895de8cea9717184dbbb2cb3d57a4adf229",
+          "before": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 6,
+            "MaximumChannelError": 199,
+            "MeanAbsoluteError": 0.006176697530864197,
+            "RootMeanSquareError": 0.928141562079438,
+            "MaximumAlphaError": 199,
+            "AlphaChangedPixelCount": 6,
+            "MinimumMismatchX": 71,
+            "MinimumMismatchY": 66,
+            "MaximumMismatchX": 72,
+            "MaximumMismatchY": 68,
+            "IsExact": false
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "50b5c35524d8834537879c7ce0d9f39965098d80286363a44d80f4c76eeda277",
+          "before": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 6,
+            "MaximumChannelError": 199,
+            "MeanAbsoluteError": 0.006176697530864197,
+            "RootMeanSquareError": 0.928141562079438,
+            "MaximumAlphaError": 199,
+            "AlphaChangedPixelCount": 6,
+            "MinimumMismatchX": 71,
+            "MinimumMismatchY": 66,
+            "MaximumMismatchX": 72,
+            "MaximumMismatchY": 68,
+            "IsExact": false
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "glyph-stretch",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' textLength='112' lengthAdjust='spacingAndGlyphs'>gjpqy</text></svg>",
+      "sourceSha256": "728c08509b527574f8fcdb3c35693b435ebf9e62b131267032f560b751dc2256",
+      "nativeInputSha256": "363509d3c63e6e26a248f45425ece622a1979f9cb3805c95e8f438781040d580",
+      "duty": "Glyph-stretched intercept widths remain separate from logical advances.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "69792037b8fb70dd29cd73c39a85f618ccf193aab0c1547e389ae43b7a6cfc5a",
+          "before": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 33,
+            "MaximumChannelError": 255,
+            "MeanAbsoluteError": 0.05432098765432099,
+            "RootMeanSquareError": 2.9465990544446865,
+            "MaximumAlphaError": 255,
+            "AlphaChangedPixelCount": 33,
+            "MinimumMismatchX": 16,
+            "MinimumMismatchY": 66,
+            "MaximumMismatchX": 121,
+            "MaximumMismatchY": 68,
+            "IsExact": false
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "c5581dde6e7fb9d1438ceadf1e81033b3a9e9c85938d5c993c04c331629c2dcc",
+          "before": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 33,
+            "MaximumChannelError": 255,
+            "MeanAbsoluteError": 0.05432098765432099,
+            "RootMeanSquareError": 2.9465990544446865,
+            "MaximumAlphaError": 255,
+            "AlphaChangedPixelCount": 33,
+            "MinimumMismatchX": 16,
+            "MinimumMismatchY": 66,
+            "MaximumMismatchX": 121,
+            "MaximumMismatchY": 68,
+            "IsExact": false
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "character-rotation",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' rotate='0 12 -18 0 7'>gjpqy</text></svg>",
+      "sourceSha256": "32cc93dc13a6c3170c3db26d1e996241290d0a8d20db461c2324695f352fa8cc",
+      "nativeInputSha256": "aaedfdaab1d6d5538fe13f8b884d6a28fffa3ff0db94e7b767c262a7ed382c73",
+      "duty": "Character-local rotations versus decoration placement.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "44f260b74ec194fc0d45946465dd09001343a57f214acc7a472f156a9c6ff8f6",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "f84a4cfc14b8316aaeec120b43da86578e0dc839a99ffd693c3e32122b203579",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "mixed-font-size",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' ><tspan font-size='16'>gj</tspan><tspan font-size='32'>pqy</tspan></text></svg>",
+      "sourceSha256": "004df7c856e2a2743fcff71491502ba2136eb2700c669266fd592e454e45660b",
+      "nativeInputSha256": "d8cc90754e50254edb97c98b065d083fa674345855e7e9dcc51fa4a7f90c1752",
+      "duty": "Fragment and glyph font boundaries through ink exclusion.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "c7df06d7a630de8dcf6b914a5261ec63e32c1365f485f1b065d453ecdde65e1b",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "76148fef14f92529106758daddbd918f54e932298daccd52630c305f1057deba",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "fill-alpha",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' fill-opacity='.5'>gjpqy</text></svg>",
+      "sourceSha256": "1b40403aa756dfcd72146905955ae370902ec8c56a02a123dbc8cc8762ed6454",
+      "nativeInputSha256": "cb08db28c7489e165f1259b452c021f1c1189f63438b264fedc81cc2eb05732b",
+      "duty": "Source alpha through binary decoration holes.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "7fa8132aca1ecfa4d9ec34f0a2fd6aa760696c22832b282a030ded651667c695",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "228c57bfb5b7a2c64ed60455f830eb9e4972d19c0a2ff8050f177743713dfa9b",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "group-opacity",
+      "sourceSuffix": "/defs><g opacity='.5'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></g></svg>",
+      "sourceSha256": "90e41107914ba9a6740c53cca6d1018fb220ed80d324964541e8cc83608cbe4d",
+      "nativeInputSha256": "8a4ea8571c2415ebdd2de40a8c37681ef2c2bfde5a2c3ca2c3ad76500d83e366",
+      "duty": "Isolated layer composition with ink exclusions.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "cc268aa48b07ea3abf7f315a4ec7e97c0a62857c37a051d08fd42da8a35016a9",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "7fd5bd66a57155fceb634ba8f0c657e45bdc0f6ece71e3e1aa563dbe006e7d9c",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "parent-rotation",
+      "sourceSuffix": "/defs><g transform='rotate(7 80 64)'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></g></svg>",
+      "sourceSha256": "2294d665111c4eca45c456c894b5f003bfe7cc537772ef873e7055ddfb07b41e",
+      "nativeInputSha256": "a8090f20a5a34c9b8efe36585ddbaa0af6d029acf7053a8696746d27412caccc",
+      "duty": "Reference-map placement and source-local exclusion rectangles.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "5ce585abca024c7a199eb92fa1f36dd4ad3548072e9ce0010696c9689faab806",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "60309b152d6651b423c04bd948aa834ca13ef5a05f96b7288030f63dc87ac6d8",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "parent-affine",
+      "sourceSuffix": "/defs><g transform='matrix(1 .25 .1 1 1 2)'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></g></svg>",
+      "sourceSha256": "5f3406f82c38e53e957dddd7d2cf0a4579474b1914a0ba08525c1951697a2008",
+      "nativeInputSha256": "42210243ac2f14cdb2f1c7f277d4d4cbb7c0741483cacefc1937a7b65f86d16d",
+      "duty": "Reference-map placement and source-local exclusion rectangles.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "84daeab3ce61f6ee841c49a07101801f7638d8434cfdc9e6e1edec776fdcf898",
+          "before": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 1,
+            "MaximumChannelError": 3,
+            "MeanAbsoluteError": 1.9290123456790123e-05,
+            "RootMeanSquareError": 0.006514466333088096,
+            "MaximumAlphaError": 1,
+            "AlphaChangedPixelCount": 1,
+            "MinimumMismatchX": 46,
+            "MinimumMismatchY": 80,
+            "MaximumMismatchX": 46,
+            "MaximumMismatchY": 80,
+            "IsExact": false
+          },
+          "after": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 1,
+            "MaximumChannelError": 3,
+            "MeanAbsoluteError": 1.9290123456790123e-05,
+            "RootMeanSquareError": 0.006514466333088096,
+            "MaximumAlphaError": 1,
+            "AlphaChangedPixelCount": 1,
+            "MinimumMismatchX": 46,
+            "MinimumMismatchY": 80,
+            "MaximumMismatchX": 46,
+            "MaximumMismatchY": 80,
+            "IsExact": false
+          }
+        },
+        "linux": {
+          "nativePngSha256": "c37c16d2bcc17c589a1bc63904a1f71cf5e278da4197a7837ad24830a3c98c3d",
+          "before": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 1,
+            "MaximumChannelError": 3,
+            "MeanAbsoluteError": 2.3148148148148147e-05,
+            "RootMeanSquareError": 0.006804138174397717,
+            "MaximumAlphaError": 1,
+            "AlphaChangedPixelCount": 1,
+            "MinimumMismatchX": 46,
+            "MinimumMismatchY": 80,
+            "MaximumMismatchX": 46,
+            "MaximumMismatchY": 80,
+            "IsExact": false
+          },
+          "after": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 1,
+            "MaximumChannelError": 3,
+            "MeanAbsoluteError": 2.3148148148148147e-05,
+            "RootMeanSquareError": 0.006804138174397717,
+            "MaximumAlphaError": 1,
+            "AlphaChangedPixelCount": 1,
+            "MinimumMismatchX": 46,
+            "MinimumMismatchY": 80,
+            "MaximumMismatchX": 46,
+            "MaximumMismatchY": 80,
+            "IsExact": false
+          }
+        }
+      }
+    },
+    {
+      "id": "path-h",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='underline' ><textPath href='#h' startOffset='8'>gjpqy</textPath></text></svg>",
+      "sourceSha256": "1a9f604cf6f9d48ec2e181af74fbfbbf154f84471813064a5b2dc797a7c53554",
+      "nativeInputSha256": "290721ccf80c082a3502c77dcc1ffda4fad7d52c54a36370318f87e57502d38e",
+      "duty": "Independently placed path glyphs through horizontal/quadratic/cubic/polyline baselines.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "4ec6aacdc0ea932b29a81a7d798061a14f9606bae432fa921c7ff82776c3ffa4",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "f8680cfdf24a014c5fa8d2fd1359fb7c12e506b01edddb9d5fa21e5a5a4859b4",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "path-q",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='underline' ><textPath href='#q' startOffset='8'>gjpqy</textPath></text></svg>",
+      "sourceSha256": "95343aad825b7ada0d67f2708b24c1e35667985af9a956e878d38892c75e2f27",
+      "nativeInputSha256": "cfbb396e383907aea63512a7fb6ff19e6c4f7727fa917901bb06e39559ab1f72",
+      "duty": "Independently placed path glyphs through horizontal/quadratic/cubic/polyline baselines.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "06ae80c89802cb6d4552350b282843494101d29599a7f8ca45bfea1523d10c3a",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "641a8a3860adcead83e9a5e1f3097df8d9209735084cbeef624645872b57163e",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "path-c",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='underline' ><textPath href='#c' startOffset='8'>gjpqy</textPath></text></svg>",
+      "sourceSha256": "774c30c8fd3cf6f9e9f4389e11258e89bea59329c4296cc3a4f98fce1284dd12",
+      "nativeInputSha256": "3c44e4561af363ecfecc9fbc134b08ecbed626d4c8a9df96cb49d2d808bbc482",
+      "duty": "Independently placed path glyphs through horizontal/quadratic/cubic/polyline baselines.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "76739f863f84092d7b038c4467a7af10a8e1114402452543bd5502a10cd7a5c7",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "96a265e462a16b04502d60fbfc23761480beed317e0df808ce707a019db348b3",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "path-l",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='underline' ><textPath href='#l' startOffset='8'>gjpqy</textPath></text></svg>",
+      "sourceSha256": "57b46b7af4a7b11a80a14091052b5eec3b41d354c5b70be3e584eca9cc666fec",
+      "nativeInputSha256": "d4d68228afd6253075b43261852de12b42955585b233f4f9f0155f56109fe48e",
+      "duty": "Independently placed path glyphs through horizontal/quadratic/cubic/polyline baselines.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "7945f5ad07d5bf4e434277dbeb2e88df6233820133806bc6595e182095bb5a61",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "4572eacf0f668ce9d2dfe5d23ce047e497d7e36118e61045802c8a10003d23b2",
+          "before": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 2,
+            "MaximumChannelError": 142,
+            "MeanAbsoluteError": 0.0009143518518518518,
+            "RootMeanSquareError": 0.3060538865649013,
+            "MaximumAlphaError": 9,
+            "AlphaChangedPixelCount": 2,
+            "MinimumMismatchX": 37,
+            "MinimumMismatchY": 75,
+            "MaximumMismatchX": 58,
+            "MaximumMismatchY": 92,
+            "IsExact": false
+          },
+          "after": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 2,
+            "MaximumChannelError": 142,
+            "MeanAbsoluteError": 0.0009143518518518518,
+            "RootMeanSquareError": 0.3060538865649013,
+            "MaximumAlphaError": 9,
+            "AlphaChangedPixelCount": 2,
+            "MinimumMismatchX": 37,
+            "MinimumMismatchY": 75,
+            "MaximumMismatchX": 58,
+            "MaximumMismatchY": 92,
+            "IsExact": false
+          }
+        }
+      }
+    },
+    {
+      "id": "path-negative-start",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='underline' ><textPath href='#h' startOffset='-12'>gjpqy</textPath></text></svg>",
+      "sourceSha256": "ae74f1c5d2a6b2c2a573d62a6b0ee1c66f28459a84f7555e0849c19300bb1719",
+      "nativeInputSha256": "cffb62c5ac87946fee97675317d557c8cbe17ea982f29cd5c331dbd04251a2af",
+      "duty": "Invisible path-prefix glyphs retain source indexing.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "e5714604b58704ffc6dbfbd16849845c8234f7f49e7915be29c591a6601ec4a2",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "9b23515e3fdaf12f86d1db9a733af52a34ee791893ba8d883bc03e34cd542f76",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "path-glyph-stretch",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='underline' textLength='112' lengthAdjust='spacingAndGlyphs'><textPath href='#q' startOffset='8'>gjpqy</textPath></text></svg>",
+      "sourceSha256": "3b4b6fdea608b3ddb1bef1056aab52b34a574f70f9831d9ab5d458802f690e4b",
+      "nativeInputSha256": "e3d8e91860850971c70077ea8aa3c9815dbfc5165d03c1aa4bcc459ecdbd88f2",
+      "duty": "Path glyph stretching and decoration intercept frames.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "decf9554ad56d7dd471e489d56ad884fa45237c968cb8ede058c2d77a8c0772e",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "359a1241ea1d6d5f234f52d01a7cf958edb2c91dfd2771b1075fea0897a88d3a",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "path-rotation",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='underline' ><textPath href='#q' startOffset='8'><tspan rotate='12'>gjpqy</tspan></textPath></text></svg>",
+      "sourceSha256": "1a7ae7779a4bc3b7e639547dcd2da79e08ea725af5b27d2e1a4f1d6ced193294",
+      "nativeInputSha256": "d45a48d1bee495a79f0321ff2818984f20f4b678bf8a3715c9d8246419629479",
+      "duty": "Character rotation within a curved path.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "0938ee0590125c0cc6a6f8932ac9a2e429ae9e47dbfe8e464f0871bb8b164da4",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "78f2d666be940e72554b65eb51c2a92bffce8fdfac1b62c5c4f32b29a2597600",
+          "before": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 1,
+            "MaximumChannelError": 170,
+            "MeanAbsoluteError": 0.0009953703703703704,
+            "RootMeanSquareError": 0.3733709471792508,
+            "MaximumAlphaError": 3,
+            "AlphaChangedPixelCount": 1,
+            "MinimumMismatchX": 29,
+            "MinimumMismatchY": 100,
+            "MaximumMismatchX": 29,
+            "MaximumMismatchY": 100,
+            "IsExact": false
+          },
+          "after": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 1,
+            "MaximumChannelError": 170,
+            "MeanAbsoluteError": 0.0009953703703703704,
+            "RootMeanSquareError": 0.3733709471792508,
+            "MaximumAlphaError": 3,
+            "AlphaChangedPixelCount": 1,
+            "MinimumMismatchX": 29,
+            "MinimumMismatchY": 100,
+            "MaximumMismatchX": 29,
+            "MaximumMismatchY": 100,
+            "IsExact": false
+          }
+        }
+      }
+    },
+    {
+      "id": "viewport-underline",
+      "sourceSuffix": "/defs><svg x='4.25' y='3.5' width='160' height='66' viewBox='0 0 160 66'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></svg></svg>",
+      "sourceSha256": "ee1a632f10677e1c697770ca3b9e53ffe36046966b430886fb9ff5585515a36e",
+      "nativeInputSha256": "adb85c103733b9ecd98dc9aa58a358e6dcf6bb052712d19a7c049913b0c15388",
+      "duty": "Clipped descender/stripe boundaries and an independent neutral glyph control.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "0e3ec06e547daaa099c2cd7660c608cc22a1ff496baa40c3affce0643e2e1e51",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "34df08d3591f202e15d04205890d38ca2babb4ecd7c41b9e37d24055d52de5ee",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "viewport-none",
+      "sourceSuffix": "/defs><svg x='4.25' y='3.5' width='160' height='66' viewBox='0 0 160 66'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='none' >gjpqy</text></svg></svg>",
+      "sourceSha256": "6059c0fe0f134352a7b9b4ba932ae7a0730c493c31d19be0bc2f054193d9a337",
+      "nativeInputSha256": "0f8e52794f67b3aaa6a8b3b05298f77f1fc9e6c7e84f9925751d2b1311ed16e3",
+      "duty": "Clipped descender/stripe boundaries and an independent neutral glyph control.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "17f7c33f9d6d4c069a67f7f9d47ceb97c3c1bc459b1aaf38029f4a1e258066cb",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "126ef61971dce7a7a368d38679de51443482c42879eba48faf8e5e43363e5fb1",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "retained-use",
+      "sourceSuffix": "text id='s' x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></defs><use href='#s' x='.25' y='.5'/></svg>",
+      "sourceSha256": "55fb732c90962fcf4f1b8c72d487382bd80aca74f8aa636b202e266a3bafe3dc",
+      "nativeInputSha256": "a3ad5e8a2e56da3c6a3529c1b50aa7819897999578fe7d01a2a6ff695f75e03e",
+      "duty": "Retained ordinary text source with fractional placement.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "f814740cff9eeed794f0b78b57caef4d06eb7b88d0d7f532406d1d7bcd551cd1",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "298cf07e0eeb82c6ce2e728ff0b1e0a25347f2b27efa6e936ea647c24fb3f0c5",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "retained-symbol",
+      "sourceSuffix": "symbol id='s' viewBox='0 0 160 96'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></symbol></defs><use href='#s' x='4.25' y='3.5' width='160' height='96'/></svg>",
+      "sourceSha256": "5c87d550bd25c3e02d4eb3cf430e3f0ba7a3789a93fb7a4dfebb5d4ffa60be8d",
+      "nativeInputSha256": "29384c8d175f43cdad2ffd7ed14f453766315f9077d298b7d0ac1a7786b68485",
+      "duty": "Retained symbol canvas and text ink exclusion.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "76287c8eca108ef7b7ee01a4b41b2a212561a7e51c3e3901cb8c61c1b52622a8",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "9fbb565088bc7e9a5ad8c8fbb227a15cef9c3cba67bca86dc5d82588c4427435",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "filter-identity",
+      "sourceSuffix": "/defs><g filter='url(#z)'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></g></svg>",
+      "sourceSha256": "45294c0ef84bd88f8760e58aa20e3acfc9a9b7a43b93e59aa46329dc4f09a765",
+      "nativeInputSha256": "4e3829d399b37d83b5b1ea0e413264ff9eac70743a861eb94ce286c89103e7cb",
+      "duty": "Filter capture bounds with no displacement.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "d46c16a35e4ebf377fa446d310b37fbe0b9c5be453469912cafaa13fb46a0c27",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "332ac8bd5b8415b358feeb475134c934ba67cacd2e084ae680869795cab66e46",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "filter-opacity",
+      "sourceSuffix": "/defs><g opacity='.5' filter='url(#f)'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></g></svg>",
+      "sourceSha256": "72e11b6217036bdf659539eceed74cf6cb08d1c1ad59ca62781fa870dcf506fd",
+      "nativeInputSha256": "f3878616d2cc8e4555279349f0f5554e70bd3e82d90bdaf5a4c7847e2f37c437",
+      "duty": "Displaced filtered ink exclusions and isolated opacity.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "9473d8ed95563ab39487c7ba82c57100b47822cd7fad34501ac81b0f99235fb5",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "9dbb5e442434447a325bb692ee254a8d8f9c6e102a47c2d0f36037ede0765869",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "alpha-mask",
+      "sourceSuffix": "/defs><g mask='url(#m)'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' >gjpqy</text></g></svg>",
+      "sourceSha256": "52dac3d8a9f5128bfd3560e0c5b2e59221589bbe9efcaf7c10511f7eebf5a12d",
+      "nativeInputSha256": "212cf88c8a16c4dceb2d94a9a586df17be297110e08713d14a7b3eb5db3f0831",
+      "duty": "Shared mask replay over binary ink exclusions.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "c12a0cd0f5d6dc779d586946b1b4842922bbae9363740a4698e32817377a683b",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "b00b9622436e10229d3aa3c892f0c1670ce073f02ec9cfeb7dffc433bbd208d6",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "stroke-fringe",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='underline' stroke='#2040c0' stroke-width='1.5'>gjpqy</text></svg>",
+      "sourceSha256": "71f22e9448c62aae7b56ab5fde341d6fc763effa277c0d9375d4afe446086824",
+      "nativeInputSha256": "097dda861ecfcf4011608c1c52dbe404bd8fd761027f89abb49901ba33913656",
+      "duty": "Native upper/lower stroke fringes around descender holes.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "31ff06cd53e63838bd8ad159b82b82e7dc9909af5bd559496d792863446a5210",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "c71cec479c60be5d03381c4cfbfd494d100d0afe0468bdc275db42766fff40d4",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "negative-spacing-glyph-only",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='none' letter-spacing='-1.5'>gjpqy</text></svg>",
+      "sourceSha256": "7fdbff8f25d0009ec1d799bc4a3d7b4c91071af4f6ae8c8cc0fce9c8ebb3abc2",
+      "nativeInputSha256": "9e36deda99fe1d2b396b2a7c5b55b2160a1b9c9663008d26f896dafc955855d7",
+      "duty": "Neutral glyph control for negative-spacing",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "33c4adb9fc512cdc08d30c7f9283c65b0c576c733b45eddbf9087874955b0dbc",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "dbeb8fa5247588efd519590661c4b7da1b991d95a6417ca4d670f21f85cd78bc",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "glyph-stretch-glyph-only",
+      "sourceSuffix": "/defs><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='none' textLength='112' lengthAdjust='spacingAndGlyphs'>gjpqy</text></svg>",
+      "sourceSha256": "e32f7c01f01cc68cbcc9f298fb8ff48f40ba4ef312a92c8dd3d99c8206200202",
+      "nativeInputSha256": "84abaf9e742e419cf8c23427e108e3ec340aae508d89e577d3172e3a908f7129",
+      "duty": "Neutral glyph control for glyph-stretch",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "e9f15011da9546b852b6106226f61f2009e7186b07debe9c86c98eca92645bc8",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "4a527511cf69063e40e78efc3e7fd12a4c129b0b1cb43f90b6844ccc68086d51",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "parent-affine-glyph-only",
+      "sourceSuffix": "/defs><g transform='matrix(1 .25 .1 1 1 2)'><text x='16' y='64' font-family='serif' font-size='24' fill='#804020' text-decoration='none' >gjpqy</text></g></svg>",
+      "sourceSha256": "b5a04e2ed8e76fb0cd6b20233da9d3417ff9970baa22c7566ba3addd80d6277b",
+      "nativeInputSha256": "71e1f2e008041a24801966e86ee131bcf998453941ed3d8a40c80334c79d3cb3",
+      "duty": "Neutral glyph control for parent-affine",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "aa9594d8e7dc383d28c8aa0ad18ca5a79d34ed03c10991b45d3b14a955781436",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "fe46ddb887cb1e914211df4f4e9b0d5b5896411ff8d5326789a489354e838670",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "path-l-glyph-only",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='none' ><textPath href='#l' startOffset='8'>gjpqy</textPath></text></svg>",
+      "sourceSha256": "a547f41fc73ff3702ef6044baa4b403424b00357ed0f2ceed4fa4ca6f0582112",
+      "nativeInputSha256": "b9685668e470d8674f7f156400538e169cb71547432624d364ff911280ea7603",
+      "duty": "Neutral polyline glyph control to isolate path decoration from native math and glyph drawing.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "5bd13a7fda832d72880a38b61e7e24cfa16d2e591129c5b1bd6b45a1335e637a",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "648ff29cf77b646241c501f4055494a1db71f6e24efafc9e472f36fc3ebfa174",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "path-rotation-glyph-only",
+      "sourceSuffix": "/defs><text font-family='serif' font-size='24' fill='#804020' text-decoration='none' ><textPath href='#q' startOffset='8'><tspan rotate='12'>gjpqy</tspan></textPath></text></svg>",
+      "sourceSha256": "76dd0804279d46bb0d888d713f41ee1975f7ab77fd39972a1bec0aa35b16855c",
+      "nativeInputSha256": "0a1bda62dcbfdfba8445ea08204bc1c0d3946c605dd31828989789793fafc484",
+      "duty": "Neutral character-rotated curved-path glyph control.",
+      "hosts": {
+        "windows": {
+          "nativePngSha256": "7a4b66fd1b86cb699c4a104781aaa49bedcea32d0728590e4c24af94f0928f2b",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        },
+        "linux": {
+          "nativePngSha256": "abd6c706f3e7ea270f7e6dc6ded3bd7239aa20c2ebbbf2698b9471301ec1a5db",
+          "before": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          },
+          "after": {
+            "IsExact": true,
+            "ChangedPixelCount": 0
+          }
+        }
+      }
+    }
+  ]
+}

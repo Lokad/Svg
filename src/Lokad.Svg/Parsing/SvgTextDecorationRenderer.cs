@@ -42,7 +42,8 @@ internal static class SvgTextDecorationRenderer
                 (SvgPositionedGlyph first, SvgAffineTransform map) = pathPlacements.IsEmpty
                     ? run.GetDecorationPlacement(fragment.Start, placement)
                     : (pathPlacements[fragment.Start].Position with { X = pathPlacements[fragment.Start].Drawing.Origin.X, Y = pathPlacements[fragment.Start].Drawing.Origin.Y }, pathPlacements[fragment.Start].Drawing.Map);
-                double width = pathPlacements.IsEmpty ? metrics.RoundWidth(fragment.Width)
+                // Source extents retain trailing spacing independently of logical advances.
+                double width = pathPlacements.IsEmpty ? fragment.SourceWidth is {} sourceWidth ? sourceWidth / metrics.Scale : metrics.RoundWidth(fragment.Width)
                     : MathF.Truncate((float)(fragment.Width * metrics.Scale) * 64) / (64 * metrics.Scale);
                 float top = MathF.Truncate(((float)(first.Y * metrics.Scale) - ascent) * 64) / 64;
                 double x = MathF.Truncate((float)(first.X * metrics.Scale) * 64) / (64 * metrics.Scale);

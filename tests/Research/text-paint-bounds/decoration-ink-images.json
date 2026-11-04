@@ -1,0 +1,180 @@
+{
+  "purpose": "Decoration widths and ink exclusions retain physical source extents and SVG glyph stretching independently of glyph layout. Two failing-before controls each retain a glyph-only companion. Affine and path residuals remain separate in the linked review.",
+  "license": "MIT",
+  "productionSourceBefore": "70d38675b3279748043a27449a7bdbe33f3b1508",
+  "fontEvidence": "../release-baselines/decoration-ink-review.json",
+  "cases": [
+    {
+      "id": "ink-negative-spacing",
+      "input": "ink-negative-spacing.svg",
+      "sourceSha256": "e5aaf4915532945702cd7fe603803c0877ab8944ebb73cc9e20b5a09432fc911",
+      "outputScale": 1,
+      "duty": "Overlapping glyph intercept intervals and merged holes.",
+      "references": {
+        "windows": {
+          "path": "references/372872d3e6977d66.png",
+          "sha256": "372872d3e6977d6679550b41fc5f9895de8cea9717184dbbb2cb3d57a4adf229"
+        },
+        "linux": {
+          "path": "references/50b5c35524d88345.png",
+          "sha256": "50b5c35524d8834537879c7ce0d9f39965098d80286363a44d80f4c76eeda277"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "372872d3e6977d6679550b41fc5f9895de8cea9717184dbbb2cb3d57a4adf229",
+            "372872d3e6977d6679550b41fc5f9895de8cea9717184dbbb2cb3d57a4adf229",
+            "372872d3e6977d6679550b41fc5f9895de8cea9717184dbbb2cb3d57a4adf229"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "50b5c35524d8834537879c7ce0d9f39965098d80286363a44d80f4c76eeda277",
+            "50b5c35524d8834537879c7ce0d9f39965098d80286363a44d80f4c76eeda277",
+            "50b5c35524d8834537879c7ce0d9f39965098d80286363a44d80f4c76eeda277"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    },
+    {
+      "id": "ink-glyph-stretch",
+      "input": "ink-glyph-stretch.svg",
+      "sourceSha256": "728c08509b527574f8fcdb3c35693b435ebf9e62b131267032f560b751dc2256",
+      "outputScale": 1,
+      "duty": "Glyph-stretched intercept widths remain separate from logical advances.",
+      "references": {
+        "windows": {
+          "path": "references/69792037b8fb70dd.png",
+          "sha256": "69792037b8fb70dd29cd73c39a85f618ccf193aab0c1547e389ae43b7a6cfc5a"
+        },
+        "linux": {
+          "path": "references/c5581dde6e7fb9d1.png",
+          "sha256": "c5581dde6e7fb9d1438ceadf1e81033b3a9e9c85938d5c993c04c331629c2dcc"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "69792037b8fb70dd29cd73c39a85f618ccf193aab0c1547e389ae43b7a6cfc5a",
+            "69792037b8fb70dd29cd73c39a85f618ccf193aab0c1547e389ae43b7a6cfc5a",
+            "69792037b8fb70dd29cd73c39a85f618ccf193aab0c1547e389ae43b7a6cfc5a"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "c5581dde6e7fb9d1438ceadf1e81033b3a9e9c85938d5c993c04c331629c2dcc",
+            "c5581dde6e7fb9d1438ceadf1e81033b3a9e9c85938d5c993c04c331629c2dcc",
+            "c5581dde6e7fb9d1438ceadf1e81033b3a9e9c85938d5c993c04c331629c2dcc"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    },
+    {
+      "id": "ink-negative-spacing-glyph-only",
+      "input": "ink-negative-spacing-glyph-only.svg",
+      "sourceSha256": "7fdbff8f25d0009ec1d799bc4a3d7b4c91071af4f6ae8c8cc0fce9c8ebb3abc2",
+      "outputScale": 1,
+      "duty": "Neutral glyph control for negative-spacing",
+      "references": {
+        "windows": {
+          "path": "references/33c4adb9fc512cdc.png",
+          "sha256": "33c4adb9fc512cdc08d30c7f9283c65b0c576c733b45eddbf9087874955b0dbc"
+        },
+        "linux": {
+          "path": "references/dbeb8fa5247588ef.png",
+          "sha256": "dbeb8fa5247588efd519590661c4b7da1b991d95a6417ca4d670f21f85cd78bc"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "33c4adb9fc512cdc08d30c7f9283c65b0c576c733b45eddbf9087874955b0dbc",
+            "33c4adb9fc512cdc08d30c7f9283c65b0c576c733b45eddbf9087874955b0dbc",
+            "33c4adb9fc512cdc08d30c7f9283c65b0c576c733b45eddbf9087874955b0dbc"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "dbeb8fa5247588efd519590661c4b7da1b991d95a6417ca4d670f21f85cd78bc",
+            "dbeb8fa5247588efd519590661c4b7da1b991d95a6417ca4d670f21f85cd78bc",
+            "dbeb8fa5247588efd519590661c4b7da1b991d95a6417ca4d670f21f85cd78bc"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    },
+    {
+      "id": "ink-glyph-stretch-glyph-only",
+      "input": "ink-glyph-stretch-glyph-only.svg",
+      "sourceSha256": "e32f7c01f01cc68cbcc9f298fb8ff48f40ba4ef312a92c8dd3d99c8206200202",
+      "outputScale": 1,
+      "duty": "Neutral glyph control for glyph-stretch",
+      "references": {
+        "windows": {
+          "path": "references/e9f15011da9546b8.png",
+          "sha256": "e9f15011da9546b852b6106226f61f2009e7186b07debe9c86c98eca92645bc8"
+        },
+        "linux": {
+          "path": "references/4a527511cf69063e.png",
+          "sha256": "4a527511cf69063e40e78efc3e7fd12a4c129b0b1cb43f90b6844ccc68086d51"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "e9f15011da9546b852b6106226f61f2009e7186b07debe9c86c98eca92645bc8",
+            "e9f15011da9546b852b6106226f61f2009e7186b07debe9c86c98eca92645bc8",
+            "e9f15011da9546b852b6106226f61f2009e7186b07debe9c86c98eca92645bc8"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "4a527511cf69063e40e78efc3e7fd12a4c129b0b1cb43f90b6844ccc68086d51",
+            "4a527511cf69063e40e78efc3e7fd12a4c129b0b1cb43f90b6844ccc68086d51",
+            "4a527511cf69063e40e78efc3e7fd12a4c129b0b1cb43f90b6844ccc68086d51"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    }
+  ]
+}

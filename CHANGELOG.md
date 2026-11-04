@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve source trailing spacing in text decorations and stretch ink-gap padding
+  with glyphs while retaining text layout.
 - Admit finite singular element transforms through shared source-bound retention,
   preserving enclosing filter output and required text metrics without constructing
   paint under a collapsed map.
