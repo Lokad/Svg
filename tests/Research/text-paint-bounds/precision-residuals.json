@@ -1,5 +1,6 @@
 {
   "schemaVersion": 1,
+  "currentReview": "../release-baselines/precision-current.md",
   "status": "Open precision research; native images are independent targets, not accepted current-renderer output.",
   "scope": "39 distinct original R103/R104 paint/fitting inputs with remaining differences on at least one supported host.",
   "screenedOriginalInputs": 960,

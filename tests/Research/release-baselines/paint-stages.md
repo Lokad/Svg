@@ -33,6 +33,8 @@ The full 960-input audit improves Windows exactness from 952 to 955; Linux remai
 retained precision witnesses, 31 now match both hosts and eight remain explicit
 research. The remaining single-glyph alpha/color discrepancies and broader text,
 shader and decoration reviews are not closed by this slice.
+The [current replay](precision-current.md) updates the residual status while
+preserving all original inputs, targets and historical observations.
 
 One [deep gradient contract](../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs)
 retains 80 draw stages and exercises admitted raster scratch, refusal, cancellation,

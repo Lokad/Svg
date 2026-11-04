@@ -1,5 +1,6 @@
 {
   "schemaVersion": 1,
+  "currentPrecisionReview": "../release-baselines/precision-current.md",
   "scope": "Shared native drawing matrices for glyph paints: two original radial pairs and three orthogonal group/use/symbol scope pairs.",
   "baselineCommit": "d01c7c4f1943d3d8d624e44af26e13629fa1c2f6",
   "nativeCapture": {

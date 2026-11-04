@@ -34,8 +34,9 @@ All 204 now match exactly under both supported runtimes, with zero exact losses.
 The four original residuals, straight-path scaling failure and hanging-path
 failures close together through the shared metric distinction. This does not
 close the broader R48/R49/R60/R61 or R103/R104 precision review.
-[Thirty-nine remaining paint/fitting witnesses](../text-paint-bounds/precision-residuals.json)
-retain their original sources, options and independent platform images for that review.
+[Thirty-nine retained paint/fitting witnesses](../text-paint-bounds/precision-residuals.json)
+keep their original sources, options and independent platform images. The
+[current replay](precision-current.md) separates exact results from remaining differences.
 
 [Fourteen mechanism vectors](../../Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs)
 exercise fractional layout versus recorded paint metrics and integer boundaries
