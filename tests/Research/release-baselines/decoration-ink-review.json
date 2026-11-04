@@ -1,5 +1,5 @@
 {
-  "status": "Shared decoration source extents and stretched ink padding are fixed and source/package qualified. Ubuntu full CI passes; Windows has solely the unchanged DejaVu authority failure. Three separate affine/path precision inputs remain open.",
+  "status": "Source widths and stretched padding are qualified at ec83ce505. The three precision failures retained below at that source milestone are closed by the linked canonical-contour/exclusion qualification; original observations and targets remain unchanged.",
   "baselineProductionSource": "70d38675b3279748043a27449a7bdbe33f3b1508",
   "baselineLibrarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
   "candidateSourceFilesLfSha256": {
@@ -67,7 +67,7 @@
     }
   ],
   "regressions": "../text-paint-bounds/decoration-ink-images.json",
-  "remaining": [
+  "remainingAtSourceMilestone": [
     {
       "id": "parent-affine",
       "hosts": [
@@ -1917,5 +1917,6 @@
       "rawSourceAttributes": 0
     },
     "scope": "Replays all original default outcomes and the existing supplied-program/projected contexts against unchanged independent native targets. Default admissions remain168 rendered/35Unsupported/1Malformed. Font bindings, legacy SVG-font transport, diagnostic repairs, resources and animation/static-state limitations remain distinct; whole-corpus support is not closed."
-  }
+  },
+  "precisionClosure": "decoration-clip-qualification.json"
 }

@@ -1,0 +1,1232 @@
+{
+  "status": "Locally qualified: all three observed affine/path decoration discrepancies are closed; all39 ink and13 style controls are native exact on both hosts. Source/package CI promotion follows separately.",
+  "sourceBaseCommit": "b9e774f7f7ab6e71df4a10fc9d755d1b73c01a40",
+  "implementationSourceLfSha256": {
+    "src/Lokad.Svg/Fonts/SvgGlyphOutline.cs": "6d5eec290dc99e50ffa228a9089356e16f899eabe6b71039af3be7de34137e0a",
+    "src/Lokad.Svg/Fonts/SvgGlyphRasterSource.Path.cs": "b7ab64349b7615943ed90d9b78c5620431dbe8a7449456e88d29f4ab13ba93da",
+    "src/Lokad.Svg/Fonts/SvgTextInkIntercepts.cs": "05f07469af6432809273727c330af7c00e2ce0916bfffe9ca7469dd8b280dafa",
+    "src/Lokad.Svg/Parsing/SvgAffineViewportClip.cs": "1db78b0e56c692f70572329260fdc55ccfa5dd3c52f9a258af43b9f27bc5f028",
+    "src/Lokad.Svg/Parsing/SvgTextDecorationRenderer.cs": "28d9c5067edfcd10744a7625885f3d78c133878085e1e387a2ca9b02bd6c9977",
+    "src/Lokad.Svg/Rendering/SvgBinaryViewportCoverage.cs": "02dd97615de23e3b6a39068c16349d4fd14dc9722ae9a3306359e732d3821133"
+  },
+  "baselineEvidence": "decoration-ink-review.json",
+  "styleEvidence": "decoration-model-review.json",
+  "renderingBank": "../text-paint-bounds/decoration-ink-images.json",
+  "mechanisms": "../../Lokad.Svg.Tests/SvgBinaryViewportCoverageTests.cs",
+  "changes": [
+    "Glyph paths and ink intercepts share canonical contour decoding. Linux scales original/component points before constructing implied points; Windows retains its existing design-unit path convention.",
+    "Keep every glyph exclusion rectangle through the existing compound mask. Geometric source-interval merging can change native fixed-edge rounding.",
+    "Apply inverse filling to the actual winding predicate; overlapping nonzero contours now form a union while even-odd parity remains independent.",
+    "Remove gap sorting, its comparison interface and the extra ideal-contour transformation arrays. Text layout and existing coordinate/paint stages are unchanged."
+  ],
+  "coverage": {
+    "mechanismCases": 7,
+    "routineImageCases": 10,
+    "addedImageCases": 6,
+    "frozenImagesRewritten": 0,
+    "layoutChanged": false,
+    "additionalMaskLayers": 0,
+    "apiMatrixRepeated": false,
+    "purposes": "Four direct nonzero/even-odd/inverse truth-table cases and three transformed sequential-clip equivalences. Three precision inputs retain separate glyph-only controls; existing source-width/stretch regressions remain unchanged. Path failures were Linux-specific; independent platform references remain."
+  },
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "e43d92fd7119993f468a6bd9bb87e958eeaa5eb6736acab27fde83ec2c19d634",
+        "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+        "selection": "FullyQualifiedName~SvgBinaryViewportCoverageTests",
+        "exitCode": 1,
+        "seconds": 11.682425600010902,
+        "counters": {
+          "executed": "7",
+          "passed": "3",
+          "failed": "4"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgBinaryViewportCoverageTests.Nonzero_exclusions_equal_sequential_binary_clip_out(placement: \"rotated\")",
+            "message": "Assert.Equal() Failure: Collections differ\r\n                      \u2193 (pos 38)\r\nExpected: [\u00b7\u00b7\u00b7, 0, 0, 0, 0, 0, \u00b7\u00b7\u00b7]\r\nActual:   [\u00b7\u00b7\u00b7, 0, 0, 255, 255, 255, \u00b7\u00b7\u00b7]\r\n                      \u2191 (pos 38)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgBinaryViewportCoverageTests.Nonzero_exclusions_equal_sequential_binary_clip_out(placement: \"fractional\")",
+            "message": "Assert.Equal() Failure: Collections differ\r\n                      \u2193 (pos 54)\r\nExpected: [\u00b7\u00b7\u00b7, 0, 0, 0, 0, 0, \u00b7\u00b7\u00b7]\r\nActual:   [\u00b7\u00b7\u00b7, 0, 0, 255, 255, 255, \u00b7\u00b7\u00b7]\r\n                      \u2191 (pos 54)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgBinaryViewportCoverageTests.Nonzero_exclusions_equal_sequential_binary_clip_out(placement: \"affine\")",
+            "message": "Assert.Equal() Failure: Collections differ\r\n                      \u2193 (pos 54)\r\nExpected: [\u00b7\u00b7\u00b7, 0, 0, 0, 255, 255, \u00b7\u00b7\u00b7]\r\nActual:   [\u00b7\u00b7\u00b7, 0, 0, 255, 255, 255, \u00b7\u00b7\u00b7]\r\n                      \u2191 (pos 54)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgBinaryViewportCoverageTests.Overlapping_rectangles_preserve_nonzero_evenodd_and_inverse_fill(evenOdd: False, inverse: True)",
+            "message": "Assert.Equal() Failure: Collections differ\r\n                      \u2193 (pos 69)\r\nExpected: [\u00b7\u00b7\u00b7, 0, 0, 0, 0, 0, \u00b7\u00b7\u00b7]\r\nActual:   [\u00b7\u00b7\u00b7, 0, 0, 255, 255, 255, \u00b7\u00b7\u00b7]\r\n                      \u2191 (pos 69)"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "e43d92fd7119993f468a6bd9bb87e958eeaa5eb6736acab27fde83ec2c19d634",
+        "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+        "selection": "FullyQualifiedName~SvgBinaryViewportCoverageTests",
+        "exitCode": 1,
+        "seconds": 15.23854640009813,
+        "counters": {
+          "executed": "7",
+          "passed": "3",
+          "failed": "4"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgBinaryViewportCoverageTests.Nonzero_exclusions_equal_sequential_binary_clip_out(placement: \"fractional\")",
+            "message": "Assert.Equal() Failure: Collections differ\n                      \u2193 (pos 54)\nExpected: [\u00b7\u00b7\u00b7, 0, 0, 0, 0, 0, \u00b7\u00b7\u00b7]\nActual:   [\u00b7\u00b7\u00b7, 0, 0, 255, 255, 255, \u00b7\u00b7\u00b7]\n                      \u2191 (pos 54)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgBinaryViewportCoverageTests.Overlapping_rectangles_preserve_nonzero_evenodd_and_inverse_fill(evenOdd: False, inverse: True)",
+            "message": "Assert.Equal() Failure: Collections differ\n                      \u2193 (pos 69)\nExpected: [\u00b7\u00b7\u00b7, 0, 0, 0, 0, 0, \u00b7\u00b7\u00b7]\nActual:   [\u00b7\u00b7\u00b7, 0, 0, 255, 255, 255, \u00b7\u00b7\u00b7]\n                      \u2191 (pos 69)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgBinaryViewportCoverageTests.Nonzero_exclusions_equal_sequential_binary_clip_out(placement: \"affine\")",
+            "message": "Assert.Equal() Failure: Collections differ\n                      \u2193 (pos 54)\nExpected: [\u00b7\u00b7\u00b7, 0, 0, 0, 255, 255, \u00b7\u00b7\u00b7]\nActual:   [\u00b7\u00b7\u00b7, 0, 0, 255, 255, 255, \u00b7\u00b7\u00b7]\n                      \u2191 (pos 54)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgBinaryViewportCoverageTests.Nonzero_exclusions_equal_sequential_binary_clip_out(placement: \"rotated\")",
+            "message": "Assert.Equal() Failure: Collections differ\n                      \u2193 (pos 38)\nExpected: [\u00b7\u00b7\u00b7, 0, 0, 0, 0, 0, \u00b7\u00b7\u00b7]\nActual:   [\u00b7\u00b7\u00b7, 0, 0, 255, 255, 255, \u00b7\u00b7\u00b7]\n                      \u2191 (pos 38)"
+          }
+        ]
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "e43d92fd7119993f468a6bd9bb87e958eeaa5eb6736acab27fde83ec2c19d634",
+        "testAssemblySha256": "6ffbe16b9eb94af9740308faf63012011d3a6908ad079aab6955a0ddd02580ff",
+        "selection": "FullyQualifiedName~Decoration_extents_and_ink_exclusions_preserve_glyph_layout",
+        "exitCode": 1,
+        "seconds": 22.670087600126863,
+        "counters": {
+          "executed": "10",
+          "passed": "9",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_extents_and_ink_exclusions_preserve_glyph_layout(id: \"ink-parent-affine\")",
+            "message": "ink-parent-affine"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "e43d92fd7119993f468a6bd9bb87e958eeaa5eb6736acab27fde83ec2c19d634",
+        "testAssemblySha256": "6ffbe16b9eb94af9740308faf63012011d3a6908ad079aab6955a0ddd02580ff",
+        "selection": "FullyQualifiedName~Decoration_extents_and_ink_exclusions_preserve_glyph_layout",
+        "exitCode": 1,
+        "seconds": 15.040185699937865,
+        "counters": {
+          "executed": "10",
+          "passed": "7",
+          "failed": "3"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_extents_and_ink_exclusions_preserve_glyph_layout(id: \"ink-parent-affine\")",
+            "message": "ink-parent-affine"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_extents_and_ink_exclusions_preserve_glyph_layout(id: \"ink-path-l\")",
+            "message": "ink-path-l"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_extents_and_ink_exclusions_preserve_glyph_layout(id: \"ink-path-rotation\")",
+            "message": "ink-path-rotation"
+          }
+        ]
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+        "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+        "selection": "FullyQualifiedName~SvgBinaryViewportCoverageTests",
+        "exitCode": 0,
+        "seconds": 9.965888200094923,
+        "counters": {
+          "executed": "7",
+          "passed": "7",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+        "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+        "selection": "FullyQualifiedName~SvgBinaryViewportCoverageTests",
+        "exitCode": 0,
+        "seconds": 11.914713199948892,
+        "counters": {
+          "executed": "7",
+          "passed": "7",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+        "testAssemblySha256": "6ffbe16b9eb94af9740308faf63012011d3a6908ad079aab6955a0ddd02580ff",
+        "selection": "FullyQualifiedName~Decoration_extents_and_ink_exclusions_preserve_glyph_layout",
+        "exitCode": 0,
+        "seconds": 13.344055900117382,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+        "testAssemblySha256": "6ffbe16b9eb94af9740308faf63012011d3a6908ad079aab6955a0ddd02580ff",
+        "selection": "FullyQualifiedName~Decoration_extents_and_ink_exclusions_preserve_glyph_layout",
+        "exitCode": 0,
+        "seconds": 10.564529499970376,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "integration": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+        "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+        "selection": "FullyQualifiedName~SvgBinaryViewportCoverageTests|FullyQualifiedName~OpenTypeFontUnhintedDeviceTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgTextDecorationTests|FullyQualifiedName~SvgGlyphDeviceMetricsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextPaint|FullyQualifiedName~SvgTextShared|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgSourceVisibility|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests",
+        "exitCode": 0,
+        "seconds": 11.18870129995048,
+        "counters": {
+          "executed": "589",
+          "passed": "589",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+        "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+        "selection": "FullyQualifiedName~SvgBinaryViewportCoverageTests|FullyQualifiedName~OpenTypeFontUnhintedDeviceTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgTextDecorationTests|FullyQualifiedName~SvgGlyphDeviceMetricsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextPaint|FullyQualifiedName~SvgTextShared|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgSourceVisibility|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests",
+        "exitCode": 0,
+        "seconds": 14.105757100041956,
+        "counters": {
+          "executed": "589",
+          "passed": "589",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+        "testAssemblySha256": "6ffbe16b9eb94af9740308faf63012011d3a6908ad079aab6955a0ddd02580ff",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)|FullyQualifiedName~SvgFontLayoutDiagramTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgUnhintedGlyphOutlineTests|FullyQualifiedName~SvgGlyphViewportClipTests",
+        "exitCode": 0,
+        "seconds": 40.6122136998456,
+        "counters": {
+          "executed": "3661",
+          "passed": "3661",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+        "testAssemblySha256": "6ffbe16b9eb94af9740308faf63012011d3a6908ad079aab6955a0ddd02580ff",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)|FullyQualifiedName~SvgFontLayoutDiagramTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgUnhintedGlyphOutlineTests|FullyQualifiedName~SvgGlyphViewportClipTests",
+        "exitCode": 0,
+        "seconds": 37.51086699985899,
+        "counters": {
+          "executed": "3661",
+          "passed": "3661",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "integration-net10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "fff94240d10116b835618ff254a7688ad4d1eb294edcc2c79f66d6fa9366497c",
+        "testAssemblySha256": "d84e926ec646ed4135a47fbd1277d8f5259f5ae1564677189ad02e84d4aadf58",
+        "selection": "FullyQualifiedName~SvgBinaryViewportCoverageTests|FullyQualifiedName~OpenTypeFontUnhintedDeviceTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgTextDecorationTests|FullyQualifiedName~SvgGlyphDeviceMetricsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextPaint|FullyQualifiedName~SvgTextShared|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgSourceVisibility|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests",
+        "exitCode": 0,
+        "seconds": 15.886565999826416,
+        "counters": {
+          "executed": "589",
+          "passed": "589",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "fff94240d10116b835618ff254a7688ad4d1eb294edcc2c79f66d6fa9366497c",
+        "testAssemblySha256": "d84e926ec646ed4135a47fbd1277d8f5259f5ae1564677189ad02e84d4aadf58",
+        "selection": "FullyQualifiedName~SvgBinaryViewportCoverageTests|FullyQualifiedName~OpenTypeFontUnhintedDeviceTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgTextDecorationTests|FullyQualifiedName~SvgGlyphDeviceMetricsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextPaint|FullyQualifiedName~SvgTextShared|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgSourceVisibility|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests",
+        "exitCode": 0,
+        "seconds": 19.317808399908245,
+        "counters": {
+          "executed": "589",
+          "passed": "589",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fff94240d10116b835618ff254a7688ad4d1eb294edcc2c79f66d6fa9366497c",
+        "testAssemblySha256": "31be72ad259dced90ff4c06efd56dc0b23ca3f1ce9cfb77c777e1b971a4c0ce0",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)|FullyQualifiedName~SvgFontLayoutDiagramTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgUnhintedGlyphOutlineTests|FullyQualifiedName~SvgGlyphViewportClipTests",
+        "exitCode": 0,
+        "seconds": 43.51496689999476,
+        "counters": {
+          "executed": "3661",
+          "passed": "3661",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fff94240d10116b835618ff254a7688ad4d1eb294edcc2c79f66d6fa9366497c",
+        "testAssemblySha256": "31be72ad259dced90ff4c06efd56dc0b23ca3f1ce9cfb77c777e1b971a4c0ce0",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)|FullyQualifiedName~SvgFontLayoutDiagramTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgUnhintedGlyphOutlineTests|FullyQualifiedName~SvgGlyphViewportClipTests",
+        "exitCode": 0,
+        "seconds": 37.357033899985254,
+        "counters": {
+          "executed": "3661",
+          "passed": "3661",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "nativeReplays": [
+    {
+      "family": "ink",
+      "host": "windows",
+      "inputs": 39,
+      "nativeExact": 39,
+      "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+      "seconds": 24.7736388000194
+    },
+    {
+      "family": "ink",
+      "host": "linux",
+      "inputs": 39,
+      "nativeExact": 39,
+      "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+      "seconds": 89.61994879995473
+    },
+    {
+      "family": "style",
+      "host": "windows",
+      "inputs": 13,
+      "nativeExact": 13,
+      "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+      "seconds": 7.485297900158912
+    },
+    {
+      "family": "style",
+      "host": "linux",
+      "inputs": 13,
+      "nativeExact": 13,
+      "librarySha256": "c27baa9112599bb2ca09024b36b0ac08443f7bf22aa3e2dd7b53bc747ee034fd",
+      "seconds": 10.851701100124046
+    }
+  ],
+  "numericObservations": [
+    {
+      "host": "windows",
+      "healthyFreshProcesses": 3,
+      "profilesCleaned": 3,
+      "networkServiceCrashes": 0,
+      "sandboxAccessFailures": 0,
+      "truncatedLogs": 0,
+      "cases": [
+        {
+          "id": "parent-affine",
+          "sourceSha256": "5f3406f82c38e53e957dddd7d2cf0a4579474b1914a0ba08525c1951697a2008",
+          "nativeInputSha256": "42210243ac2f14cdb2f1c7f277d4d4cbb7c0741483cacefc1937a7b65f86d16d",
+          "nativePngSha256": "84daeab3ce61f6ee841c49a07101801f7638d8434cfdc9e6e1edec776fdcf898",
+          "matchesFrozenNativePng": true,
+          "oldMaskCount": 1,
+          "newMaskCount": 1,
+          "oldExclusionRectangles": 2,
+          "newExclusionRectangles": 5,
+          "commandObservation": "unavailable: painted layer snapshot not exposed",
+          "numericCommands": []
+        },
+        {
+          "id": "path-l",
+          "sourceSha256": "57b46b7af4a7b11a80a14091052b5eec3b41d354c5b70be3e584eca9cc666fec",
+          "nativeInputSha256": "d4d68228afd6253075b43261852de12b42955585b233f4f9f0155f56109fe48e",
+          "nativePngSha256": "7945f5ad07d5bf4e434277dbeb2e88df6233820133806bc6595e182095bb5a61",
+          "matchesFrozenNativePng": true,
+          "oldMaskCount": 5,
+          "newMaskCount": 5,
+          "oldExclusionRectangles": 5,
+          "newExclusionRectangles": 5,
+          "commandObservation": "unavailable: painted layer snapshot not exposed",
+          "numericCommands": []
+        },
+        {
+          "id": "path-rotation",
+          "sourceSha256": "1a7ae7779a4bc3b7e639547dcd2da79e08ea725af5b27d2e1a4f1d6ced193294",
+          "nativeInputSha256": "d45a48d1bee495a79f0321ff2818984f20f4b678bf8a3715c9d8246419629479",
+          "nativePngSha256": "0938ee0590125c0cc6a6f8932ac9a2e429ae9e47dbfe8e464f0871bb8b164da4",
+          "matchesFrozenNativePng": true,
+          "oldMaskCount": 5,
+          "newMaskCount": 5,
+          "oldExclusionRectangles": 5,
+          "newExclusionRectangles": 5,
+          "commandObservation": "unavailable: painted layer snapshot not exposed",
+          "numericCommands": []
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "healthyFreshProcesses": 3,
+      "profilesCleaned": 3,
+      "networkServiceCrashes": 0,
+      "sandboxAccessFailures": 0,
+      "truncatedLogs": 0,
+      "cases": [
+        {
+          "id": "parent-affine",
+          "sourceSha256": "5f3406f82c38e53e957dddd7d2cf0a4579474b1914a0ba08525c1951697a2008",
+          "nativeInputSha256": "42210243ac2f14cdb2f1c7f277d4d4cbb7c0741483cacefc1937a7b65f86d16d",
+          "nativePngSha256": "c37c16d2bcc17c589a1bc63904a1f71cf5e278da4197a7837ad24830a3c98c3d",
+          "matchesFrozenNativePng": true,
+          "oldMaskCount": 1,
+          "newMaskCount": 1,
+          "oldExclusionRectangles": 2,
+          "newExclusionRectangles": 5,
+          "commandObservation": "available",
+          "numericCommands": [
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  1,
+                  0.25,
+                  0,
+                  0,
+                  0.100000001490116,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  1,
+                  2,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "scale",
+              "params": {
+                "scaleX": 0.982353329658508,
+                "scaleY": 0.982353329658508
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 16.2059860229492,
+                  "top": 66.640625,
+                  "right": 31.6729774475098,
+                  "bottom": 70.083740234375
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 27.5156421661377,
+                  "top": 66.640625,
+                  "right": 37.9725761413574,
+                  "bottom": 70.083740234375
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 37.2340774536133,
+                  "top": 66.640625,
+                  "right": 44.2734375,
+                  "bottom": 70.083740234375
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 60.9734497070313,
+                  "top": 66.640625,
+                  "right": 68.012809753418,
+                  "bottom": 70.083740234375
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 67.9269714355469,
+                  "top": 66.640625,
+                  "right": 76.6190414428711,
+                  "bottom": 70.083740234375
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 16.28125,
+                  "top": 67.140625,
+                  "right": 80.109375,
+                  "bottom": 69.583740234375
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "path-l",
+          "sourceSha256": "57b46b7af4a7b11a80a14091052b5eec3b41d354c5b70be3e584eca9cc666fec",
+          "nativeInputSha256": "d4d68228afd6253075b43261852de12b42955585b233f4f9f0155f56109fe48e",
+          "nativePngSha256": "4572eacf0f668ce9d2dfe5d23ce047e497d7e36118e61045802c8a10003d23b2",
+          "matchesFrozenNativePng": true,
+          "oldMaskCount": 5,
+          "newMaskCount": 5,
+          "oldExclusionRectangles": 5,
+          "newExclusionRectangles": 5,
+          "commandObservation": "available",
+          "numericCommands": [
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.777244865894318,
+                  -0.62919819355011,
+                  0,
+                  0,
+                  0.62919819355011,
+                  0.777244865894318,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -61.3743629455566,
+                  44.1367912292481,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 27.8792972564697,
+                  "top": 99.8125,
+                  "right": 43.0738296508789,
+                  "bottom": 103.212501525879
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 27.953125,
+                  "top": 100.3125,
+                  "right": 42.71875,
+                  "bottom": 102.712501525879
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.777244865894318,
+                  -0.62919819355011,
+                  0,
+                  0,
+                  0.62919819355011,
+                  0.777244865894318,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -52.0809059143066,
+                  45.1008720397949,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 32.3753890991211,
+                  "top": 93.21875,
+                  "right": 42.6480445861816,
+                  "bottom": 96.6187515258789
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 36.09375,
+                  "top": 93.71875,
+                  "right": 42.296875,
+                  "bottom": 96.1187515258789
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.777244865894318,
+                  -0.62919819355011,
+                  0,
+                  0,
+                  0.62919819355011,
+                  0.777244865894318,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -49.4426078796387,
+                  51.4524536132813,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 43.8890609741211,
+                  "top": 86.625,
+                  "right": 50.8042945861816,
+                  "bottom": 90.0250015258789
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 44.25,
+                  "top": 87.125,
+                  "right": 59.015625,
+                  "bottom": 89.5250015258789
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.777244865894318,
+                  -0.62919819355011,
+                  0,
+                  0,
+                  0.62919819355011,
+                  0.777244865894318,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -41.0405883789063,
+                  56.6039428710938,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 63.9242172241211,
+                  "top": 77.328125,
+                  "right": 70.8394546508789,
+                  "bottom": 80.7281265258789
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 55.71875,
+                  "top": 77.828125,
+                  "right": 70.484375,
+                  "bottom": 80.2281265258789
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.777244865894318,
+                  -0.62919819355011,
+                  0,
+                  0,
+                  0.62919819355011,
+                  0.777244865894318,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -32.3766632080078,
+                  60.5251846313477,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 64.0824203491211,
+                  "top": 68.828125,
+                  "right": 75.019287109375,
+                  "bottom": 72.2281265258789
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 66.21875,
+                  "top": 69.328125,
+                  "right": 78.46875,
+                  "bottom": 71.7281265258789
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "path-rotation",
+          "sourceSha256": "1a7ae7779a4bc3b7e639547dcd2da79e08ea725af5b27d2e1a4f1d6ced193294",
+          "nativeInputSha256": "d45a48d1bee495a79f0321ff2818984f20f4b678bf8a3715c9d8246419629479",
+          "nativePngSha256": "78f2d666be940e72554b65eb51c2a92bffce8fdfac1b62c5c4f32b29a2597600",
+          "matchesFrozenNativePng": true,
+          "oldMaskCount": 5,
+          "newMaskCount": 5,
+          "oldExclusionRectangles": 5,
+          "newExclusionRectangles": 5,
+          "commandObservation": "available",
+          "numericCommands": [
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.931613385677338,
+                  -0.363450884819031,
+                  0,
+                  0,
+                  0.363450884819031,
+                  0.931613385677338,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -40.9723739624023,
+                  19.9131355285645,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 28.6605472564697,
+                  "top": 100.703125,
+                  "right": 43.8550796508789,
+                  "bottom": 104.103126525879
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 28.734375,
+                  "top": 101.203125,
+                  "right": 43.5,
+                  "bottom": 103.603126525879
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.942760527133942,
+                  -0.333470463752747,
+                  0,
+                  0,
+                  0.333470463752747,
+                  0.942760527133942,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -31.9899253845215,
+                  18.9202842712402,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 33.8441390991211,
+                  "top": 95.109375,
+                  "right": 44.1167945861816,
+                  "bottom": 98.5093765258789
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 37.5625,
+                  "top": 95.609375,
+                  "right": 43.765625,
+                  "bottom": 98.0093765258789
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.953552663326263,
+                  -0.301226288080215,
+                  0,
+                  0,
+                  0.301226288080215,
+                  0.953552663326263,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -31.4657173156738,
+                  20.3667144775391,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 46.2484359741211,
+                  "top": 89.765625,
+                  "right": 53.1636695861816,
+                  "bottom": 93.1656265258789
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 46.609375,
+                  "top": 90.265625,
+                  "right": 61.375,
+                  "bottom": 92.6656265258789
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.967692315578461,
+                  -0.252134025096893,
+                  0,
+                  0,
+                  0.252134025096893,
+                  0.967692315578461,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -25.7216091156006,
+                  19.5279350280762,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 67.8460922241211,
+                  "top": 82.8125,
+                  "right": 74.7613296508789,
+                  "bottom": 86.2125015258789
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 59.640625,
+                  "top": 83.3125,
+                  "right": 74.40625,
+                  "bottom": 85.7125015258789
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            },
+            {
+              "method": "concat44",
+              "params": {
+                "matrix44": [
+                  0.979072570800781,
+                  -0.203511342406273,
+                  0,
+                  0,
+                  0.203511342406273,
+                  0.979072570800781,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  -19.8790817260742,
+                  17.4444885253906,
+                  0,
+                  1
+                ]
+              }
+            },
+            {
+              "method": "clipRect",
+              "params": {
+                "rect": {
+                  "left": 69.6761703491211,
+                  "top": 77.09375,
+                  "right": 80.613037109375,
+                  "bottom": 80.4937515258789
+                },
+                "SkRegion::Op": "kDifference_Op",
+                "softClipEdgeStyle": false
+              }
+            },
+            {
+              "method": "drawRect",
+              "params": {
+                "rect": {
+                  "left": 71.8125,
+                  "top": 77.59375,
+                  "right": 84.0625,
+                  "bottom": 79.9937515258789
+                },
+                "paint": {
+                  "color": "#FF804020",
+                  "strokeWidth": 0,
+                  "strokeMiter": 4,
+                  "flags": "AntiAlias",
+                  "strokeCap": "Butt",
+                  "strokeJoin": "Miter",
+                  "styleName": "Fill"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Closes the three witnessed precision inputs and their shared causes. Native command observations are Linux-only; Windows image captures still match frozen targets. Existing frozen triples, source recipes, font hashes and licenses remain in the linked evidence. Functional validation times include startup/discovery and are not renderer performance. Broader historical source/oracle joins remain separate."
+}

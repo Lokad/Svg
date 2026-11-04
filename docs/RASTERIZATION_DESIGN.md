@@ -50,6 +50,10 @@ one to the first address. Text paints retain the enclosing reference, physical
 font scale and fragment transform separately before native canvas composition.
 Linear/radial/pattern fills and strokes share these stages; decorations retain
 the logical map, and fitted glyph ink keeps its independent placement.
+Ink exclusions share canonical glyph decoding. Each rectangle retains its rounded
+edges before union in one binary mask; source-interval merging can change coverage.
+[Clip evidence](../tests/Research/release-baselines/decoration-clip-qualification.json)
+protects transformed overlaps and platform contour precision.
 [Fragment evidence](../tests/Research/release-baselines/fragment-drawing-qualification.json)
 checks the rounding boundary without changing final sampling or blending.
 Source text boxes form physical float rectangles before mapping their corners.

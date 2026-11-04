@@ -5,10 +5,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Fonts;
 
-internal readonly record struct SvgTextInkGap(double Left, double Right) : IComparable<SvgTextInkGap>
-{
-    public int CompareTo(SvgTextInkGap other) => Left.CompareTo(other.Left);
-}
+internal readonly record struct SvgTextInkGap(double Left, double Right);
 
 /// <summary>Finds bounded unhinted glyph intercepts for a decoration stripe; callers own the aggregate gap list and reuse existing contour owners.</summary>
 internal static class SvgTextInkIntercepts
@@ -24,17 +21,15 @@ internal static class SvgTextInkIntercepts
             SvgPositionedGlyph glyph = run.Glyphs[index];
             // Native path intercepts use an unhinted canonical 64px strike,
             // then scale the resulting interval back to the requested font size.
-            float pathScale = (float)font.FontSize / 64;
-            using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, glyph with { X = 0, Y = 0 }, 64, budget, token);
+            float pathScale = (float)font.FontSize / SvgGlyphOutline.CanonicalSize;
+            using OpenTypeGlyphContourStorage contours = SvgGlyphOutline.GetCanonicalContourStorage(font.Font, glyph.GlyphIndex, budget, token, out float pointScale);
             double originX = first.X + glyph.X - run.Glyphs[fragment.Start].X;
             double originY = first.Y + glyph.Y - run.Glyphs[fragment.Start].Y;
             double left = double.PositiveInfinity, right = double.NegativeInfinity;
-            foreach (SvgGlyphQuadraticContour contour in contours.Contours)
-            foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
+            foreach (OpenTypeQuadraticSegment segment in contours.Segments)
             {
                 token.ThrowIfCancellationRequested();
-                SvgGlyphOutlinePoint p = new((float)segment.Start.X, (float)segment.Start.Y),
-                    q = new((float)segment.Control.X, (float)segment.Control.Y), r = new((float)segment.End.X, (float)segment.End.Y);
+                SvgGlyphOutlinePoint p = CanonicalPoint(segment.Start, pointScale), q = CanonicalPoint(segment.Control, pointScale), r = CanonicalPoint(segment.End, pointScale);
                 double top = ((float)stripeTop - (float)originY) / pathScale, bottom = ((float)stripeBottom - (float)originY) / pathScale;
                 if (Math.Min(p.Y, Math.Min(q.Y, r.Y)) > bottom || Math.Max(p.Y, Math.Max(q.Y, r.Y)) < top) continue;
                 Intersect(p, q, r, top, ref left, ref right);
@@ -55,7 +50,8 @@ internal static class SvgTextInkIntercepts
                 gaps.Add(new(x, x + extent));
             }
         }
-        gaps.Sort(token);
+
+        static SvgGlyphOutlinePoint CanonicalPoint(OpenTypeOutlinePoint point, float scale) => new((float)point.X * scale, -(float)point.Y * scale);
 
         static void Include(double x, ref double left, ref double right) { left = Math.Min(left, x); right = Math.Max(right, x); }
 

@@ -97,9 +97,9 @@ internal static class SvgTextDecorationRenderer
                     token.ThrowIfCancellationRequested();
                     double left = gap.Left, right = gap.Right;
                     if (right <= left) continue;
-                    if (count > 0 && left <= holes[count - 1].Right)
-                        holes[count - 1] = holes[count - 1] with { Width = Math.Max(holes[count - 1].Right, right) - holes[count - 1].X };
-                    else holes[count++] = new(left, top, right - left, bottom - top);
+                    // Native clipOut rounds each rectangle's edges before union;
+                    // merging source intervals can change transformed binary coverage.
+                    holes[count++] = new(left, top, right - left, bottom - top);
                 }
                 state.DefinitionReservations.Add(owner);
             }

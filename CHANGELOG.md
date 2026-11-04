@@ -4,6 +4,8 @@
 
 - Preserve source trailing spacing in text decorations and stretch ink-gap padding
   with glyphs while retaining text layout.
+- Share canonical glyph contours with decoration ink clipping and preserve separately
+  rounded exclusion rectangles, fixing transformed and curved underlines.
 - Admit finite singular element transforms through shared source-bound retention,
   preserving enclosing filter output and required text metrics without constructing
   paint under a collapsed map.

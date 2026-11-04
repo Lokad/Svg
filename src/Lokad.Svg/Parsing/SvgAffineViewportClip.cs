@@ -12,7 +12,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
     internal bool IsBinary { get; init; }
     internal SvgCanvasDrawMap? DrawMap { get; init; }
     internal bool IsExclusion { get; init; }
-    /// <summary>Borrows disjoint rectangular exclusions until the parser emits one bounded compound clip.</summary>
+    /// <summary>Borrows independently rounded rectangles until compound clip emission; exclusions may overlap, while viewport holes remain disjoint.</summary>
     internal ReadOnlyMemory<SvgClipBox> ExcludedBoxes { get; init; }
     internal (SvgClipBox Bounds, int ContentIndex) Register(SvgDocumentState state, SvgSceneBuilder scene, CancellationToken token)
     {
@@ -22,7 +22,8 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, token);
             if (!IsExclusion) Append(Box, vertices, ends);
             foreach (SvgClipBox hole in ExcludedBoxes.Span) Append(hole, vertices, ends);
-            return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsExclusion ? SvgClipContentKind.BinaryExclusion : IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, true, state, scene, token, DrawMap);
+            // Exclusions union their individual raster edges; even-odd viewport holes retain their separate contract.
+            return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsExclusion ? SvgClipContentKind.BinaryExclusion : IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, !IsExclusion, state, scene, token, DrawMap);
         }
         float left = (float)Box.X, top = (float)Box.Y, right = (float)(Box.X + Box.Width), bottom = (float)(Box.Y + Box.Height);
         // Native rectangles start at top-left. A clipped closing edge must remain adjacent

@@ -6,6 +6,21 @@ using Lokad.Svg.Parsing;
 /// <summary>Converts one decoded TrueType glyph outline into SVG user coordinates.</summary>
 internal static class SvgGlyphOutline
 {
+    internal const float CanonicalSize = 64;
+
+    /// <summary>Returns exclusively owned canonical path segments and their font-unit-to-path scale, borrowing the unchanged face.</summary>
+    /// <remarks>Windows retains design-unit operands; Linux scales original and component points before
+    /// implied-point construction and returns 26.6 device operands. The existing decoders account for all temporary/returned storage and
+    /// observe cancellation. Independent calls may share the immutable face; callers dispose the returned owner.</remarks>
+    internal static OpenTypeGlyphContourStorage GetCanonicalContourStorage(SvgPreparedFont font, ushort glyphIndex,
+        RenderBudget budget, CancellationToken token, out float pointScale)
+    {
+        bool windows = OperatingSystem.IsWindows();
+        pointScale = windows ? CanonicalSize / font.UnitsPerEm : 1f / 64;
+        return windows ? OpenTypeFont.GetGlyphContours(font.Bytes, glyphIndex, font.Metrics, budget, token)
+            : OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, glyphIndex, font.Metrics, CanonicalSize, budget, token);
+    }
+
     /// <summary>Computes tight geometric glyph bounds through the shared native quadratic-bound evaluator.</summary>
     /// <remarks>Contours remain borrowed. Fixed stack commands reuse path extrema without retaining storage;
     /// every segment/map/root visit observes cancellation.</remarks>

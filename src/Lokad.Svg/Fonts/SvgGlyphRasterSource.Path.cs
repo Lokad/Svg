@@ -18,13 +18,9 @@ internal sealed partial class SvgGlyphRasterSource
     internal SvgAuthoredPath CreateCanonicalPath(double scaleX, double offsetX, double scaleY, double offsetY,
         RenderBudget budget, CancellationToken token)
     {
-        const float canonicalSize = 64;
+        const float canonicalSize = SvgGlyphOutline.CanonicalSize;
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
-        bool windows = OperatingSystem.IsWindows();
-        using OpenTypeGlyphContourStorage contours = windows
-            ? OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, token)
-            : OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, canonicalSize, budget, token);
-        float pointScale = windows ? canonicalSize / font.UnitsPerEm : 1f / 64;
+        using OpenTypeGlyphContourStorage contours = SvgGlyphOutline.GetCanonicalContourStorage(font, _glyph.GlyphIndex, budget, token, out float pointScale);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Geometry, token);
         int first = 0;
         foreach (int end in contours.ContourEnds)

@@ -86,17 +86,18 @@ internal static class SvgBinaryViewportCoverage
                     while (at > 0 && active[at - 1].X > current.X) { token.ThrowIfCancellationRequested(); active[at] = active[at - 1]; at--; }
                     active[at] = current;
                 }
-                int winding = inverse ? 1 : 0, start = left;
+                int winding = 0, start = left;
                 for (int index = 0; index < activeCount; index++)
                 {
                     if ((index & 1023) == 0) token.ThrowIfCancellationRequested();
                     int x = (int)Math.Clamp(((active[index].X + 32768) >> 16) + origin.X, left, right);
-                    if (winding == 0) start = x;
+                    bool paintedBefore = inverse ? winding == 0 : winding != 0;
                     winding = evenOdd ? winding ^ 1 : winding + active[index].Winding;
-                    if (winding != 0) continue;
-                    Fill(start, x);
+                    bool paintedAfter = inverse ? winding == 0 : winding != 0;
+                    if (paintedBefore && !paintedAfter) Fill(start, x);
+                    else if (!paintedBefore && paintedAfter) start = x;
                 }
-                if (inverse && winding != 0) Fill(start, right);
+                if (inverse ? winding == 0 : winding != 0) Fill(start, right);
 
                 void Fill(int first, int end)
                 {

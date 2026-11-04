@@ -1,5 +1,5 @@
 {
-  "purpose": "Decoration widths and ink exclusions retain physical source extents and SVG glyph stretching independently of glyph layout. Two failing-before controls each retain a glyph-only companion. Affine and path residuals remain separate in the linked review.",
+  "purpose": "Five failing-before inputs protect source extents, stretched padding, canonical contour scaling and independently rounded exclusion unions. Each keeps a glyph-only companion; the path failures remain Linux-specific observations with separate platform references.",
   "license": "MIT",
   "productionSourceBefore": "70d38675b3279748043a27449a7bdbe33f3b1508",
   "fontEvidence": "../release-baselines/decoration-ink-review.json",
@@ -175,6 +175,265 @@
           "stderrTruncated": false
         }
       }
+    },
+    {
+      "id": "ink-parent-affine",
+      "input": "ink-parent-affine.svg",
+      "sourceSha256": "5f3406f82c38e53e957dddd7d2cf0a4579474b1914a0ba08525c1951697a2008",
+      "outputScale": 1,
+      "duty": "Reference-map placement and source-local exclusion rectangles.",
+      "references": {
+        "windows": {
+          "path": "references/84daeab3ce61f6ee.png",
+          "sha256": "84daeab3ce61f6ee841c49a07101801f7638d8434cfdc9e6e1edec776fdcf898"
+        },
+        "linux": {
+          "path": "references/c37c16d2bcc17c58.png",
+          "sha256": "c37c16d2bcc17c589a1bc63904a1f71cf5e278da4197a7837ad24830a3c98c3d"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "84daeab3ce61f6ee841c49a07101801f7638d8434cfdc9e6e1edec776fdcf898",
+            "84daeab3ce61f6ee841c49a07101801f7638d8434cfdc9e6e1edec776fdcf898",
+            "84daeab3ce61f6ee841c49a07101801f7638d8434cfdc9e6e1edec776fdcf898"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "c37c16d2bcc17c589a1bc63904a1f71cf5e278da4197a7837ad24830a3c98c3d",
+            "c37c16d2bcc17c589a1bc63904a1f71cf5e278da4197a7837ad24830a3c98c3d",
+            "c37c16d2bcc17c589a1bc63904a1f71cf5e278da4197a7837ad24830a3c98c3d"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    },
+    {
+      "id": "ink-path-l",
+      "input": "ink-path-l.svg",
+      "sourceSha256": "57b46b7af4a7b11a80a14091052b5eec3b41d354c5b70be3e584eca9cc666fec",
+      "outputScale": 1,
+      "duty": "Independently placed path glyphs through horizontal/quadratic/cubic/polyline baselines.",
+      "references": {
+        "windows": {
+          "path": "references/7945f5ad07d5bf4e.png",
+          "sha256": "7945f5ad07d5bf4e434277dbeb2e88df6233820133806bc6595e182095bb5a61"
+        },
+        "linux": {
+          "path": "references/4572eacf0f668ce9.png",
+          "sha256": "4572eacf0f668ce9d2dfe5d23ce047e497d7e36118e61045802c8a10003d23b2"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "7945f5ad07d5bf4e434277dbeb2e88df6233820133806bc6595e182095bb5a61",
+            "7945f5ad07d5bf4e434277dbeb2e88df6233820133806bc6595e182095bb5a61",
+            "7945f5ad07d5bf4e434277dbeb2e88df6233820133806bc6595e182095bb5a61"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "4572eacf0f668ce9d2dfe5d23ce047e497d7e36118e61045802c8a10003d23b2",
+            "4572eacf0f668ce9d2dfe5d23ce047e497d7e36118e61045802c8a10003d23b2",
+            "4572eacf0f668ce9d2dfe5d23ce047e497d7e36118e61045802c8a10003d23b2"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    },
+    {
+      "id": "ink-path-rotation",
+      "input": "ink-path-rotation.svg",
+      "sourceSha256": "1a7ae7779a4bc3b7e639547dcd2da79e08ea725af5b27d2e1a4f1d6ced193294",
+      "outputScale": 1,
+      "duty": "Character rotation within a curved path.",
+      "references": {
+        "windows": {
+          "path": "references/0938ee0590125c0c.png",
+          "sha256": "0938ee0590125c0cc6a6f8932ac9a2e429ae9e47dbfe8e464f0871bb8b164da4"
+        },
+        "linux": {
+          "path": "references/78f2d666be940e72.png",
+          "sha256": "78f2d666be940e72554b65eb51c2a92bffce8fdfac1b62c5c4f32b29a2597600"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "0938ee0590125c0cc6a6f8932ac9a2e429ae9e47dbfe8e464f0871bb8b164da4",
+            "0938ee0590125c0cc6a6f8932ac9a2e429ae9e47dbfe8e464f0871bb8b164da4",
+            "0938ee0590125c0cc6a6f8932ac9a2e429ae9e47dbfe8e464f0871bb8b164da4"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "78f2d666be940e72554b65eb51c2a92bffce8fdfac1b62c5c4f32b29a2597600",
+            "78f2d666be940e72554b65eb51c2a92bffce8fdfac1b62c5c4f32b29a2597600",
+            "78f2d666be940e72554b65eb51c2a92bffce8fdfac1b62c5c4f32b29a2597600"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    },
+    {
+      "id": "ink-parent-affine-glyph-only",
+      "input": "ink-parent-affine-glyph-only.svg",
+      "sourceSha256": "b5a04e2ed8e76fb0cd6b20233da9d3417ff9970baa22c7566ba3addd80d6277b",
+      "outputScale": 1,
+      "duty": "Neutral glyph control for parent-affine",
+      "references": {
+        "windows": {
+          "path": "references/aa9594d8e7dc383d.png",
+          "sha256": "aa9594d8e7dc383d28c8aa0ad18ca5a79d34ed03c10991b45d3b14a955781436"
+        },
+        "linux": {
+          "path": "references/fe46ddb887cb1e91.png",
+          "sha256": "fe46ddb887cb1e914211df4f4e9b0d5b5896411ff8d5326789a489354e838670"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "aa9594d8e7dc383d28c8aa0ad18ca5a79d34ed03c10991b45d3b14a955781436",
+            "aa9594d8e7dc383d28c8aa0ad18ca5a79d34ed03c10991b45d3b14a955781436",
+            "aa9594d8e7dc383d28c8aa0ad18ca5a79d34ed03c10991b45d3b14a955781436"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "fe46ddb887cb1e914211df4f4e9b0d5b5896411ff8d5326789a489354e838670",
+            "fe46ddb887cb1e914211df4f4e9b0d5b5896411ff8d5326789a489354e838670",
+            "fe46ddb887cb1e914211df4f4e9b0d5b5896411ff8d5326789a489354e838670"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    },
+    {
+      "id": "ink-path-l-glyph-only",
+      "input": "ink-path-l-glyph-only.svg",
+      "sourceSha256": "a547f41fc73ff3702ef6044baa4b403424b00357ed0f2ceed4fa4ca6f0582112",
+      "outputScale": 1,
+      "duty": "Neutral polyline glyph control to isolate path decoration from native math and glyph drawing.",
+      "references": {
+        "windows": {
+          "path": "references/5bd13a7fda832d72.png",
+          "sha256": "5bd13a7fda832d72880a38b61e7e24cfa16d2e591129c5b1bd6b45a1335e637a"
+        },
+        "linux": {
+          "path": "references/648ff29cf77b6462.png",
+          "sha256": "648ff29cf77b646241c501f4055494a1db71f6e24efafc9e472f36fc3ebfa174"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "5bd13a7fda832d72880a38b61e7e24cfa16d2e591129c5b1bd6b45a1335e637a",
+            "5bd13a7fda832d72880a38b61e7e24cfa16d2e591129c5b1bd6b45a1335e637a",
+            "5bd13a7fda832d72880a38b61e7e24cfa16d2e591129c5b1bd6b45a1335e637a"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "648ff29cf77b646241c501f4055494a1db71f6e24efafc9e472f36fc3ebfa174",
+            "648ff29cf77b646241c501f4055494a1db71f6e24efafc9e472f36fc3ebfa174",
+            "648ff29cf77b646241c501f4055494a1db71f6e24efafc9e472f36fc3ebfa174"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
+    },
+    {
+      "id": "ink-path-rotation-glyph-only",
+      "input": "ink-path-rotation-glyph-only.svg",
+      "sourceSha256": "76dd0804279d46bb0d888d713f41ee1975f7ab77fd39972a1bec0aa35b16855c",
+      "outputScale": 1,
+      "duty": "Neutral character-rotated curved-path glyph control.",
+      "references": {
+        "windows": {
+          "path": "references/7a4b66fd1b86cb69.png",
+          "sha256": "7a4b66fd1b86cb699c4a104781aaa49bedcea32d0728590e4c24af94f0928f2b"
+        },
+        "linux": {
+          "path": "references/abd6c706f3e7ea27.png",
+          "sha256": "abd6c706f3e7ea270f7e6dc6ded3bd7239aa20c2ebbbf2698b9471301ec1a5db"
+        }
+      },
+      "native": {
+        "windows": {
+          "freshPngSha256s": [
+            "7a4b66fd1b86cb699c4a104781aaa49bedcea32d0728590e4c24af94f0928f2b",
+            "7a4b66fd1b86cb699c4a104781aaa49bedcea32d0728590e4c24af94f0928f2b",
+            "7a4b66fd1b86cb699c4a104781aaa49bedcea32d0728590e4c24af94f0928f2b"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        },
+        "linux": {
+          "freshPngSha256s": [
+            "abd6c706f3e7ea270f7e6dc6ded3bd7239aa20c2ebbbf2698b9471301ec1a5db",
+            "abd6c706f3e7ea270f7e6dc6ded3bd7239aa20c2ebbbf2698b9471301ec1a5db",
+            "abd6c706f3e7ea270f7e6dc6ded3bd7239aa20c2ebbbf2698b9471301ec1a5db"
+          ],
+          "startupHealth": "healthy",
+          "profilesCleaned": 3,
+          "networkServiceCrashes": 0,
+          "sandboxAccessFailures": 0,
+          "stderrTruncated": false
+        }
+      }
     }
-  ]
+  ],
+  "currentQualification": "../release-baselines/decoration-clip-qualification.json"
 }
