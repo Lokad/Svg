@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "Locally qualified on both hosts and runtimes; full matrices retained",
+  "status": "Qualified locally on both hosts/runtimes; Ubuntu entire CI succeeds; Windows retains solely the unchanged DejaVu reference assertion.",
   "reviewBaseCommit": "48df7369c125cd4574340ebfcaf4d9b4dcd4e27e",
   "runtimePackage": {
     "sourceCommit": "a203b26eb5a6240bd5abff7a594df603c6734da2",
@@ -269,5 +269,144 @@
       },
       "selection": "FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Governed_output_paths_share_the_host|FullyQualifiedName~Governed_bare_memory_rejection|FullyQualifiedName~Inspection_borrows_the_root|FullyQualifiedName~Http_document_and_output_use_the_active_host_scope|FullyQualifiedName~Retained_png_charge_competes|FullyQualifiedName~Snapshot_metadata_stays_charged|FullyQualifiedName~Cancelled_font_acquisition_drains|FullyQualifiedName~Overlapping_async_output_keeps|FullyQualifiedName~Cancelled_font_byte_read_keeps"
     }
-  ]
+  ],
+  "ci": {
+    "runId": 41909943800,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41909943800",
+    "sourceCommit": "53e88e6ed9bc8de9eb80f6301a6799f4a4a28edc",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 71311,
+            "skipped": 0,
+            "total": 71311
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12865,
+            "skipped": 0,
+            "total": 12865
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "skipped": 0,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          }
+        ],
+        "logSha256": "c8d2bc4a6a1c23d93ed69d5c3621ea17601fa4fee10a1f277f03c2767f481b32",
+        "steps": [
+          {
+            "name": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 API, ownership and numerical compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 representative native rendering compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 font host compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 71310,
+            "skipped": 0,
+            "total": 71311
+          }
+        ],
+        "logSha256": "8fc246b0f7bcea6de5cea633fb41f2f07b2b2fffd618a193fc1bdd69917c412f",
+        "steps": [
+          {
+            "name": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+            "conclusion": "failure"
+          },
+          {
+            "name": ".NET 10 API, ownership and numerical compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": ".NET 10 representative native rendering compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": ".NET 10 font host compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    },
+    "boundary": "Windows .NET10 and package steps are skipped after the existing net11 visual failure. Local affected checks retain both runtimes/hosts against the unchanged a203 package. Frozen DejaVu target/assertion remain unchanged; reference authority is pending."
+  }
 }
