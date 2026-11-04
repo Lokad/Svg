@@ -1,0 +1,146 @@
+{
+  "status": "All 3481 stroke-final pair identities join existing independently qualified sources, options and native targets. This is a provenance join, not a fresh rendering run or a new bug fix.",
+  "originalPairs": 3481,
+  "originalInputs": 6962,
+  "identityBasis": "The archived rename-only producers copy each source/options row unchanged except name. Both mappings and producers are hashed. Upstream source strings/options and native images are checked directly against source-bound replay metadata; the generated combined bank itself is not opened.",
+  "provenance": [
+    {
+      "role": "stroke rename mapping",
+      "sha256": "cdc711aa386f252c6091afa694e885dd61f31650919890f5e9e40e4440630fa4"
+    },
+    {
+      "role": "primitive rename mapping",
+      "sha256": "084210e74e3a8ea624e80fabe2b3157b203690588ccada74a295ddce462b4ce2"
+    },
+    {
+      "role": "stroke rename-only producer, read not executed",
+      "sha256": "ee900ee19a605fd9dc9b0dfefb56db42a175214df898bd647c4fb5cba40910cb"
+    },
+    {
+      "role": "primitive rename-only producer, read not executed",
+      "sha256": "e426110c85b0884fe02cadde9465bac0c265187de87d5c251a307c3a8968fa76"
+    }
+  ],
+  "originalSourceOptionsAndTargetsPreserved": true,
+  "fontContext": {
+    "inputs": 1472,
+    "independentlyDifferentPlatformTargets": 448,
+    "qualification": "r85-alias-review.json",
+    "explicitProgramAndCatalogIdentitiesPreserved": true
+  },
+  "groups": [
+    {
+      "bank": "r85-frame-review",
+      "pairs": 360,
+      "inputs": 720,
+      "strokeFinalIndices": {
+        "first": 0,
+        "last": 359
+      },
+      "fontInputs": 0,
+      "sourceOptionsAndNativeJoinSha256": "4adbb9827ea579725cec4cd755b12067bdef9117aa4b55dece5c5191e31fcfc8",
+      "qualification": "singular-source-qualification.json"
+    },
+    {
+      "bank": "r85-extended",
+      "pairs": 1152,
+      "inputs": 2304,
+      "strokeFinalIndices": {
+        "first": 360,
+        "last": 1511
+      },
+      "fontInputs": 0,
+      "sourceOptionsAndNativeJoinSha256": "03cd6680cdabf25d8c990622f9d08d25ab19f64717a32dd4f5a3f9223ccbfd03",
+      "qualification": "rectangle-source-qualification.json"
+    },
+    {
+      "bank": "primitive-final",
+      "pairs": 1348,
+      "inputs": 2696,
+      "strokeFinalIndices": {
+        "first": 1512,
+        "last": 2859
+      },
+      "fontInputs": 1472,
+      "sourceOptionsAndNativeJoinSha256": "7c52f4b3fbf7d9a65d64537ef9a31a1610a6fc0f475f9d0e69b58d31736087d4",
+      "qualification": "singular-source-qualification.json"
+    },
+    {
+      "bank": "r85-degenerate",
+      "pairs": 36,
+      "inputs": 72,
+      "strokeFinalIndices": {
+        "first": 2860,
+        "last": 2895
+      },
+      "fontInputs": 0,
+      "sourceOptionsAndNativeJoinSha256": "888cb8c036e23ff5207e2afe6620b786fe47e7674cf2eccfe626e42eb2668b54",
+      "qualification": "rectangle-source-qualification.json"
+    },
+    {
+      "bank": "r85-integer",
+      "pairs": 576,
+      "inputs": 1152,
+      "strokeFinalIndices": {
+        "first": 2896,
+        "last": 3471
+      },
+      "fontInputs": 0,
+      "sourceOptionsAndNativeJoinSha256": "daa374ecd238b846ea883b3f29a0144482264601e481f389b052c3011125b78a",
+      "qualification": "rectangle-source-qualification.json"
+    },
+    {
+      "bank": "r85-clip-gain",
+      "pairs": 9,
+      "inputs": 18,
+      "strokeFinalIndices": {
+        "first": 3472,
+        "last": 3480
+      },
+      "fontInputs": 0,
+      "sourceOptionsAndNativeJoinSha256": "9c1d6b45cd09169084db719844876582e7df2911b0b5e78734460ce1022b0ede",
+      "qualification": "rectangle-source-qualification.json"
+    }
+  ],
+  "sourceOptionsAndNativeJoinSha256": "9b3be0dc77ffd2cd87cfd6a6b84f57f60f4e640e5a488ab5dc99307b5b703b15",
+  "joinDigestRecipe": "Sort input records by stroke-final id, serialize JSON with sorted keys, ASCII escapes, no spaces and no final newline, then hash UTF-8. Fields: id, upstreamId, bank, sourceSha256, scale, font, nativeRgbaSha256 keyed by windows/linux. Group digests use the same recipe.",
+  "primitiveMapping": [
+    {
+      "first": 0,
+      "last": 575,
+      "originalPrefix": "r74-primitives",
+      "originalIndex": "primitive index minus first"
+    },
+    {
+      "first": 576,
+      "last": 1151,
+      "originalPrefix": "r85-visibility",
+      "originalIndex": "primitive index minus first"
+    },
+    {
+      "first": 1152,
+      "last": 1187,
+      "originalPrefix": "r74-inherit-review",
+      "originalIndex": "primitive index minus first"
+    },
+    {
+      "first": 1188,
+      "last": 1243,
+      "originalPrefix": "r74-intrinsics",
+      "originalIndex": "primitive index minus first"
+    },
+    {
+      "first": 1244,
+      "last": 1347,
+      "originalPrefix": "r74-remaining",
+      "originalIndex": "primitive index minus first"
+    }
+  ],
+  "allInputsNativeExactInLinkedQualifications": true,
+  "newConversions": 0,
+  "newTestCases": 0,
+  "frozenTargetsChanged": 0,
+  "protectedExecutionTreeInspected": false,
+  "legacyProducersExecuted": false,
+  "remaining": "The separate 11468-pair wide lineage requires its own source/options/outcome inventory. This join does not qualify unsupported originals or all historical shader behavior."
+}

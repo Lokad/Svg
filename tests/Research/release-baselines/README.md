@@ -62,3 +62,9 @@ and three fresh healthy browser processes per host. A compact source recipe
 reconstructs every original byte and option; aggregate hashes bind sources and
 native pixels. Existing routine overlap cases remain separate from this optional
 product. No source, reference, tolerance or production implementation changed.
+
+The [stroke lineage join](r85-stroke-lineage.json) accounts for all 3,481 original
+pairs through those existing qualifications and the retained rectangle replay.
+Source bytes, scale, font context and each native target are joined individually;
+the 448 platform-specific font targets remain distinct. Rename-only provenance
+is separate from a new rendering run. The 11,468-pair wide lineage remains open.
