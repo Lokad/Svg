@@ -1,0 +1,273 @@
+{
+  "schemaVersion": 1,
+  "status": "Locally qualified on both hosts and runtimes; full matrices retained",
+  "reviewBaseCommit": "48df7369c125cd4574340ebfcaf4d9b4dcd4e27e",
+  "runtimePackage": {
+    "sourceCommit": "a203b26eb5a6240bd5abff7a594df603c6734da2",
+    "packageVersion": "0.4.0-dev.1",
+    "nupkgSha256": "dc1f26d8ac336f82f366362e3b1befdfb903aaf99fa32bf9d9b4b3654df240b2",
+    "snupkgSha256": "c72c5a739d981d9efc00aefd6e6f85eae4dc9f92e537e181bd274889eb485d6a",
+    "librarySha256": {
+      "net11.0": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "net10.0": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c"
+    }
+  },
+  "testSources": [
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgSuppliedFontDocumentTests.cs",
+      "lfSha256": "66d32830bade08ab931a54b498fd82d7b1610e2f309f9f40db382b5c7c8bb857"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgSuppliedFontTextPathTests.cs",
+      "lfSha256": "565ab75e2285d55b39bc145559cd83404df3de82b405fcbf17f057b24c213d93"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgCurvedFontDocumentTests.cs",
+      "lfSha256": "4ba021451ade3706232caa99f14562f3e7bf8783d0b758e8396b0ea9468e423d"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgFontOutputAssertions.cs",
+      "lfSha256": "9308b6d1463f053badc5808a1bcd96ee8964a23ebc1a091abe514791994351c5"
+    }
+  ],
+  "unchangedBanks": [
+    {
+      "manifest": "tests/Research/supplied-font-documents/manifest.json",
+      "manifestLfSha256": "4a496dd02187f80450c83272162022f5f6c456c6570c9bc5b2b0b353851c338e",
+      "renderingInputs": 8,
+      "excludeFontContractFixture": false
+    },
+    {
+      "manifest": "tests/Research/supplied-font-text-paths/manifest.json",
+      "manifestLfSha256": "dad206d7c8ca809cb57d8ba216d882c783b1bef49eb9874f598582d466b3e484",
+      "renderingInputs": 7,
+      "excludeFontContractFixture": true
+    },
+    {
+      "manifest": "tests/Research/curved-font-documents/manifest.json",
+      "manifestLfSha256": "d246568180b4cf814fd58c98a523e5b4ed909de62e25564c154b2e885f93cdcd",
+      "renderingInputs": 5,
+      "excludeFontContractFixture": true
+    },
+    {
+      "manifest": "tests/Research/static-css-document/manifest.json",
+      "manifestLfSha256": "d3a202ab8f23cac61761d0cddd8650a69dd8e6c80a56ac2d3238a80103fb65e8",
+      "renderingInputs": 17,
+      "excludeFontContractFixture": true
+    }
+  ],
+  "sourceAndReferenceJoin": {
+    "recipe": "Ordinal-sort bank:id:field:sha256 for each retained row and input/reference/linuxReference; join LF, no final LF.",
+    "rows": 111,
+    "sha256": "1624ddcf028d2a34bfd2b87662972445cf4473833a1f4d55e5975ded863b6be7"
+  },
+  "responsibilities": {
+    "beforeMixedTests": 37,
+    "beforeConversions": 444,
+    "canonicalRenderingCases": 37,
+    "routineTwelveFormContracts": 7,
+    "extendedTwelveFormContracts": 30,
+    "routineCases": 44,
+    "routineConversions": 121,
+    "fullCases": 74,
+    "fullConversions": 481,
+    "freshPreparedOwnersPerMatrix": 6,
+    "unchangedDedicatedVisualCases": 81
+  },
+  "nativeMethodRenames": [
+    {
+      "testClass": "SvgSuppliedFontDocumentTests",
+      "before": "Declared_document_and_controls_preserve_source_through_twelve_apis",
+      "after": "Declared_document_and_controls_match_frozen_native_references"
+    },
+    {
+      "testClass": "SvgSuppliedFontTextPathTests",
+      "before": "Complete_text_path_document_and_controls_match_frozen_references_through_twelve_apis",
+      "after": "Text_path_controls_match_frozen_native_references"
+    },
+    {
+      "testClass": "SvgCurvedFontDocumentTests",
+      "before": "Document_and_controls_preserve_twelve_outputs_and_every_completed_reference",
+      "after": "Document_and_controls_match_frozen_native_references"
+    }
+  ],
+  "localTiming": {
+    "protocol": "Three fresh VSTest processes per host before/after, .NET11 Release, same package DLL; Windows and Linux paired concurrently; same workstation; includes startup/discovery/TRX and excludes build. Canonical-only and full are one observation each. Functional validation costs, not renderer throughput or quiet-VM performance.",
+    "observations": {
+      "windows": {
+        "beforeSeconds": [
+          17.981025599874556,
+          15.020848100073636,
+          15.000540799926966
+        ],
+        "afterRoutineSeconds": [
+          15.849443700164557,
+          13.863275200128555,
+          13.91859220014885
+        ],
+        "beforeMedianSeconds": 15.020848100073636,
+        "afterRoutineMedianSeconds": 13.91859220014885,
+        "canonicalOnlySeconds": 11.145507900044322,
+        "fullSeconds": 15.467681600013748
+      },
+      "linux": {
+        "beforeSeconds": [
+          21.98072880017571,
+          16.03052439983003,
+          15.652041099965572
+        ],
+        "afterRoutineSeconds": [
+          17.318160699913278,
+          13.98597629996948,
+          13.848212300101295
+        ],
+        "beforeMedianSeconds": 16.03052439983003,
+        "afterRoutineMedianSeconds": 13.98597629996948,
+        "canonicalOnlySeconds": 11.56478159991093,
+        "fullSeconds": 15.59254329977557
+      }
+    }
+  },
+  "affectedIntegration": [
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "testAssemblySha256": "d62b554dcf49e459e2db82beb3d8fa57865abdd0cfae04551abc8f779be1c411",
+      "seconds": 15.467681600013748,
+      "counters": {
+        "executed": "74",
+        "passed": "74",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~Declared_document_and_controls_match_frozen_native_references|FullyQualifiedName~Text_path_controls_match_frozen_native_references|FullyQualifiedName~Document_and_controls_match_frozen_native_references|FullyQualifiedName~Representative_font_documents_preserve_twelve_output_forms|FullyQualifiedName~Extended_font_documents_preserve_twelve_output_forms"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "testAssemblySha256": "d62b554dcf49e459e2db82beb3d8fa57865abdd0cfae04551abc8f779be1c411",
+      "seconds": 15.59254329977557,
+      "counters": {
+        "executed": "74",
+        "passed": "74",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~Declared_document_and_controls_match_frozen_native_references|FullyQualifiedName~Text_path_controls_match_frozen_native_references|FullyQualifiedName~Document_and_controls_match_frozen_native_references|FullyQualifiedName~Representative_font_documents_preserve_twelve_output_forms|FullyQualifiedName~Extended_font_documents_preserve_twelve_output_forms"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "testAssemblySha256": "d62b554dcf49e459e2db82beb3d8fa57865abdd0cfae04551abc8f779be1c411",
+      "seconds": 17.720721299992874,
+      "counters": {
+        "executed": "155",
+        "passed": "155",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~OpenTypeFontTests.SharedMemory"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "testAssemblySha256": "d62b554dcf49e459e2db82beb3d8fa57865abdd0cfae04551abc8f779be1c411",
+      "seconds": 18.627384199993685,
+      "counters": {
+        "executed": "155",
+        "passed": "155",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~OpenTypeFontTests.SharedMemory"
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+      "seconds": 12.645090600010008,
+      "counters": {
+        "executed": "119",
+        "passed": "119",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Governed_output_paths_share_the_host|FullyQualifiedName~Governed_bare_memory_rejection|FullyQualifiedName~Inspection_borrows_the_root|FullyQualifiedName~Http_document_and_output_use_the_active_host_scope|FullyQualifiedName~Retained_png_charge_competes|FullyQualifiedName~Snapshot_metadata_stays_charged|FullyQualifiedName~Cancelled_font_acquisition_drains|FullyQualifiedName~Overlapping_async_output_keeps|FullyQualifiedName~Cancelled_font_byte_read_keeps"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+      "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+      "seconds": 14.28992240014486,
+      "counters": {
+        "executed": "119",
+        "passed": "119",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Governed_output_paths_share_the_host|FullyQualifiedName~Governed_bare_memory_rejection|FullyQualifiedName~Inspection_borrows_the_root|FullyQualifiedName~Http_document_and_output_use_the_active_host_scope|FullyQualifiedName~Retained_png_charge_competes|FullyQualifiedName~Snapshot_metadata_stays_charged|FullyQualifiedName~Cancelled_font_acquisition_drains|FullyQualifiedName~Overlapping_async_output_keeps|FullyQualifiedName~Cancelled_font_byte_read_keeps"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c",
+      "testAssemblySha256": "00ae33f4e5bae808920563c83e31d4d0f3a905248b24946043c21dd09fecbf76",
+      "seconds": 21.81529269996099,
+      "counters": {
+        "executed": "155",
+        "passed": "155",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~OpenTypeFontTests.SharedMemory"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c",
+      "testAssemblySha256": "00ae33f4e5bae808920563c83e31d4d0f3a905248b24946043c21dd09fecbf76",
+      "seconds": 20.85785000002943,
+      "counters": {
+        "executed": "155",
+        "passed": "155",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~OpenTypeFontTests.SharedMemory"
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c",
+      "testAssemblySha256": "3ce3b2ff4c7256d9dc426a24a3c87019614c4b9f567037a402ab1415a7de7d89",
+      "seconds": 12.205929999938235,
+      "counters": {
+        "executed": "119",
+        "passed": "119",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Governed_output_paths_share_the_host|FullyQualifiedName~Governed_bare_memory_rejection|FullyQualifiedName~Inspection_borrows_the_root|FullyQualifiedName~Http_document_and_output_use_the_active_host_scope|FullyQualifiedName~Retained_png_charge_competes|FullyQualifiedName~Snapshot_metadata_stays_charged|FullyQualifiedName~Cancelled_font_acquisition_drains|FullyQualifiedName~Overlapping_async_output_keeps|FullyQualifiedName~Cancelled_font_byte_read_keeps"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c",
+      "testAssemblySha256": "3ce3b2ff4c7256d9dc426a24a3c87019614c4b9f567037a402ab1415a7de7d89",
+      "seconds": 13.182845700066537,
+      "counters": {
+        "executed": "119",
+        "passed": "119",
+        "failed": "0"
+      },
+      "selection": "FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Governed_output_paths_share_the_host|FullyQualifiedName~Governed_bare_memory_rejection|FullyQualifiedName~Inspection_borrows_the_root|FullyQualifiedName~Http_document_and_output_use_the_active_host_scope|FullyQualifiedName~Retained_png_charge_competes|FullyQualifiedName~Snapshot_metadata_stays_charged|FullyQualifiedName~Cancelled_font_acquisition_drains|FullyQualifiedName~Overlapping_async_output_keeps|FullyQualifiedName~Cancelled_font_byte_read_keeps"
+    }
+  ]
+}

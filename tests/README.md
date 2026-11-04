@@ -386,6 +386,9 @@ maps the shared fix to native controls and the complete green-grapes original.
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;
 a layer filter does not replace affected unclassified tests or full qualification.
+The [supplied-font output map](Research/release-baselines/font-output-responsibilities.md)
+keeps all 37 native rendering inputs, seven routine API matrices and 30 extended
+matrices, with separate layout, acquisition and ownership regressions.
 For pattern selection, `FullyQualifiedName~Pattern_child_content_selects_the_discovered_font`
 selects direct discovery; include the raster and prepared siblings for integration.
 `FullyQualifiedName~SvgPatternSelectionMechanismTests` selects the original resource

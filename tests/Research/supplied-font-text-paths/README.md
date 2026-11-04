@@ -1,7 +1,7 @@
 # supplied-font-text-paths regression coverage
 
-Full-document membership is [retired](../../README.md#retired-collections).
-
-The [current manifest](manifest.json) retains 7 focused cases with unchanged
-source/options/platform references. Existing dedicated font/resource/API fixtures
-remain governed by their own contracts and add no full-document membership.
+Seven [controls](manifest.json) retain canonical conversion and exact Windows/Linux
+references. Forward xlink resolution and a glyph suppressed by a short path also
+exercise the twelve output forms routinely. The separate font-contract fixture
+keeps its existing exclusion from this rendering selection.
+See the [responsibility map](../release-baselines/font-output-responsibilities.md).

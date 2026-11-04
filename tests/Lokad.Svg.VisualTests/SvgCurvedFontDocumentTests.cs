@@ -41,8 +41,9 @@ public sealed class SvgCurvedFontDocumentTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(Cases))]
-    public async Task Document_and_controls_preserve_twelve_outputs_and_every_completed_reference(string family, string identity)
+    public async Task Document_and_controls_match_frozen_native_references(string family, string identity)
     {
         string directory = Path.Combine(ResearchCorpus.Root, family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -51,55 +52,50 @@ public sealed class SvgCurvedFontDocumentTests
         byte[] unchanged = input.ToArray();
         SvgFontPackCatalog catalog = Catalog(directory);
         SvgViewport viewport = new(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32());
-        if (Required(item, "rendererOutcome") == "unsupported")
-        {
-            SvgException error = await Assert.ThrowsAsync<SvgException>(async () =>
-            {
-                using SvgPreparedDocument pending = await SvgPreparedDocument.CreateAsync(input, catalog, Provider(), new SvgRenderOptions(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
-                pending.ConvertToPng(CancellationToken.None);
-            });
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-            Assert.Equal(unchanged, input);
-            return;
-        }
+        Assert.Equal("exact", Required(item, "rendererOutcome"));
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, Provider(), CancellationToken.None);
         SvgRenderOptions options = new(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
-        byte[] destination = new byte[png.Length];
-        Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
-        Assert.Equal(png, destination);
-        using MemoryStream stream = new();
-        Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, stream, options, CancellationToken.None));
-        Assert.Equal(png, stream.ToArray());
-        Assert.Equal(png, (await SvgConverter.ConvertToPngAsync(input, options, CancellationToken.None)).ToArray());
-        Assert.Equal(png.Length, await SvgConverter.ConvertToPngAsync(input, destination, options, CancellationToken.None));
-        Assert.Equal(png, destination);
-        using MemoryStream asyncStream = new();
-        Assert.Equal(png.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, options, CancellationToken.None));
-        Assert.Equal(png, asyncStream.ToArray());
-        for (int mode = 0; mode < 6; mode++)
-        {
-            // Each prepared document owns exactly one conversion and font lease.
-            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, Provider(), new SvgRenderOptions(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
-            using MemoryStream preparedStream = new();
-            byte[] preparedPng = mode switch
-            {
-                0 => prepared.ConvertToPng(CancellationToken.None).ToArray(),
-                1 => (await prepared.ConvertToPngAsync(CancellationToken.None)).ToArray(),
-                2 => prepared.ConvertToPng(destination, CancellationToken.None) == png.Length ? destination : [],
-                3 => await prepared.ConvertToPngAsync(destination, CancellationToken.None) == png.Length ? destination : [],
-                4 => prepared.ConvertToPng(preparedStream, CancellationToken.None) == png.Length ? preparedStream.ToArray() : [],
-                _ => await prepared.ConvertToPngAsync(preparedStream, CancellationToken.None) == png.Length ? preparedStream.ToArray() : []
-            };
-            Assert.Equal(png, preparedPng);
-        }
         Assert.Equal(unchanged, input);
         if (OperatingSystem.IsLinux() || OperatingSystem.IsWindows())
         {
             byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
-            bool completed = Required(item, "rendererOutcome") == "exact" || OperatingSystem.IsLinux() && item.TryGetProperty("linuxRendererOutcome", out JsonElement linuxOutcome) && linuxOutcome.GetString() == "exact";
-            if (completed) Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
+            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
         }
+    }
+
+    public static IEnumerable<object[]> RepresentativeApiCases() => ApiCases(true);
+
+    public static IEnumerable<object[]> ExtendedApiCases() => ApiCases(false);
+
+    private static IEnumerable<object[]> ApiCases(bool representative)
+        => Cases().Where(c => ((string)c[1] is "two-path-runs" or "composite-on-path" or "span-paint" or "translated-pattern-rect") == representative);
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [MemberData(nameof(RepresentativeApiCases))]
+    public Task Representative_font_documents_preserve_twelve_output_forms(string family, string identity)
+        => AssertOutputForms(family, identity);
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [Trait("Category", "Research")]
+    [MemberData(nameof(ExtendedApiCases))]
+    public Task Extended_font_documents_preserve_twelve_output_forms(string family, string identity)
+        => AssertOutputForms(family, identity);
+
+    private static async Task AssertOutputForms(string family, string identity)
+    {
+        string directory = Path.Combine(ResearchCorpus.Root, family);
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+        JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));
+        SvgFontPackCatalog catalog = Catalog(directory);
+        SvgViewport viewport = new(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, Provider(), CancellationToken.None);
+        SvgRenderOptions options = new(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        await SvgFontOutputAssertions.MatchesTwelveForms(input, options,
+            () => SvgPreparedDocument.CreateAsync(input, catalog, Provider(), new SvgRenderOptions(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None));
     }
 
     [Theory]

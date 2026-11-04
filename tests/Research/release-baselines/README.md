@@ -28,6 +28,8 @@ material-dependent source-retention gap and its 24 original use admissions.
 bindings from synthetic scope carriers and closes eight original filter residuals.
 [Governed host qualification](host-api-qualification.md) maps resolver, admission,
 shutdown and asynchronous output contracts to source and installed-package evidence.
+[Supplied-font test responsibilities](font-output-responsibilities.md) separate
+37 native rendering inputs from seven routine and 30 extended output matrices.
 
 The outstanding review starts at these committed collections:
 
