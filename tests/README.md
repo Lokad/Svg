@@ -56,6 +56,10 @@ all 960 original inputs and 16 authored stage controls. Its 50 routine images us
 one owned-PNG path; 926 inputs remain separate research cases. Direct mechanisms
 protect canvas rounding, material-independent recording and bitmap-local clip
 containment. Existing text and ownership contracts retain their distinct duties.
+The [rectangle source controls](Research/rectangle-shader-frames/admission-review.json)
+keep 24 original admission regressions and six independent source-role images on
+the same canonical path. Six mechanisms cover cached and reconstructed strokes;
+existing rectangle ownership contracts retain refusal, cleanup and retry.
 
 The [alpha and gradient layer map](Research/release-baselines/alpha-gradient-responsibilities.json)
 keeps 35 numerical mechanisms independently selectable from nine storage, API and

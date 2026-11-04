@@ -68,15 +68,16 @@ public sealed class SvgUsePaintTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
-            SvgGeometry geometry = Assert.Single(scene.Geometries);
-            SvgRecordedPaintValue fill = scene.SceneStorage?.RecordedPaintValues[geometry.RecordedPaint.Identity - 1] ?? throw new InvalidOperationException();
-            SvgRecordedPaintValue stroke = scene.SceneStorage?.RecordedPaintValues[geometry.RecordedStrokePaint.Identity - 1] ?? throw new InvalidOperationException();
+            Assert.Equal(2, scene.Geometries.Length);
+            SvgGeometry fillGeometry = scene.Geometries[0], strokeGeometry = scene.Geometries[1];
+            SvgRecordedPaintValue fill = scene.SceneStorage?.RecordedPaintValues[fillGeometry.RecordedPaint.Identity - 1] ?? throw new InvalidOperationException();
+            SvgRecordedPaintValue stroke = scene.SceneStorage?.RecordedPaintValues[strokeGeometry.RecordedPaint.Identity - 1] ?? throw new InvalidOperationException();
             Assert.False(fill.IsStroke);
             Assert.True(stroke.IsStroke);
             Assert.Equal(.375f, fill.Alpha);
             Assert.Equal(.625f, stroke.Alpha);
-            Assert.Equal(new SvgColor(41, 127, 179, 96), geometry.Rectangle.Color);
-            Assert.Equal(new SvgColor(41, 127, 179, 159), Assert.IsType<SvgStroke>(geometry.Rectangle.Stroke).Color);
+            Assert.Equal(new SvgColor(41, 127, 179, 96), fillGeometry.Polygon.Color);
+            Assert.Equal(new SvgColor(41, 127, 179, 159), strokeGeometry.Polygon.Color);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, CancellationToken.None));

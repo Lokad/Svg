@@ -41,16 +41,36 @@ public sealed class SvgFractionalInstanceStrokeTests
         Assert.Equal(unchanged, input);
     }
 
-    [Theory]
-    [InlineData("1500000000", "scale(2)")]
-    [InlineData("2.5", "scale(2 1)")]
-    public void Effective_width_overflow_and_nonuniform_placement_remain_bounded(string width, string transform)
+    [Fact]
+    public void Effective_width_overflow_is_rejected_before_output()
     {
-        byte[] input = Document("<defs><rect id='s' x='2' y='2' width='4' height='4' fill='none'/></defs><use href='#s' stroke='red' stroke-width='" + width + "' transform='" + transform + "'/>");
+        byte[] input = Document("<defs><rect id='s' x='2' y='2' width='4' height='4' fill='none'/></defs><use href='#s' stroke='red' stroke-width='1500000000' transform='scale(2)'/>");
         using MemoryStream output = new();
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
             SvgConverter.ConvertToPng(input, output, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, output.Length);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Nonuniform_placement_retains_the_fractional_source_stroke_width_and_map()
+    {
+        byte[] input = Document("<defs><rect id='s' x='2' y='2' width='4' height='4' fill='none'/></defs><use href='#s' stroke='red' stroke-width='2.5' transform='scale(2 1)'/>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
+        {
+            SvgAuthoredPath? stroke = null;
+            foreach (SvgGeometry geometry in scene.Geometries)
+                if (geometry.AuthoredPath is { StrokeStyle: not null } source)
+                {
+                    Assert.Null(stroke);
+                    stroke = source;
+                }
+            SvgAuthoredPath retained = Assert.IsType<SvgAuthoredPath>(stroke);
+            Assert.Equal(SvgAffineTransform.FromScale(2, 1), retained.SceneMap);
+            Assert.Equal(2.5, Assert.IsType<SvgAuthoredStrokeStyle>(retained.StrokeStyle).Width);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     private static byte[] Document(string content) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='28'>" + content + "</svg>");

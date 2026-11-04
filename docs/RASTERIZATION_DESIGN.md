@@ -287,6 +287,13 @@ Recording belongs to the isolated canvas independently of its solid or shader
 material. Prepared text/fragment drawing is an explicit paint role; it keeps its
 complete map while shader preparation retains its own ancestor stages.
 
+Retained rectangle definitions and late source reconstruction keep native stroke
+commands for solid and shader paints alike. Instance placement then applies to the
+source stroke independently of fill material. The
+[admission controls](../tests/Research/rectangle-shader-frames/admission-review.json)
+retain original source/target identities and separate direct, group-inherited and
+use-supplied stroke routes.
+
 A fractional root image clipped by its integer viewport remaps the visible source
 rectangle before residual image scaling. Keep both float stages even when the
 snapped rectangles coincide; the recorded scene and logical layout stay separate.

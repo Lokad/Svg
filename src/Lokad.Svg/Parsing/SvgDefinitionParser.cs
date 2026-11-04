@@ -1004,11 +1004,12 @@ internal static class SvgDefinitionParser
         {
             context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
             SvgComputedStyle style = context.ResolveStyle(reader);
-            // Later instances can move integer shader edges onto fractional pixels.
-            // Keep the common lowerer's native stroke source beside the cached paint.
+            // Instance placement belongs to the source stroke independently of its
+            // material. Keep native commands for solid and shader strokes alike.
             context = context with { RetainInstanceFillPath = context.RetainInstanceFillPath || state.MarkerDefinition is not null,
                 RetainInstanceStrokePath = context.RetainInstanceStrokePath
-                || SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width) };
+                || style.Stroke is {} stroke && !stroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase)
+                    && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width) };
             // The retained adapter binds source clips after the complete registry exists.
             bool previousClipDeferral = state.DeferringLeafClip;
             state.DeferringLeafClip = true;

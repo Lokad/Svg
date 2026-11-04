@@ -1,5 +1,5 @@
 {
-  "status": "Open: 24 rectangle-use admission gaps. All other reviewed inputs retain exact qualified targets. Wide-edge offscreen targets were previously rejected; original outputs still match unchanged committed browser references.",
+  "status": "Original 24 rectangle-use admissions and six independent source-role controls are locally qualified. Historical errors, source identities, rejected-oracle observations and native targets remain unchanged. Matching committed-source package and CI promotion follows.",
   "sourceCommit": "71aa741f0b354554c493a04e0b75b34b0d092a5e",
   "previousSourceCommit": "9abf3b8bd9b6e47ee8731bbb7f9f7f4708c9f7f8",
   "replay": {
@@ -687,6 +687,90 @@
         "rgbaSha256": "b9662db1d004043e120975a4c9dc68d0ebfacc46c9fcaf5f0fc905d6514b0c88"
       },
       "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "rectangle-source-solid-leaf",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><g><rect id='s' x='4' y='4' width='20' height='20' fill='url(#p)' stroke='blue' stroke-width='.5'/></g></defs><use href='#s'/></svg>",
+      "sourceSha256": "894120bf61a9af7582e9e2f441171907ee3fd52d7f83caec6311fe8527b081f6",
+      "outputScale": 1.5,
+      "placement": "leaf",
+      "stroke": "blue",
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "527810b2d98daab9f8446b727d07a351d51775d2ad3f47c5383aae23fa332616",
+        "rgbaSha256": "709b2f852fe6eb96c33918e1b28e20c4cdb065f60d9249dfabcc14b6ca2ba049"
+      }
+    },
+    {
+      "id": "rectangle-source-solid-group",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><g id='s' stroke='blue' stroke-width='.5'><rect x='4' y='4' width='20' height='20' fill='url(#p)'/></g></defs><use href='#s'/></svg>",
+      "sourceSha256": "6322f49bac1836cf58b19bcd08293b34576abe4fbbf967e97e4b51163f16f4b8",
+      "outputScale": 1.5,
+      "placement": "group",
+      "stroke": "blue",
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "527810b2d98daab9f8446b727d07a351d51775d2ad3f47c5383aae23fa332616",
+        "rgbaSha256": "709b2f852fe6eb96c33918e1b28e20c4cdb065f60d9249dfabcc14b6ca2ba049"
+      }
+    },
+    {
+      "id": "rectangle-source-solid-instance",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><g><rect id='s' x='4' y='4' width='20' height='20' fill='url(#p)'/></g></defs><use href='#s' stroke='blue' stroke-width='.5' transform='scale(.75 1.1)'/></svg>",
+      "sourceSha256": "473de04ffa77ecf72a2519f1b42495f02a8de0e6b7a99cc73e71486d24af5ba8",
+      "outputScale": 1.5,
+      "placement": "instance",
+      "stroke": "blue",
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "2403ef17f14c786b24bcd1993a88850502d59288ebdefaec1f31edc3e7907168",
+        "rgbaSha256": "71fa24599ddd76343b71e9010ff10c16ee9c968b1503d399b77499cfe4209acb"
+      }
+    },
+    {
+      "id": "rectangle-source-gradient-leaf",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><g><rect id='s' x='4' y='4' width='20' height='20' fill='url(#p)' stroke='url(#p)' stroke-width='.5'/></g></defs><use href='#s'/></svg>",
+      "sourceSha256": "4d298cbabc83490080e7e582a3e98dde13a3aca2465260b994f464213e6e8bb7",
+      "outputScale": 1.5,
+      "placement": "leaf",
+      "stroke": "url(#p)",
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "9e44470ed487eb483237c2f1788e19b5ae25140f9552a21d8848f3f364038f96",
+        "rgbaSha256": "3cd07a863ae92ee1a1943f6ad4bdeb06e2c2c457166a3655e6b3726ed17400f1"
+      }
+    },
+    {
+      "id": "rectangle-source-gradient-group",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><g id='s' stroke='url(#p)' stroke-width='.5'><rect x='4' y='4' width='20' height='20' fill='url(#p)'/></g></defs><use href='#s'/></svg>",
+      "sourceSha256": "ead0c0f1c44ec115ec37831f161b8fb3cd9c2a1d074f9f6d66d3372ca9a78d6b",
+      "outputScale": 1.5,
+      "placement": "group",
+      "stroke": "url(#p)",
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "9e44470ed487eb483237c2f1788e19b5ae25140f9552a21d8848f3f364038f96",
+        "rgbaSha256": "3cd07a863ae92ee1a1943f6ad4bdeb06e2c2c457166a3655e6b3726ed17400f1"
+      }
+    },
+    {
+      "id": "rectangle-source-gradient-instance",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><g><rect id='s' x='4' y='4' width='20' height='20' fill='url(#p)'/></g></defs><use href='#s' stroke='url(#p)' stroke-width='.5' transform='scale(.75 1.1)'/></svg>",
+      "sourceSha256": "f4c223ff1bb9c7cc5edae4947554a9cb140819e79184adc838964ac9ff7cdb11",
+      "outputScale": 1.5,
+      "placement": "instance",
+      "stroke": "url(#p)",
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "7ce84e57419709f6f04ad59569ae6913897e9f72562cac461bbe851518c3d471",
+        "rgbaSha256": "804add78cdb22b9423666c5aa5e9c2e3c9ce44d2afe2d76d4367aa238ae412e9"
+      }
     }
   ],
   "nativeValidation": {
@@ -1083,5 +1167,130 @@
     ],
     "reason": "The original wide-seam offscreen SVG-image/canvas route differed from independent browser rendering. Its targets remain recorded as rejected observations. All original outputs match the existing committed browser references on both hosts."
   },
-  "nextAction": "Remove the stale primitive-rectangle fill/stroke placement coupling by reusing retained source lowering. Preserve solid/shader, direct/use/symbol, native stroke, opacity, source clips, refusal and cleanup paths. Verify new admissions against all original and orthogonal controls before promotion."
+  "nextAction": "Remove the stale primitive-rectangle fill/stroke placement coupling by reusing retained source lowering. Preserve solid/shader, direct/use/symbol, native stroke, opacity, source clips, refusal and cleanup paths. Verify new admissions against all original and orthogonal controls before promotion.",
+  "additionalSourceRoles": {
+    "inputs": 6,
+    "nativeComparisons": 36,
+    "launches": [
+      [
+        {
+          "host": "windows",
+          "attempt": 1,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 1.0518706999719143,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 785,
+            "debuggerReadyMilliseconds": 229,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 2,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 0.6081532000098377,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 532,
+            "debuggerReadyMilliseconds": 145,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 3,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 0.7695106000173837,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 681,
+            "debuggerReadyMilliseconds": 170,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ],
+      [
+        {
+          "host": "linux",
+          "attempt": 1,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 7.324236300075427,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 6715,
+            "debuggerReadyMilliseconds": 4789,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 2,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 7.107498399913311,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 6616,
+            "debuggerReadyMilliseconds": 4641,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 3,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 6.492857600096613,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 5704,
+            "debuggerReadyMilliseconds": 3919,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ]
+    ]
+  },
+  "currentQualification": "../release-baselines/rectangle-source-qualification.json"
 }

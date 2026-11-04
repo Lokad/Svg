@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep native source strokes for retained rectangles independently of solid or
+  shader material, including inherited and use-supplied strokes.
 - Preserve retained canvas stages and bitmap-local clip classification in isolated
   symbol/nested-viewport draws. Support nonuniform symbol strokes backed by native
   source commands, removing the obsolete orthogonal-contour restriction.

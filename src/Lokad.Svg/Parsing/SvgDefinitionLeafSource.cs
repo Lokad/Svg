@@ -132,7 +132,8 @@ CancellationToken token, string? constructedFillRule, bool unconstructed, SvgSol
             AuthoredStyle = authored,
             LengthBases = lengthBases,
             RetainInstanceFillPath = (retention & SvgSourceContourRetention.Fill) != 0,
-            RetainInstanceStrokePath = (retention & SvgSourceContourRetention.Stroke) != 0 || _element == "rect" && SvgGradientSyntax.IsGradientStrokeUrl(resolved.Stroke)
+            RetainInstanceStrokePath = (retention & SvgSourceContourRetention.Stroke) != 0 || _element == "rect"
+                && resolved.Stroke is {} stroke && !stroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase)
                 && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(resolved.Width)
         };
         // Raw construction stays independent of display; only live instances activate source effects.

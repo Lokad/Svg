@@ -1,0 +1,618 @@
+{
+  "status": "Retained rectangle source-stroke cohort and combined review qualified locally; matching committed-source packages and CI remain pending. Unchanged Windows DejaVu reference conflict remains open.",
+  "sourceBaseCommit": "73d4a2ca1fb4b49a62b26ab324cebe7342d594a6",
+  "sourceLfSha256": {
+    ".github/workflows/ci.yml": "3a352f36ff92e4112928d01696387c59a8d9851a72205bdfca64541875964fcf",
+    "src/Lokad.Svg/Parsing/SvgDefinitionLeafSource.cs": "275302edab585e61398ee3ed4faf944c8ff1a80e19a7f068fda5b460c43e65b2",
+    "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs": "a3a9672758b92e38a9d69d71561129237db1de919a0e33d342eac7a91e9eea68",
+    "tests/Lokad.Svg.Tests/SvgFractionalInstanceStrokeTests.cs": "ff44e77b1adbf709c36efd8f8cc73a50eb40229b8ca4e7dcde02e60bf745fbb8",
+    "tests/Lokad.Svg.Tests/SvgUsePaintTests.cs": "2457444b4a6a798c64f1405b7c54c1a8fb5dbaa3d752f65f3cb6adae48797890",
+    "tests/Lokad.Svg.Tests/SvgUseStrokeOpacityTests.cs": "9d2e601185e1b65073049def5d0c313b265a9479cb6a4e29327e3a1b3abe81e6",
+    "tests/Lokad.Svg.Tests/SvgRectangleSourceTests.cs": "bd2e41b730962202639a25204cc0cdfb7f4aa4cab5728fda71687a626785adab",
+    "tests/Lokad.Svg.VisualTests/SvgRectangleSourceReferenceTests.cs": "c45a6244d6274f7a969ba485f9a7351421a6c0da0e6a0fb0884f992852907b68"
+  },
+  "manifest": "../rectangle-shader-frames/admission-review.json",
+  "manifestLfSha256": "aa965e68b0868d731e3795eda5019a8e8d6078ab204a803be76b6dd4f1ebb715",
+  "scope": "Closes all24 identified original rectangle-use admission gaps and this9,338-input combined source/native replay. Does not claim closure of every older R85/R86 alias or broader text/shader finding.",
+  "sharedCause": "Cached definitions and late reconstruction previously retained native rectangle stroke commands only for shader materials. Both now reuse the same native source lowering for solid/shader strokes; no guard bypass, new renderer, coordinate framework or public API.",
+  "originals": {
+    "inputs": 24,
+    "afterAdmittedAndExact": 24,
+    "sourceAndTargetIdentitiesUnchanged": true,
+    "nativeComparisons": 144
+  },
+  "orthogonalControls": {
+    "inputs": 6,
+    "nativeComparisons": 36,
+    "sourceRoutes": [
+      "Authored leaf",
+      "Referenced group inheritance",
+      "Use-supplied stroke and nonuniform map"
+    ],
+    "materials": [
+      "solid",
+      "gradient"
+    ]
+  },
+  "failingBefore": [
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "67c8a7f8f158b01d19bac143302502df1b08176e764d2b1e80cde49f2971cb56",
+      "testAssemblySha256": "e1d52485202c216cc80aabf6189ae80b235d9b2ebc8dc5aa9c9f46296147fabe",
+      "selection": "FullyQualifiedName~SvgRectangleSourceReferenceTests",
+      "exitCode": 1,
+      "seconds": 14.737925400026143,
+      "counters": {
+        "executed": "30",
+        "passed": "5",
+        "failed": "25"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-46-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-42-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-34-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-66-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-59-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-91-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-22-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-18-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-10-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-83-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-94-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-90-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-70-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-35-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-58-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-95-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-11-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-43-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-82-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-71-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-19-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-23-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-67-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"rectangle-source-solid-instance\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-47-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "67c8a7f8f158b01d19bac143302502df1b08176e764d2b1e80cde49f2971cb56",
+      "testAssemblySha256": "e1d52485202c216cc80aabf6189ae80b235d9b2ebc8dc5aa9c9f46296147fabe",
+      "selection": "FullyQualifiedName~SvgRectangleSourceReferenceTests",
+      "exitCode": 1,
+      "seconds": 14.037988600088283,
+      "counters": {
+        "executed": "30",
+        "passed": "5",
+        "failed": "25"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-67-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-19-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-94-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-91-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-18-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-10-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-47-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-82-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-59-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-23-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-34-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-46-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"rectangle-source-solid-instance\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-42-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-90-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-43-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-95-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-66-control\")",
+          "message": "Lokad.Svg.SvgException : Only uniformly scaled rectangle strokes on use instances are implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-11-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-35-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-58-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-71-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-70-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-22-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgRectangleSourceReferenceTests.Retained_solid_strokes_and_shader_fills_match_each_original_native_image(id: \"paint-corners-review-83-control\")",
+          "message": "Lokad.Svg.SvgException : Rectangle use references with strokes are not implemented."
+        }
+      ]
+    }
+  ],
+  "combinedOriginals": [
+    {
+      "host": "windows",
+      "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+      "inputs": 9338,
+      "qualifiedExact": 9338,
+      "previouslyAdmittedPngsByteIdentical": 9314,
+      "newNativeExactAdmissions": 24,
+      "priorExactLosses": 0,
+      "admissionLosses": 0,
+      "seconds": 8.369261
+    },
+    {
+      "host": "linux",
+      "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+      "inputs": 9338,
+      "qualifiedExact": 9338,
+      "previouslyAdmittedPngsByteIdentical": 9314,
+      "newNativeExactAdmissions": 24,
+      "priorExactLosses": 0,
+      "admissionLosses": 0,
+      "seconds": 7.9670626
+    }
+  ],
+  "validation": {
+    "fullNet11": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "054cb23916515139324fb041fa32a4b8a4524a97f4b684c4c9a9cc264cdf1556",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 58.18311439990066,
+        "counters": {
+          "executed": "47581",
+          "passed": "47581",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "054cb23916515139324fb041fa32a4b8a4524a97f4b684c4c9a9cc264cdf1556",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 65.86788530019112,
+        "counters": {
+          "executed": "47581",
+          "passed": "47581",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "e1d52485202c216cc80aabf6189ae80b235d9b2ebc8dc5aa9c9f46296147fabe",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 274.08206499996595,
+        "counters": {
+          "executed": "70871",
+          "passed": "70870",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "e1d52485202c216cc80aabf6189ae80b235d9b2ebc8dc5aa9c9f46296147fabe",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 296.070579999825,
+        "counters": {
+          "executed": "70871",
+          "passed": "70871",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "4c2bf22191654d69726708e2ff0954d14bfa6c5a3b5c5dae69ce3e9cf511d2e2",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 2.893128499854356,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "4c2bf22191654d69726708e2ff0954d14bfa6c5a3b5c5dae69ce3e9cf511d2e2",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.2413275998551399,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "compatibilityNet10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "f36d2eb8ddeca6c3df1a006ca0b41174efa10e967f39f37e6eeebe1825927e3c",
+        "testAssemblySha256": "0e3cd96ab01c7801a9933a4b7fd5f6a1bf15020c457541dbf3f3bcb11268ad03",
+        "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgRectangleSourceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 34.0891078999266,
+        "counters": {
+          "executed": "12836",
+          "passed": "12836",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "f36d2eb8ddeca6c3df1a006ca0b41174efa10e967f39f37e6eeebe1825927e3c",
+        "testAssemblySha256": "0e3cd96ab01c7801a9933a4b7fd5f6a1bf15020c457541dbf3f3bcb11268ad03",
+        "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgRectangleSourceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 32.264504299964756,
+        "counters": {
+          "executed": "12836",
+          "passed": "12836",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "f36d2eb8ddeca6c3df1a006ca0b41174efa10e967f39f37e6eeebe1825927e3c",
+        "testAssemblySha256": "e0f0cf7ec773ae7761941bf2a1299f5124ae2a44ec7ba5951bceb200d6f6507f",
+        "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)|FullyQualifiedName~SvgRectangleSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 34.87421040004119,
+        "counters": {
+          "executed": "1000",
+          "passed": "1000",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "f36d2eb8ddeca6c3df1a006ca0b41174efa10e967f39f37e6eeebe1825927e3c",
+        "testAssemblySha256": "e0f0cf7ec773ae7761941bf2a1299f5124ae2a44ec7ba5951bceb200d6f6507f",
+        "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)|FullyQualifiedName~SvgRectangleSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 33.04939609998837,
+        "counters": {
+          "executed": "1000",
+          "passed": "1000",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "f36d2eb8ddeca6c3df1a006ca0b41174efa10e967f39f37e6eeebe1825927e3c",
+        "testAssemblySha256": "faae802c25c37427d417464704ec7a1fe991889b672b1dba363e228f7f4803ab",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 2.602546599926427,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "f36d2eb8ddeca6c3df1a006ca0b41174efa10e967f39f37e6eeebe1825927e3c",
+        "testAssemblySha256": "faae802c25c37427d417464704ec7a1fe991889b672b1dba363e228f7f4803ab",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 3.5495447001885623,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "affectedIntegration": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "a5752b37fbaa1ccf8ab325bd3954774f8359da0b7b7d0fd9de57f577fca92610",
+        "selection": "FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgUseInstance|FullyQualifiedName~SvgDefinition|FullyQualifiedName~SvgAffineRectangleStroke|FullyQualifiedName~SvgTransformedRectangle|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgShader|FullyQualifiedName~SvgNonScaling|FullyQualifiedName~SvgAnalytic|FullyQualifiedName~SvgCpuRaster|FullyQualifiedName~SvgRasterScope|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgSymbol|FullyQualifiedName~SvgCapturedCanvas|FullyQualifiedName~SvgRecorded|FullyQualifiedName~SvgConic|FullyQualifiedName~SvgBitmapLocal",
+        "exitCode": 0,
+        "seconds": 15.879862000001594,
+        "counters": {
+          "executed": "5763",
+          "passed": "5763",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "a5752b37fbaa1ccf8ab325bd3954774f8359da0b7b7d0fd9de57f577fca92610",
+        "selection": "FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgUseInstance|FullyQualifiedName~SvgDefinition|FullyQualifiedName~SvgAffineRectangleStroke|FullyQualifiedName~SvgTransformedRectangle|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgShader|FullyQualifiedName~SvgNonScaling|FullyQualifiedName~SvgAnalytic|FullyQualifiedName~SvgCpuRaster|FullyQualifiedName~SvgRasterScope|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgSymbol|FullyQualifiedName~SvgCapturedCanvas|FullyQualifiedName~SvgRecorded|FullyQualifiedName~SvgConic|FullyQualifiedName~SvgBitmapLocal",
+        "exitCode": 0,
+        "seconds": 19.77934610005468,
+        "counters": {
+          "executed": "5763",
+          "passed": "5763",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "2ad9643e2abc68c9482bdb43aafe45fa921741d91085a0f93b5fd583c88ef1cd",
+        "selection": "FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgZeroRadius|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgShader|FullyQualifiedName~SvgTextPaintBounds|Name~filter-|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 46.209200400160626,
+        "counters": {
+          "executed": "26781",
+          "passed": "26781",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+        "testAssemblySha256": "2ad9643e2abc68c9482bdb43aafe45fa921741d91085a0f93b5fd583c88ef1cd",
+        "selection": "FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgZeroRadius|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgShader|FullyQualifiedName~SvgTextPaintBounds|Name~filter-|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 42.60984449996613,
+        "counters": {
+          "executed": "26781",
+          "passed": "26781",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fullRunExplanation": "The first full run found five test expectations tied to the old primitive representation/rejection. Their numeric alpha, color, ownership and overflow assertions remain; tests now inspect separate retained paint geometries and the newly admitted source width/map. Full core was rerun after those test-only changes. Production and visual assemblies are unchanged; the already complete unfiltered visual/font results remain authoritative."
+  },
+  "responsibilities": {
+    "routineRenderingImages": 30,
+    "canonicalPath": "Synchronous owned PNG, exact dimensions/full canonical RGBA digest",
+    "newMechanismCases": 6,
+    "retainedMechanisms": "Independent paint/stroke alphas and byte colors, source width/map, effective-width rejection before output, released owner budgets.",
+    "contracts": "Existing cancellation, refusal, cleanup and retry contracts remain separate from the rendering bank."
+  },
+  "svgweb": {
+    "originals": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 136.2515111998655,
+      "librarySha256": "86c24926245dfa4c5456f34121b84fea464d33336345dbfc49fc74bf8357fe41",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        }
+      }
+    },
+    "suppliedOriginalContexts": 22,
+    "allSuppliedContextPngsUnchanged": true,
+    "staticDiagnostics": 13,
+    "allDiagnosticPixelsExact": true,
+    "hostedBodiesRetained": 0,
+    "rawAttributeValuesRetained": 0
+  },
+  "limitations": [
+    "Unchanged Windows DejaVu frozen-reference conflict; reference and assertion preserved.",
+    "Remaining original R85 frame/primitive aliases need their own source/context joins before claiming the entire historical family closed.",
+    "Quiet-VM renderer performance remains unmeasured."
+  ],
+  "promotion": {
+    "packages": "Pending clean-commit deterministic packages and installed consumers.",
+    "ci": "Pending matching production commit.",
+    "published": false
+  }
+}
