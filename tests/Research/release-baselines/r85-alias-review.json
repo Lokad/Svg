@@ -1,0 +1,986 @@
+{
+  "status": "Open review: one shared empty-source/filter-output correctness area (eight original candidates) and three explicit transform admission boundaries (92 inputs). Independent platform references are preserved; no implementation/reference change is promoted by this assessment.",
+  "sourceCommit": "aba2306ecf45aec9a4322efd77404f12892c908a",
+  "license": "MIT; font programs retain their existing notices.",
+  "scope": {
+    "originalPairs": 1708,
+    "originalInputs": 3416,
+    "sourceAliasFamilies": 6,
+    "fontContextPairs": 736,
+    "fontFreePairs": 972,
+    "sourceInputsSha256": "7a61162bf0636cb26df138a1d581d8b754d585ed4fdb24daad0a5bdaf81b6ca6",
+    "nativeTargetsSha256": {
+      "windows": "2fcade7a7a30d52dc88948f411287607c16a6cfe1aabaea69b5654c8bd87c2db",
+      "linux": "078931f2ea44addc21ed29642b19601f495ce9e426dd3ea431313f9702080d45"
+    }
+  },
+  "sourceContexts": {
+    "fontCatalog": "../text-paint-bounds/font-pack.json",
+    "fontCatalogLfSha256": "c8831d97c55ca092f6784b89aca89772c864190eacb9a92aa839b4018e8d0bae",
+    "fontPrograms": [
+      {
+        "path": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+        "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+      },
+      {
+        "path": "../supplied-font-documents/fonts/NotoSansMono-Bold.ttf",
+        "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+      }
+    ],
+    "nativeFontCssSha256": "928249181b9dd961a7f32e9a6b2ec10a08da3bc983fc2ffe45321277ccaf6473",
+    "fontContext": "Original source bytes; declared existing programs match the exact font bytes in original native CSS. Source fonts are supplied explicitly; no machine-font discovery."
+  },
+  "nativeValidation": {
+    "comparisons": 20496,
+    "healthyFreshProcesses": 6,
+    "stableTargetsPerHost": true,
+    "hosts": [
+      {
+        "host": "windows",
+        "inputs": 3416,
+        "nativeExact": 3316,
+        "admissionBoundaries": 92,
+        "renderingResiduals": 8,
+        "nativeTargetsDifferentFromOriginalWindows": 0
+      },
+      {
+        "host": "linux",
+        "inputs": 3416,
+        "nativeExact": 3316,
+        "admissionBoundaries": 92,
+        "renderingResiduals": 8,
+        "nativeTargetsDifferentFromOriginalWindows": 448
+      }
+    ],
+    "launches": [
+      [
+        {
+          "host": "windows",
+          "attempt": 1,
+          "seconds": 66.14452209998854,
+          "terminalExitCode": 0,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 65550,
+            "debuggerReadyMilliseconds": 194,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "nativeTargetsChanged": 0,
+          "libraryResiduals": 8,
+          "libraryRejections": 92
+        },
+        {
+          "host": "windows",
+          "attempt": 2,
+          "seconds": 69.75934730004519,
+          "terminalExitCode": 0,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 69579,
+            "debuggerReadyMilliseconds": 170,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "nativeTargetsChanged": 0,
+          "libraryResiduals": 8,
+          "libraryRejections": 92
+        },
+        {
+          "host": "windows",
+          "attempt": 3,
+          "seconds": 72.24876419990323,
+          "terminalExitCode": 0,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 71996,
+            "debuggerReadyMilliseconds": 140,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "nativeTargetsChanged": 0,
+          "libraryResiduals": 8,
+          "libraryRejections": 92
+        }
+      ],
+      [
+        {
+          "host": "linux",
+          "attempt": 1,
+          "seconds": 76.51103829988278,
+          "terminalExitCode": 0,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 67067,
+            "debuggerReadyMilliseconds": 3391,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "nativeTargetsChanged": 448,
+          "libraryResiduals": 8,
+          "libraryRejections": 92
+        },
+        {
+          "host": "linux",
+          "attempt": 2,
+          "seconds": 75.86435520020314,
+          "terminalExitCode": 0,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 70402,
+            "debuggerReadyMilliseconds": 3778,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "nativeTargetsChanged": 448,
+          "libraryResiduals": 8,
+          "libraryRejections": 92
+        },
+        {
+          "host": "linux",
+          "attempt": 3,
+          "seconds": 75.30073289992288,
+          "terminalExitCode": 0,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 70495,
+            "debuggerReadyMilliseconds": 3719,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "nativeTargetsChanged": 448,
+          "libraryResiduals": 8,
+          "libraryRejections": 92
+        }
+      ]
+    ],
+    "platformDifferences": {
+      "inputs": 448,
+      "reason": "Independent current Linux browser targets differ from original Windows targets; each matches the library on its own platform. Original Windows references remain unchanged."
+    }
+  },
+  "baseline": {
+    "previousSourceCommit": "9abf3b8bd9b6e47ee8731bbb7f9f7f4708c9f7f8",
+    "all1472FontContextOutputsAndErrorsUnchangedOnBothHosts": true,
+    "allPreviouslyAdmittedFontFreeInputsRemainAdmitted": true,
+    "oldFontFreeAdmittedInputs": 1860,
+    "currentFontFreeAdmittedInputs": 1860,
+    "comparisonLimit": "Prior legacy qualification was Windows-backed; Linux observations must use the independent Linux native target, not a Windows image."
+  },
+  "closedNamedCohort": {
+    "r85OriginalFrameInputs": 720,
+    "nativeExactOnBothHosts": true,
+    "scope": "This original frame collection only; broader admission/filter findings stay open."
+  },
+  "renderingGap": {
+    "priority": "HIGH after shared structural review",
+    "originalInputs": 8,
+    "cases": [
+      {
+        "id": "r74-primitives-25-candidate",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><text x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text></pattern></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "16ca2a1b0ab970d1e221e0e9b05cec6b3604ccf142f1f2f85062a8459b0cc92c",
+        "outputScale": 1,
+        "metadata": {
+          "name": "r74-primitives-25",
+          "mode": "opacity",
+          "content": "text",
+          "consumer": "filter",
+          "forward": false,
+          "stroke": true,
+          "cascade": "attribute",
+          "font": true,
+          "scale": 1
+        },
+        "references": {
+          "windows": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          },
+          "linux": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          }
+        },
+        "currentDifference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1024,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 127.5,
+          "RootMeanSquareError": 180.31222920256963,
+          "MaximumAlphaError": 255,
+          "AlphaChangedPixelCount": 1024,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 31,
+          "MaximumMismatchY": 31,
+          "IsExact": false
+        }
+      },
+      {
+        "id": "r74-primitives-27-candidate",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><text x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text></pattern></defs></svg>",
+        "sourceSha256": "bd3221f51f145bd4cf240065a3199f2a641bd4eb4f423924b46e76496cf88c95",
+        "outputScale": 1,
+        "metadata": {
+          "name": "r74-primitives-27",
+          "mode": "opacity",
+          "content": "text",
+          "consumer": "filter",
+          "forward": true,
+          "stroke": true,
+          "cascade": "attribute",
+          "font": true,
+          "scale": 1
+        },
+        "references": {
+          "windows": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          },
+          "linux": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          }
+        },
+        "currentDifference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1024,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 127.5,
+          "RootMeanSquareError": 180.31222920256963,
+          "MaximumAlphaError": 255,
+          "AlphaChangedPixelCount": 1024,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 31,
+          "MaximumMismatchY": 31,
+          "IsExact": false
+        }
+      },
+      {
+        "id": "r74-primitives-57-candidate",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#t'/></pattern></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "305654d7c93f233f3be15642178ea74ec1160d17e6698379ea6d90d9940102d4",
+        "outputScale": 1,
+        "metadata": {
+          "name": "r74-primitives-57",
+          "mode": "opacity",
+          "content": "text-use",
+          "consumer": "filter",
+          "forward": false,
+          "stroke": true,
+          "cascade": "attribute",
+          "font": true,
+          "scale": 1
+        },
+        "references": {
+          "windows": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          },
+          "linux": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          }
+        },
+        "currentDifference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1024,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 127.5,
+          "RootMeanSquareError": 180.31222920256963,
+          "MaximumAlphaError": 255,
+          "AlphaChangedPixelCount": 1024,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 31,
+          "MaximumMismatchY": 31,
+          "IsExact": false
+        }
+      },
+      {
+        "id": "r74-primitives-59-candidate",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#t'/></pattern></defs></svg>",
+        "sourceSha256": "e2da0b9a94811c01c10f90f3ed1107d99bdbbcc2043f948259802df1460c66f4",
+        "outputScale": 1,
+        "metadata": {
+          "name": "r74-primitives-59",
+          "mode": "opacity",
+          "content": "text-use",
+          "consumer": "filter",
+          "forward": true,
+          "stroke": true,
+          "cascade": "attribute",
+          "font": true,
+          "scale": 1
+        },
+        "references": {
+          "windows": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          },
+          "linux": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          }
+        },
+        "currentDifference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1024,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 127.5,
+          "RootMeanSquareError": 180.31222920256963,
+          "MaximumAlphaError": 255,
+          "AlphaChangedPixelCount": 1024,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 31,
+          "MaximumMismatchY": 31,
+          "IsExact": false
+        }
+      },
+      {
+        "id": "r74-primitives-89-candidate",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><g><text x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text></g></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "def3b770e09a0d12759ed1c0107bb585422bad4255448662b20e26a9ed05f124",
+        "outputScale": 1,
+        "metadata": {
+          "name": "r74-primitives-89",
+          "mode": "opacity",
+          "content": "mask-group",
+          "consumer": "filter",
+          "forward": false,
+          "stroke": true,
+          "cascade": "attribute",
+          "font": true,
+          "scale": 1
+        },
+        "references": {
+          "windows": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          },
+          "linux": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          }
+        },
+        "currentDifference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1024,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 127.5,
+          "RootMeanSquareError": 180.31222920256963,
+          "MaximumAlphaError": 255,
+          "AlphaChangedPixelCount": 1024,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 31,
+          "MaximumMismatchY": 31,
+          "IsExact": false
+        }
+      },
+      {
+        "id": "r74-primitives-91-candidate",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><g><text x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text></g></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs></svg>",
+        "sourceSha256": "e1ee062697fe05b0050192db0301b474cbf633b24787ad42c6b9aeeb7d52cd97",
+        "outputScale": 1,
+        "metadata": {
+          "name": "r74-primitives-91",
+          "mode": "opacity",
+          "content": "mask-group",
+          "consumer": "filter",
+          "forward": true,
+          "stroke": true,
+          "cascade": "attribute",
+          "font": true,
+          "scale": 1
+        },
+        "references": {
+          "windows": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          },
+          "linux": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          }
+        },
+        "currentDifference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1024,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 127.5,
+          "RootMeanSquareError": 180.31222920256963,
+          "MaximumAlphaError": 255,
+          "AlphaChangedPixelCount": 1024,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 31,
+          "MaximumMismatchY": 31,
+          "IsExact": false
+        }
+      },
+      {
+        "id": "r74-primitives-121-candidate",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "90697bed3090294c62ce35e2dce54ced3f0173fd00d37aea7670870f33e9cf93",
+        "outputScale": 1,
+        "metadata": {
+          "name": "r74-primitives-121",
+          "mode": "opacity",
+          "content": "mask-use",
+          "consumer": "filter",
+          "forward": false,
+          "stroke": true,
+          "cascade": "attribute",
+          "font": true,
+          "scale": 1
+        },
+        "references": {
+          "windows": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          },
+          "linux": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          }
+        },
+        "currentDifference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1024,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 127.5,
+          "RootMeanSquareError": 180.31222920256963,
+          "MaximumAlphaError": 255,
+          "AlphaChangedPixelCount": 1024,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 31,
+          "MaximumMismatchY": 31,
+          "IsExact": false
+        }
+      },
+      {
+        "id": "r74-primitives-123-candidate",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs></svg>",
+        "sourceSha256": "fe67fe5f89ef1387ff43f516bd50b41204d246aa18337c3b7e354b6523d2f53c",
+        "outputScale": 1,
+        "metadata": {
+          "name": "r74-primitives-123",
+          "mode": "opacity",
+          "content": "mask-use",
+          "consumer": "filter",
+          "forward": true,
+          "stroke": true,
+          "cascade": "attribute",
+          "font": true,
+          "scale": 1
+        },
+        "references": {
+          "windows": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          },
+          "linux": {
+            "width": 32,
+            "height": 32,
+            "nativePngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+            "nativeRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+          }
+        },
+        "currentDifference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1024,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 127.5,
+          "RootMeanSquareError": 180.31222920256963,
+          "MaximumAlphaError": 255,
+          "AlphaChangedPixelCount": 1024,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 31,
+          "MaximumMismatchY": 31,
+          "IsExact": false
+        }
+      }
+    ],
+    "behavior": "An opacity-zero stroke-only child incorrectly suppresses an enclosing user-space feFlood. Source ink and filter output are coupled. Direct/inherited text layout is outside this fix.",
+    "closure": "All eight originals and orthogonal material/fill/paint-opacity/display/visibility/leaf-parent-opacity/clip controls match unchanged independent targets. Preserve dormant font/resource selection, source/layout bounds, cancellation, refusal, cleanup and retry."
+  },
+  "orthogonalControls": {
+    "inputs": 12,
+    "nativeComparisons": 72,
+    "healthyProcesses": 6,
+    "launches": [
+      [
+        {
+          "host": "windows",
+          "attempt": 1,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 0.5884936000220478,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 457,
+            "debuggerReadyMilliseconds": 143,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 2,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 0.6219124000053853,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 545,
+            "debuggerReadyMilliseconds": 137,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 3,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 0.6403830999042839,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 563,
+            "debuggerReadyMilliseconds": 144,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ],
+      [
+        {
+          "host": "linux",
+          "attempt": 1,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 9.39273970015347,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 4813,
+            "debuggerReadyMilliseconds": 3233,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 2,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 5.917854600120336,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 4614,
+            "debuggerReadyMilliseconds": 3205,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 3,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 8.937265999848023,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 8003,
+            "debuggerReadyMilliseconds": 3152,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ]
+    ],
+    "cases": [
+      {
+        "id": "pattern-stroke-zero-element",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "ad35a3402c2ce81c2986e8af951e6b55da3625452f6d84804943551134a84b65",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "currentExact": false
+      },
+      {
+        "id": "solid-stroke-zero-element",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='green' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "280b69ee20ce61ee5348540ef185d0952ee728605a75f0908256a74694fcc7d5",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "currentExact": false
+      },
+      {
+        "id": "linear-stroke-zero-element",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#l)' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "f471e5955780b2c3f297e6c69247442face68af1ce8873d15a673ac862a9ac98",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "currentExact": true
+      },
+      {
+        "id": "radial-stroke-zero-element",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#r)' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "99255db2e838b79f20366e6ff2d286231c46370827979575a0e1873237935cf1",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "currentExact": false
+      },
+      {
+        "id": "pattern-fill-zero-element",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='url(#p)' opacity='0'/></g></svg>",
+        "sourceSha256": "28fe2778d4ce1099e892d1374c0e8e178d41c38ba79b91251e5f1d11d4eea9a9",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "currentExact": true
+      },
+      {
+        "id": "pattern-stroke-zero-paint",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' stroke-opacity='0'/></g></svg>",
+        "sourceSha256": "e6c6725e61147397132c1b63a6ada940b875d927d26759f6b6d191502cad377b",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "currentExact": true
+      },
+      {
+        "id": "pattern-stroke-display-none",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' display='none'/></g></svg>",
+        "sourceSha256": "dd8f3af2c63589bfd471212f28dfd862e110a1ad71fbe07acb329fe44397fd8b",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "currentExact": true
+      },
+      {
+        "id": "pattern-stroke-hidden",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></g></svg>",
+        "sourceSha256": "cb22dedeb33f90b038a7f04846f97421e0691d998c8bb3c8748da47d503b75d7",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "currentExact": true
+      },
+      {
+        "id": "pattern-stroke-filled-zero-element",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='red' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+        "sourceSha256": "be8bd041f34be54e31fc66f6840fef00aaab407a8fb75aa67a77c5ae0323f314",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101"
+        },
+        "currentRgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "currentExact": true
+      },
+      {
+        "id": "pattern-stroke-leaf-filter",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0' filter='url(#f)'/></svg>",
+        "sourceSha256": "0fa8d1c3ed4b1c2ff961a80b76aacd5773e26d2697b59afed80997afe2d06007",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+          "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+        },
+        "currentRgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "currentExact": true
+      },
+      {
+        "id": "pattern-stroke-parent-opacity",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g opacity='0'><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></g></svg>",
+        "sourceSha256": "aefb9446fc05f64fd0407d7c4c4bd15c270c0acbe07d106373fb116970629bf4",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+          "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7"
+        },
+        "currentRgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "currentExact": true
+      },
+      {
+        "id": "pattern-stroke-clipped-parent",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g clip-path='url(#c)'><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></g></svg>",
+        "sourceSha256": "69addaa63b9ac6ce01d7a2d7bc5c813cdae1e6d1b39dc09accaf285af1113dee",
+        "outputScale": 1,
+        "reference": {
+          "width": 32,
+          "height": 32,
+          "pngSha256": "9ca4e825adcc31045fcf256ee04153d5d54f092a91ff41d5270112ff9177b8a1",
+          "rgbaSha256": "7c7b6ae69a562b0f1c347082227cc9606fde3bd6b180002b31b1a0fb0ed59963"
+        },
+        "currentRgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "currentExact": false
+      }
+    ]
+  },
+  "admissionBoundaries": [
+    {
+      "error": "UnsupportedFeature:Only axis-aligned rectangle transforms are implemented.",
+      "inputs": 60,
+      "originalIds": [
+        "r85-visibility-4-candidate",
+        "r85-visibility-4-control",
+        "r85-visibility-5-candidate",
+        "r85-visibility-5-control",
+        "r85-visibility-10-candidate",
+        "r85-visibility-10-control",
+        "r85-visibility-11-candidate",
+        "r85-visibility-11-control",
+        "r85-visibility-16-candidate",
+        "r85-visibility-16-control",
+        "r85-visibility-17-candidate",
+        "r85-visibility-17-control",
+        "r85-visibility-22-candidate",
+        "r85-visibility-22-control",
+        "r85-visibility-23-candidate",
+        "r85-visibility-23-control",
+        "r85-visibility-118-candidate",
+        "r85-visibility-118-control",
+        "r85-visibility-119-candidate",
+        "r85-visibility-119-control",
+        "r85-visibility-196-candidate",
+        "r85-visibility-196-control",
+        "r85-visibility-197-candidate",
+        "r85-visibility-197-control",
+        "r85-visibility-202-candidate",
+        "r85-visibility-202-control",
+        "r85-visibility-203-candidate",
+        "r85-visibility-203-control",
+        "r85-visibility-208-candidate",
+        "r85-visibility-208-control",
+        "r85-visibility-209-candidate",
+        "r85-visibility-209-control",
+        "r85-visibility-214-candidate",
+        "r85-visibility-214-control",
+        "r85-visibility-215-candidate",
+        "r85-visibility-215-control",
+        "r85-visibility-310-candidate",
+        "r85-visibility-310-control",
+        "r85-visibility-311-candidate",
+        "r85-visibility-311-control",
+        "r85-visibility-388-candidate",
+        "r85-visibility-388-control",
+        "r85-visibility-389-candidate",
+        "r85-visibility-389-control",
+        "r85-visibility-394-candidate",
+        "r85-visibility-394-control",
+        "r85-visibility-395-candidate",
+        "r85-visibility-395-control",
+        "r85-visibility-400-candidate",
+        "r85-visibility-400-control",
+        "r85-visibility-401-candidate",
+        "r85-visibility-401-control",
+        "r85-visibility-406-candidate",
+        "r85-visibility-406-control",
+        "r85-visibility-407-candidate",
+        "r85-visibility-407-control",
+        "r85-visibility-502-candidate",
+        "r85-visibility-502-control",
+        "r85-visibility-503-candidate",
+        "r85-visibility-503-control"
+      ]
+    },
+    {
+      "error": "UnsupportedFeature:Only nonzero finite scale() values are implemented.",
+      "inputs": 8,
+      "originalIds": [
+        "r74-intrinsics-48-candidate",
+        "r74-intrinsics-49-candidate",
+        "r74-intrinsics-50-candidate",
+        "r74-intrinsics-51-candidate",
+        "r74-intrinsics-52-candidate",
+        "r74-intrinsics-53-candidate",
+        "r74-intrinsics-54-candidate",
+        "r74-intrinsics-55-candidate"
+      ]
+    },
+    {
+      "error": "UnsupportedFeature:Only uniformly scaled outline strokes without native source commands on use instances are implemented.",
+      "inputs": 24,
+      "originalIds": [
+        "r85-visibility-142-candidate",
+        "r85-visibility-142-control",
+        "r85-visibility-143-candidate",
+        "r85-visibility-143-control",
+        "r85-visibility-166-candidate",
+        "r85-visibility-166-control",
+        "r85-visibility-167-candidate",
+        "r85-visibility-167-control",
+        "r85-visibility-334-candidate",
+        "r85-visibility-334-control",
+        "r85-visibility-335-candidate",
+        "r85-visibility-335-control",
+        "r85-visibility-358-candidate",
+        "r85-visibility-358-control",
+        "r85-visibility-359-candidate",
+        "r85-visibility-359-control",
+        "r85-visibility-526-candidate",
+        "r85-visibility-526-control",
+        "r85-visibility-527-candidate",
+        "r85-visibility-527-control",
+        "r85-visibility-550-candidate",
+        "r85-visibility-550-control",
+        "r85-visibility-551-candidate",
+        "r85-visibility-551-control"
+      ]
+    }
+  ],
+  "nextActions": [
+    "Fix the shared no-ink source/filter-output cause using existing bounds, source and replay owners; avoid material-specific pixel fixes.",
+    "Review native source retention for affine rectangle fills and nonuniform outlines before relaxing the 84 visibility-family admissions.",
+    "Keep the eight zero-scale transform cases as a separate precise boundary pending a singular-transform/source-domain design.",
+    "Preserve all source identities, naturally distinct platform references, original targets and failing-before observations."
+  ]
+}

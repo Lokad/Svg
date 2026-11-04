@@ -41,3 +41,8 @@ These are review entry points, not claims that every historical private witness
 has been promoted. Extract any additional unresolved originals before deleting
 their generated research output. Existing failing-before regressions, unequal
 native companions, exclusions and licenses remain required coverage.
+
+The [R85 alias review](r85-alias-review.json) joins all 1,708 remaining frame and
+primitive pairs to independent platform targets. It isolates eight shared filter
+residuals and 92 transform admission boundaries; 448 font-image differences retain
+their distinct native Windows/Linux contexts.

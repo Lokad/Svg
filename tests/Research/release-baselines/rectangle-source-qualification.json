@@ -1,5 +1,5 @@
 {
-  "status": "Retained rectangle source-stroke cohort and combined review qualified locally; matching committed-source packages and CI remain pending. Unchanged Windows DejaVu reference conflict remains open.",
+  "status": "Retained rectangle source-stroke cohort, committed-source deterministic packages and matching CI qualified. Ubuntu whole workflow passes; Windows retains only the unchanged DejaVu frozen-reference conflict. Broader source/admission review remains open.",
   "sourceBaseCommit": "73d4a2ca1fb4b49a62b26ab324cebe7342d594a6",
   "sourceLfSha256": {
     ".github/workflows/ci.yml": "3a352f36ff92e4112928d01696387c59a8d9851a72205bdfca64541875964fcf",
@@ -611,8 +611,215 @@
     "Quiet-VM renderer performance remains unmeasured."
   ],
   "promotion": {
-    "packages": "Pending clean-commit deterministic packages and installed consumers.",
-    "ci": "Pending matching production commit.",
+    "sourceCommit": "aba2306ecf45aec9a4322efd77404f12892c908a",
+    "sourceGitTree": "dbbe218e57242c22d40ef9ea72712b2c41b28b73",
+    "allQualifiedSourceHashesMatchCommit": true,
+    "packageIdentity": {
+      "sourceCommit": "aba2306ecf45aec9a4322efd77404f12892c908a",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "3cb186e44ffea9be7b705bac961ce8d8325b7ebbe05bd9d4f0cb3547ec0514bc"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "6be9b1ccff8debca8369a796619b8b1cd617555187a743a044f004d0afe6edc8"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "90ddba634ed48f97ce902f9e63336f85de266d8a578bc5d66b67c62f981bc3f8",
+        "net10.0": "db0cd5d7a780855237fa66abd110a9b7e01af7fe623bf7eb5dba3449354e8fd4"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 4.8154733998235315
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "librarySha256": "90ddba634ed48f97ce902f9e63336f85de266d8a578bc5d66b67c62f981bc3f8"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "librarySha256": "db0cd5d7a780855237fa66abd110a9b7e01af7fe623bf7eb5dba3449354e8fd4"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "librarySha256": "90ddba634ed48f97ce902f9e63336f85de266d8a578bc5d66b67c62f981bc3f8"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "librarySha256": "db0cd5d7a780855237fa66abd110a9b7e01af7fe623bf7eb5dba3449354e8fd4"
+      }
+    ],
+    "consumerScenarios": "Shared admission, retained result ownership, sync/async conversion, overlap rejection, dimensions, font-free inspection, bounded output, diagnostics, font catalog and HTTP selection/reuse/cancellation/shutdown/borrowers/refusal.",
+    "packagedBank": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "90ddba634ed48f97ce902f9e63336f85de266d8a578bc5d66b67c62f981bc3f8",
+        "testAssemblySha256": "e1d52485202c216cc80aabf6189ae80b235d9b2ebc8dc5aa9c9f46296147fabe",
+        "selection": "FullyQualifiedName~SvgRectangleSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 11.64075250015594,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "90ddba634ed48f97ce902f9e63336f85de266d8a578bc5d66b67c62f981bc3f8",
+        "testAssemblySha256": "e1d52485202c216cc80aabf6189ae80b235d9b2ebc8dc5aa9c9f46296147fabe",
+        "selection": "FullyQualifiedName~SvgRectangleSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 10.390740500064567,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "db0cd5d7a780855237fa66abd110a9b7e01af7fe623bf7eb5dba3449354e8fd4",
+        "testAssemblySha256": "e0f0cf7ec773ae7761941bf2a1299f5124ae2a44ec7ba5951bceb200d6f6507f",
+        "selection": "FullyQualifiedName~SvgRectangleSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 11.306944099953398,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "db0cd5d7a780855237fa66abd110a9b7e01af7fe623bf7eb5dba3449354e8fd4",
+        "testAssemblySha256": "e0f0cf7ec773ae7761941bf2a1299f5124ae2a44ec7ba5951bceb200d6f6507f",
+        "selection": "FullyQualifiedName~SvgRectangleSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 10.58455629996024,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "ci": {
+      "runId": 41838347499,
+      "sourceCommit": "aba2306ecf45aec9a4322efd77404f12892c908a",
+      "status": "completed",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "host": "ubuntu-latest",
+          "conclusion": "success",
+          "wholeWorkflow": true
+        },
+        {
+          "host": "windows-latest",
+          "conclusion": "failure",
+          "failedStep": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+          "failures": [
+            "SvgStaticTrueTypeFontTests: dejavu"
+          ],
+          "referenceAndAssertionUnchanged": true
+        }
+      ],
+      "checks": [
+        {
+          "host": "windows-latest",
+          "framework": "net11.0",
+          "kind": "core",
+          "executed": 47581,
+          "failed": 0
+        },
+        {
+          "host": "windows-latest",
+          "framework": "net11.0",
+          "kind": "visual",
+          "executed": 70871,
+          "failed": 1
+        },
+        {
+          "host": "windows-latest",
+          "framework": "net11.0",
+          "kind": "font",
+          "executed": 10,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net11.0",
+          "kind": "core",
+          "executed": 47581,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net11.0",
+          "kind": "visual",
+          "executed": 70871,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net11.0",
+          "kind": "font",
+          "executed": 10,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net10.0",
+          "kind": "core",
+          "executed": 12836,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net10.0",
+          "kind": "visual",
+          "executed": 1000,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net10.0",
+          "kind": "font",
+          "executed": 10,
+          "failed": 0
+        }
+      ],
+      "ubuntuPackageConsumer": true,
+      "windowsLaterSteps": "Skipped after the unchanged frozen-reference conflict; matching local .NET 10 and installed-package checks qualify both hosts separately.",
+      "workflowLogSha256": "2e85e7c0c64e17c058a99682a217713f771e06c7d63be4dbb96541096f539899",
+      "terminal": true,
+      "repoll": false
+    },
     "published": false
   }
 }
