@@ -406,6 +406,9 @@ Collection manifests/READMEs own case identities, options, exclusions and licens
 The [internal-entity checks](Research/xml-entities/README.md) separate XML and
 ownership mechanisms, one prepared-font interaction and three canonical native
 cases; numeric-ampersand browser differences remain explicit research evidence.
+The [conic-center checks](Research/glyph-conic-centers/README.md) keep 21 direct
+numerical cases separate from two canonical supplied-font rendering cases. The
+font producer and complete native numerical sheet remain optional research tools.
 Historical document totals, percentage gates and exploratory quotas are not
 completion criteria. Retained cases keep their own contracts regardless of the
 collection name.

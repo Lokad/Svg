@@ -1,0 +1,123 @@
+{
+  "width": 64,
+  "height": 64,
+  "recipeRevision": 3,
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "black",
+      "input": "black.svg",
+      "inputSha256": "e199822d1403555d3b574070a835115a81b28038046fe9f1c9eac7a25fbcd312",
+      "platforms": {
+        "windows": {
+          "reference": "windows/black.png",
+          "referenceSha256": "375e5993ae92da1533999d1a6920679c1e71364cd3e6f0e4f050ea5196c09f28",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "375e5993ae92da1533999d1a6920679c1e71364cd3e6f0e4f050ea5196c09f28",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1888
+            },
+            {
+              "pngSha256": "375e5993ae92da1533999d1a6920679c1e71364cd3e6f0e4f050ea5196c09f28",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1925
+            },
+            {
+              "pngSha256": "375e5993ae92da1533999d1a6920679c1e71364cd3e6f0e4f050ea5196c09f28",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1892
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/black.png",
+          "referenceSha256": "c120aea7434ca4fed8a6354436c15a907f93e23caf497de0829b6ba51e502c52",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "c120aea7434ca4fed8a6354436c15a907f93e23caf497de0829b6ba51e502c52",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6180
+            },
+            {
+              "pngSha256": "c120aea7434ca4fed8a6354436c15a907f93e23caf497de0829b6ba51e502c52",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5632
+            },
+            {
+              "pngSha256": "c120aea7434ca4fed8a6354436c15a907f93e23caf497de0829b6ba51e502c52",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5164
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "blue",
+      "input": "blue.svg",
+      "inputSha256": "3cf70777374335f4eea11974660749e0c06e03c270ed0ee26e8ba8224b3e830e",
+      "platforms": {
+        "windows": {
+          "reference": "windows/blue.png",
+          "referenceSha256": "d91f220082954b20f232ac6eb13620c43675e0a06fed74be00f3958ef556ab1d",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "d91f220082954b20f232ac6eb13620c43675e0a06fed74be00f3958ef556ab1d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1957
+            },
+            {
+              "pngSha256": "d91f220082954b20f232ac6eb13620c43675e0a06fed74be00f3958ef556ab1d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 11369
+            },
+            {
+              "pngSha256": "d91f220082954b20f232ac6eb13620c43675e0a06fed74be00f3958ef556ab1d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1861
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/blue.png",
+          "referenceSha256": "f40a020e722be52fccd86a7983bcebb994b93d4a138ac8bdf1b1a116fd65c150",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "f40a020e722be52fccd86a7983bcebb994b93d4a138ac8bdf1b1a116fd65c150",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4506
+            },
+            {
+              "pngSha256": "f40a020e722be52fccd86a7983bcebb994b93d4a138ac8bdf1b1a116fd65c150",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4976
+            },
+            {
+              "pngSha256": "f40a020e722be52fccd86a7983bcebb994b93d4a138ac8bdf1b1a116fd65c150",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4995
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

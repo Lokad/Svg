@@ -1,0 +1,1352 @@
+{
+  "unitsPerEm": 2048,
+  "em": 32,
+  "origin": [
+    8,
+    48
+  ],
+  "sampleWindow": {
+    "x": 16,
+    "y": 23,
+    "width": 8,
+    "height": 8
+  },
+  "cases": [
+    {
+      "id": "seed",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            750,
+            1368
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////rAQAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "chord",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            735,
+            1324
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////rAQAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "control-x--2",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            748,
+            1368
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////rAQAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "control-x--1",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            749,
+            1368
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////rAQAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "control-x-1",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            751,
+            1368
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////tQgAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "control-x-2",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            752,
+            1368
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////tQgAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "control-y--2",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            750,
+            1366
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////tQgAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "control-y--1",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            750,
+            1367
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////tQgAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "control-y-1",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            750,
+            1369
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////rAQAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "control-y-2",
+      "segments": [
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            750,
+            1370
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        },
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            773,
+            1444
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////rAQAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "reverse",
+      "segments": [
+        {
+          "start": [
+            735,
+            1324
+          ],
+          "control": [
+            750,
+            1368
+          ],
+          "end": [
+            773,
+            1444
+          ]
+        },
+        {
+          "start": [
+            773,
+            1444
+          ],
+          "control": [
+            400,
+            1444
+          ],
+          "end": [
+            400,
+            1444
+          ]
+        },
+        {
+          "start": [
+            400,
+            1444
+          ],
+          "control": [
+            400,
+            1324
+          ],
+          "end": [
+            400,
+            1324
+          ]
+        },
+        {
+          "start": [
+            400,
+            1324
+          ],
+          "control": [
+            735,
+            1324
+          ],
+          "end": [
+            735,
+            1324
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////rAQAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "translated-x",
+      "segments": [
+        {
+          "start": [
+            774,
+            1444
+          ],
+          "control": [
+            751,
+            1368
+          ],
+          "end": [
+            736,
+            1324
+          ]
+        },
+        {
+          "start": [
+            736,
+            1324
+          ],
+          "control": [
+            401,
+            1324
+          ],
+          "end": [
+            401,
+            1324
+          ]
+        },
+        {
+          "start": [
+            401,
+            1324
+          ],
+          "control": [
+            401,
+            1444
+          ],
+          "end": [
+            401,
+            1444
+          ]
+        },
+        {
+          "start": [
+            401,
+            1444
+          ],
+          "control": [
+            774,
+            1444
+          ],
+          "end": [
+            774,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamosXAAAA////tQgAAABUVFQpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "translated-y",
+      "segments": [
+        {
+          "start": [
+            773,
+            1445
+          ],
+          "control": [
+            750,
+            1369
+          ],
+          "end": [
+            735,
+            1325
+          ]
+        },
+        {
+          "start": [
+            735,
+            1325
+          ],
+          "control": [
+            400,
+            1325
+          ],
+          "end": [
+            400,
+            1325
+          ]
+        },
+        {
+          "start": [
+            400,
+            1325
+          ],
+          "control": [
+            400,
+            1445
+          ],
+          "end": [
+            400,
+            1445
+          ]
+        },
+        {
+          "start": [
+            400,
+            1445
+          ],
+          "control": [
+            773,
+            1445
+          ],
+          "end": [
+            773,
+            1445
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAJqamogQAAAA////rAQAAAAZGRkMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "mirror-x",
+      "segments": [
+        {
+          "start": [
+            731,
+            1444
+          ],
+          "control": [
+            754,
+            1368
+          ],
+          "end": [
+            769,
+            1324
+          ]
+        },
+        {
+          "start": [
+            769,
+            1324
+          ],
+          "control": [
+            1104,
+            1324
+          ],
+          "end": [
+            1104,
+            1324
+          ]
+        },
+        {
+          "start": [
+            1104,
+            1324
+          ],
+          "control": [
+            1104,
+            1444
+          ],
+          "end": [
+            1104,
+            1444
+          ]
+        },
+        {
+          "start": [
+            1104,
+            1444
+          ],
+          "control": [
+            731,
+            1444
+          ],
+          "end": [
+            731,
+            1444
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAEmampqaAAAAPPv///8AAAAJSVRUVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "mirror-y",
+      "segments": [
+        {
+          "start": [
+            773,
+            1308
+          ],
+          "control": [
+            750,
+            1384
+          ],
+          "end": [
+            735,
+            1428
+          ]
+        },
+        {
+          "start": [
+            735,
+            1428
+          ],
+          "control": [
+            400,
+            1428
+          ],
+          "end": [
+            400,
+            1428
+          ]
+        },
+        {
+          "start": [
+            400,
+            1428
+          ],
+          "control": [
+            400,
+            1308
+          ],
+          "end": [
+            400,
+            1308
+          ]
+        },
+        {
+          "start": [
+            400,
+            1308
+          ],
+          "control": [
+            773,
+            1308
+          ],
+          "end": [
+            773,
+            1308
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAFRUVCkAAAAA////rAQAAACampqIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "mirror-xy",
+      "segments": [
+        {
+          "start": [
+            731,
+            1308
+          ],
+          "control": [
+            754,
+            1384
+          ],
+          "end": [
+            769,
+            1428
+          ]
+        },
+        {
+          "start": [
+            769,
+            1428
+          ],
+          "control": [
+            1104,
+            1428
+          ],
+          "end": [
+            1104,
+            1428
+          ]
+        },
+        {
+          "start": [
+            1104,
+            1428
+          ],
+          "control": [
+            1104,
+            1308
+          ],
+          "end": [
+            1104,
+            1308
+          ]
+        },
+        {
+          "start": [
+            1104,
+            1308
+          ],
+          "control": [
+            731,
+            1308
+          ],
+          "end": [
+            731,
+            1308
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAlJVFRUAAAAPPv///8AAABJmpqamgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "swap-axes",
+      "segments": [
+        {
+          "start": [
+            820,
+            1397
+          ],
+          "control": [
+            744,
+            1374
+          ],
+          "end": [
+            700,
+            1359
+          ]
+        },
+        {
+          "start": [
+            700,
+            1359
+          ],
+          "control": [
+            700,
+            1024
+          ],
+          "end": [
+            700,
+            1024
+          ]
+        },
+        {
+          "start": [
+            700,
+            1024
+          ],
+          "control": [
+            820,
+            1024
+          ],
+          "end": [
+            820,
+            1024
+          ]
+        },
+        {
+          "start": [
+            820,
+            1024
+          ],
+          "control": [
+            820,
+            1397
+          ],
+          "end": [
+            820,
+            1397
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFUo4LAAAAABnhwAwAAAAAGeHADAAAAAAZ4cAMAAAAABnhwAwAAA=="
+    },
+    {
+      "id": "mirror-x-reverse",
+      "segments": [
+        {
+          "start": [
+            769,
+            1324
+          ],
+          "control": [
+            754,
+            1368
+          ],
+          "end": [
+            731,
+            1444
+          ]
+        },
+        {
+          "start": [
+            731,
+            1444
+          ],
+          "control": [
+            1104,
+            1444
+          ],
+          "end": [
+            1104,
+            1444
+          ]
+        },
+        {
+          "start": [
+            1104,
+            1444
+          ],
+          "control": [
+            1104,
+            1324
+          ],
+          "end": [
+            1104,
+            1324
+          ]
+        },
+        {
+          "start": [
+            1104,
+            1324
+          ],
+          "control": [
+            769,
+            1324
+          ],
+          "end": [
+            769,
+            1324
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAEmampqaAAAAPPv///8AAAAJSVRUVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "mirror-y-reverse",
+      "segments": [
+        {
+          "start": [
+            735,
+            1428
+          ],
+          "control": [
+            750,
+            1384
+          ],
+          "end": [
+            773,
+            1308
+          ]
+        },
+        {
+          "start": [
+            773,
+            1308
+          ],
+          "control": [
+            400,
+            1308
+          ],
+          "end": [
+            400,
+            1308
+          ]
+        },
+        {
+          "start": [
+            400,
+            1308
+          ],
+          "control": [
+            400,
+            1428
+          ],
+          "end": [
+            400,
+            1428
+          ]
+        },
+        {
+          "start": [
+            400,
+            1428
+          ],
+          "control": [
+            735,
+            1428
+          ],
+          "end": [
+            735,
+            1428
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAAAAAAAAAAAAAFRUVCkAAAAA////rAQAAACampqIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "scale-two",
+      "segments": [
+        {
+          "start": [
+            794,
+            1512
+          ],
+          "control": [
+            748,
+            1360
+          ],
+          "end": [
+            718,
+            1272
+          ]
+        },
+        {
+          "start": [
+            718,
+            1272
+          ],
+          "control": [
+            48,
+            1272
+          ],
+          "end": [
+            48,
+            1272
+          ]
+        },
+        {
+          "start": [
+            48,
+            1272
+          ],
+          "control": [
+            48,
+            1512
+          ],
+          "end": [
+            48,
+            1512
+          ]
+        },
+        {
+          "start": [
+            48,
+            1512
+          ],
+          "control": [
+            794,
+            1512
+          ],
+          "end": [
+            794,
+            1512
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAACampqYLgAAAP///+ciAAAA////rAQAAAD///9nAAAAABkZFwUAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "id": "scale-two-reverse",
+      "segments": [
+        {
+          "start": [
+            718,
+            1272
+          ],
+          "control": [
+            748,
+            1360
+          ],
+          "end": [
+            794,
+            1512
+          ]
+        },
+        {
+          "start": [
+            794,
+            1512
+          ],
+          "control": [
+            48,
+            1512
+          ],
+          "end": [
+            48,
+            1512
+          ]
+        },
+        {
+          "start": [
+            48,
+            1512
+          ],
+          "control": [
+            48,
+            1272
+          ],
+          "end": [
+            48,
+            1272
+          ]
+        },
+        {
+          "start": [
+            48,
+            1272
+          ],
+          "control": [
+            718,
+            1272
+          ],
+          "end": [
+            718,
+            1272
+          ]
+        }
+      ],
+      "alphaBase64": "AAAAAAAAAACampqYLgAAAP///+ciAAAA////rAQAAAD///9nAAAAABkZFwUAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    }
+  ],
+  "provenance": {
+    "font": "ConicCenters.ttf",
+    "fontSha256": "e0cc3174b9a833705c8c3ea5b43fc52f7191c355e0129ca3737e35d619e86935",
+    "input": "conic-centers.svg",
+    "inputSha256": "994d5a105fe4b377217e5c9a8facb621922fb712bc8f0175ce2298d0fbbf0b56",
+    "reference": "windows/mechanisms.png",
+    "referenceSha256": "84fada5eb8abe70feccb3f3f18be66497dc9869c2abb450885af6f1636020e99",
+    "captures": [
+      {
+        "pngSha256": "84fada5eb8abe70feccb3f3f18be66497dc9869c2abb450885af6f1636020e99",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "milliseconds": 515
+      },
+      {
+        "pngSha256": "84fada5eb8abe70feccb3f3f18be66497dc9869c2abb450885af6f1636020e99",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "milliseconds": 575
+      },
+      {
+        "pngSha256": "84fada5eb8abe70feccb3f3f18be66497dc9869c2abb450885af6f1636020e99",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "milliseconds": 549
+      }
+    ]
+  },
+  "scanner": {
+    "mode": "Symmetric",
+    "smartDropouts": false,
+    "simpleDropouts": true,
+    "excludeStubs": false
+  }
+}

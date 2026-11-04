@@ -32,6 +32,14 @@ discovery. Full unfiltered Windows/Linux tests, resource/font-host probes and
 installed-package checks remain milestone/CI gates. Keep browser captures and
 references unchanged when reorganizing tests.
 
+The [conic-center font producer](build-conic-center-font.py) is optional research
+tooling (FontTools 4.66.1). It uses the committed numerical vectors and requires
+an explicit destination, for example
+`python tools/build-conic-center-font.py --output artifacts/conic-centers/ConicCenters.ttf`.
+Compare its bytes with the [committed font](../tests/Research/glyph-conic-centers/ConicCenters.ttf);
+the numerical and canonical rendering responsibilities are described in the
+[bank README](../tests/Research/glyph-conic-centers/README.md).
+
 `test-memory-probe.ps1` exercises the shared XML-reader policy in conversion and
 allocation modes. Reader workspace reports include peak admitted prolog storage;
 managed allocation totals are separate observations. Memory artifact schema 5

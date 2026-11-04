@@ -1,0 +1,109 @@
+{
+  "status": "Affected integration passed; source-commit milestone qualification pending.",
+  "sourceBaseCommit": "653a549f60faf5e460d4b395b4165cd937f06f31",
+  "sourceFile": "src/Lokad.Svg/Rendering/SvgGlyphLcdCoverage.cs",
+  "sourceLfSha256": "066cfc65817fe02689548cdc8590439d8d89f45b3bb350699af89f500a3213cf",
+  "investigationLibrarySha256": "b1b6535b539e964bac3eea824eea2ddd07045712bb69f76c177aa32b665478e0",
+  "finding": "The axis-direction predicate removed the unit bias from some normalized conic equations. A curve through a sampling-cell center then closed an exterior cell. This appears in one Noto glyph counter and in isolated numerical bands; hinting, dropout selection and paint gamma are separate.",
+  "change": "Keep a constant strict center bias in the bounded conic equation. Remove the direction predicate; retain directed straight-line border ownership. No layout/fitting/positioning change, no allocations, no per-font/per-coordinate condition, and no reference rewrite.",
+  "mechanisms": {
+    "cases": 21,
+    "before": {
+      "executed": "21",
+      "passed": "18",
+      "failed": "3"
+    },
+    "failedBefore": [
+      "Lokad.Svg.Tests.SvgGlyphLcdCoverageTests.Implicit_conic_centers_keep_native_coverage_independently_of_direction(identity: \"mirror-xy\")",
+      "Lokad.Svg.Tests.SvgGlyphLcdCoverageTests.Implicit_conic_centers_keep_native_coverage_independently_of_direction(identity: \"seed\")",
+      "Lokad.Svg.Tests.SvgGlyphLcdCoverageTests.Implicit_conic_centers_keep_native_coverage_independently_of_direction(identity: \"scale-two\")"
+    ],
+    "scope": "One explicit 8x8 native alpha window per curve, direct and prepared row scans. Nearby controls, chord, translation, reflection, reversal, exchanged axes and scale. The numerical font uses symmetric smoothing without fitting and the em-32 simple-dropout default.",
+    "native": "native-centers.json",
+    "fontProducer": "../../../tools/build-conic-center-font.py",
+    "fontProducerVersion": "FontTools 4.66.1",
+    "fontRebuildByteIdentical": true
+  },
+  "rendering": {
+    "cases": 2,
+    "scope": "One canonical supplied-font conversion per fixture/options/host. Black protects clip-mask source coverage; blue protects color preblend. Before Windows: two changed pixels per case; Linux already exact. After: both exact per host.",
+    "capture": "capture.json"
+  },
+  "affected": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "b1b6535b539e964bac3eea824eea2ddd07045712bb69f76c177aa32b665478e0",
+      "testAssemblySha256": "62bc820c2a464fe014b7c7ed87bff3d446d8841e0201b0ab5d5749b9145a155d",
+      "selection": "(FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgGlyph|FullyQualifiedName~TrueTypeHintingTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 26.101260899798945,
+      "counters": {
+        "executed": "10952",
+        "passed": "10952",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "b1b6535b539e964bac3eea824eea2ddd07045712bb69f76c177aa32b665478e0",
+      "testAssemblySha256": "62bc820c2a464fe014b7c7ed87bff3d446d8841e0201b0ab5d5749b9145a155d",
+      "selection": "(FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgGlyph|FullyQualifiedName~TrueTypeHintingTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 31.031241199932992,
+      "counters": {
+        "executed": "10952",
+        "passed": "10952",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "b1b6535b539e964bac3eea824eea2ddd07045712bb69f76c177aa32b665478e0",
+      "testAssemblySha256": "4c20e33cf9c0d02df8c3c7446a172d5be6e09326ffdb387b279c20bd6320a273",
+      "selection": "(FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgCompositeMetricsTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgTextInstanceCompositionReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 13.601960900006816,
+      "counters": {
+        "executed": "1088",
+        "passed": "1088",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "b1b6535b539e964bac3eea824eea2ddd07045712bb69f76c177aa32b665478e0",
+      "testAssemblySha256": "4c20e33cf9c0d02df8c3c7446a172d5be6e09326ffdb387b279c20bd6320a273",
+      "selection": "(FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgCompositeMetricsTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgTextInstanceCompositionReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 16.502477000001818,
+      "counters": {
+        "executed": "1088",
+        "passed": "1088",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "timingInterpretation": "Wall times include runner/process startup. Before 21-case mechanism selection: 7.113s, 3 fail/18 pass. Focused after selection: 9.284s including its 2.41s build, 21 pass. This is validation cost, not a renderer performance benchmark or a test-suite speedup.",
+  "clipModel": {
+    "status": "OPEN font/resource selection and target-specific replay.",
+    "source": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_resource_clipper.cc",
+    "observed": "Text requires a mask recording with black fill. Black glyph alpha matches the native clip on both hosts after this shared fix; colored glyph coverage has its own preblend. Keep text opacity and geometric path opacity roles distinct."
+  },
+  "remaining": [
+    "Full source-commit Windows/Linux, representative runtime and installed-package milestone qualification.",
+    "Shared live clip-font selection and text clip replay, including unused/group roles, target maps and owned cleanup.",
+    "Preserved independent Windows DejaVu reference conflict; do not change the reference/assertion or infer authority."
+  ]
+}

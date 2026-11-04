@@ -917,11 +917,14 @@ internal static class SvgGlyphLcdCoverage
                 }
                 long step = 1L << (6 - shift), x2 = tx - 2 * dx, y2 = ty - 2 * dy;
                 long P = y2 * y2, Q = x2 * x2, R = -x2 * y2, Lx = determinant * dy, Ly = -determinant * dx;
-                long ownership = sx > 0 ? (sy < 0 ? 1 : 0) : (sy < 0 ? 0 : 1);
+                // Keep the strict sample-center bias after normalizing both
+                // axes. Reversing a conic must not close a zero-valued cell;
+                // straight spans retain their separate directed border rule.
+                const long centerBias = 1;
                 double f, fx, fy, p, q, r;
                 if (magnitude <= 7)
                 {
-                    f = P * u * u + Q * v * v + 2 * R * u * v + 2 * Lx * u + 2 * Ly * v + ownership;
+                    f = P * u * u + Q * v * v + 2 * R * u * v + 2 * Lx * u + 2 * Ly * v + centerBias;
                     fx = (P * (step + 2 * u) + 2 * R * v + 2 * Lx) * step;
                     fy = (Q * (step + 2 * v) + 2 * R * u + 2 * Ly) * step;
                     p = 2 * P * step * step; q = 2 * Q * step * step; r = 2 * R * step * step;
@@ -932,7 +935,7 @@ internal static class SvgGlyphLcdCoverage
                     // products. Its mixed term occurs once. First and second
                     // differences then give a continuous scan equation at
                     // every sample center without a per-cell curve walk.
-                    f = (((P >> 1) * u + R * v + Lx) >> (6 - shift)) * u + (((Q >> 1) * v + Ly) >> (6 - shift)) * v + ownership;
+                    f = (((P >> 1) * u + R * v + Lx) >> (6 - shift)) * u + (((Q >> 1) * v + Ly) >> (6 - shift)) * v + centerBias;
                     fx = P * (u + step / 2) + R * v + Lx; fy = Q * (v + step / 2) + R * u + Ly;
                     p = P * step; q = Q * step; r = R * step;
                 }

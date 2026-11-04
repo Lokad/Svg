@@ -316,5 +316,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="../Research/windows-scan-boundary/fonts/ScanTurn.ttf" Link="TestData/windows-scan-boundary/ScanTurn.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/glyph-conic-centers/native-centers.json" Link="TestData/glyph-conic-centers/native-centers.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

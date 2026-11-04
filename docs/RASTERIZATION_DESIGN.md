@@ -524,6 +524,10 @@ rebased fragment arrays. Unpainted characters may still contribute layout bounds
 
 Windows uses matched TrueType/LCD fitting, scanning and preblend; Linux uses light
 fitting/grayscale coverage, with axial and unhinted routes chosen separately.
+Bounded conic equations retain a strict sampling-center bias after axis
+normalization; straight borders keep directed contour ownership. The
+[conic-center controls](../tests/Research/glyph-conic-centers/README.md) separate
+that numerical boundary from colored glyph paint and black clip-mask coverage.
 Windows alignment translates current/original outline points with the left metric
 origin. Current advance rounding stays separate from the original absolute right
 coordinate. Composite parent programs use their own phantoms, while inherited
