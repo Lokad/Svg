@@ -10,7 +10,11 @@ The current default conversion renders 168 originals per host: **168 exploratory
 exact**, with 35 UnsupportedFeature and 1 MalformedInput outcome. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
-These observations use transparent output without supplied fonts/resources.
+Its `currentReview.contextPartition` joins all 204 source identities and hashes:
+168 default exact, 22 supplied-program contexts, 11 other static diagnostics and
+three separate source reviews. This partition records the declared context for
+each original; projected diagnostics retain their original admission limitations.
+The default observations use transparent output without supplied fonts/resources.
 Exact default output does not qualify other font, resource or static-state contexts;
 whole-corpus acceptance remains open.
 
