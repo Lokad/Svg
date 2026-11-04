@@ -1,5 +1,5 @@
 {
-  "status": "Locally qualified: all three observed affine/path decoration discrepancies are closed; all39 ink and13 style controls are native exact on both hosts. Source/package CI promotion follows separately.",
+  "status": "The three witnessed affine/path decoration failures are closed through shared canonical contours and independent binary exclusion unions. Both clean-commit package assets, installed consumers,52 native controls and hosted originals/contexts qualify. Ubuntu full CI passes; Windows has solely the unchanged DejaVu reference-authority failure.",
   "sourceBaseCommit": "b9e774f7f7ab6e71df4a10fc9d755d1b73c01a40",
   "implementationSourceLfSha256": {
     "src/Lokad.Svg/Fonts/SvgGlyphOutline.cs": "6d5eec290dc99e50ffa228a9089356e16f899eabe6b71039af3be7de34137e0a",
@@ -1228,5 +1228,344 @@
       ]
     }
   ],
-  "scope": "Closes the three witnessed precision inputs and their shared causes. Native command observations are Linux-only; Windows image captures still match frozen targets. Existing frozen triples, source recipes, font hashes and licenses remain in the linked evidence. Functional validation times include startup/discovery and are not renderer performance. Broader historical source/oracle joins remain separate."
+  "scope": "Closes the three witnessed precision inputs and their shared causes. Native command observations are Linux-only; Windows image captures still match frozen targets. Existing frozen triples, source recipes, font hashes and licenses remain in the linked evidence. Functional validation times include startup/discovery and are not renderer performance. Broader historical source/oracle joins remain separate.",
+  "promotion": {
+    "package": {
+      "sourceCommit": "a203b26eb5a6240bd5abff7a594df603c6734da2",
+      "packageVersion": "0.4.0-dev.1",
+      "nupkgSha256": "dc1f26d8ac336f82f366362e3b1befdfb903aaf99fa32bf9d9b4b3654df240b2",
+      "snupkgSha256": "c72c5a739d981d9efc00aefd6e6f85eae4dc9f92e537e181bd274889eb485d6a",
+      "librarySha256": {
+        "net11.0": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+        "net10.0": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c"
+      }
+    },
+    "sourceHashesMatchCommit": true,
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.634911500150338,
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ],
+        "isolatedRestoreBuildAndExecution": true,
+        "packageAssetHashesMatch": true
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 60.19345469982363,
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ],
+        "isolatedRestoreBuildAndExecution": true,
+        "packageAssetHashesMatch": true
+      }
+    ],
+    "packagedMechanismAndRendering": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+        "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+        "exitCode": 0,
+        "seconds": 11.851431099930778,
+        "counters": {
+          "executed": "7",
+          "passed": "7",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+        "testAssemblySha256": "c14b88d398d85ab2923b2c5ed8dc6022283a8bdf06f04df6e4789351c60e41ed",
+        "exitCode": 0,
+        "seconds": 10.332775800023228,
+        "counters": {
+          "executed": "7",
+          "passed": "7",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+        "testAssemblySha256": "6ffbe16b9eb94af9740308faf63012011d3a6908ad079aab6955a0ddd02580ff",
+        "exitCode": 0,
+        "seconds": 20.662336600013077,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+        "testAssemblySha256": "6ffbe16b9eb94af9740308faf63012011d3a6908ad079aab6955a0ddd02580ff",
+        "exitCode": 0,
+        "seconds": 16.17841810011305,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c",
+        "testAssemblySha256": "d84e926ec646ed4135a47fbd1277d8f5259f5ae1564677189ad02e84d4aadf58",
+        "exitCode": 0,
+        "seconds": 9.340812899870798,
+        "counters": {
+          "executed": "7",
+          "passed": "7",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c",
+        "testAssemblySha256": "d84e926ec646ed4135a47fbd1277d8f5259f5ae1564677189ad02e84d4aadf58",
+        "exitCode": 0,
+        "seconds": 11.124158600112423,
+        "counters": {
+          "executed": "7",
+          "passed": "7",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c",
+        "testAssemblySha256": "31be72ad259dced90ff4c06efd56dc0b23ca3f1ce9cfb77c777e1b971a4c0ce0",
+        "exitCode": 0,
+        "seconds": 12.795938200084493,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e6a7b8d3b6f971f93596b4547bd36c2b8febe159597773ca172e1f5a5a6e320c",
+        "testAssemblySha256": "31be72ad259dced90ff4c06efd56dc0b23ca3f1ce9cfb77c777e1b971a4c0ce0",
+        "exitCode": 0,
+        "seconds": 10.417118499986827,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        }
+      }
+    ],
+    "packagedNativeReplays": [
+      {
+        "host": "windows",
+        "family": "ink",
+        "inputs": 39,
+        "nativeExact": 39,
+        "seconds": 25.90063579985872
+      },
+      {
+        "host": "linux",
+        "family": "ink",
+        "inputs": 39,
+        "nativeExact": 39,
+        "seconds": 51.300106700044125
+      },
+      {
+        "host": "windows",
+        "family": "style",
+        "inputs": 13,
+        "nativeExact": 13,
+        "seconds": 7.4497395001817495
+      },
+      {
+        "host": "linux",
+        "family": "style",
+        "inputs": 13,
+        "nativeExact": 13,
+        "seconds": 16.959667700110003
+      }
+    ],
+    "published": false,
+    "ci": {
+      "runId": 41905584621,
+      "sourceCommit": "a203b26eb5a6240bd5abff7a594df603c6734da2",
+      "status": "completed",
+      "conclusion": "failure",
+      "terminalClosed": true,
+      "jobs": [
+        {
+          "name": "build-and-test (windows-latest)",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "build-and-test (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "qualification": [
+        {
+          "host": "windows",
+          "project": "Lokad.Svg.FontProbe.Tests",
+          "framework": "net11.0",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "total": 10
+        },
+        {
+          "host": "windows",
+          "project": "Lokad.Svg.Tests",
+          "framework": "net11.0",
+          "passed": 47617,
+          "failed": 0,
+          "skipped": 0,
+          "total": 47617
+        },
+        {
+          "host": "windows",
+          "project": "Lokad.Svg.VisualTests",
+          "framework": "net11.0",
+          "passed": 71273,
+          "failed": 1,
+          "skipped": 0,
+          "total": 71274
+        },
+        {
+          "host": "linux",
+          "project": "Lokad.Svg.FontProbe.Tests",
+          "framework": "net11.0",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "total": 10
+        },
+        {
+          "host": "linux",
+          "project": "Lokad.Svg.Tests",
+          "framework": "net11.0",
+          "passed": 47617,
+          "failed": 0,
+          "skipped": 0,
+          "total": 47617
+        },
+        {
+          "host": "linux",
+          "project": "Lokad.Svg.VisualTests",
+          "framework": "net11.0",
+          "passed": 71274,
+          "failed": 0,
+          "skipped": 0,
+          "total": 71274
+        },
+        {
+          "host": "linux",
+          "project": "Lokad.Svg.Tests",
+          "framework": "net10.0",
+          "passed": 12865,
+          "failed": 0,
+          "skipped": 0,
+          "total": 12865
+        },
+        {
+          "host": "linux",
+          "project": "Lokad.Svg.VisualTests",
+          "framework": "net10.0",
+          "passed": 1150,
+          "failed": 0,
+          "skipped": 0,
+          "total": 1150
+        },
+        {
+          "host": "linux",
+          "project": "Lokad.Svg.FontProbe.Tests",
+          "framework": "net10.0",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "total": 10
+        }
+      ],
+      "linuxPackageRestoreBuildExecution": "success",
+      "soleFailure": "Unchanged Windows DejaVu frozen-reference authority discrepancy; reference/assertion preserved. Later Windows compatibility/package steps skip, while both targets qualify locally."
+    }
+  },
+  "hostedOriginalReplay": {
+    "librarySha256": "0a1c1027745beea55d135f1e8c12acc431eaa10f99f49e59380f8f290d25ebe2",
+    "framework": "net11.0",
+    "sourceCommit": "a203b26eb5a6240bd5abff7a594df603c6734da2",
+    "originals": 204,
+    "sourceIdentitySha256": "98ecf4d5a1cf3e31dff4873101e6e5521726d264407793e9086d74e8e6b058aa",
+    "outcomeAndPngRecordSha256": "342e9bcc7fd937df15f22d8e1998e5aba06e1aea08a2d08a791b098b11b39a72",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "allSourceHashesAndDiagnosticMetadataUnchanged": true,
+    "defaultSeconds": 139.85170329990797,
+    "suppliedOriginalContexts": {
+      "inputs": 22,
+      "exactPerHost": 22,
+      "unchangedQualifiedPngsPerHost": 22,
+      "identityAndOutputSha256": "c3f3a619d219e4da3430e4669546338e07c17a35a22e7d9dd9c4ed90282b17e0",
+      "evidence": [
+        "../svgweb/supplied-original-contexts.json",
+        "../svgweb/supplied-original-contexts-additional.json",
+        "../xml-entities/qualification.json"
+      ]
+    },
+    "staticDiagnostics": {
+      "inputs": 13,
+      "exactPerHost": 13,
+      "projectedInputAndOutputSha256": "0a5be1bfa6bcd5049ecef84ddb720618afc192664b3aedc9a56f143989f2a96b",
+      "evidence": "../svgweb/remaining-static-gates.json"
+    },
+    "retention": {
+      "hostedSvgFiles": 0,
+      "hostedFragments": 0,
+      "rawSourceAttributes": 0
+    },
+    "scope": "Replays all original default outcomes and the existing supplied-program/projected contexts against unchanged independent native targets. Default admissions remain168 rendered/35Unsupported/1Malformed. Font bindings, legacy SVG-font transport, diagnostic repairs, resources and animation/static-state limitations remain distinct; whole-corpus support is not closed."
+  }
 }
