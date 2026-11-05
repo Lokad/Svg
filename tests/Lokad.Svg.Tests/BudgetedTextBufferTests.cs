@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class BudgetedTextBufferTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Collapsed_spaces_keep_the_first_span_owner_and_trim_only_the_final_separator()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(20_000));
@@ -33,6 +34,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nested_lists_count_normalized_scalars_across_chunks_and_resume_ancestor_values()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(20_000));
@@ -59,6 +61,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Scoped_list_denial_and_cancellation_release_active_and_detached_storage()
     {
         RenderBudget accepted = new RenderBudget(new HostMemoryBudget(100_000));
@@ -89,6 +92,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Transfers_the_final_string_charge_and_releases_it_with_the_consumer()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
@@ -105,6 +109,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Reserves_replacement_character_storage_before_growth()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_500));
@@ -118,6 +123,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Normalizes_direct_text_whitespace_across_reader_chunks_without_bypassing_the_source_limit()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
@@ -146,6 +152,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Retains_only_normalized_letter_spacing_intervals_that_differ_from_the_parent_text()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
@@ -166,6 +173,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Retains_a_positioned_span_offset_for_its_first_descendant_character()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
@@ -185,6 +193,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lets_a_nearer_zero_position_offset_override_an_outer_span()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
@@ -203,6 +212,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Resolves_each_position_offset_axis_from_its_nearest_span()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
@@ -221,6 +231,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Retains_absolute_zero_and_resolves_coordinates_separately_from_relative_offsets()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));
@@ -241,6 +252,7 @@ public sealed class BudgetedTextBufferTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Empty_absolute_position_scopes_do_not_reposition_later_parent_text()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000));

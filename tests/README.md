@@ -25,6 +25,11 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+Text declaration/family parsing and whitespace/list normalization are direct
+mechanisms. Their public early-failure, cancellation, storage transfer and growth
+checks remain contracts. The [qualification](Research/release-baselines/text-front-end-responsibilities.json)
+retains every input while checking the inline-only font result explicitly.
+
 [Filter graph demand](Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs) separates unused
 pixel branches from declaration and region metadata. Ten allocation contracts
 retain selected secondary/merge paths, source immutability, refusal, cancellation

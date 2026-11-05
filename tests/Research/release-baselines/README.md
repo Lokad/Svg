@@ -11,6 +11,10 @@ direct contour/analytic vectors separately from cancellation, allocation and out
 contracts. All cases and assertion bodies remain; focused selection and the source/
 compiled inventory are qualified against the existing renderer packages.
 
+[Text-front-end responsibilities](text-front-end-responsibilities.json) separate
+declaration/family parsing and normalization from cancellation and buffer ownership.
+All 112 cases remain; the inline-only font case now asserts its resolved values.
+
 [CSS test responsibilities](css-test-responsibilities.json) separates direct syntax
 and alpha checks, admission/storage/lifetime contracts and rendered cascade controls.
 All 341 cases and compiled assertion bodies remain; the fast selection gains the

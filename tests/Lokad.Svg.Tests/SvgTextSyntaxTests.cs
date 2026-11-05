@@ -39,6 +39,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Inherited_text_style_requires_a_positive_weight_and_font_size()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 0, false, 16, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start));
@@ -49,6 +50,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Parses_the_initial_explicit_text_style_and_baseline()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' font-weight='bold' font-style='italic' font-size='12.5' x='2' y='3'/>"));
@@ -68,6 +70,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Normalizes_shared_text_font_tokens_before_constructing_a_request()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family=\"  'Example'  \" font-weight=' BOLD ' font-style=' ITALIC ' font-size='12'/>"));
@@ -81,6 +84,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Applies_last_inline_font_declarations_over_presentation_attributes()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Attribute' font-weight='400' style='font-family: First; font-family: Inline; font-weight: 700; font-style: italic; font-size: 12'/>"));
@@ -95,15 +99,22 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
-    public void Scans_one_inline_font_declaration_set_once()
+    [Trait("Layer", "Mechanism")]
+    public void Inline_font_declarations_resolve_without_presentation_attributes()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text style='font-family: Example; font-weight: 700; font-style: italic; font-size: 12'/>"));
         reader.Read();
 
-        SvgTextSyntax.Parse(reader, CancellationToken.None);
+        SvgTextStyle style = SvgTextSyntax.Parse(reader, CancellationToken.None);
+
+        Assert.Equal("Example", style.Font.Family);
+        Assert.Equal(700, style.Font.Weight);
+        Assert.True(style.Font.Italic);
+        Assert.Equal(12, style.FontSize);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_an_oversized_inline_font_value()
     {
         string family = new('A', SvgSyntaxLimits.MaximumValueTokenCharacters + 1);
@@ -116,6 +127,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("font-family:", SvgErrorCode.UnsupportedFeature)]
     [InlineData("font-family:: Example", SvgErrorCode.MalformedInput)]
     public void Rejects_inline_font_declarations_outside_the_paint_style_subset(string declaration, SvgErrorCode expectedErrorCode)
@@ -129,6 +141,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Normalizes_a_quoted_direct_font_family()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family=\"'Example'\"/>"));
@@ -140,6 +153,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Parses_admitted_text_anchors()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' text-anchor='middle'/>"));
@@ -151,6 +165,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Parses_scalar_direct_text_position_adjustments()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' x='2' y='3' dx='4' dy='5'/>"));
@@ -165,6 +180,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Root_lists_follow_normalized_scalar_boundaries_and_descendant_precedence()
     {
         SvgTextPositionLists lists = new("8 24 40", "28", "0 1", null, "0 10 -10", new(16));
@@ -179,6 +195,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("1 NaN")]
     [InlineData("1 20%")]
     [InlineData("1 1e309")]
@@ -190,6 +207,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Rotation_length_units_reject_before_text_layout()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><text font-family='Missing' rotate='0 10px'>AB</text></svg>");
@@ -197,19 +215,21 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Denied_or_cancelled_list_preparation_releases_partial_storage()
     {
         SvgTextPositionLists lists = new("1 2 3 4 5", null, null, null, "0 10", new(16));
         RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => lists.Build("ABCDE", [], denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new RenderBudget(new HostMemoryBudget(10_000));
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
-        Assert.Throws<OperationCanceledException>(() => lists.Build("ABCDE", [], workDenied, new CancellationToken(true)));
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
+        RenderBudget cancelledBudget = new RenderBudget(new HostMemoryBudget(10_000));
+        Assert.Equal(0, cancelledBudget.Snapshot().CurrentBytes);
+        Assert.Throws<OperationCanceledException>(() => lists.Build("ABCDE", [], cancelledBudget, new CancellationToken(true)));
+        Assert.Equal(0, cancelledBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Parses_scalar_letter_spacing_from_attributes_and_inline_style()
     {
         using XmlReader attribute = XmlReader.Create(new StringReader("<text font-family='Example' letter-spacing='2.5'/>"));
@@ -222,6 +242,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("word-spacing='2.5'", 2.5)]
     [InlineData("word-spacing='2' style='word-spacing:-1.5px'", -1.5)]
     [InlineData("word-spacing='2' style='word-spacing:normal'", 0)]
@@ -233,6 +254,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Parses_finite_text_coordinates_without_rectangle_quantization()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' font-size='12.3' x='0.1' y='2.2' dx='3.3' dy='4.4'/>"));
@@ -248,6 +270,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Resolves_inherited_text_properties_with_inline_precedence()
     {
         using XmlReader ancestorReader = XmlReader.Create(new StringReader("<g font-family='Ancestor' font-weight='700' font-style='italic' font-size='12'/>"));
@@ -266,6 +289,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("", (int)SvgTextAnchor.Middle)]
     [InlineData("text-anchor='inherit'", (int)SvgTextAnchor.Middle)]
     [InlineData("text-anchor='start'", (int)SvgTextAnchor.Start)]
@@ -282,6 +306,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Resolves_bounded_css_whitespace_over_xml_and_inherited_modes()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text xml:space='preserve'/>"));
@@ -294,6 +319,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Admits_whitespace_font_spacing_and_scalar_position_tspan_styles()
     {
         using XmlReader accepted = XmlReader.Create(new StringReader("<tspan xml:space='preserve' x='0' y='12px' dx='2' dy='-4' letter-spacing='2' style='white-space: normal; letter-spacing: 3'/>"));
@@ -313,6 +339,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Uses_the_initial_serif_request_and_preserves_ordered_family_candidates()
     {
         using XmlReader missing = XmlReader.Create(new StringReader("<text/>"));
@@ -325,6 +352,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("x", "1 2")]
     [InlineData("y", "0,0")]
     public void Admits_valid_absolute_span_lists(string axis, string value)
@@ -337,6 +365,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("x", "20%")]
     [InlineData("x", "NaN")]
     [InlineData("y", "1e309")]

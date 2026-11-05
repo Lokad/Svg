@@ -1,0 +1,812 @@
+{
+  "status": "Completed the 49-method text-front-end review: 43 mechanism and six contract methods retain all 112 cases. The inline-only font input now has four resolved-value assertions and an accurate name. All 47 previously unclassified methods are assigned; the fast selection retains 19,912 prior cases and adds 103. Production code, fixtures, native references and text layout remain unchanged.",
+  "source": {
+    "baseCommit": "7dde9de51f009f72004ab50b33f8f1a8c46eb14b",
+    "files": [
+      {
+        "file": "../../Lokad.Svg.Tests/SvgTextSyntaxTests.cs",
+        "beforeLfSha256": "c8265757efe567f5f1ae12474602ed9c22c4eb4dca1061ae8afef5396993003b",
+        "afterLfSha256": "f846dbe20c121dc4352b99a0f235f8abbb76a551af1785bfee1ae9572086a284",
+        "entireBeforeFileReconstructed": true
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgFontFamilyTests.cs",
+        "beforeLfSha256": "02500af2aef36a454d19a234a9e884a7c8a10e6ba4d04e744c34a28b2a92f1b3",
+        "afterLfSha256": "d3fee8080f4dbcd6ec555aa4c7b6b32c59a8714107dbb4f71ae5457238c17485",
+        "entireBeforeFileReconstructed": true
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/BudgetedTextBufferTests.cs",
+        "beforeLfSha256": "8f5f09883dd2cba2bbe814220ed6fd69db9c9f6fd0b1b0ee9793a96311109a45",
+        "afterLfSha256": "db535bb904e702d97ef755585ad041593ac74071918d11b9aab6bb6a8802a13c",
+        "entireBeforeFileReconstructed": true
+      }
+    ],
+    "allInputsProvidersAndExistingAssertionsRetained": true,
+    "onlyExecutableTestChange": "Four resolved-font assertions on the unchanged inline-only input,with an accurate name.",
+    "onlyOtherTextChange": "workDenied local renamed cancelledBudget; storage/cancellation behavior is unchanged.",
+    "noProductionNativeReferenceFixtureOrTextLayoutChange": true
+  },
+  "classification": {
+    "methods": [
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Inline_font_size_preserves_svg_lengths_and_importance",
+        "role": "Mechanism",
+        "addedRole": false
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Stylesheet_unitless_font_size_preserves_the_valid_declaration",
+        "role": "Mechanism",
+        "addedRole": false
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Inherited_text_style_requires_a_positive_weight_and_font_size",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Parses_the_initial_explicit_text_style_and_baseline",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Normalizes_shared_text_font_tokens_before_constructing_a_request",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Applies_last_inline_font_declarations_over_presentation_attributes",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Scans_one_inline_font_declaration_set_once",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Rejects_an_oversized_inline_font_value",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Rejects_inline_font_declarations_outside_the_paint_style_subset",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Normalizes_a_quoted_direct_font_family",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Parses_admitted_text_anchors",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Parses_scalar_direct_text_position_adjustments",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Root_lists_follow_normalized_scalar_boundaries_and_descendant_precedence",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Root_lists_validate_every_value_before_layout",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Rotation_length_units_reject_before_text_layout",
+        "role": "Contract",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Denied_or_cancelled_list_preparation_releases_partial_storage",
+        "role": "Contract",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Parses_scalar_letter_spacing_from_attributes_and_inline_style",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Parses_finite_word_spacing_and_normal",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Parses_finite_text_coordinates_without_rectangle_quantization",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Resolves_inherited_text_properties_with_inline_precedence",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Presentation_anchors_follow_container_and_direct_text_inheritance",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Resolves_bounded_css_whitespace_over_xml_and_inherited_modes",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Admits_whitespace_font_spacing_and_scalar_position_tspan_styles",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Uses_the_initial_serif_request_and_preserves_ordered_family_candidates",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Admits_valid_absolute_span_lists",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgTextSyntaxTests.cs",
+        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
+        "name": "Rejects_unresolved_span_percentages_and_nonfinite_values",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Discovery_shares_quoted_and_escaped_syntax_across_presentation_inline_and_stylesheet",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Literal_bangs_do_not_change_real_declaration_priority",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "An_escaped_bang_at_the_end_of_a_name_is_not_an_important_suffix",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Inherit_and_initial_keep_family_list_and_generic_semantics",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Decodes_ordered_names_and_distinguishes_generic_keywords",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Categorizes_malformed_lists_without_selecting_a_prefix",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "A_maximum_length_canonical_list_round_trips_with_all_families",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Expanded_control_escapes_round_trip_near_the_character_bound",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Oversized_canonical_text_is_rejected_on_the_first_parse",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Decoded_name_bound_is_preserved_within_a_round_trippable_list",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "SvgFontFamilyTests.cs",
+        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
+        "name": "Tokenization_observes_original_cancellation",
+        "role": "Contract",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Collapsed_spaces_keep_the_first_span_owner_and_trim_only_the_final_separator",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Nested_lists_count_normalized_scalars_across_chunks_and_resume_ancestor_values",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Scoped_list_denial_and_cancellation_release_active_and_detached_storage",
+        "role": "Contract",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Transfers_the_final_string_charge_and_releases_it_with_the_consumer",
+        "role": "Contract",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Reserves_replacement_character_storage_before_growth",
+        "role": "Contract",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Normalizes_direct_text_whitespace_across_reader_chunks_without_bypassing_the_source_limit",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Retains_only_normalized_letter_spacing_intervals_that_differ_from_the_parent_text",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Retains_a_positioned_span_offset_for_its_first_descendant_character",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Lets_a_nearer_zero_position_offset_override_an_outer_span",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Resolves_each_position_offset_axis_from_its_nearest_span",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Retains_absolute_zero_and_resolves_coordinates_separately_from_relative_offsets",
+        "role": "Mechanism",
+        "addedRole": true
+      },
+      {
+        "file": "BudgetedTextBufferTests.cs",
+        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
+        "name": "Empty_absolute_position_scopes_do_not_reposition_later_parent_text",
+        "role": "Mechanism",
+        "addedRole": true
+      }
+    ],
+    "counts": {
+      "Mechanism": 43,
+      "Contract": 6
+    },
+    "priorUnclassifiedClosed": 47,
+    "renamed": {
+      "before": "Scans_one_inline_font_declaration_set_once",
+      "after": "Inline_font_declarations_resolve_without_presentation_attributes",
+      "assertionsAdded": 4,
+      "inputUnchanged": true
+    }
+  },
+  "inventory": {
+    "methods": 5138,
+    "sourceFiles": 734,
+    "coreMethods": 4687,
+    "visualMethods": 451,
+    "coreRoles": {
+      "Unclassified": 1160,
+      "Mechanism": 1777,
+      "Contract": 692,
+      "Rendering": 1057,
+      "Integrity": 1
+    },
+    "visualUnclassified": 277,
+    "priorUnclassified": 1207,
+    "currentUnclassified": 1160,
+    "closedUnclassifiedMethods": 47,
+    "cohortMethods": 49,
+    "cohortCases": 112,
+    "fullCoreCases": 47878,
+    "fullVisualCases": 73538,
+    "fontHostCases": 10,
+    "fastCases": 20015
+  },
+  "caseIdentities": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "cases": 112,
+      "mechanism": 106,
+      "contract": 6,
+      "allInputIdentitiesAndMultiplicitiesRetained": true,
+      "normalization": "Only the explicit single-scan to inline-resolution method rename; all argument text remains.",
+      "caseIdentitySha256": "4a1ce6513e31aec10e49131ac73a0e3192bad0b0c7d6cf04805e6ce2a9cd6050",
+      "finalIntegrationIncludesEveryCohortCase": true
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "cases": 112,
+      "mechanism": 106,
+      "contract": 6,
+      "allInputIdentitiesAndMultiplicitiesRetained": true,
+      "normalization": "Only the explicit single-scan to inline-resolution method rename; all argument text remains.",
+      "caseIdentitySha256": "4a1ce6513e31aec10e49131ac73a0e3192bad0b0c7d6cf04805e6ce2a9cd6050",
+      "finalIntegrationIncludesEveryCohortCase": true
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "cases": 112,
+      "mechanism": 106,
+      "contract": 6,
+      "allInputIdentitiesAndMultiplicitiesRetained": true,
+      "normalization": "Only the explicit single-scan to inline-resolution method rename; all argument text remains.",
+      "caseIdentitySha256": "4a1ce6513e31aec10e49131ac73a0e3192bad0b0c7d6cf04805e6ce2a9cd6050",
+      "finalIntegrationIncludesEveryCohortCase": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "cases": 112,
+      "mechanism": 106,
+      "contract": 6,
+      "allInputIdentitiesAndMultiplicitiesRetained": true,
+      "normalization": "Only the explicit single-scan to inline-resolution method rename; all argument text remains.",
+      "caseIdentitySha256": "4a1ce6513e31aec10e49131ac73a0e3192bad0b0c7d6cf04805e6ce2a9cd6050",
+      "finalIntegrationIncludesEveryCohortCase": true
+    }
+  ],
+  "fastCaseIdentities": [
+    {
+      "host": "windows",
+      "before": 19912,
+      "after": 20015,
+      "added": 103,
+      "lost": 0,
+      "allPriorIdentitiesAndMultiplicitiesRetained": true
+    },
+    {
+      "host": "linux",
+      "before": 19912,
+      "after": 20015,
+      "added": 103,
+      "lost": 0,
+      "allPriorIdentitiesAndMultiplicitiesRetained": true
+    }
+  ],
+  "validation": [
+    {
+      "stage": "before-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "290cf3f5c7f5455edd21e86cc56c12cb21b7962de54891de3c53bd13e3b6c65b",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests",
+      "exitCode": 0,
+      "seconds": 7.283957500010729,
+      "counters": {
+        "executed": "112",
+        "passed": "112",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "290cf3f5c7f5455edd21e86cc56c12cb21b7962de54891de3c53bd13e3b6c65b",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests",
+      "exitCode": 0,
+      "seconds": 13.262832999927923,
+      "counters": {
+        "executed": "112",
+        "passed": "112",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+      "testAssemblySha256": "748116fcb5a4f6e5e9272b2ff63923657d3366140fb16e1a6173ac2a56a5e1fb",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests",
+      "exitCode": 0,
+      "seconds": 6.257982200011611,
+      "counters": {
+        "executed": "112",
+        "passed": "112",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+      "testAssemblySha256": "748116fcb5a4f6e5e9272b2ff63923657d3366140fb16e1a6173ac2a56a5e1fb",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests",
+      "exitCode": 0,
+      "seconds": 10.474266600096598,
+      "counters": {
+        "executed": "112",
+        "passed": "112",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "769136e346b5aeae8ada3618a16342a7326e39a30df8204a4fa409c857de19ab",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests",
+      "exitCode": 0,
+      "seconds": 8.923000099835917,
+      "counters": {
+        "executed": "112",
+        "passed": "112",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "769136e346b5aeae8ada3618a16342a7326e39a30df8204a4fa409c857de19ab",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests",
+      "exitCode": 0,
+      "seconds": 12.105164000065997,
+      "counters": {
+        "executed": "112",
+        "passed": "112",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+      "testAssemblySha256": "77013fcd293369bc7c3f85d5aeb1deeebc13b55276334773b531374c2b69b5cf",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests",
+      "exitCode": 0,
+      "seconds": 8.60293519985862,
+      "counters": {
+        "executed": "112",
+        "passed": "112",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+      "testAssemblySha256": "77013fcd293369bc7c3f85d5aeb1deeebc13b55276334773b531374c2b69b5cf",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests",
+      "exitCode": 0,
+      "seconds": 9.598363999975845,
+      "counters": {
+        "executed": "112",
+        "passed": "112",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "aa8ca62b2694ad549eabbb9e7e65b056f7eb1a736c5c5af359570040bb83bfc0",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~SvgTextPositionLengthTests|FullyQualifiedName~SvgTextPathOffsetSyntaxTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 10.84578590001911,
+      "counters": {
+        "executed": "300",
+        "passed": "300",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "aa8ca62b2694ad549eabbb9e7e65b056f7eb1a736c5c5af359570040bb83bfc0",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~SvgTextPositionLengthTests|FullyQualifiedName~SvgTextPathOffsetSyntaxTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 15.44392849993892,
+      "counters": {
+        "executed": "300",
+        "passed": "300",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net11",
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "9235ac1c26c7c9bc14b5e12d5f6ecc2351a4a5f4325edb5d5e7c7b097599c0a8",
+      "selection": "FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgFontFamilyStackTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests",
+      "exitCode": 0,
+      "seconds": 13.969444199930876,
+      "counters": {
+        "executed": "35",
+        "passed": "35",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net11",
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "9235ac1c26c7c9bc14b5e12d5f6ecc2351a4a5f4325edb5d5e7c7b097599c0a8",
+      "selection": "FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgFontFamilyStackTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests",
+      "exitCode": 0,
+      "seconds": 11.661432900000364,
+      "counters": {
+        "executed": "35",
+        "passed": "35",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+      "testAssemblySha256": "f3c8ae7c5c3f83c591d209726b6678dc7291e50d83cca29acfaf4ac956374fed",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~SvgTextPositionLengthTests|FullyQualifiedName~SvgTextPathOffsetSyntaxTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 10.23238499998115,
+      "counters": {
+        "executed": "300",
+        "passed": "300",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+      "testAssemblySha256": "f3c8ae7c5c3f83c591d209726b6678dc7291e50d83cca29acfaf4ac956374fed",
+      "selection": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~BudgetedTextBufferTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~SvgTextPositionLengthTests|FullyQualifiedName~SvgTextPathOffsetSyntaxTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 10.571044999873266,
+      "counters": {
+        "executed": "300",
+        "passed": "300",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net10",
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+      "testAssemblySha256": "ae20534c8c4bd55586ffff4e03bb769bc11d8532923362a9ff2abde99bff9796",
+      "selection": "FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgFontFamilyStackTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests",
+      "exitCode": 0,
+      "seconds": 11.970631100004539,
+      "counters": {
+        "executed": "35",
+        "passed": "35",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "integration-net10",
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+      "testAssemblySha256": "ae20534c8c4bd55586ffff4e03bb769bc11d8532923362a9ff2abde99bff9796",
+      "selection": "FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgFontFamilyStackTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests",
+      "exitCode": 0,
+      "seconds": 16.18596989987418,
+      "counters": {
+        "executed": "35",
+        "passed": "35",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "fast-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "aa8ca62b2694ad549eabbb9e7e65b056f7eb1a736c5c5af359570040bb83bfc0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 26.053044900065288,
+      "counters": {
+        "executed": "20015",
+        "passed": "20015",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "fast-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "testAssemblySha256": "aa8ca62b2694ad549eabbb9e7e65b056f7eb1a736c5c5af359570040bb83bfc0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 28.532539600040764,
+      "counters": {
+        "executed": "20015",
+        "passed": "20015",
+        "failed": "0"
+      }
+    }
+  ],
+  "proofScope": {
+    "source": "Every original source byte reconstructs after reversing only47 new role labels,four assertions,one method rename and one local rename. Original inputs,providers and assertions remain.",
+    "compiledMetadata": [
+      {
+        "framework": "net11.0",
+        "beforeTypeReferences": 750,
+        "afterTypeReferences": 750,
+        "identicalTypeReferenceNames": true,
+        "movedTypeReferenceRows": 35,
+        "differences": [],
+        "rawIlDifferentRows": 4671,
+        "scope": "Raw IL/local-signature byte identity is not claimed. Exact source restoration and actual validation own preservation."
+      },
+      {
+        "framework": "net10.0",
+        "beforeTypeReferences": 750,
+        "afterTypeReferences": 750,
+        "identicalTypeReferenceNames": true,
+        "movedTypeReferenceRows": 35,
+        "differences": [],
+        "rawIlDifferentRows": 4671,
+        "scope": "Raw IL/local-signature byte identity is not claimed. Exact source restoration and actual validation own preservation."
+      }
+    ],
+    "compiledBodyClaim": "Raw IL/local-signature byte identity is not asserted:the same750 type-reference names occupy a different metadata order in35 rows. Source restoration and actual host/runtime execution establish the preserved test behavior."
+  },
+  "basis": {
+    "mechanism": "Declaration priority,inheritance,font requests,escaping/canonicalization and its numerical/token boundaries,whitespace normalization,scalar positioning and ancestor/descendant precedence exercise existing kernels directly. Incidental cleanup assertions stay in these cases.",
+    "contract": "One public malformed-rotation outcome,one list refusal/pre-cancellation check,original family-token cancellation,and three distinct buffer refusal/transfer/growth cases retain their execution/allocation paths. Late detach cancellation and retry remain in the existing scoped-buffer case.",
+    "inlineResolution": "The unchanged inline-only input covers absent presentation attributes. Its former single-scan name had no scan observation. The retained case now checks family,weight,italic and size;it adds no counter hook or test framework.",
+    "boundaries": "All exhaustive family/token limits,scalars/surrogates,whitespace chunks,zero-coordinate precedence,original cancellation tokens and detached/active storage ownership remain. No rendering/API matrix is multiplied or removed."
+  },
+  "measurementScope": "The same112-case cohort before/after under.NET11 takes7.28/8.92s on Windows and13.26/12.11s on Linux;NET10 takes6.26/8.60s and10.47/9.60s. Functional wall times include discovery/host/TRX and exclude builds;host/cache variability prevents a speed claim. The actual expanded20015-case fast run takes26.05/28.53s while affected integration also runs. Isolated after observations preceded the final local-variable rename;final300-core/35-native integrations qualify current source on both hosts/runtimes. This work clarifies selection and strengthens one case,without reducing case counts.",
+  "renderer": {
+    "qualification": "unit-domain-contracts.json",
+    "sourceCommit": "1f194273b9dd3edd3282905f52c720caad79bdc8",
+    "librarySha256": {
+      "net11.0": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "net10.0": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90"
+    },
+    "originalReplay": "../svgweb/originals.json#/currentReview",
+    "scope": "Qualified assets are reused unchanged. Full package/native/SVGWeb qualification and its independent frozen Windows DejaVu discrepancy remain bound to that source. This test-only pass repeats focused/integration and fast checks;no new runtime/full-CI/package/original replay is claimed."
+  },
+  "links": {
+    "checkedRelativeFileLinks": 273,
+    "allResolved": true
+  }
+}

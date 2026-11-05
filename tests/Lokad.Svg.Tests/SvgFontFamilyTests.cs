@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFontFamilyTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><text font-family="'A,B', E\78 ample">A</text></svg>""", "A,B")]
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><text style="font-family:'A;B', E\78 ample;font-weight:700">A</text></svg>""", "A;B")]
     [InlineData("""<svg xmlns="http://www.w3.org/2000/svg"><style>.a{font-family:'A,B', E\78 ample}</style><text class="a">A</text></svg>""", "A,B")]
@@ -26,6 +27,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("font-family:'A!important',Example", false)]
     [InlineData("font-family:'A!important',Example!important", true)]
     [InlineData("font-family:A\\!important,Example", false)]
@@ -39,6 +41,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void An_escaped_bang_at_the_end_of_a_name_is_not_an_important_suffix()
     {
         InlineStyle style = SvgInlineStyleParser.Parse("font-family:A\\!important", CancellationToken.None, true);
@@ -47,6 +50,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Inherit_and_initial_keep_family_list_and_generic_semantics()
     {
         byte[] svg = """<svg xmlns="http://www.w3.org/2000/svg"><g font-family="Missing, Example"><text style="font-family:inherit">A<tspan font-family="initial">A</tspan></text></g></svg>"""u8.ToArray();
@@ -58,6 +62,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("Arial, sans-serif", "Arial|sans-serif", "False|True")]
     [InlineData("'Missing Face', Arimo, sans-serif", "Missing Face|Arimo|sans-serif", "False|False|True")]
     [InlineData("'serif', SERIF", "serif|serif", "False|True")]
@@ -84,6 +89,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("")]
     [InlineData("A,")]
     [InlineData(",A")]
@@ -101,6 +107,7 @@ public sealed class SvgFontFamilyTests
         => Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(css, 400, false)).ErrorCode);
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void A_maximum_length_canonical_list_round_trips_with_all_families()
     {
         string[] names = Enumerable.Range(0, 256).Select(index => "Family" + index.ToString("D8", System.Globalization.CultureInfo.InvariantCulture)).ToArray();
@@ -117,6 +124,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData('\x1F')]
     [InlineData('\x7F')]
     public void Expanded_control_escapes_round_trip_near_the_character_bound(char control)
@@ -131,6 +139,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(2)]
@@ -147,6 +156,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Decoded_name_bound_is_preserved_within_a_round_trippable_list()
     {
         string name = new('a', 1024);
@@ -160,6 +170,7 @@ public sealed class SvgFontFamilyTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Tokenization_observes_original_cancellation()
     {
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(new string('a', 4097), 400, false)).ErrorCode);
