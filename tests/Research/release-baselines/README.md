@@ -67,6 +67,10 @@ qualify the extraction; solid/font and distinct rectangle arithmetic remain sepa
 [Mixed shader responsibilities](shader-test-responsibilities.json) classify 42 methods
 individually, retaining all 93 cases and every numerical vector, API and ownership
 path. Exact membership checks preserve the prior fast selection and add 53 cases.
+[Rectangle characterization](rectangle-characterization.json) moves the existing
+projection out of the library and into one test helper. All 215 root/retained-scene
+call sites and 1,270 affected case identities remain; package/native/source replay
+and full runtime qualification preserve their independent responsibilities.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200

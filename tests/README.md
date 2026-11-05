@@ -28,6 +28,9 @@ qualification; former failing interactions remain routine.
 Parser characterization uses a [test-owned rectangle projection](Lokad.Svg.Tests/SvgRectangleCharacterization.cs)
 of root or retained-scene geometry. It preserves the assertion view's stroke bands
 and clipped bounds; rendering regressions retain their independent native images.
+Its [qualification](Research/release-baselines/rectangle-characterization.json)
+retains all 215 callers and 1,270 affected cases while removing three test-only
+members from both shipping assemblies.
 
 [Mixed filter/mask methods](Research/release-baselines/filter-test-responsibilities.json)
 use individual responsibility traits: direct bounds/admission, storage/lifetimes and
