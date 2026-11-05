@@ -4,8 +4,17 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-public sealed class FixtureManifestTests
+public sealed class FixtureManifestTests : IClassFixture<FixtureManifestTests.ManifestFixture>
 {
+    private readonly ManifestFixture _manifest;
+
+    public FixtureManifestTests(ManifestFixture manifest)
+    {
+        ArgumentNullException.ThrowIfNull(manifest);
+        _manifest = manifest;
+    }
+
+    [Trait("Layer", "Integrity")]
     [Fact]
     public void Every_variant_references_an_existing_parent()
     {
@@ -30,17 +39,16 @@ public sealed class FixtureManifestTests
         }
         Assert.True(variantCount > 0, "The fixture inventory contains no variants.");
     }
+    [Trait("Layer", "Integrity")]
     [Fact]
-    public void Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it()
+    public void Every_fixture_has_valid_source_and_reference_metadata()
     {
         string testOutput = AppContext.BaseDirectory;
         string fixtures = Path.Combine(testOutput, "Fixtures");
-        string manifestPath = Path.Combine(fixtures, "manifest.json");
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllText(manifestPath));
         HashSet<string> ids = new(StringComparer.Ordinal);
         int exactFixtureCount = 0;
 
-        foreach (JsonElement fixture in manifest.RootElement.GetProperty("fixtures").EnumerateArray())
+        foreach (JsonElement fixture in _manifest.Fixtures.Values)
         {
             string id = RequiredString(fixture, "id");
             Assert.True(ids.Add(id), "Duplicate fixture ID: " + id);
@@ -63,61 +71,51 @@ public sealed class FixtureManifestTests
             string background = RequiredString(fixture, "background");
             Assert.True(width > 0, "Fixture width must be positive: " + id);
             Assert.True(height > 0, "Fixture height must be positive: " + id);
-            SvgColor backgroundColor = background switch
-            {
-                "transparent" => SvgColor.Transparent,
-                "white" => new SvgColor(255, 255, 255, 255),
-                "black" => new SvgColor(0, 0, 0, 255),
-                _ => throw new InvalidDataException("Unsupported fixture background: " + background),
-            };
+            _ = BackgroundColor(background);
 
             if (expectedSupport == "exact")
             {
                 Assert.Equal("exact", expectedFidelity);
-            string metadataPath = Path.Combine(testOutput, RequiredString(fixture, "oracleIdentity").Replace('/', Path.DirectorySeparatorChar));
-            Assert.True(File.Exists(metadataPath), "Missing reference metadata: " + metadataPath);
-            using JsonDocument metadata = JsonDocument.Parse(File.ReadAllText(metadataPath));
-            JsonElement metadataRoot = metadata.RootElement;
-            Assert.Equal(id, RequiredString(metadataRoot, "fixtureId"));
-            Assert.Equal(3, metadataRoot.GetProperty("freshProcessCaptures").GetInt32());
-            Assert.Equal("identical", RequiredString(metadataRoot, "decodedPixelStability"));
-            Assert.True(metadataRoot.GetProperty("comparison").GetProperty("exact").GetBoolean());
-            Assert.Equal(width, metadataRoot.GetProperty("viewport").GetProperty("width").GetInt32());
-            Assert.Equal(height, metadataRoot.GetProperty("viewport").GetProperty("height").GetInt32());
-            Assert.Equal(scale, metadataRoot.GetProperty("viewport").GetProperty("deviceScaleFactor").GetDouble());
-            Assert.Equal(background, RequiredString(metadataRoot, "background"));
+                string metadataPath = Path.Combine(testOutput, RequiredString(fixture, "oracleIdentity").Replace('/', Path.DirectorySeparatorChar));
+                Assert.True(File.Exists(metadataPath), "Missing reference metadata: " + metadataPath);
+                using JsonDocument metadata = JsonDocument.Parse(File.ReadAllText(metadataPath));
+                JsonElement metadataRoot = metadata.RootElement;
+                Assert.Equal(id, RequiredString(metadataRoot, "fixtureId"));
+                Assert.Equal(3, metadataRoot.GetProperty("freshProcessCaptures").GetInt32());
+                Assert.Equal("identical", RequiredString(metadataRoot, "decodedPixelStability"));
+                Assert.True(metadataRoot.GetProperty("comparison").GetProperty("exact").GetBoolean());
+                Assert.Equal(width, metadataRoot.GetProperty("viewport").GetProperty("width").GetInt32());
+                Assert.Equal(height, metadataRoot.GetProperty("viewport").GetProperty("height").GetInt32());
+                Assert.Equal(scale, metadataRoot.GetProperty("viewport").GetProperty("deviceScaleFactor").GetDouble());
+                Assert.Equal(background, RequiredString(metadataRoot, "background"));
 
-            string metadataDirectory = Path.GetDirectoryName(metadataPath) ?? throw new InvalidDataException("Reference metadata has no directory.");
-            string referencePngPath = Path.Combine(metadataDirectory, RequiredString(metadataRoot, "referencePng"));
-            Assert.True(File.Exists(referencePngPath), "Missing reference PNG: " + referencePngPath);
-            byte[] referenceBytes = File.ReadAllBytes(referencePngPath);
-            string referenceHash = Hash(referenceBytes);
-            Assert.Equal(RequiredString(metadataRoot, "referenceSha256"), referenceHash);
-            Assert.Equal(RequiredString(fixture, "referenceSha256"), referenceHash);
+                string metadataDirectory = Path.GetDirectoryName(metadataPath) ?? throw new InvalidDataException("Reference metadata has no directory.");
+                string referencePngPath = Path.Combine(metadataDirectory, RequiredString(metadataRoot, "referencePng"));
+                Assert.True(File.Exists(referencePngPath), "Missing reference PNG: " + referencePngPath);
+                byte[] referenceBytes = File.ReadAllBytes(referencePngPath);
+                string referenceHash = Hash(referenceBytes);
+                Assert.Equal(RequiredString(metadataRoot, "referenceSha256"), referenceHash);
+                Assert.Equal(RequiredString(fixture, "referenceSha256"), referenceHash);
 
-            if (metadataRoot.TryGetProperty("platformCaptures", out JsonElement platforms))
-            {
-                foreach (string platform in new[] { "win64", "linux64" })
+                if (metadataRoot.TryGetProperty("platformCaptures", out JsonElement platforms))
                 {
-                    JsonElement capture = platforms.GetProperty(platform);
-                    Assert.Equal(platform, RequiredString(capture, "platform"));
-                    Assert.Equal(Hash(svg), RequiredString(capture, "inputSha256"));
-                    Assert.Equal(referenceHash, RequiredString(capture, "referenceSha256"));
-                    Assert.Equal(3, capture.GetProperty("freshProcessCaptures").GetInt32());
-                    Assert.Equal("healthy", RequiredString(capture, "captureStartupHealth"));
-                    Assert.True(capture.GetProperty("captureProfilesCleaned").GetBoolean());
-                    Assert.Matches("^[0-9a-f]{64}$", RequiredString(capture, "chromeExecutableSha256"));
+                    foreach (string platform in new[] { "win64", "linux64" })
+                    {
+                        JsonElement capture = platforms.GetProperty(platform);
+                        Assert.Equal(platform, RequiredString(capture, "platform"));
+                        Assert.Equal(Hash(svg), RequiredString(capture, "inputSha256"));
+                        Assert.Equal(referenceHash, RequiredString(capture, "referenceSha256"));
+                        Assert.Equal(3, capture.GetProperty("freshProcessCaptures").GetInt32());
+                        Assert.Equal("healthy", RequiredString(capture, "captureStartupHealth"));
+                        Assert.True(capture.GetProperty("captureProfilesCleaned").GetBoolean());
+                        Assert.Matches("^[0-9a-f]{64}$", RequiredString(capture, "chromeExecutableSha256"));
+                    }
                 }
-            }
 
-            RgbaImage reference = PngRgbaDecoder.Decode(referenceBytes, expectedPixels);
-            Assert.Equal(width, reference.Width);
-            Assert.Equal(height, reference.Height);
-            SvgRenderOptions options = new(null, scale, backgroundColor, SvgRenderLimits.Default);
-            RgbaImage candidate = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, options, CancellationToken.None), SvgRenderLimits.Default.MaximumPixels);
-            PixelComparison comparison = PixelComparer.Compare(reference, candidate);
-            Assert.True(comparison.IsExact, id + " differs from its admitted reference: " + JsonSerializer.Serialize(comparison));
-            exactFixtureCount++;
+                RgbaImage reference = PngRgbaDecoder.Decode(referenceBytes, expectedPixels);
+                Assert.Equal(width, reference.Width);
+                Assert.Equal(height, reference.Height);
+                exactFixtureCount++;
             }
             else
             {
@@ -126,32 +124,62 @@ public sealed class FixtureManifestTests
                 Assert.False(string.IsNullOrEmpty(fixture.GetProperty("unsupportedReason").GetString()), "Missing unsupported reason: " + id);
                 Assert.False(fixture.TryGetProperty("oracleIdentity", out _), "Unsupported fixture must not claim a reference: " + id);
                 Assert.False(fixture.TryGetProperty("referenceSha256", out _), "Unsupported fixture must not claim a reference hash: " + id);
-                SvgRenderOptions unsupportedOptions = new(null, scale, backgroundColor, SvgRenderLimits.Default);
                 string observedBehavior = RequiredString(fixture, "observedBehavior");
-                if (observedBehavior.StartsWith("rejects:", StringComparison.Ordinal))
-                {
-                    SvgErrorCode expectedCode = Enum.Parse<SvgErrorCode>(observedBehavior.Substring("rejects:".Length));
-                    SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, unsupportedOptions, CancellationToken.None));
-                    Assert.Equal(expectedCode, exception.ErrorCode);
-                }
-                else if (observedBehavior == "renders")
-                {
-                    ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, unsupportedOptions, CancellationToken.None);
-                    Assert.True(png.Span.StartsWith(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "Unsupported fixture did not render PNG: " + id);
-                    if (!fixture.TryGetProperty("knownDifferenceIdentity", out JsonElement knownDifferenceIdentity))
-                    {
-                        throw new InvalidDataException("Missing known-difference capture: " + id);
-                    }
-                    AssertKnownDifference(id, testOutput, knownDifferenceIdentity.GetString() ?? throw new InvalidDataException("knownDifferenceIdentity is missing."), width, height, scale, background, png);
-                }
-                else
-                {
-                    throw new InvalidDataException("Unknown observedBehavior: " + id);
-                }
+                Assert.True(observedBehavior.StartsWith("rejects:", StringComparison.Ordinal) || observedBehavior == "renders",
+                    "Unknown observedBehavior: " + id);
             }
         }
 
         Assert.True(exactFixtureCount > 0, "The fixture inventory contains no exact cases.");
+
+    }
+
+    public static IEnumerable<object[]> RenderedFixtures() => Cases(true);
+    public static IEnumerable<object[]> RejectedFixtures() => Cases(false);
+
+    private static IEnumerable<object[]> Cases(bool rendered)
+    {
+        using JsonDocument manifest = ReadManifest();
+        foreach (JsonElement fixture in manifest.RootElement.GetProperty("fixtures").EnumerateArray())
+        {
+            bool paints = RequiredString(fixture, "expectedSupport") == "exact"
+                || RequiredString(fixture, "observedBehavior") == "renders";
+            if (paints == rendered) yield return [CaseKey(RequiredString(fixture, "id"))];
+        }
+    }
+
+    [Trait("Layer", "Rendering")]
+    [Theory]
+    [MemberData(nameof(RenderedFixtures))]
+    public void Rendered_fixture_preserves_its_declared_pixels(string caseKey)
+    {
+        string testOutput = AppContext.BaseDirectory;
+        JsonElement fixture = _manifest.Fixtures[caseKey];
+        string id = RequiredString(fixture, "id");
+        byte[] svg = File.ReadAllBytes(Path.Combine(testOutput, "Fixtures", RequiredString(fixture, "path")));
+        int width = fixture.GetProperty("width").GetInt32(), height = fixture.GetProperty("height").GetInt32();
+        double scale = fixture.GetProperty("scale").GetDouble();
+        string background = RequiredString(fixture, "background");
+        SvgRenderOptions options = new(null, scale, BackgroundColor(background), SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, options, CancellationToken.None);
+        if (RequiredString(fixture, "expectedSupport") == "exact")
+        {
+            string metadataPath = Path.Combine(testOutput, RequiredString(fixture, "oracleIdentity").Replace('/', Path.DirectorySeparatorChar));
+            using JsonDocument metadata = JsonDocument.Parse(File.ReadAllText(metadataPath));
+            string metadataDirectory = Path.GetDirectoryName(metadataPath) ?? throw new InvalidDataException("Reference metadata has no directory.");
+            byte[] referenceBytes = File.ReadAllBytes(Path.Combine(metadataDirectory, RequiredString(metadata.RootElement, "referencePng")));
+            RgbaImage reference = PngRgbaDecoder.Decode(referenceBytes, checked(width * height));
+            RgbaImage candidate = PngRgbaDecoder.Decode(png, SvgRenderLimits.Default.MaximumPixels);
+            PixelComparison comparison = PixelComparer.Compare(reference, candidate);
+            Assert.True(comparison.IsExact, id + " differs from its admitted reference: " + JsonSerializer.Serialize(comparison));
+        }
+        else
+        {
+            Assert.True(png.Span.StartsWith(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "Unsupported fixture did not render PNG: " + id);
+            if (!fixture.TryGetProperty("knownDifferenceIdentity", out JsonElement knownDifferenceIdentity))
+                throw new InvalidDataException("Missing known-difference capture: " + id);
+            AssertKnownDifference(id, testOutput, knownDifferenceIdentity.GetString() ?? throw new InvalidDataException("knownDifferenceIdentity is missing."), width, height, scale, background, png);
+        }
 
         static void AssertKnownDifference(string id, string testOutput, string identityPath, int width, int height, double scale, string background, ReadOnlyMemory<byte> png)
         {
@@ -184,14 +212,72 @@ public sealed class FixtureManifestTests
             Assert.Equal(expected.GetProperty("maximumChannelError").GetByte(), comparison.MaximumChannelError);
             Assert.Equal(expected.GetProperty("maximumAlphaError").GetByte(), comparison.MaximumAlphaError);
         }
-        static string RequiredString(JsonElement element, string name)
+    }
+
+    [Trait("Layer", "Contract")]
+    [Theory]
+    [MemberData(nameof(RejectedFixtures))]
+    public void Unsupported_fixture_preserves_its_declared_rejection(string caseKey)
+    {
+        JsonElement fixture = _manifest.Fixtures[caseKey];
+        byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", RequiredString(fixture, "path")));
+        SvgRenderOptions options = new(null, fixture.GetProperty("scale").GetDouble(),
+            BackgroundColor(RequiredString(fixture, "background")), SvgRenderLimits.Default);
+        string observedBehavior = RequiredString(fixture, "observedBehavior");
+        Assert.StartsWith("rejects:", observedBehavior, StringComparison.Ordinal);
+        SvgErrorCode expectedCode = Enum.Parse<SvgErrorCode>(observedBehavior.Substring("rejects:".Length));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, options, CancellationToken.None));
+        Assert.Equal(expectedCode, exception.ErrorCode);
+    }
+
+    private static SvgColor BackgroundColor(string background) => background switch
+    {
+        "transparent" => SvgColor.Transparent,
+        "white" => new SvgColor(255, 255, 255, 255),
+        "black" => new SvgColor(0, 0, 0, 255),
+        _ => throw new InvalidDataException("Unsupported fixture background: " + background),
+    };
+
+    private static JsonDocument ReadManifest() => JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "manifest.json")));
+
+    // Keep discovery names below xUnit's string truncation boundary. Full IDs
+    // remain in the manifest and assertions; the index rejects any key collision.
+    private static string CaseKey(string id) => id.Length <= 48 ? id
+        : id[..35] + "-" + Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(id)))[..12];
+
+    private static string RequiredString(JsonElement element, string name)
+    {
+        return element.GetProperty(name).GetString() ?? throw new InvalidDataException(name + " is missing.");
+    }
+
+    private static string Hash(ReadOnlySpan<byte> bytes)
+    {
+        return Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
+    }
+
+    /// <summary>Owns one immutable manifest and its borrowed element index for this test class.
+    /// Concurrent reads are allowed; xUnit disposes it after every consuming test has finished.</summary>
+    public sealed class ManifestFixture : IDisposable
+    {
+        private readonly JsonDocument _document;
+        internal IReadOnlyDictionary<string, JsonElement> Fixtures { get; }
+
+        public ManifestFixture()
         {
-            return element.GetProperty(name).GetString() ?? throw new InvalidDataException(name + " is missing.");
+            _document = ReadManifest();
+            try
+            {
+                Dictionary<string, JsonElement> fixtures = new(StringComparer.Ordinal);
+                foreach (JsonElement fixture in _document.RootElement.GetProperty("fixtures").EnumerateArray())
+                {
+                    string id = RequiredString(fixture, "id");
+                    Assert.True(fixtures.TryAdd(CaseKey(id), fixture), "Duplicate fixture ID or case key: " + id);
+                }
+                Fixtures = fixtures;
+            }
+            catch { _document.Dispose(); throw; }
         }
 
-        static string Hash(ReadOnlySpan<byte> bytes)
-        {
-            return Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
-        }
+        public void Dispose() => _document.Dispose();
     }
 }

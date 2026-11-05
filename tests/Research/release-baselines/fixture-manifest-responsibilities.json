@@ -1,0 +1,207 @@
+{
+  "status": "Fixture manifest responsibility split closed. Every original fixture, assertion and frozen reference remains; rendering and rejection inputs are individually selectable. Focused metadata/image checks avoid unrelated rendering; measured complete-validation cost is reported separately.",
+  "sourceBaseCommit": "418f257e089f1820b25a1e109d67469ddfebbb3d",
+  "runtimeQualification": "png-row-storage.json",
+  "source": {
+    "file": "../../Lokad.Svg.VisualTests/FixtureManifestTests.cs",
+    "beforeLfSha256": "9e9d0f1ee69db6573f656da8f457f51a0de0e86dc44d25fe85b1f51e67a8d472",
+    "afterLfSha256": "8390ce2383889f2bc2eb22bc656ed1191d2db9c515fb543e3966950859907180",
+    "assertionProof": {
+      "allOriginalAssertionCallsRetained": true,
+      "originalAssertionCalls": 62,
+      "afterAssertionCalls": 65,
+      "knownDifferenceHelperByteExact": true,
+      "variantTestBodyByteExact": true,
+      "productionInputsReferencesDependenciesUnchanged": true,
+      "visualMethodLayers": {
+        "Unclassified": 217,
+        "Contract": 35,
+        "Integrity": 27,
+        "Rendering": 164,
+        "Mechanism": 18
+      },
+      "totalMethods": 5154
+    },
+    "expressionNormalization": "Whitespace outside string literals and the local variable rename unsupportedOptions to options. Every original Assert call is retained with its original multiplicity; no threshold, comparison or error code is weakened.",
+    "variantBodyUnchanged": true,
+    "knownDifferenceHelperUnchanged": true,
+    "fixtureOwner": "One xUnit class fixture owns the immutable JsonDocument and ID index. Data discovery has separately scoped documents and yields only string IDs. No per-input manifest parse during execution and no new test framework."
+  },
+  "retainedInputs": {
+    "manifest": "../../Fixtures/manifest.json",
+    "manifestSha256": "cf90ec149d3b1b1643e3b089760f5ef5f7046927cedc43fe766fc52f6ec3be2e",
+    "fixtures": 1487,
+    "exactRenderings": 1482,
+    "rejections": 5,
+    "knownDifferenceRenderings": 0,
+    "identityAndSourceReferenceJoinSha256": "5fc951ec85ed603db11b8fe07fc4b508ba07df63988e3e048087c0d86854a043",
+    "allSourceReferenceOptionsLicenseAndNativeCaptureFilesUnchanged": true,
+    "sourceOrReferenceRegeneration": false
+  },
+  "responsibilities": {
+    "before": "Two unclassified facts; one fact batches integrity and canonical conversion for all 1,487 inputs.",
+    "after": {
+      "integrityFacts": [
+        "Every_variant_references_an_existing_parent",
+        "Every_fixture_has_valid_source_and_reference_metadata"
+      ],
+      "renderingTheory": {
+        "method": "Rendered_fixture_preserves_its_declared_pixels",
+        "cases": 1482,
+        "path": "Existing canonical synchronous raw conversion with the original options, independent reference and exact PixelComparer."
+      },
+      "contractTheory": {
+        "method": "Unsupported_fixture_preserves_its_declared_rejection",
+        "cases": 5,
+        "path": "Original canonical conversion must throw its declared SvgErrorCode."
+      }
+    },
+    "allOriginal62AssertionCallsRetained": true,
+    "noFixturesDroppedOrMovedToResearch": true,
+    "allDisplayedCaseNamesUnique": true,
+    "formerlyAmbiguousFixtureSelection": {
+      "fullId": "original-radial-local-matrix-translated-rectangle-transparent",
+      "caseKey": "original-radial-local-matrix-transl-d8569359cee9",
+      "selection": "FullyQualifiedName~FixtureManifestTests.Rendered_fixture_preserves_its_declared_pixels&DisplayName~d8569359cee9",
+      "executed": 1,
+      "passed": 1
+    },
+    "caseKey": {
+      "shortenedIds": 140,
+      "format": "Keep IDs up to 48 characters; longer IDs use the first 35 characters, a hyphen and the first 12 lowercase SHA256 hex digits. Owner rejects key collisions; full IDs remain in fixture values and assertions.",
+      "fullIdToDisplayKeyJoinSha256": "25503bc8f82aa31a40f1c2f55c2bac8d1eaf47b3be6478fdfb1c50cc864d4082"
+    },
+    "preservedFallback": "The original known-difference comparison helper and PNG signature check remain for any future unsupported-but-rendered row; the current manifest contains none."
+  },
+  "inventory": {
+    "beforeVisualCases": 76870,
+    "oldFixtureFacts": 2,
+    "newFixtureCases": 1489,
+    "expectedFullVisualCases": 78357,
+    "newUnfilteredFullRunClaimed": false,
+    "compiledMethods": 5154,
+    "visualMethods": 461,
+    "unclassifiedVisualMethods": 217,
+    "allUnrelatedMethodNamesAndTraitsUnchanged": true,
+    "coreAndFontHostInventoryUnchanged": true
+  },
+  "validation": {
+    "builds": [
+      "net11.0: Release, no-incremental, warnings as errors, zero warnings/errors",
+      "net10.0: Release, no-incremental, warnings as errors, zero warnings/errors"
+    ],
+    "joins": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "rendered": 1482,
+        "rejected": 5,
+        "integrity": 2,
+        "comparisonAndBasicIntegration": 67,
+        "renderedIdSha256": "a21a534054843a4e635892d754c439aa695f62ad3d398dbcef31469c41c1bd41",
+        "rejectedIdSha256": "8dca7f35d88431296a9a232673091a56d489dc1acf9b4a213d2460232a962a79",
+        "integrationIdSha256": "700712d23e92da28656acc46ecc12f7cc68624b99bd64eb194d0f9d0944b3d8a",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "testAssemblySha256": "8f9540d377086690dcea84cedef8c46278dfe634060a1c2b26cd13b34c64ed71",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "rendered": 1482,
+        "rejected": 5,
+        "integrity": 2,
+        "comparisonAndBasicIntegration": 67,
+        "renderedIdSha256": "a21a534054843a4e635892d754c439aa695f62ad3d398dbcef31469c41c1bd41",
+        "rejectedIdSha256": "8dca7f35d88431296a9a232673091a56d489dc1acf9b4a213d2460232a962a79",
+        "integrationIdSha256": "700712d23e92da28656acc46ecc12f7cc68624b99bd64eb194d0f9d0944b3d8a",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "testAssemblySha256": "8f9540d377086690dcea84cedef8c46278dfe634060a1c2b26cd13b34c64ed71",
+        "exitCode": 0
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "rendered": 1482,
+        "rejected": 5,
+        "integrity": 2,
+        "comparisonAndBasicIntegration": 67,
+        "renderedIdSha256": "a21a534054843a4e635892d754c439aa695f62ad3d398dbcef31469c41c1bd41",
+        "rejectedIdSha256": "8dca7f35d88431296a9a232673091a56d489dc1acf9b4a213d2460232a962a79",
+        "integrationIdSha256": "700712d23e92da28656acc46ecc12f7cc68624b99bd64eb194d0f9d0944b3d8a",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "eb3f75d2f1e8a20934734045adc10d6c7cb36b30f9c3c0d0c8e922875207ec21",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "rendered": 1482,
+        "rejected": 5,
+        "integrity": 2,
+        "comparisonAndBasicIntegration": 67,
+        "renderedIdSha256": "a21a534054843a4e635892d754c439aa695f62ad3d398dbcef31469c41c1bd41",
+        "rejectedIdSha256": "8dca7f35d88431296a9a232673091a56d489dc1acf9b4a213d2460232a962a79",
+        "integrationIdSha256": "700712d23e92da28656acc46ecc12f7cc68624b99bd64eb194d0f9d0944b3d8a",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "eb3f75d2f1e8a20934734045adc10d6c7cb36b30f9c3c0d0c8e922875207ec21",
+        "exitCode": 0
+      }
+    ],
+    "allFourHostRuntimeIdentityJoinsExact": true,
+    "qualifiedRuntimeAssetsUnchanged": true,
+    "fullRuntimePackageOrCiRerunClaimed": false
+  },
+  "costs": {
+    "host": "Windows .NET 11; fresh sequential vstest processes, same qualified C7 renderer and existing adapter; three observations per selection.",
+    "includes": "Discovery, test host, execution and TRX output; excludes builds. The first full observations show substantial cold/cache variation. These are development-check costs, not renderer throughput or quiet-VM benchmark results.",
+    "measurements": {
+      "before": {
+        "cases": 2,
+        "seconds": [
+          35.29978,
+          14.91502,
+          15.49985
+        ],
+        "medianSeconds": 15.49985,
+        "medianReportedCaseSeconds": 7.9046,
+        "filter": "FullyQualifiedName~FixtureManifestTests"
+      },
+      "after": {
+        "cases": 1489,
+        "seconds": [
+          45.52947,
+          19.88634,
+          17.19709
+        ],
+        "medianSeconds": 19.88634,
+        "medianReportedCaseSeconds": 10.81888,
+        "filter": "FullyQualifiedName~FixtureManifestTests"
+      },
+      "integrity": {
+        "cases": 2,
+        "seconds": [
+          8.77806,
+          8.2038,
+          8.11702
+        ],
+        "medianSeconds": 8.2038,
+        "medianReportedCaseSeconds": 0.87233,
+        "filter": "FullyQualifiedName~FixtureManifestTests&Layer=Integrity"
+      },
+      "one-render": {
+        "cases": 1,
+        "seconds": [
+          6.99901,
+          7.38111,
+          7.32087
+        ],
+        "medianSeconds": 7.32087,
+        "medianReportedCaseSeconds": 0.10916,
+        "filter": "FullyQualifiedName~FixtureManifestTests.Rendered_fixture_preserves_its_declared_pixels&DisplayName~original-solid-red"
+      }
+    },
+    "interpretation": "Complete collection median 15.50 to 19.89 seconds; no overall speedup is claimed. Metadata alone is 8.20 seconds and one selected image is 7.32 seconds. Case count increases because formerly hidden inputs are individually discovered; no behavior is dropped or assertions batched to reduce the count."
+  },
+  "remaining": "Broader P2 classification/cost work, other PLAN correctness/provenance/performance duties and the separate frozen Windows DejaVu release decision remain open. Renderer/package/native/W1 qualification is inherited without rebinding historical evidence."
+}

@@ -17,6 +17,10 @@ The [comparison/decoder split](comparison-decoder-responsibilities.json) retains
 class. Exact alpha/PNG boundaries and the native full-canvas rounding regression
 remain. Discovery still scans the visual assembly; the measured split provides
 clearer selection without an established speedup.
+The [fixture manifest partition](fixture-manifest-responsibilities.json) preserves
+all 1,487 inputs and 62 original assertion calls. Two collection integrity checks,
+1,482 exact rendering rows and five rejection rows replace the mixed batch;
+individual image selection avoids rendering unrelated fixtures.
 The [execution-context contracts](analytic-probe-context.json) keep all twelve
 original probe cases and add four for analytic paint. Nested restoration, awaited
 isolation, inherited child lifetime and suppressed flow run directly; rendering

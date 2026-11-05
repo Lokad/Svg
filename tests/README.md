@@ -32,6 +32,13 @@ all 41 SVG pixel checks, including full-canvas alpha rounding. Their
 [qualification](Research/release-baselines/comparison-decoder-responsibilities.json)
 maps every moved name; filtered runs still discover the complete visual assembly.
 
+The [fixture manifest checks](Lokad.Svg.VisualTests/FixtureManifestTests.cs) keep
+source/license/capture integrity separate from 1,482 individually selectable exact
+renderings and five rejection contracts. Use `FullyQualifiedName~FixtureManifestTests&Layer=Integrity`
+for metadata alone; add `DisplayName~original-solid-red` to the rendering-method
+filter for one image. The [qualification](Research/release-baselines/fixture-manifest-responsibilities.json)
+preserves every assertion and records focused versus complete validation costs.
+
 The [original anchor screen](Research/text-paint-bounds/anchor-screening.json)
 retains 744 pairs as 1,488 independent native comparisons plus one integrity case.
 Select `FullyQualifiedName~Original_anchor_screen_` for this optional Research bank.

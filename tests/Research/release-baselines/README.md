@@ -19,6 +19,10 @@ plane, removing two scratch arrays and one copy per row. Twenty literal filter/
 stride vectors and two allocation contracts protect the shared mechanism;
 native images, package consumers and original SVGWeb contexts retain exactness.
 
+[Fixture manifest responsibilities](fixture-manifest-responsibilities.json) separate
+metadata integrity, individually selectable native rendering and unsupported
+admission, preserving every original input and assertion.
+
 [Geometry test responsibilities](geometry-test-responsibilities.json) classifies
 direct contour/analytic vectors separately from cancellation, allocation and output
 contracts. All cases and assertion bodies remain; focused selection and the source/
