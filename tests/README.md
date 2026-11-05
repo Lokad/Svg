@@ -555,6 +555,11 @@ retains all 669 direct numerical and lifetime cases across TrueType, Latin-light
 and LCD coverage. Select the affected class with `Layer=Mechanism`, include its
 contract siblings for storage/cancellation edits, then run independent font rendering.
 Native cell vectors and platform profiles remain exact; these labels change no bodies.
+The [font-source controls](Research/release-baselines/font-source-await.json)
+keep genuinely pending success, cancellation and source/integrity failure separate.
+They retain caller-array identity and snapshot cleanup, alongside all six prepared
+output forms. Catalog parsing/weight selection are mechanisms; cancellation,
+immutable views and source/prepared lifetimes are contracts.
 For direct mask-bound vectors, use `FullyQualifiedName~SvgMaskPaintRegionTests&Layer=Mechanism`;
 include its contract siblings for storage refusal, cancellation and replay.
 The [supplied-font output map](Research/release-baselines/font-output-responsibilities.md)

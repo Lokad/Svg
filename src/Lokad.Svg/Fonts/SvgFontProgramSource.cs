@@ -94,23 +94,19 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
         {
             throw new SvgFontProgramSourceFailure(exception);
         }
-        return pending.IsCompletedSuccessfully ? ValueTask.FromResult(Validate(pending.Result, cancellationToken)) : AwaitAndValidate(pending, classifySourceFailure, cancellationToken);
-    }
+        return pending.IsCompletedSuccessfully ? ValueTask.FromResult(Validate(pending.Result, cancellationToken)) : AwaitAndValidate(this, pending, classifySourceFailure, cancellationToken);
 
-    private ValueTask<ReadOnlyMemory<byte>> AwaitAndValidate(ValueTask<ReadOnlyMemory<byte>> pending, bool classifySourceFailure, CancellationToken cancellationToken)
-    {
-        return new ValueTask<ReadOnlyMemory<byte>>(AwaitAsync(pending, classifySourceFailure, cancellationToken));
-    }
-
-    private async Task<ReadOnlyMemory<byte>> AwaitAsync(ValueTask<ReadOnlyMemory<byte>> pending, bool classifySourceFailure, CancellationToken cancellationToken)
-    {
-        ReadOnlyMemory<byte> bytes;
-        try { bytes = await pending.ConfigureAwait(false); }
-        catch (SvgException exception) when (classifySourceFailure)
+        static async ValueTask<ReadOnlyMemory<byte>> AwaitAndValidate(VerifiedSvgFontProgramSource owner,
+            ValueTask<ReadOnlyMemory<byte>> pending, bool classifySourceFailure, CancellationToken cancellationToken)
         {
-            throw new SvgFontProgramSourceFailure(exception);
+            ReadOnlyMemory<byte> bytes;
+            try { bytes = await pending.ConfigureAwait(false); }
+            catch (SvgException exception) when (classifySourceFailure)
+            {
+                throw new SvgFontProgramSourceFailure(exception);
+            }
+            return owner.Validate(bytes, cancellationToken);
         }
-        return Validate(bytes, cancellationToken);
     }
 
     private ReadOnlyMemory<byte> Validate(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken)

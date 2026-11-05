@@ -45,6 +45,9 @@ and native source rounding. Capture traversal still performs nested mapped
 validation. Existing numerical kernels and coarse result owners remain.
 
 A prepared document retains one scene/font operation and permits one conversion.
+Verified font sources share one pending-read continuation. Source failures retain
+their acquisition origin; integrity validation and cancellation run after the read.
+The completed-read path remains direct, and returned bytes stay caller-owned.
 Font programs remain immutable for their borrowed lifetime. Raster scratch ends
 with execution; independently owned PNG results retain sibling storage until
 disposal. [HTTP font guidance](HTTP_FONTS.md) owns resolver/cache lifetimes.

@@ -5,6 +5,7 @@ using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Contract")]
 public sealed class SvgFontProgramSourceTests
 {
     [Fact]
@@ -350,6 +351,72 @@ public sealed class SvgFontProgramSourceTests
         Assert.Equal(cancellation.Token, exception.CancellationToken);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Pending_bound_source_retains_caller_bytes_and_observes_cancellation_after_completion(bool cancel)
+    {
+        byte[] bytes = [1, 2, 3, 4];
+        SvgFontPackCatalog catalog = CreateCatalog(bytes);
+        TaskCompletionSource<ReadOnlyMemory<byte>> completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        SvgFontProgramResolution bound = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new PendingSource(completion.Task));
+        using CancellationTokenSource cancellation = new();
+        ValueTask<ReadOnlyMemory<byte>> pending = bound.Source.GetBytesAsync(cancellation.Token);
+        Assert.False(pending.IsCompleted);
+        if (cancel) cancellation.Cancel();
+        completion.SetResult(bytes);
+
+        if (cancel)
+        {
+            OperationCanceledException exception = await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await pending);
+            Assert.Equal(cancellation.Token, exception.CancellationToken);
+        }
+        else
+        {
+            ReadOnlyMemory<byte> actual = await pending;
+            Assert.True(MemoryMarshal.TryGetArray(actual, out ArraySegment<byte> segment));
+            Assert.Same(bytes, segment.Array);
+            Assert.True(actual.Span.SequenceEqual(bytes));
+        }
+    }
+
+    [Fact]
+    public async Task Pending_integrity_failure_keeps_its_origin_and_releases_snapshot_admission()
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        TaskCompletionSource<ReadOnlyMemory<byte>> completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        SvgFontProgramResolution bound = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new PendingSource(completion.Task));
+        using HostMemoryBudget allowance = new(1_000_000);
+        ValueTask<SvgFontSnapshot> pending = SvgFontSnapshot.CreateAsync([bound], allowance, CancellationToken.None);
+        Assert.False(pending.IsCompleted);
+        completion.SetResult(new byte[] { 1, 2, 3, 5 });
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await pending);
+        Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Integrity, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+        Assert.Equal(0, allowance.Reserved);
+        Assert.Equal(0, allowance.ActiveScopeCount);
+    }
+
+    [Fact]
+    public async Task Pending_source_failure_keeps_its_origin_and_releases_snapshot_admission()
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        TaskCompletionSource<ReadOnlyMemory<byte>> completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        SvgFontProgramResolution bound = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new PendingSource(completion.Task));
+        using HostMemoryBudget allowance = new(1_000_000);
+        ValueTask<SvgFontSnapshot> pending = SvgFontSnapshot.CreateAsync([bound], allowance, CancellationToken.None);
+        Assert.False(pending.IsCompleted);
+        completion.SetException(new SvgException(SvgErrorCode.MalformedInput, "private-source-detail"));
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await pending);
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Source, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+        Assert.DoesNotContain("private-source-detail", exception.Message, StringComparison.Ordinal);
+        Assert.Equal(0, allowance.Reserved);
+        Assert.Equal(0, allowance.ActiveScopeCount);
+    }
+
     private static SvgFontPackCatalog CreateCatalog(byte[] bytes) => CreateCatalog(bytes, null);
 
     private static SvgFontPackCatalog CreateCatalog(byte[] exampleBytes, byte[]? otherBytes)
@@ -390,6 +457,13 @@ public sealed class SvgFontProgramSourceTests
             if (throwsSynchronously) throw new SvgException(errorCode, "private-provider-detail");
             return ValueTask.FromException<ISvgFontProgramSource?>(new SvgException(errorCode, "private-provider-detail"));
         }
+    }
+
+    // Deliberately ignores cancellation so the consuming boundary must observe it.
+    private sealed class PendingSource(Task<ReadOnlyMemory<byte>> pending) : ISvgFontProgramSource
+    {
+        public string StableId => "pending-source";
+        public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken) => new(pending);
     }
 
     private sealed class FailingSource(SvgErrorCode errorCode, bool throwsSynchronously) : ISvgFontProgramSource

@@ -102,6 +102,10 @@ controls preserve collection/rewind, admission and native ordering.
 [Hinting test responsibilities](hinting-test-responsibilities.json) classifies all
 183 TrueType/Latin-light/LCD methods into direct numerical and ownership duties,
 retaining 669 cases and every compiled body. Fast eligibility gains 616 cases.
+[Font-source awaiting](font-source-await.json) replaces two one-caller wrappers
+with one local continuation, preserving source/integrity diagnostic origin and
+borrowed bytes. Pending-result controls retain cancellation and snapshot cleanup;
+catalog/source responsibility labels preserve all existing output paths.
 [Color/filter responsibilities](color-filter-responsibilities.json) retains every
 native input and substantive font-recipe assertion while removing 34 empty recipe
 partitions. It maps numerical, ownership and rendering duties to focused edit

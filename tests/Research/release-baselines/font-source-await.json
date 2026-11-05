@@ -1,0 +1,268 @@
+{
+  "status": "Verified-source pending-read wrappers collapsed into one static local ValueTask continuation. Four genuinely pending preservation cases pass before/after; all73 catalog/source cases and13403 affected core cases per host pass. Full committed package/runtime/W1 qualification pending.",
+  "source": {
+    "baseCommit": "3b4c4f26a556a46f9559d9551494ba735494d309",
+    "preservation": {
+      "production": "../../../src/Lokad.Svg/Fonts/SvgFontProgramSource.cs",
+      "beforeLfSha256": "e929eee2904f31830f14ad0ce8de42f7f7e01a10f768eede63c5f31ef9952cd6",
+      "afterLfSha256": "3a740f5a1091ea24d8d5dc63ce3f1f304c0401ea33db84a6cdec22d7aeb0c760",
+      "unchangedOutsideAwaitDispatch": true,
+      "awaitBodyUnchangedExceptExplicitOwnerAndStaticLocalScope": true,
+      "allExistingTestTextRestoredAfterRemovingOnlyNewGuardsStubAndLayerLabels": true,
+      "completedFastPathAndIntegrityKernelUnchanged": true,
+      "newTestMethods": 3,
+      "newTestCases": 4
+    }
+  },
+  "scope": "No public signature, source ownership, integrity arithmetic, completed fast path, exception-origin policy or cancellation order changed. No allocation or throughput improvement claimed.",
+  "contracts": {
+    "newMethods": 3,
+    "newCases": 4,
+    "test": "../../Lokad.Svg.Tests/SvgFontProgramSourceTests.cs",
+    "beforeAllFourPass": true,
+    "purposes": [
+      "Pending public success retains the caller array",
+      "Cancellation after invocation preserves the caller token when the source ignores it",
+      "Pending integrity failure remains Integrity and refunds snapshot storage",
+      "Pending source failure remains Source, preserves bounded diagnostics and refunds snapshot storage"
+    ]
+  },
+  "responsibilities": {
+    "existingMethodsClassified": 37,
+    "catalogRoles": [
+      {
+        "name": "Does_not_expose_manifest_arrays_for_mutation",
+        "role": "Contract",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Large_fallback_lists_keep_first_spelling_and_source_order",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Parses_public_manifest_defaults_case_insensitively_and_ignores_unknown_properties",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Resolves_requested_and_resolved_family_names_with_deterministic_style_selection",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Resolves_four_real_styles_to_their_faces",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Admits_collection_faces_without_poisoning_selection",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Resolves_configured_fallback_before_the_deterministic_final_face",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Catalog_resolution_preserves_cancellation",
+        "role": "Contract",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Rejects_unsafe_font_file_paths",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Rejects_a_mismatched_pack_identifier",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Rejects_an_unsafe_requested_pack_identifier",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "Rejects_invalid_manifest_integrity_metadata_and_oversized_manifests",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs"
+      },
+      {
+        "name": "CSS_weight_fallback_follows_directional_order_independently_of_manifest_order",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs"
+      },
+      {
+        "name": "Literal_weight_requests_keep_nearest_weight_and_deterministic_ties",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs"
+      },
+      {
+        "name": "CSS_weight_matching_keeps_italic_precedence_over_weight_distance",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs"
+      },
+      {
+        "name": "CSS_weight_matching_keeps_equivalent_face_tie_breakers",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs"
+      },
+      {
+        "name": "CSS_weight_matching_keeps_family_order_and_host_fallback_authorization",
+        "role": "Mechanism",
+        "path": "../../Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs"
+      },
+      {
+        "name": "CSS_weight_matching_preserves_cancellation",
+        "role": "Contract",
+        "path": "../../Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs"
+      }
+    ],
+    "sourceClassRole": "Contract",
+    "retained": "All six representative sync/async memory/stream prepared-output forms, encoded-size paths, source/provider origin combinations and every existing assertion remain."
+  },
+  "moduleBefore": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "testAssemblySha256": "ccf8cb7851a0e5477ad45d77128f265baef6a899e69962b57a544a8f1a9a5add",
+      "selection": "FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgFontPackCatalogTests",
+      "exitCode": 0,
+      "seconds": 9.918671799823642,
+      "counters": {
+        "executed": "73",
+        "passed": "73",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "testAssemblySha256": "ccf8cb7851a0e5477ad45d77128f265baef6a899e69962b57a544a8f1a9a5add",
+      "selection": "FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgFontPackCatalogTests",
+      "exitCode": 0,
+      "seconds": 17.03802579990588,
+      "counters": {
+        "executed": "73",
+        "passed": "73",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "moduleAfter": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "8b34835497c4d259e0e8250f4c2b04c15e7f4170e041ba3ee201940cc2411db8",
+      "testAssemblySha256": "ccf8cb7851a0e5477ad45d77128f265baef6a899e69962b57a544a8f1a9a5add",
+      "selection": "FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgFontPackCatalogTests",
+      "exitCode": 0,
+      "seconds": 9.23058749991469,
+      "counters": {
+        "executed": "73",
+        "passed": "73",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "8b34835497c4d259e0e8250f4c2b04c15e7f4170e041ba3ee201940cc2411db8",
+      "testAssemblySha256": "ccf8cb7851a0e5477ad45d77128f265baef6a899e69962b57a544a8f1a9a5add",
+      "selection": "FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgFontPackCatalogTests",
+      "exitCode": 0,
+      "seconds": 17.918998999986798,
+      "counters": {
+        "executed": "73",
+        "passed": "73",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affected": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "8b34835497c4d259e0e8250f4c2b04c15e7f4170e041ba3ee201940cc2411db8",
+      "testAssemblySha256": "ccf8cb7851a0e5477ad45d77128f265baef6a899e69962b57a544a8f1a9a5add",
+      "selection": "FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgFontPackCatalogTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 43.0545795999933,
+      "counters": {
+        "executed": "13403",
+        "passed": "13403",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "8b34835497c4d259e0e8250f4c2b04c15e7f4170e041ba3ee201940cc2411db8",
+      "testAssemblySha256": "ccf8cb7851a0e5477ad45d77128f265baef6a899e69962b57a544a8f1a9a5add",
+      "selection": "FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgFontPackCatalogTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 42.9754239001777,
+      "counters": {
+        "executed": "13403",
+        "passed": "13403",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "8b34835497c4d259e0e8250f4c2b04c15e7f4170e041ba3ee201940cc2411db8",
+      "testAssemblySha256": "a40a46057a0ec9a32e18f648c1a4038f65492f934dc8f67b7428abb7bb8e8a54",
+      "selection": "FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgStaticTrueTypeFontTests",
+      "exitCode": 1,
+      "seconds": 19.47797579993494,
+      "counters": {
+        "executed": "12",
+        "passed": "11",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "8b34835497c4d259e0e8250f4c2b04c15e7f4170e041ba3ee201940cc2411db8",
+      "testAssemblySha256": "a40a46057a0ec9a32e18f648c1a4038f65492f934dc8f67b7428abb7bb8e8a54",
+      "selection": "FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgStaticTrueTypeFontTests",
+      "exitCode": 0,
+      "seconds": 19.98144040000625,
+      "counters": {
+        "executed": "12",
+        "passed": "12",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "qualificationPending": true,
+  "rendererBaseline": "analytic-edge-storage.json"
+}

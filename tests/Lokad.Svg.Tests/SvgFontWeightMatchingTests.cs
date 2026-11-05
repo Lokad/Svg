@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgFontPackCatalogTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(300, new int[] { 100, 400 }, 100)]
     [InlineData(700, new int[] { 600, 900 }, 900)]
     [InlineData(400, new int[] { 300, 500 }, 500)]
@@ -37,6 +38,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(300, new int[] { 100, 400 }, 400)]
     [InlineData(700, new int[] { 600, 900 }, 600)]
     [InlineData(400, new int[] { 300, 500 }, 300)]
@@ -49,6 +51,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public void CSS_weight_matching_keeps_italic_precedence_over_weight_distance(bool italic)
@@ -62,6 +65,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void CSS_weight_matching_keeps_equivalent_face_tie_breakers()
     {
         string[] faces =
@@ -81,6 +85,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void CSS_weight_matching_keeps_family_order_and_host_fallback_authorization()
     {
         SvgFontPackCatalog catalog = Parse(Manifest("test-pack", "[]",
@@ -97,6 +102,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void CSS_weight_matching_preserves_cancellation()
     {
         SvgFontPackCatalog catalog = WeightCatalog([600, 900]);

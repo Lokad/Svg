@@ -8,6 +8,7 @@ public sealed partial class SvgFontPackCatalogTests
 {
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Does_not_expose_manifest_arrays_for_mutation()
     {
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse("""
@@ -27,6 +28,7 @@ public sealed partial class SvgFontPackCatalogTests
     private const string HashB = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Large_fallback_lists_keep_first_spelling_and_source_order()
     {
         string[] families = Enumerable.Range(0, 16_000).Select(index => "Family" + index).ToArray();
@@ -39,6 +41,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Parses_public_manifest_defaults_case_insensitively_and_ignores_unknown_properties()
     {
         SvgFontPackCatalog catalog = Parse("""
@@ -62,6 +65,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Resolves_requested_and_resolved_family_names_with_deterministic_style_selection()
     {
         SvgFontPackCatalog catalog = Parse(Manifest("test-pack", "[]",
@@ -79,6 +83,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Resolves_four_real_styles_to_their_faces()
     {
         SvgFontPackCatalog catalog = Parse("""
@@ -102,6 +107,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Admits_collection_faces_without_poisoning_selection()
     {
         SvgFontPackCatalog catalog = Parse("""
@@ -124,6 +130,7 @@ public sealed partial class SvgFontPackCatalogTests
         Assert.Equal("files/collection.ttc", collection.Face.File.RelativePath);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Resolves_configured_fallback_before_the_deterministic_final_face()
     {
         SvgFontPackCatalog catalog = Parse(Manifest("test-pack", """[{ "family": "Fallback" }]""",
@@ -144,6 +151,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Catalog_resolution_preserves_cancellation()
     {
         SvgFontPackCatalog catalog = Parse(Manifest("test-pack", "[]",
@@ -156,6 +164,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("../file.ttf")]
     [InlineData("files\\file.ttf")]
     [InlineData("/file.ttf")]
@@ -169,6 +178,7 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_mismatched_pack_identifier()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(Manifest("other-pack", "[]", """{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""")), "test-pack"));
@@ -178,12 +188,14 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_an_unsafe_requested_pack_identifier()
     {
         Assert.Throws<ArgumentException>(() => SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(Manifest("test-pack", "[]", """{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""")), "../test-pack"));
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_invalid_manifest_integrity_metadata_and_oversized_manifests()
     {
         SvgException invalidHash = Assert.Throws<SvgException>(() => Parse("""
