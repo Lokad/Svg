@@ -1152,11 +1152,14 @@ internal static class SvgFilterPlayback
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow)
                 {
-                    using SvgConverter.RasterizedSurface alpha = Allocate();
+                    // Borrow the clear destination for alpha until the blur finishes;
+                    // blur output retains its own frame for tinting and restoration.
                     token.ThrowIfCancellationRequested();
-                    for (int offset = 0; offset < bytes; offset += 4) { token.ThrowIfCancellationRequested(); alpha.Pixels[offset + 3] = input[offset + 3]; }
+                    for (int offset = 0; offset < bytes; offset += 4) { token.ThrowIfCancellationRequested(); output[offset + 3] = input[offset + 3]; }
                     using SvgConverter.RasterizedSurface blurred = Allocate();
-                    SvgGaussianBlur.Apply(alpha.Pixels, blurred.Pixels, width, height, deviation, budget, token);
+                    SvgGaussianBlur.Apply(output, blurred.Pixels, width, height, deviation, budget, token);
+                    token.ThrowIfCancellationRequested();
+                    output.Clear();
                     double shadowX = primitive.OffsetX * map.ScaleX, shadowY = primitive.OffsetY * map.ScaleY;
                     bool fractionalShadow = shadowX != Math.Truncate(shadowX) || shadowY != Math.Truncate(shadowY);
                     bool retainedColorFilter = colorSpace == SvgFilterColorSpace.LinearRgb && !inputLinear

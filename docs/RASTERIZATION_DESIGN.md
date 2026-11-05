@@ -166,6 +166,10 @@ transfers that surface to the caller. Other outputs and temporary storage retain
 their own admission and cleanup. Color-matrix bias can still generate visible
 output from an empty input.
 
+Drop shadows borrow the clear stage destination for alpha input to a separate
+blur frame, then clear that scratch before restoration. High-precision final
+sampling retains its independent owner and can still govern peak storage.
+
 Sampling subtracts the destination bitmap origin before concatenating the image
 origin. Packed, floating, picture and wrapped samplers retain their own rounding.
 Geometry, clip construction and fitted glyphs keep their own drawing stages.

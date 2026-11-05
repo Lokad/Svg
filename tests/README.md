@@ -97,6 +97,12 @@ Existing filter mechanisms and native regressions protect arithmetic and placeme
 The [qualification](Research/release-baselines/empty-filter-stage-storage.json)
 binds failing-before cases, both runtimes, packages and original-source replay.
 
+[Drop-shadow storage contracts](Lokad.Svg.Tests/SvgDropShadowStorageTests.cs)
+retain eight pre-change pixel hashes across blur kernels, color spaces, placement
+and earlier graph input. Four tight-admission witnesses protect destination
+scratch reuse; linearRGB controls retain their separate sampling allowance.
+Refusal, cleanup, exact retry and borrowed input ownership remain explicit.
+
 [Capture-storage contracts](Research/release-baselines/filter-capture-storage.json)
 separate aligned-buffer reuse, wider blur requests, color-matrix output and shifted
 grid copying. Four allowance/refusal/retry cases retain pre-change pixel hashes;
