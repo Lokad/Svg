@@ -202,11 +202,15 @@ aliases and playback while keeping copying pixel kernels distinct from image ali
 alpha pairs through the packaged renderer and six fresh healthy browser processes;
 all2,000 source/target identities remain individual optional research checks.
 
+The [text-layout acceptance audit](text-layout-acceptance.json) closes the original
+R49/R60/R61 findings: all 54 named declarations join 45 independently qualified
+native cases. The full R48 screen, R103/R104 paint screen and R108 path-baseline
+cohorts remain required regressions. Further text corrections need a new witness.
+
 The outstanding review starts at these committed collections:
 
 | Findings | Evidence and next review |
 | --- | --- |
-| R49/R60/R61; R103/R104/R108 | The [full original R48 anchor screen](anchor-screen-qualification.json) closes all744 pairs with independent targets for all1488 declarations. [Text acceptance](text-acceptance.md), [path baselines](text-baseline-paint.md), [pattern matrices](text-pattern-matrices.md) and the [960-input paint screen](text-screen-qualification.json) retain their closed cohorts. Next:source-join independent R49/R60/R61 node/phase/fitting witnesses beyond these screens; do not treat historical pair inequality as a renderer defect. |
 | R54/R55/R69; R85/R86 | [Color alpha](../gradient-color-alpha/README.md), [shader strokes](../shader-hairlines/capture.json), [effect contexts](../shader-contexts/README.md), [source contexts](../filter-source-contexts/README.md) and [symbol canvases](symbol-canvas-qualification.json): bounds/maps, focal arithmetic and nonconstant paints. The context screens retain all 12,960, 9,216 and 960 original identities, including unequal native pairs; broader shader findings remain separate. |
 | R70 | [Decorations](../stroked-decorations/README.md): glyph intersections through paint, font and effect scopes. The [ink review](decoration-ink-review.json) retains source-width/stretch evidence. The [clip qualification](decoration-clip-qualification.json) closes its three precision failures: all 39 ink and 13 style controls are native exact, with shared canonical contours and independently rounded exclusion unions. Glyph layout and frozen targets remain unchanged. |
 | R74/C04 | [Reviewed selection failures closed](resource-selection.md); nested SVG in retained definitions remains a documented exclusion with its native control. |

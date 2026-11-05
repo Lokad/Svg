@@ -119,4 +119,6 @@ has different platform pixels. Select `FullyQualifiedName~Original_anchor_screen
 for the 1,488 Research rendering cases and their source/font/capture integrity check.
 Existing routine regressions and API/ownership contracts remain unchanged.
 [Qualification](../release-baselines/anchor-screen-qualification.json) closes this
-entire original cohort; other historical node/phase/fitting witnesses remain separate.
+entire original cohort. The [text-layout acceptance audit](../release-baselines/text-layout-acceptance.json)
+also joins the R49 paint returns and R60/R61 phase/fitting witnesses to their
+independent targets and retained mechanism/ownership contracts.

@@ -32,9 +32,10 @@ existing [regular](../supplied-font-labels/README.md) and
 Before correction, 179 of these 204 declarations matched each host's reference.
 All 204 now match exactly under both supported runtimes, with zero exact losses.
 The four original residuals, straight-path scaling failure and hanging-path
-failures close together through the shared metric distinction. Broader
-R49/R60/R61 node/phase/fitting review beyond the separately qualified
-[full R48 anchor screen](anchor-screen-qualification.json) remains open.
+failures close together through the shared metric distinction. The
+[full R48 anchor screen](anchor-screen-qualification.json) and
+[R49/R60/R61 acceptance audit](text-layout-acceptance.json) close the original
+boundary, phase and fitting findings with their independent native targets.
 [Thirty-nine retained paint/fitting witnesses](../text-paint-bounds/precision-residuals.json)
 keep their original sources, options and independent platform images. The
 [current replay](precision-current.md) closes all 39 and the

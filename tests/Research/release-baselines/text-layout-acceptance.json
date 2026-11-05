@@ -1,0 +1,356 @@
+{
+  "status": "The original R49, R60 and R61 findings are closed. Every named original and separately added middle-anchor witness joins qualified source/font/scale/native contexts; the acceptance clauses are covered by existing mechanisms, native regressions and representative ownership/API contracts. No runtime correction or new test/reference matrix is required.",
+  "sourceBaseCommit": "234b4e45ad1288f1f4779fba9892b7c8a84c0ffa",
+  "findings": [
+    {
+      "id": "R49",
+      "description": "Nested paint-return and positioned-span native boundaries",
+      "status": "Closed",
+      "originalDeclarations": 40,
+      "canonicalNativeCases": 31,
+      "witnesses": {
+        "../text-paint-bounds/anchor-screening.json": [
+          "r48-matrix-246-candidate",
+          "r48-matrix-246-control"
+        ],
+        "../text-node-boundaries/capture.json": [
+          "original-text-hidden-cursor-186-candidate",
+          "original-text-hidden-cursor-186-control",
+          "original-text-nested-paint-0-candidate",
+          "original-text-nested-paint-0-control",
+          "original-text-nested-paint-1-candidate",
+          "original-text-nested-paint-10-candidate",
+          "original-text-nested-paint-10-control",
+          "original-text-nested-paint-11-candidate",
+          "original-text-nested-paint-12-candidate",
+          "original-text-nested-paint-12-control",
+          "original-text-nested-paint-13-candidate",
+          "original-text-nested-paint-14-candidate",
+          "original-text-nested-paint-14-control",
+          "original-text-nested-paint-15-candidate",
+          "original-text-nested-paint-16-candidate",
+          "original-text-nested-paint-16-control",
+          "original-text-nested-paint-17-candidate",
+          "original-text-nested-paint-2-candidate",
+          "original-text-nested-paint-2-control",
+          "original-text-nested-paint-3-candidate",
+          "original-text-nested-paint-4-candidate",
+          "original-text-nested-paint-4-control",
+          "original-text-nested-paint-5-candidate",
+          "original-text-nested-paint-6-candidate",
+          "original-text-nested-paint-6-control",
+          "original-text-nested-paint-7-candidate",
+          "original-text-nested-paint-8-candidate",
+          "original-text-nested-paint-8-control",
+          "original-text-nested-paint-9-candidate"
+        ]
+      },
+      "sourceContextJoinSha256": "7009e797f044df8bcfde96b6fe8d11b9b3199f74e826b200f163d80b2eca8978"
+    },
+    {
+      "id": "R60",
+      "description": "Translated starts and ordinary middle-anchor glyph phases",
+      "status": "Closed",
+      "originalDeclarations": 8,
+      "canonicalNativeCases": 8,
+      "witnesses": {
+        "../text-paint-bounds/anchor-screening.json": [
+          "r48-matrix-703-candidate",
+          "r48-matrix-703-control",
+          "r48-matrix-705-candidate",
+          "r48-matrix-705-control",
+          "r48-matrix-707-candidate",
+          "r48-matrix-707-control"
+        ],
+        "../text-node-boundaries/capture.json": [
+          "original-text-path-straight-0352-candidate",
+          "original-text-path-straight-0352-control"
+        ]
+      },
+      "sourceContextJoinSha256": "83c137409f5a5b8131a91b2825aa281867af7bfa8efeae19fde8de9f8ef8b99c"
+    },
+    {
+      "id": "R61",
+      "description": "Horizontally fitted glyphs with relative baselines",
+      "status": "Closed",
+      "originalDeclarations": 6,
+      "canonicalNativeCases": 6,
+      "witnesses": {
+        "../text-paint-bounds/anchor-screening.json": [
+          "r48-matrix-662-candidate",
+          "r48-matrix-662-control",
+          "r48-matrix-680-candidate",
+          "r48-matrix-680-control",
+          "r48-matrix-698-candidate",
+          "r48-matrix-698-control"
+        ]
+      },
+      "sourceContextJoinSha256": "76aa1b1bcf41ad0b1c08365bdbef74a450873813618a95ea7a22484845dd4430"
+    }
+  ],
+  "acceptance": [
+    {
+      "requirement": "R49: retain nested paint returns and visible suffix boundaries; do not flatten unequal SVGs.",
+      "native": [
+        {
+          "manifest": "../text-node-boundaries/original-acceptance.json",
+          "cohort": "r49-paint-return",
+          "declarations": 38
+        },
+        {
+          "manifest": "../text-paint-bounds/anchor-screening.json",
+          "cases": [
+            "r48-matrix-246-candidate",
+            "r48-matrix-246-control"
+          ]
+        }
+      ],
+      "mechanism": "../../Lokad.Svg.Tests/OpenTypeFontLigatureTests.cs",
+      "ownership": "../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs",
+      "reason": "The38 original paint-return declarations and positioned-span pair retain separate actual native targets. Node fragments remain separate from shaping/font interval coalescing."
+    },
+    {
+      "requirement": "R49: preserve inert spans, kerning/ligatures and font/paint continuity.",
+      "nativeCases": [
+        "shape-span-AV",
+        "shape-span-fi",
+        "shape-long-chunk-middle-middle"
+      ],
+      "mechanisms": [
+        {
+          "file": "../../Lokad.Svg.Tests/OpenTypeFontTests.ShapingIntervals.cs",
+          "methods": [
+            "Anchor_only_intervals_preserve_continuous_ligature_shaping",
+            "Effective_font_size_changes_still_end_shaping_intervals",
+            "Font_interval_coalescing_preserves_original_boundary_validation"
+          ]
+        },
+        {
+          "file": "../../Lokad.Svg.Tests/OpenTypeFontLigatureTests.cs",
+          "methods": [
+            "Native_cursor_items_do_not_require_retaining_paint_fragments"
+          ]
+        }
+      ],
+      "reason": "Unchanged assertions distinguish glyph/cluster count and interval boundaries directly. They protect continuous shaping without equating native fragment boundaries with every XML scope."
+    },
+    {
+      "requirement": "R60: retain signed/fractional glyph origins, native phases and exact anchored/translated controls.",
+      "nativeCases": [
+        "r48-matrix-703-candidate",
+        "r48-matrix-703-control",
+        "r48-matrix-705-candidate",
+        "r48-matrix-705-control",
+        "r48-matrix-707-candidate",
+        "r48-matrix-707-control",
+        "original-text-path-straight-0352-candidate",
+        "original-text-path-straight-0352-control"
+      ],
+      "mechanisms": [
+        "../../Lokad.Svg.Tests/SvgGlyphStrikeSamplingTests.cs",
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.TextAnchors.cs"
+      ],
+      "reason": "Both actual SVGs remain independently exact when the browser images differ. Signed quarter-phase, adjacent-float tie and backtracking extent vectors are direct mechanisms."
+    },
+    {
+      "requirement": "R61: cover spacingAndGlyphs through anchors, relative baselines and absolute resets; retain spacing controls.",
+      "native": "All54 chunk-reset/fitting pairs in ../text-paint-bounds/anchor-screening.json, including original662/680/698 root-list/span pairs.",
+      "nativeCases": [
+        "element-direct-fit-spacing-fi-span",
+        "element-path-fit-scale-fi-span",
+        "source-prefixes-relative-span-fiA-neg16-start-fit-scale-candidate"
+      ],
+      "mechanisms": [
+        {
+          "file": "../../Lokad.Svg.Tests/OpenTypeFontTests.CanonicalShaping.cs",
+          "methods": [
+            "Canonical_fitting_preserves_the_qualified_paint_origin_and_source_scale"
+          ]
+        },
+        {
+          "file": "../../Lokad.Svg.Tests/OpenTypeFontTests.TextAnchor.cs",
+          "methods": [
+            "Absolute_chunks_use_the_current_span_anchor_from_child_or_ancestor_positions",
+            "Shared_direct_and_path_chunks_keep_a_uniform_child_anchor"
+          ]
+        }
+      ],
+      "reason": "Relative dy, scalar/list x/y and fitted source origins keep their own existing calculations; the canonical fitting test asserts the qualified multiply/add order and source scale."
+    },
+    {
+      "requirement": "R49/R60/R61: vary fonts, sizes, maps and output scales without changing natural metrics or font selection.",
+      "nativeCases": [
+        "element-scale150-span-fi",
+        "element-reflection-span-AVA",
+        "element-quarter-turn-span-AVA",
+        "element-path-fit-scale-fi-span"
+      ],
+      "mechanisms": [
+        "../../Lokad.Svg.Tests/SvgGlyphDeviceMetricsTests.cs",
+        "../../Lokad.Svg.Tests/SvgTextProjectionTests.cs",
+        "../../Lokad.Svg.Tests/SvgTextPositionLengthTests.cs",
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.TextLengthDefaults.cs"
+      ],
+      "reason": "The full anchor screen varies8/12/16-point text and four maps; existing text-node fixtures add scaled output, reflection, rotation and fitting. Independent regular/Mono font metrics, synthetic ligature/triangle faces and the99 unchanged full-qualified natural-metric cases protect distinct font/size rules without multiplying the rendering matrix."
+    },
+    {
+      "requirement": "R49/R60/R61: preserve instance/resource replay and discovery through preparation.",
+      "nativeCases": [
+        "replay-use-visibility-return",
+        "replay-symbol-fill-return",
+        "replay-pattern-visibility-return",
+        "replay-mask-fill-return"
+      ],
+      "mechanisms": [
+        "../../Lokad.Svg.Tests/SvgTextReplayRangeTests.cs"
+      ],
+      "contracts": [
+        {
+          "file": "../../Lokad.Svg.Tests/OpenTypeFontTests.TextAnchor.cs",
+          "methods": [
+            "Css_anchor_validation_precedes_acquisition_and_prepared_replay_keeps_chunk_scope"
+          ]
+        },
+        {
+          "file": "../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs",
+          "methods": [
+            "Node_metrics_preserve_platform_pixels_and_prepared_replay"
+          ]
+        }
+      ],
+      "reason": "Native cases retain the four resource/instance entry paths. Separate contracts retain font requests, input identity and raw/prepared comparisons; unrelated document ranges remain independent."
+    },
+    {
+      "requirement": "R49/R60/R61: retain ownership, memory refusal, cancellation, cleanup, retry and API contracts.",
+      "contracts": [
+        "../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs",
+        "../../Lokad.Svg.Tests/SvgConversionApiContractTests.cs",
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.ShapingIntervals.cs",
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.TextAnchor.cs"
+      ],
+      "reason": "The24 prepared-replay and14 ownership fixtures retain their existing distinct paths; the96-case general API matrix covers representative text/path destinations. No quota-era work contract is reinstated and no matrix is repeated across all native inputs."
+    },
+    {
+      "requirement": "R61: preserve ordinary fitted/affine glyph and R59 stroke controls; no tolerance, font substitution or glyph-specific correction.",
+      "nativeEvidence": [
+        "text-baseline-paint.md",
+        "precision-current.md",
+        "text-screen-qualification.json",
+        "../text-node-boundaries/capture.json",
+        "unit-domain-contracts.json"
+      ],
+      "reason": "All2647 prior text/native cases remain in the affected rendering qualification, including the closed204 path-baseline declarations,960 paint inputs and39 precision witnesses. The other stroke/viewport controls retain their full-qualified source/reference bytes. Production, fixtures, font bindings, native references and tolerances are unchanged."
+    }
+  ],
+  "validation": {
+    "nativeQualification": "anchor-screen-qualification.json",
+    "originalJoins": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "originalDeclarations": 54,
+        "canonicalCases": 45,
+        "everyOriginalHasAPassedIndependentNativeCheck": true
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "originalDeclarations": 54,
+        "canonicalCases": 45,
+        "everyOriginalHasAPassedIndependentNativeCheck": true
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "originalDeclarations": 54,
+        "canonicalCases": 45,
+        "everyOriginalHasAPassedIndependentNativeCheck": true
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "originalDeclarations": 54,
+        "canonicalCases": 45,
+        "everyOriginalHasAPassedIndependentNativeCheck": true
+      }
+    ],
+    "focusedMechanismsAndContracts": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "cases": 1906,
+        "seconds": 15.01156510016881,
+        "testAssemblySha256": "8294fbf941756a9f7410ecf94314e0155de320588f20bfa270419077e00746a1"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "cases": 1906,
+        "seconds": 19.574161000084132,
+        "testAssemblySha256": "8294fbf941756a9f7410ecf94314e0155de320588f20bfa270419077e00746a1"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "cases": 1906,
+        "seconds": 14.881287599913776,
+        "testAssemblySha256": "5e0db33ede5423deb22e3a091332900769338c3a0e925fe8755f64095987f591"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "cases": 1906,
+        "seconds": 16.217685099923983,
+        "testAssemblySha256": "5e0db33ede5423deb22e3a091332900769338c3a0e925fe8755f64095987f591"
+      }
+    ],
+    "inheritedNaturalMetrics": {
+      "qualification": "unit-domain-contracts.json",
+      "source": "../../Lokad.Svg.Tests/OpenTypeFontTests.TextLengthDefaults.cs",
+      "sourceLfSha256": "580da4a05b810cf7cc52f1ae563646aae55a0b4055922a35782bf8d830e0f70f",
+      "checks": [
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "cases": 99,
+          "sourceAndRendererUnchanged": true
+        },
+        {
+          "host": "windows",
+          "framework": "net10.0",
+          "cases": 99,
+          "sourceAndRendererUnchanged": true
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "cases": 99,
+          "sourceAndRendererUnchanged": true
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "cases": 99,
+          "sourceAndRendererUnchanged": true
+        }
+      ]
+    },
+    "scope": "The1906 focused core cases were executed on each host/runtime in this audit. The45 unique native cases covering54 original declarations reuse the immediately preceding4136-case rendering qualification; they were not rerun. The99 natural-metric cases retain the full-qualified source and renderer. No full CI/package/hosted-original replay is claimed for this documentation/evidence change."
+  },
+  "renderer": {
+    "qualification": "unit-domain-contracts.json",
+    "sourceCommit": "1f194273b9dd3edd3282905f52c720caad79bdc8",
+    "librarySha256": {
+      "net11.0": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "net10.0": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90"
+    }
+  },
+  "preserved": {
+    "productionAndAllTestSourcesUnchanged": true,
+    "allOriginalDeclarationsAndUnequalCompanionsRetained": true,
+    "fontProgramsAndNativeTargetsUnchanged": true,
+    "textLayoutSourceFittingCoverageAndToleranceUnchanged": true,
+    "inventory": "anchor-screen-qualification.json#/inventory"
+  },
+  "remaining": "Other PLAN.md duties remain: shader/source admission, provenance and support claims, unclassified test responsibilities and quiet-VM/release gates. Further text defects require a concrete new source/native witness rather than an unbounded carryover of these closed findings."
+}

@@ -59,5 +59,6 @@ These are validation costs, not renderer performance or evidence of an end-to-en
 speedup. The [full R103/R104 screen](text-screen-qualification.json) and
 [R108 path-baseline declarations](text-baseline-paint.md) are closed, retaining all
 39 precision witnesses. The [full original anchor screen](anchor-screen-qualification.json)
-also closes all 36 original and 708 screening pairs from R48. Independent
-R49/R60/R61 node/phase/fitting acceptance beyond these cohorts remains open.
+also closes all 36 original and 708 screening pairs from R48. The
+[acceptance audit](text-layout-acceptance.json) joins every remaining R49/R60/R61
+original and maps its boundary, phase, fitting and ownership criteria to retained coverage.
