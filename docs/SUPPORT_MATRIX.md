@@ -214,7 +214,10 @@ gradient interpolation reject.
 
 Patterns support tile/content unit systems, viewBox/aspect maps, affine placement
 and bounded repetition of vectors, groups, uses, opacity, gradients, PNGs, admitted
-filters and supplied text. Tile x/y/width/height accept numbers/px, not percentages.
+filters and supplied text. Tile x/y/width/height use the fixed geometry lengths
+described above; percentages and font-relative lengths remain unsupported. The
+[length qualification](../tests/Research/svgweb/geometry-fixed-lengths.json)
+retains direct unit/range checks, pattern-font selection and independent rendering.
 Definitions may appear at the root, as direct `defs` children, or within rendered
 `g` groups. Group styles are inherited; external consumers retain their own placement.
 The pattern container accepts only opacity 1; children retain opacity. XML overflow

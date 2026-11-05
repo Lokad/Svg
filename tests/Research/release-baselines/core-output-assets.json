@@ -9,7 +9,8 @@
     "noCSharpProductionTestProviderFixtureReferenceOrLicenseChanges": true,
     "net11TestAssemblyBytesIdentical": true,
     "assetIdentitySha256": "00c866b0fe8e068259ee13934a7a78bd31fdca203da6e31af369fe9304dc58cf",
-    "all549SourceBytesUnchanged": true
+    "all549SourceBytesUnchanged": true,
+    "sourceCommit": "6f0ebd48e70524fedb08a5c9c2e722380af0a41a"
   },
   "copyScope": {
     "auditedRules": 39,
@@ -1475,5 +1476,92 @@
       "net10": "5c2d0fa663cbfeaebb1f7c4f53c86cf9228949cdc1fe3d171b8761309d37ee92"
     },
     "hostedReplay": "Not repeated for output-copy-only changes; ../svgweb/originals.json#/currentReview retains the exact current runtime/package/W1 binding."
+  },
+  "primaryCi": {
+    "run": 42050664510,
+    "url": "https://github.com/Lokad/Svg/actions/runs/42050664510",
+    "status": "Terminal CLOSED; never repoll or refetch.",
+    "jobs": [
+      {
+        "host": "windows",
+        "job": 127325568783,
+        "conclusion": "failure",
+        "logSha256": "ea95cdb8dfd86bdd0025bb3485b65b5f4b0d2f914785f9eab713edc40832c6ba",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47773,
+            "total": 47773
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73536,
+            "total": 73537
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "job": 127325568145,
+        "conclusion": "success",
+        "logSha256": "ed00400a382eebd1e0cd3a3cd87690550298bf3e90b13a64c7194c3a903e1ff6",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47773,
+            "total": 47773
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73537,
+            "total": 73537
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ]
+      }
+    ],
+    "qualificationScope": "Linux full/compatibility/tool/package gates. Windows full core/font gates; frozen DejaVu discrepancy is independent of the output-copy projection and prevents later Windows gates. Both-runtime/host local core qualification and unchanged qualified runtime/package bindings remain recorded above."
   }
 }
