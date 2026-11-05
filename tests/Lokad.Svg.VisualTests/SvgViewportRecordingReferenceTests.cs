@@ -1,3 +1,4 @@
+using Lokad.Svg.Testing;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Lokad.Svg.Fonts;
@@ -33,14 +34,9 @@ public sealed class SvgViewportRecordingReferenceTests
             SvgRenderOptions options = new(null, item.GetProperty("outputScale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default);
             byte[] raw = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
             Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 1_048_576), PngRgbaDecoder.Decode(raw, 1_048_576)).IsExact, id + " " + kind);
-            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), options, CancellationToken.None);
+            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new RejectFontProgramSourceProvider("Font-free viewport references must not request a font program.", observeCancellation: false), options, CancellationToken.None);
             Assert.Equal(raw, prepared.ConvertToPng(CancellationToken.None).ToArray());
         }
     }
 
-    private sealed class NoFonts : ISvgFontProgramSourceProvider
-    {
-        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
-            => throw new InvalidOperationException("Font-free viewport references must not request a font program.");
-    }
 }

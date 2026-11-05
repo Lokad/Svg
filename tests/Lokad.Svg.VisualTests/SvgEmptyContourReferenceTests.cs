@@ -1,3 +1,4 @@
+using Lokad.Svg.Testing;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Lokad.Svg.Fonts;
@@ -34,14 +35,9 @@ public sealed class SvgEmptyContourReferenceTests
             Assert.Equal(item.GetProperty("referenceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(reference)));
             byte[] raw = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
             Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 1024), PngRgbaDecoder.Decode(raw, 1024)).IsExact);
-            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), SvgRenderOptions.Default, CancellationToken.None);
+            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new RejectFontProgramSourceProvider("An empty contour must not request a font program.", observeCancellation: false), SvgRenderOptions.Default, CancellationToken.None);
             Assert.Equal(raw, prepared.ConvertToPng(CancellationToken.None).ToArray());
         }
     }
 
-    private sealed class NoFonts : ISvgFontProgramSourceProvider
-    {
-        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
-            => throw new InvalidOperationException("An empty contour must not request a font program.");
-    }
 }

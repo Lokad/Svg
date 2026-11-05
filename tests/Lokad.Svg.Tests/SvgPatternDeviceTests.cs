@@ -1,3 +1,4 @@
+using Lokad.Svg.Testing;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
@@ -50,20 +51,10 @@ public sealed class SvgPatternDeviceTests
         string catalogText = "{\"packId\":\"empty\",\"files\":[{\"relativePath\":\"unused.ttf\",\"byteSize\":1,\"sha256\":\"" + new string('0', 64)
             + "\"}],\"families\":[{\"requestedFamily\":\"Unused\",\"resolvedFamily\":\"Unused\",\"relativeFontFile\":\"unused.ttf\"}]}";
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(catalogText), "empty");
-        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), SvgRenderOptions.Default, CancellationToken.None);
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new RejectFontProgramSourceProvider("The pattern fixture must not request a font program.", observeCancellation: true), SvgRenderOptions.Default, CancellationToken.None);
         Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
     }
 
     private static byte[] Input() => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "raster-capture-profiles", "pattern-viewbox-filter.svg"));
 
-    /// <summary>Rejects unexpected font acquisition in this font-free pattern contract.</summary>
-    /// <remarks>Owns no storage or I/O; observes cancellation and supports independent concurrent calls.</remarks>
-    private sealed class NoFonts : ISvgFontProgramSourceProvider
-    {
-        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            throw new InvalidOperationException("The pattern fixture must not request a font program.");
-        }
-    }
 }

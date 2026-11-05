@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <Compile Include="../Shared/TestMemoryBudget.cs" Link="TestMemoryBudget.cs" />
+    <Compile Include="../Shared/RejectFontProgramSourceProvider.cs" Link="RejectFontProgramSourceProvider.cs" />
     <Compile Include="../Shared/NativeMathProfile.cs" Link="NativeMathProfile.cs" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <ProjectReference Include="../../tools/Lokad.Svg.Chrome/Lokad.Svg.Chrome.csproj" />

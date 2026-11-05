@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../Shared/TestMemoryBudget.cs" Link="TestMemoryBudget.cs" />
+    <Compile Include="../Shared/RejectFontProgramSourceProvider.cs" Link="RejectFontProgramSourceProvider.cs" />
     <Compile Include="../Shared/NativeMathProfile.cs" Link="NativeMathProfile.cs" />
     <None Include="../Research/native-math-profiles/text-path-boxes.json" Link="TestData/text-paint-bounds/core-math-path-boxes.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

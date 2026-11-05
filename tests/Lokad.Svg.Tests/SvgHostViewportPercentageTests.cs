@@ -1,3 +1,4 @@
+using Lokad.Svg.Testing;
 using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Tests;
@@ -97,15 +98,10 @@ public sealed class SvgHostViewportPercentageTests
               "sha256": "0000000000000000000000000000000000000000000000000000000000000000" }],
               "families": [{ "requestedFamily": "Unused", "resolvedFamily": "Unused", "relativeFontFile": "unused.ttf" }] }
             """u8.ToArray(), "unused");
-        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new UnusedFontProvider(), options, CancellationToken.None);
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, new RejectFontProgramSourceProvider("A font-free document must not acquire fonts.", observeCancellation: false), options, CancellationToken.None);
         Assert.Equal(expected, (await prepared.ConvertToPngAsync(CancellationToken.None)).ToArray());
     }
 
-    private sealed class UnusedFontProvider : ISvgFontProgramSourceProvider
-    {
-        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
-            => throw new InvalidOperationException("A font-free document must not acquire fonts.");
-    }
 
     private static byte[] Input(string attributes, string content)
         => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' " + attributes + ">" + content + "</svg>");

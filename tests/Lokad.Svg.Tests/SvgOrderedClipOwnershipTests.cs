@@ -1,3 +1,4 @@
+using Lokad.Svg.Testing;
 using System.Text.Json;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
@@ -61,12 +62,12 @@ public sealed class SvgOrderedClipOwnershipTests
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
             "TestData/text-node-boundaries/font-pack.json")), "public-noto-sans");
-        using SvgPreparedDocument cancelled = await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), SvgRenderOptions.Default, CancellationToken.None);
+        using SvgPreparedDocument cancelled = await SvgPreparedDocument.CreateAsync(input, catalog, new RejectFontProgramSourceProvider("Font-free clip replay must not request font programs.", observeCancellation: false), SvgRenderOptions.Default, CancellationToken.None);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => cancelled.ConvertToPng(cancellation.Token)).CancellationToken);
         Assert.Throws<ObjectDisposedException>(() => cancelled.ConvertToPng(CancellationToken.None));
-        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), SvgRenderOptions.Default, CancellationToken.None);
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, new RejectFontProgramSourceProvider("Font-free clip replay must not request font programs.", observeCancellation: false), SvgRenderOptions.Default, CancellationToken.None);
         using MemoryStream stream = new();
         Assert.Equal(expected.Length, await document.ConvertToPngAsync(stream, CancellationToken.None));
         Assert.True(stream.CanWrite);
@@ -74,9 +75,4 @@ public sealed class SvgOrderedClipOwnershipTests
         Assert.Equal(unchanged, input);
     }
 
-    private sealed class NoFonts : ISvgFontProgramSourceProvider
-    {
-        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
-            => throw new InvalidOperationException("Font-free clip replay must not request font programs.");
-    }
 }

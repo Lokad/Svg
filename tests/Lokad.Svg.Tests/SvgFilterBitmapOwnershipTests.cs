@@ -1,3 +1,4 @@
+using Lokad.Svg.Testing;
 using System.Text.Json;
 using Lokad.Svg.Fonts;
 
@@ -56,7 +57,7 @@ public sealed class SvgFilterBitmapOwnershipTests
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
             "TestData", "text-node-boundaries", "font-pack.json")), "public-noto-sans");
-        RejectFonts provider = new();
+        RejectFontProgramSourceProvider provider = new("These filter inputs require no fonts.", observeCancellation: true);
         byte[] destination = Enumerable.Repeat((byte)0xA5, expected.Length + 17).ToArray();
         using (SvgPreparedDocument canceled = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None))
         {
@@ -75,14 +76,4 @@ public sealed class SvgFilterBitmapOwnershipTests
         Assert.Equal(unchanged, input);
     }
 
-    private sealed class RejectFonts : ISvgFontProgramSourceProvider
-    {
-        /// <summary>Rejects unexpected font requests without owning storage or chargeable source work;
-        /// observes cancellation and permits concurrent calls.</summary>
-        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            throw new InvalidOperationException("These filter inputs require no fonts.");
-        }
-    }
 }

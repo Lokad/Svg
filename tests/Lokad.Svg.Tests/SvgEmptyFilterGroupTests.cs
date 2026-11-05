@@ -1,3 +1,4 @@
+using Lokad.Svg.Testing;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
@@ -73,7 +74,7 @@ public sealed class SvgEmptyFilterGroupTests
         {
             // Each prepared form owns its preparation; raw calls run directly.
             using SvgPreparedDocument? document = prepared
-                ? await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), SvgRenderOptions.Default, CancellationToken.None) : null;
+                ? await SvgPreparedDocument.CreateAsync(input, catalog, new RejectFontProgramSourceProvider("No font acquisition expected.", observeCancellation: true), SvgRenderOptions.Default, CancellationToken.None) : null;
             byte[] destination = new byte[expected.Length];
             using MemoryStream stream = new();
             byte[] actual;
@@ -189,7 +190,7 @@ public sealed class SvgEmptyFilterGroupTests
         foreach (string attributes in new[] { "filter='url(#f)'", "style='filter:url(#f)'", "class='effect'" })
         {
             byte[] input = Input(Filter + "<style>.effect{filter:url(#f)}</style><defs><pattern id='base' width='0' height='0' patternUnits='userSpaceOnUse'><text font-family='Unused'>A</text></pattern><pattern id='p' href='#base' width='32' height='32'><g " + attributes + "/></pattern></defs><rect width='32' height='32' fill='url(#p)'/>");
-            using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), SvgRenderOptions.Default, CancellationToken.None);
+            using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, new RejectFontProgramSourceProvider("No font acquisition expected.", observeCancellation: true), SvgRenderOptions.Default, CancellationToken.None);
             Assert.Equal(Render(Red), document.ConvertToPng(CancellationToken.None).ToArray());
         }
     }
@@ -223,10 +224,4 @@ public sealed class SvgEmptyFilterGroupTests
     private static byte[] Input(string content) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + content + "</svg>");
     private static byte[] Render(string content) => SvgConverter.ConvertToPng(Input(content), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 
-    /// <summary>Font-free test provider; owns no storage and rejects acquisition after checking cancellation.</summary>
-    private sealed class NoFonts : ISvgFontProgramSourceProvider
-    {
-        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
-        { cancellationToken.ThrowIfCancellationRequested(); throw new InvalidOperationException("No font acquisition expected."); }
-    }
 }

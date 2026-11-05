@@ -75,6 +75,10 @@ retains the original failure and a negative control that omits profile deletion.
 Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs)
 while retaining separate names, inputs and allocation paths. Add one representative
 contract for a distinct path; rendering fixtures keep their canonical conversion.
+Font-free fixtures share a [rejecting provider](Shared/RejectFontProgramSourceProvider.cs)
+with explicit per-call messages and cancellation policy. Counting, acquisition and
+asynchronous-failure providers stay separate. Two direct controls retain synchronous
+rejection and exact cancellation-token behavior without repeating them per image.
 The [shared-budget contracts](Research/release-baselines/shared-budget-ownership.json)
 keep one allowance across parsing and rasterization, the complete refusal sweep,
 explicit viewports and exact retry pixels. Their 54 named cases use `Layer=Contract`;
