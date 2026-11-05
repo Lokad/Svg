@@ -590,6 +590,8 @@ internal static class SvgFilterPlayback
         RenderBudget.BudgetReservation? sampleOwner = null;
         SvgFilterDeferredImage? deferredImage = null;
         SvgFilterUniformPaint? sampledUniform = null;
+        SvgConverter.RasterizedSurface transparent = default;
+        bool returnedTransparent = false;
         int finalIndex = count == 0 ? 0 : count - 1;
         try
         {
@@ -611,6 +613,11 @@ internal static class SvgFilterPlayback
             {
                 token.ThrowIfCancellationRequested();
                 SvgFilterPrimitive primitive = resource.Primitives.Items[index];
+                if (map.Regions is not null && (regions[index].Right <= regions[index].Left || regions[index].Bottom <= regions[index].Top))
+                {
+                    imageBounds[index] = regions[index];
+                    continue;
+                }
                 bool nearestSampling = false;
                 bool matrixMaterialized = false;
                 // Flood supplies a CSS color without interpolation; its declared
@@ -625,7 +632,6 @@ internal static class SvgFilterPlayback
                 if (map.Regions is not null)
                 {
                     imageBounds[index] = regions[index];
-                    if (regions[index].Right <= regions[index].Left || regions[index].Bottom <= regions[index].Top) continue;
                 }
                 else if (primitive.Region is not null)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Primitive filter regions require a placed coordinate context.");
@@ -1285,8 +1291,14 @@ internal static class SvgFilterPlayback
                 }
             }
             token.ThrowIfCancellationRequested();
+            SvgConverter.RasterizedSurface finalFrame = outputs[finalIndex];
+            if (finalFrame.Pixels is null)
+            {
+                finalFrame = TransparentInput();
+                returnedTransparent = true;
+            }
             returned = true;
-            return new(outputs[finalIndex] with { }, samples, sampleOwner)
+            return new(finalFrame with { }, samples, sampleOwner)
             {
                 ColorSpace = count > 0 && map.Regions?.DeferFinalColorTransfer == true && linear[finalIndex]
                     ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb,
@@ -1300,6 +1312,7 @@ internal static class SvgFilterPlayback
             if (!returned) sampleOwner?.Dispose();
             for (int index = 0; index < outputs.Length; index++)
                 if ((!returned || index != finalIndex) && outputs[index].Pixels is not null) outputs[index].Dispose();
+            if (!returnedTransparent && transparent.Pixels is not null) transparent.Dispose();
         }
 
         // Prepare immutable premultiplied sRGB lanes without allocation or ownership.
@@ -1477,8 +1490,17 @@ internal static class SvgFilterPlayback
                 }
                 return outputs[count].Pixels;
             }
-            if ((uint)reference.Index < (uint)before) return outputs[reference.Index].Pixels;
+            if ((uint)reference.Index < (uint)before) return outputs[reference.Index].Pixels ?? TransparentInput().Pixels;
             throw new SvgException(SvgErrorCode.MalformedInput, "Filter graph input is outside its earlier results.");
+        }
+
+        // Empty primitive regions retain their bounds without a private pixel plane.
+        // Reads borrow this clear surface until Apply finishes; an empty final result
+        // transfers its owner to the caller instead of disposing it here.
+        SvgConverter.RasterizedSurface TransparentInput()
+        {
+            if (transparent.Pixels is null) transparent = Allocate();
+            return transparent;
         }
 
         void Composite(ReadOnlySpan<byte> input, Span<byte> output, SvgFilterInput reference, bool inputLinear, SvgFilterColorSpace colorSpace, ReadOnlySpan<byte> graphic)

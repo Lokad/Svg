@@ -80,6 +80,12 @@ copying every source command into raster storage.
 empty, single and maximum-size graphs, allocation-free metadata and graph borrowing.
 Numerical bounds/storage cases and pixel-storage refusal remain separate checks.
 
+[Empty-stage storage contracts](Lokad.Svg.Tests/SvgEmptyFilterStageStorageTests.cs)
+cover repeated cropped stages under a one-output allowance, a clear final frame
+and color-matrix bias reading an empty result. They retain exact pixels, refusal,
+cleanup and retry; cancellation and borrowed-source ownership stay explicit.
+Existing filter mechanisms and native regressions protect arithmetic and placement.
+
 [Capture-storage contracts](Research/release-baselines/filter-capture-storage.json)
 separate aligned-buffer reuse, wider blur requests, color-matrix output and shifted
 grid copying. Four allowance/refusal/retry cases retain pre-change pixel hashes;

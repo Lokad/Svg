@@ -160,6 +160,12 @@ knowledge. `SourceGraphic` picture padding differs from `SourceAlpha` and stored
 graph-result views. A copying blur kernel can still require image materialization;
 kernel identity alone does not justify aliasing.
 
+An empty primitive region retains graph bounds without a pixel plane. A later
+reader borrows one clear surface for the current evaluation; an empty final result
+transfers that surface to the caller. Other outputs and temporary storage retain
+their own admission and cleanup. Color-matrix bias can still generate visible
+output from an empty input.
+
 Sampling subtracts the destination bitmap origin before concatenating the image
 origin. Packed, floating, picture and wrapped samplers retain their own rounding.
 Geometry, clip construction and fitted glyphs keep their own drawing stages.
