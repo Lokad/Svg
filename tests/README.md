@@ -626,6 +626,11 @@ Core text-paint tests copy only their box vectors, capture metadata and font man
 rendering/replay reports stay in the committed corpus. The
 [output audit](Research/release-baselines/text-paint-output-assets.json) compares fresh
 directories, so obsolete incremental-output copies cannot hide missing dependencies.
+The [core asset audit](Research/release-baselines/core-output-assets.json) covers
+all 39 SVG/font copy rules: 251 consumed files replace 549 bank-wide copies.
+Manifest, prefixed and shared-reader inputs remain included; all source banks and
+native references remain committed. Fresh outputs pass every core case on both
+hosts and runtimes with unchanged case identities and test bodies.
 
 Use the [visual-suite export](../tools/README.md#export-the-visual-suite) for a
 standalone offline directory containing binaries, references, font licenses and

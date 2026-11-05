@@ -1,0 +1,1479 @@
+{
+  "status": "Complete39-rule core output audit.26 broad rules now copy consumer slices. All549 source assets and their native references remain committed; fresh output retains251 and omits298 unused copies. Full47773-case identities and assertions remain on both hosts/runtimes.",
+  "source": {
+    "baseCommit": "4e5e0b0b32fa1f393098814a1cbf6b2142b75712",
+    "project": "../../Lokad.Svg.Tests/Lokad.Svg.Tests.csproj",
+    "beforeLfSha256": "43e468eb21cfb1dacdf5bda7feb156eb2025f3eefc2dc99c2acc98b0e2067604",
+    "afterLfSha256": "5173887c3c7d751bb2a6845232a2e9b833749351135f27ebeb6a92f1ffcaae59",
+    "reversingOnly26IncludeValuesRestoresEntireProjectByteForByte": true,
+    "noCSharpProductionTestProviderFixtureReferenceOrLicenseChanges": true,
+    "net11TestAssemblyBytesIdentical": true,
+    "assetIdentitySha256": "00c866b0fe8e068259ee13934a7a78bd31fdca203da6e31af369fe9304dc58cf",
+    "all549SourceBytesUnchanged": true
+  },
+  "copyScope": {
+    "auditedRules": 39,
+    "reducedRules": 26,
+    "fullyConsumedGlobsRetained": 13,
+    "beforeFiles": 549,
+    "afterFiles": 251,
+    "omittedCopies": 298,
+    "beforeBytes": 287775,
+    "afterBytes": 162210,
+    "omittedCopyBytes": 125565
+  },
+  "banks": [
+    {
+      "bank": "text-instance-composition",
+      "beforeInclude": "../Research/text-instance-composition/mechanisms/*.svg",
+      "afterInclude": "../Research/text-instance-composition/mechanisms/*.svg",
+      "beforeFiles": 6,
+      "afterFiles": 6,
+      "beforeBytes": 2101,
+      "afterBytes": 2101,
+      "retainedInputs": [
+        "painted-path.svg",
+        "painted-rectangle.svg",
+        "rectangle-offset.svg",
+        "translated-alpha.svg",
+        "translated-luminance.svg",
+        "unmasked-translated.svg"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgFilterClipConsumerTests.cs",
+        "../../Lokad.Svg.Tests/SvgMaskPaintContextTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "pattern-source-selection",
+      "beforeInclude": "../Research/pattern-source-selection/*.svg",
+      "afterInclude": "../Research/pattern-source-selection/*.svg",
+      "beforeFiles": 54,
+      "afterFiles": 54,
+      "beforeBytes": 35390,
+      "afterBytes": 35390,
+      "retainedInputs": [
+        "consumer-hidden-filter-mask-mask-group-after.svg",
+        "consumer-hidden-filter-mask-mask-group-before.svg",
+        "consumer-text-span-server-text-after.svg",
+        "consumer-text-span-server-text-before.svg",
+        "consumer-use-own-mask-mask-use-after.svg",
+        "consumer-use-own-mask-mask-use-before.svg",
+        "context-mask-hidden-container-text-use-after.svg",
+        "context-mask-hidden-container-text-use-before.svg",
+        "marker-mid-line-text-after.svg",
+        "marker-mid-line-text-before.svg",
+        "marker-mid-three-points-mask-group-after.svg",
+        "marker-mid-three-points-mask-group-before.svg",
+        "marker-own-display-none-text-after.svg",
+        "marker-own-display-none-text-before.svg",
+        "marker-transparent-stroke-text-use-after.svg",
+        "marker-transparent-stroke-text-use-before.svg",
+        "marker-zero-ex-width-mask-use-after.svg",
+        "marker-zero-ex-width-mask-use-before.svg",
+        "paint-closed-move-path-stroke-text-use-after.svg",
+        "paint-closed-move-path-stroke-text-use-before.svg",
+        "paint-empty-polygon-stroke-mask-group-after.svg",
+        "paint-empty-polygon-stroke-mask-group-before.svg",
+        "paint-empty-polyline-stroke-text-use-after.svg",
+        "paint-empty-polyline-stroke-text-use-before.svg",
+        "paint-image-inherited-fill-text-after.svg",
+        "paint-image-inherited-fill-text-before.svg",
+        "paint-move-only-path-stroke-mask-use-after.svg",
+        "paint-move-only-path-stroke-mask-use-before.svg",
+        "paint-single-point-polyline-stroke-text-after.svg",
+        "paint-single-point-polyline-stroke-text-before.svg",
+        "source-group-fill-overridden-mask-use-after.svg",
+        "source-group-fill-overridden-mask-use-before.svg",
+        "source-group-stroke-overridden-text-after.svg",
+        "source-group-stroke-overridden-text-before.svg",
+        "source-group-zero-opacity-text-use-after.svg",
+        "source-group-zero-opacity-text-use-before.svg",
+        "source-inherited-zero-fill-text-use-after.svg",
+        "source-inherited-zero-fill-text-use-before.svg",
+        "source-inherited-zero-stroke-mask-use-after.svg",
+        "source-inherited-zero-stroke-mask-use-before.svg",
+        "source-source-outside-opacity-parent-text-after.svg",
+        "source-source-outside-opacity-parent-text-before.svg",
+        "source-unselected-switch-mask-group-after.svg",
+        "source-unselected-switch-mask-group-before.svg",
+        "source-unused-mask-mask-group-after.svg",
+        "source-unused-mask-mask-group-before.svg",
+        "source-unused-source-text-after.svg",
+        "source-unused-source-text-before.svg",
+        "source-unused-symbol-text-use-after.svg",
+        "source-unused-symbol-text-use-before.svg",
+        "source-visible-descendant-mask-group-after.svg",
+        "source-visible-descendant-mask-group-before.svg",
+        "source-zero-symbol-height-text-after.svg",
+        "source-zero-symbol-height-text-before.svg"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgPatternFontReachabilityTests.cs"
+      ],
+      "manifestSources": [
+        "../../Research/pattern-source-selection/capture.json"
+      ],
+      "binding": "Cases enumerates every manifest row; ReadInput uses each row.input."
+    },
+    {
+      "bank": "windows-font-unit-scaling",
+      "beforeInclude": "../Research/windows-font-unit-scaling/fonts/*.ttf",
+      "afterInclude": "../Research/windows-font-unit-scaling/fonts/*.ttf",
+      "beforeFiles": 4,
+      "afterFiles": 4,
+      "beforeBytes": 7444,
+      "afterBytes": 7444,
+      "retainedInputs": [
+        "ExpandedPoints.ttf",
+        "Fractional.ttf",
+        "Half.ttf",
+        "PhantomOrigins.ttf"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.WindowsOrigins.cs",
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.WindowsScaling.cs"
+      ],
+      "manifestSources": [
+        "../../Research/windows-font-unit-scaling/expanded-points.json",
+        "../../Research/windows-font-unit-scaling/native-vectors.json",
+        "../../Research/windows-font-unit-scaling/phantom-origins.json"
+      ],
+      "binding": "All programs are selected by native-vector manifests or the shared partial-class font reader."
+    },
+    {
+      "bank": "windows-small-strikes",
+      "beforeInclude": "../Research/windows-small-strikes/fonts/*.ttf",
+      "afterInclude": "../Research/windows-small-strikes/fonts/*.ttf",
+      "beforeFiles": 5,
+      "afterFiles": 5,
+      "beforeBytes": 5692,
+      "afterBytes": 5692,
+      "retainedInputs": [
+        "DefaultNatural.ttf",
+        "DefaultSymmetric.ttf",
+        "SmallNatural.ttf",
+        "SmallNaturalInteger.ttf",
+        "SmallSymmetric.ttf"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.SmallStrikes.cs"
+      ],
+      "manifestSources": [
+        "../../Research/windows-small-strikes/capture.json",
+        "../../Research/windows-small-strikes/font-pack.json",
+        "../../Research/windows-small-strikes/native-masks.json"
+      ],
+      "binding": "All programs are selected by native-vector manifests or the shared partial-class font reader."
+    },
+    {
+      "bank": "windows-conditional-targets",
+      "beforeInclude": "../Research/windows-conditional-targets/fonts/*.ttf",
+      "afterInclude": "../Research/windows-conditional-targets/fonts/*.ttf",
+      "beforeFiles": 2,
+      "afterFiles": 2,
+      "beforeBytes": 6224,
+      "afterBytes": 6224,
+      "retainedInputs": [
+        "ConditionalTargetsNatural.ttf",
+        "ConditionalTargetsSymmetric.ttf"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.ConditionalTargets.cs"
+      ],
+      "manifestSources": [
+        "../../Research/windows-conditional-targets/capture.json",
+        "../../Research/windows-conditional-targets/font-pack.json",
+        "../../Research/windows-conditional-targets/native-targets.json"
+      ],
+      "binding": "All programs are selected by native-vector manifests or the shared partial-class font reader."
+    },
+    {
+      "bank": "latin-nonbase",
+      "beforeInclude": "../Research/latin-nonbase/fonts/*.ttf",
+      "afterInclude": "../Research/latin-nonbase/fonts/*.ttf",
+      "beforeFiles": 2,
+      "afterFiles": 2,
+      "beforeBytes": 1980,
+      "afterBytes": 1980,
+      "retainedInputs": [
+        "Alias.ttf",
+        "Base.ttf"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.LatinNonBase.cs"
+      ],
+      "manifestSources": [
+        "../../Research/latin-nonbase/native-vectors.json"
+      ],
+      "binding": "All programs are selected by native-vector manifests or the shared partial-class font reader."
+    },
+    {
+      "bank": "kerning-flags",
+      "beforeInclude": "../Research/kerning-flags/fonts/*.ttf",
+      "afterInclude": "../Research/kerning-flags/fonts/*.ttf",
+      "beforeFiles": 8,
+      "afterFiles": 8,
+      "beforeBytes": 13024,
+      "afterBytes": 13024,
+      "retainedInputs": [
+        "GposAttach.ttf",
+        "GposCombined.ttf",
+        "GposExtension.ttf",
+        "GposMarks.ttf",
+        "GposRtl.ttf",
+        "GposSet.ttf",
+        "GposSkipBase.ttf",
+        "GposSkipLig.ttf"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.GposFilters.cs",
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.ExtensionPreparation.cs",
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.GlyphRecording.cs"
+      ],
+      "manifestSources": [
+        "../../Research/kerning-flags/declaration.json",
+        "../../Research/kerning-flags/extension.json",
+        "../../Research/kerning-flags/font-pack.json",
+        "../../Research/kerning-flags/manifest.json",
+        "../../Research/kerning-flags/metrics.json"
+      ],
+      "binding": "All programs are selected by native-vector manifests or the shared partial-class font reader."
+    },
+    {
+      "bank": "windows-font-span-extension",
+      "beforeInclude": "../Research/windows-font-span-extension/fonts/*.ttf",
+      "afterInclude": "../Research/windows-font-span-extension/fonts/*.ttf",
+      "beforeFiles": 2,
+      "afterFiles": 2,
+      "beforeBytes": 2480,
+      "afterBytes": 2480,
+      "retainedInputs": [
+        "Courier New.ttf",
+        "Original Coverage.ttf"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/OpenTypeFontTests.WindowsSpanExtension.cs"
+      ],
+      "manifestSources": [
+        "../../Research/windows-font-span-extension/declaration.json",
+        "../../Research/windows-font-span-extension/font-pack.json",
+        "../../Research/windows-font-span-extension/manifest.json",
+        "../../Research/windows-font-span-extension/metrics.json"
+      ],
+      "binding": "All programs are selected by native-vector manifests or the shared partial-class font reader."
+    },
+    {
+      "bank": "composition-sheet",
+      "beforeInclude": "../Research/composition-sheet/*.svg",
+      "afterInclude": "../Research/composition-sheet/*.svg",
+      "beforeFiles": 2,
+      "afterFiles": 2,
+      "beforeBytes": 1538,
+      "afterBytes": 1538,
+      "retainedInputs": [
+        "composition-sheet.svg",
+        "partial-mask-use.svg"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgStaticCssImageTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "scoped-clips-masks",
+      "beforeInclude": "../Research/scoped-clips-masks/*.svg",
+      "afterInclude": "../Research/scoped-clips-masks/composed-quadratic-clip.svg;../Research/scoped-clips-masks/scoped-card-diagram.svg;../Research/scoped-clips-masks/translated-mask-use.svg",
+      "beforeFiles": 6,
+      "afterFiles": 3,
+      "beforeBytes": 2604,
+      "afterBytes": 1763,
+      "retainedInputs": [
+        "composed-quadratic-clip.svg",
+        "scoped-card-diagram.svg",
+        "translated-mask-use.svg"
+      ],
+      "uncopiedInputs": [
+        "mask-container-opacity.svg",
+        "original-partial-translated-group.svg",
+        "original-sheared-arc-stroke.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgScopedClipMaskTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "affine-oval-strokes",
+      "beforeInclude": "../Research/affine-oval-strokes/*.svg",
+      "afterInclude": "../Research/affine-oval-strokes/affine-orbit-diagram.svg;../Research/affine-oval-strokes/affine-pattern-dashes.svg;../Research/affine-oval-strokes/dashed-radial.svg;../Research/affine-oval-strokes/nonuniform-dashed.svg",
+      "beforeFiles": 7,
+      "afterFiles": 4,
+      "beforeBytes": 3653,
+      "afterBytes": 2513,
+      "retainedInputs": [
+        "affine-orbit-diagram.svg",
+        "affine-pattern-dashes.svg",
+        "dashed-radial.svg",
+        "nonuniform-dashed.svg"
+      ],
+      "uncopiedInputs": [
+        "dashed-linear.svg",
+        "nonuniform-linear-use.svg",
+        "nonuniform-solid.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgAffineOvalStrokeTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "symbol-fractional-frames",
+      "beforeInclude": "../Research/symbol-fractional-frames/*.svg",
+      "afterInclude": "../Research/symbol-fractional-frames/collapsed-clipped-frame.svg;../Research/symbol-fractional-frames/fractional-authored.svg;../Research/symbol-fractional-frames/nonuniform-symbol-frame.svg;../Research/symbol-fractional-frames/symbol-card-diagram.svg",
+      "beforeFiles": 5,
+      "afterFiles": 4,
+      "beforeBytes": 2160,
+      "afterBytes": 1831,
+      "retainedInputs": [
+        "collapsed-clipped-frame.svg",
+        "fractional-authored.svg",
+        "nonuniform-symbol-frame.svg",
+        "symbol-card-diagram.svg"
+      ],
+      "uncopiedInputs": [
+        "fractional-inherited.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgSymbolFrameReplayTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "offset-merge-document",
+      "beforeInclude": "../Research/offset-merge-document/*.svg",
+      "afterInclude": "../Research/offset-merge-document/fractional-viewport.svg;../Research/offset-merge-document/ordered-group.svg;../Research/offset-merge-document/reflected-composed.svg;../Research/offset-merge-document/rotated-fill.svg;../Research/offset-merge-document/rotated-stroke.svg",
+      "beforeFiles": 8,
+      "afterFiles": 5,
+      "beforeBytes": 1973,
+      "afterBytes": 1166,
+      "retainedInputs": [
+        "fractional-viewport.svg",
+        "ordered-group.svg",
+        "reflected-composed.svg",
+        "rotated-fill.svg",
+        "rotated-stroke.svg"
+      ],
+      "uncopiedInputs": [
+        "text-fill-stroke.svg",
+        "text-mapped-paint.svg",
+        "text-stroke-only.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgRotatedEllipseTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "mask-group-documents",
+      "beforeInclude": "../Research/mask-group-documents/*.svg",
+      "afterInclude": "../Research/mask-group-documents/*.svg",
+      "beforeFiles": 5,
+      "afterFiles": 5,
+      "beforeBytes": 2170,
+      "afterBytes": 2170,
+      "retainedInputs": [
+        "anonymous-and-siblings.svg",
+        "forward-use.svg",
+        "group-alias.svg",
+        "mapped-strokes.svg",
+        "nested-opacity.svg"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgMaskContentReplayTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "group-mask-crop",
+      "beforeInclude": "../Research/group-mask-crop/*.svg",
+      "afterInclude": "../Research/group-mask-crop/covering-uniform-preserved.svg;../Research/group-mask-crop/fractional-luminance-crop.svg;../Research/group-mask-crop/nested-crop.svg;../Research/group-mask-crop/rotated-elliptical-stroke.svg",
+      "beforeFiles": 16,
+      "afterFiles": 4,
+      "beforeBytes": 6264,
+      "afterBytes": 1574,
+      "retainedInputs": [
+        "covering-uniform-preserved.svg",
+        "fractional-luminance-crop.svg",
+        "nested-crop.svg",
+        "rotated-elliptical-stroke.svg"
+      ],
+      "uncopiedInputs": [
+        "composed-elliptical-crop.svg",
+        "default-user-space-crop.svg",
+        "exporter-default-path.svg",
+        "exporter-default-rectangle.svg",
+        "exporter-meaningful-isolation-boundary.svg",
+        "forward-group-use-crop.svg",
+        "fractional-alpha-crop.svg",
+        "nested-crop-opacity.svg",
+        "opaque-group-crop.svg",
+        "reflected-elliptical-arc.svg",
+        "rotated-elliptical-fill.svg",
+        "shared-leaf-group-crop.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgGroupMaskCropTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "clip-intersections",
+      "beforeInclude": "../Research/clip-intersections/*.svg",
+      "afterInclude": "../Research/clip-intersections/clip-child-oval-use.svg;../Research/clip-intersections/group-object-inherited.svg;../Research/clip-intersections/nested-oval-intersection.svg",
+      "beforeFiles": 10,
+      "afterFiles": 3,
+      "beforeBytes": 3378,
+      "afterBytes": 1147,
+      "retainedInputs": [
+        "clip-child-oval-use.svg",
+        "group-object-inherited.svg",
+        "nested-oval-intersection.svg"
+      ],
+      "uncopiedInputs": [
+        "forward-group-clip-use.svg",
+        "fractional-root-group-union.svg",
+        "group-oval-union.svg",
+        "object-path-parity.svg",
+        "overlapping-path-child-union.svg",
+        "use-fill-rule-inherited.svg",
+        "use-fill-rule-source-wins.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgClipIntersectionTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "transformed-rectangle-fills",
+      "beforeInclude": "../Research/transformed-rectangle-fills/*.svg",
+      "afterInclude": "../Research/transformed-rectangle-fills/clip-crossing.svg;../Research/transformed-rectangle-fills/rendered-source-alias.svg;../Research/transformed-rectangle-fills/rotate-solid.svg;../Research/transformed-rectangle-fills/translucent-overlap.svg",
+      "beforeFiles": 15,
+      "afterFiles": 4,
+      "beforeBytes": 3920,
+      "afterBytes": 1151,
+      "retainedInputs": [
+        "clip-crossing.svg",
+        "rendered-source-alias.svg",
+        "rotate-solid.svg",
+        "translucent-overlap.svg"
+      ],
+      "uncopiedInputs": [
+        "composed-group.svg",
+        "composed-nonuniform.svg",
+        "general-matrix.svg",
+        "gradient-boundary.svg",
+        "group-clip.svg",
+        "reflected-map.svg",
+        "rendered-group-use.svg",
+        "singular-map.svg",
+        "stroke-boundary.svg",
+        "viewbox-output.svg",
+        "zero-width.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgTransformedRectangleTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "iching-library",
+      "beforeInclude": "../Research/iching-library/*.svg",
+      "afterInclude": "../Research/iching-library/closed-numeric-tail.svg;../Research/iching-library/nested-rotated-opacity.svg;../Research/iching-library/nested-rotated-symbol.svg;../Research/iching-library/rotated-symbol-opacity.svg",
+      "beforeFiles": 25,
+      "afterFiles": 4,
+      "beforeBytes": 7264,
+      "afterBytes": 1502,
+      "retainedInputs": [
+        "closed-numeric-tail.svg",
+        "nested-rotated-opacity.svg",
+        "nested-rotated-symbol.svg",
+        "rotated-symbol-opacity.svg"
+      ],
+      "uncopiedInputs": [
+        "active-description-boundary.svg",
+        "compound-bars-fractional-viewport.svg",
+        "compound-curves-evenodd.svg",
+        "curved-numeric-tail.svg",
+        "group-descriptions.svg",
+        "invalid-arc-tail.svg",
+        "invalid-before-moveto.svg",
+        "offcanvas-rotated-symbol.svg",
+        "partial-repeated-line.svg",
+        "reflected-symbol.svg",
+        "right-angle-symbol.svg",
+        "rotated-symbol-boundary.svg",
+        "rotated-symbol-gradient.svg",
+        "rotated-symbol-hairline.svg",
+        "rotated-symbol-interior.svg",
+        "rotated-symbol-overflow.svg",
+        "rotated-symbol-rectangle.svg",
+        "shader-numeric-tail.svg",
+        "single-bar-fractional-viewport.svg",
+        "symbol-numeric-tail.svg",
+        "unexpected-command-tail.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgIChingTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "pattern-vector-content",
+      "beforeInclude": "../Research/pattern-vector-content/*.svg",
+      "afterInclude": "../Research/pattern-vector-content/circle-tile-rectangle.svg;../Research/pattern-vector-content/curve-tile-circle.svg;../Research/pattern-vector-content/empty-group-legacy.svg;../Research/pattern-vector-content/forward-vector-pattern-use.svg;../Research/pattern-vector-content/group-inherited-paint.svg;../Research/pattern-vector-content/group-map-origins.svg;../Research/pattern-vector-content/group-opacity-promotion.svg;../Research/pattern-vector-content/native-opacity.svg;../Research/pattern-vector-content/rectangle-first-opacity.svg;../Research/pattern-vector-content/scaled-vector-pattern-symbol.svg;../Research/pattern-vector-content/two-vector-leaves.svg",
+      "beforeFiles": 22,
+      "afterFiles": 11,
+      "beforeBytes": 8499,
+      "afterBytes": 4839,
+      "retainedInputs": [
+        "circle-tile-rectangle.svg",
+        "curve-tile-circle.svg",
+        "empty-group-legacy.svg",
+        "forward-vector-pattern-use.svg",
+        "group-inherited-paint.svg",
+        "group-map-origins.svg",
+        "group-opacity-promotion.svg",
+        "native-opacity.svg",
+        "rectangle-first-opacity.svg",
+        "scaled-vector-pattern-symbol.svg",
+        "two-vector-leaves.svg"
+      ],
+      "uncopiedInputs": [
+        "circle-stroke-tile.svg",
+        "circle-tile-circle.svg",
+        "ellipse-tile-path.svg",
+        "gradient-vector-tile.svg",
+        "phase-and-scale.svg",
+        "recursive-paint-boundary.svg",
+        "shifted-vector-pattern.svg",
+        "thin-stroke-vector-tile.svg",
+        "tile-overflow.svg",
+        "unused-vector-pattern.svg",
+        "vector-outline-placement.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgPatternContentTests.cs",
+        "../../Lokad.Svg.Tests/SvgStaticCssImageTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "pattern-inheritance",
+      "beforeInclude": "../Research/pattern-inheritance/*.svg",
+      "afterInclude": "../Research/pattern-inheritance/alias-paint-in-retained-leaf.svg;../Research/pattern-inheritance/forward-circle-chain.svg;../Research/pattern-inheritance/fractional-grid-origin.svg;../Research/pattern-inheritance/legacy-rectangle-alias.svg;../Research/pattern-inheritance/overridden-dimensions.svg;../Research/pattern-inheritance/scaled-fractional-grid.svg",
+      "beforeFiles": 17,
+      "afterFiles": 6,
+      "beforeBytes": 6675,
+      "afterBytes": 2385,
+      "retainedInputs": [
+        "alias-paint-in-retained-leaf.svg",
+        "forward-circle-chain.svg",
+        "fractional-grid-origin.svg",
+        "legacy-rectangle-alias.svg",
+        "overridden-dimensions.svg",
+        "scaled-fractional-grid.svg"
+      ],
+      "uncopiedInputs": [
+        "backward-circle-alias.svg",
+        "external-template-boundary.svg",
+        "fractional-circle-grid.svg",
+        "fractional-negative-phase.svg",
+        "fractional-path-grid.svg",
+        "href-wins-over-xlink.svg",
+        "inherited-transform.svg",
+        "object-units-template-boundary.svg",
+        "overridden-transform.svg",
+        "own-content-overrides-template.svg",
+        "zero-dimension-alias.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgPatternTemplateTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "pattern-affine-placement",
+      "beforeInclude": "../Research/pattern-affine-placement/*.svg",
+      "afterInclude": "../Research/pattern-affine-placement/curved-content-scale.svg;../Research/pattern-affine-placement/inherited-scale.svg;../Research/pattern-affine-placement/root-path-tile.svg;../Research/pattern-affine-placement/scale-nonuniform.svg;../Research/pattern-affine-placement/tiny-fractional-grid.svg",
+      "beforeFiles": 18,
+      "afterFiles": 5,
+      "beforeBytes": 5861,
+      "afterBytes": 1624,
+      "retainedInputs": [
+        "curved-content-scale.svg",
+        "inherited-scale.svg",
+        "root-path-tile.svg",
+        "scale-nonuniform.svg",
+        "tiny-fractional-grid.svg"
+      ],
+      "uncopiedInputs": [
+        "defs-path-twin.svg",
+        "outer-reference-scale.svg",
+        "overridden-scale.svg",
+        "referenced-circle-scale.svg",
+        "referenced-path-scale.svg",
+        "reflected-pattern-boundary.svg",
+        "root-inert-none.svg",
+        "root-inert-slice.svg",
+        "root-scaled-grid.svg",
+        "rotated-pattern-boundary.svg",
+        "scale-then-translate.svg",
+        "scale-uniform.svg",
+        "translate-then-scale.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgPatternTemplateTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "pattern-general-placement",
+      "beforeInclude": "../Research/pattern-general-placement/*.svg",
+      "afterInclude": "../Research/pattern-general-placement/hatch-fractional-output.svg;../Research/pattern-general-placement/hatch-reflected.svg;../Research/pattern-general-placement/hatch-rotate.svg;../Research/pattern-general-placement/hatch-tiled-curved-target.svg;../Research/pattern-general-placement/inherited-rotated-grid.svg;../Research/pattern-general-placement/shear-single-rectangle.svg",
+      "beforeFiles": 15,
+      "afterFiles": 6,
+      "beforeBytes": 5113,
+      "afterBytes": 2031,
+      "retainedInputs": [
+        "hatch-fractional-output.svg",
+        "hatch-reflected.svg",
+        "hatch-rotate.svg",
+        "hatch-tiled-curved-target.svg",
+        "inherited-rotated-grid.svg",
+        "shear-single-rectangle.svg"
+      ],
+      "uncopiedInputs": [
+        "curved-hatch-target.svg",
+        "hatch-axis-twin.svg",
+        "hatch-fractional-phase.svg",
+        "hatch-quarter-turn.svg",
+        "hatch-tiled-frame.svg",
+        "hatch-tiled-reflection.svg",
+        "inherited-border-stroke.svg",
+        "rotated-multileaf-alpha.svg",
+        "rotated-source-origin.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgPatternTemplateTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "native-clip-winding",
+      "beforeInclude": "../Research/native-clip-winding/*.svg",
+      "afterInclude": "../Research/native-clip-winding/bowtie-leaf.svg;../Research/native-clip-winding/bowtie-ordered-group.svg;../Research/native-clip-winding/bowtie-oval-strokes.svg;../Research/native-clip-winding/concave-leaf.svg;../Research/native-clip-winding/star-evenodd.svg;../Research/native-clip-winding/star-stylesheet-priority.svg",
+      "beforeFiles": 18,
+      "afterFiles": 6,
+      "beforeBytes": 4731,
+      "afterBytes": 1678,
+      "retainedInputs": [
+        "bowtie-leaf.svg",
+        "bowtie-ordered-group.svg",
+        "bowtie-oval-strokes.svg",
+        "concave-leaf.svg",
+        "star-evenodd.svg",
+        "star-stylesheet-priority.svg"
+      ],
+      "uncopiedInputs": [
+        "bowtie-forward.svg",
+        "bowtie-reversed.svg",
+        "collinear-empty.svg",
+        "multi-contour-concave-boundary.svg",
+        "scaled-root-winding.svg",
+        "star-fill-rule-inert.svg",
+        "star-inline-priority.svg",
+        "star-nonzero.svg",
+        "star-parent-rule.svg",
+        "star-root-inherited-rule.svg",
+        "star-target-rule-inert.svg",
+        "two-point-boundary.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs",
+        "../../Lokad.Svg.Tests/SvgNativeClipWindingTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "deferred-paint-leaves",
+      "beforeInclude": "../Research/deferred-paint-leaves/*.svg",
+      "afterInclude": "../Research/deferred-paint-leaves/cyclic-template-boundary.svg;../Research/deferred-paint-leaves/expanded-paint-covering-leaf-mask.svg;../Research/deferred-paint-leaves/expanded-paint-forward-group-clip.svg;../Research/deferred-paint-leaves/expanded-paint-forward-leaf-mask.svg;../Research/deferred-paint-leaves/expanded-paint-use-order-forward.svg;../Research/deferred-paint-leaves/linear-rectangle-forward.svg;../Research/deferred-paint-leaves/linear-reflected-path-forward.svg;../Research/deferred-paint-leaves/linear-skew-bounds-forward.svg;../Research/deferred-paint-leaves/missing-reference-boundary.svg;../Research/deferred-paint-leaves/radial-axis-map-forward.svg",
+      "beforeFiles": 29,
+      "afterFiles": 10,
+      "beforeBytes": 13751,
+      "afterBytes": 4861,
+      "retainedInputs": [
+        "cyclic-template-boundary.svg",
+        "expanded-paint-covering-leaf-mask.svg",
+        "expanded-paint-forward-group-clip.svg",
+        "expanded-paint-forward-leaf-mask.svg",
+        "expanded-paint-use-order-forward.svg",
+        "linear-rectangle-forward.svg",
+        "linear-reflected-path-forward.svg",
+        "linear-skew-bounds-forward.svg",
+        "missing-reference-boundary.svg",
+        "radial-axis-map-forward.svg"
+      ],
+      "uncopiedInputs": [
+        "expanded-paint-use-order-backward.svg",
+        "linear-forward-template.svg",
+        "linear-group-clip-backward.svg",
+        "linear-group-clip-forward.svg",
+        "linear-group-opacity-backward.svg",
+        "linear-group-opacity-forward.svg",
+        "linear-rectangle-backward.svg",
+        "linear-reflected-path-backward.svg",
+        "linear-rotated-source-backward.svg",
+        "linear-rotated-source-forward.svg",
+        "linear-skew-bounds-backward.svg",
+        "paint-use-order-backward.svg",
+        "paint-use-order-forward.svg",
+        "pattern-leaf-backward.svg",
+        "pattern-leaf-forward.svg",
+        "radial-axis-map-backward.svg",
+        "radial-forward-template.svg",
+        "radial-leaf-clip-backward.svg",
+        "radial-leaf-clip-forward.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgDeferredPaintLeafTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "gradient-masks",
+      "beforeInclude": "../Research/gradient-masks/*.svg",
+      "afterInclude": "../Research/gradient-masks/explicit-region.svg;../Research/gradient-masks/gradient-circle-mask.svg;../Research/gradient-masks/legacy-circle-on-leaf.svg;../Research/gradient-masks/root-partial-gradient-mask.svg;../Research/gradient-masks/shared-mask-twice.svg",
+      "beforeFiles": 20,
+      "afterFiles": 5,
+      "beforeBytes": 10083,
+      "afterBytes": 2483,
+      "retainedInputs": [
+        "explicit-region.svg",
+        "gradient-circle-mask.svg",
+        "legacy-circle-on-leaf.svg",
+        "root-partial-gradient-mask.svg",
+        "shared-mask-twice.svg"
+      ],
+      "uncopiedInputs": [
+        "colored-alpha-mask.svg",
+        "colored-luminance-mask.svg",
+        "content-fill-opacity.svg",
+        "content-opacity.svg",
+        "defs-forward-mask.svg",
+        "empty-gradient-content.svg",
+        "empty-region.svg",
+        "fractional-region.svg",
+        "group-gradient-mask.svg",
+        "group-without-opacity.svg",
+        "multiple-content-boundary.svg",
+        "object-content-units-boundary.svg",
+        "radial-luminance-mask.svg",
+        "recursive-content-boundary.svg",
+        "transformed-leaf-boundary.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgGradientMaskTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "mask-local-references",
+      "beforeInclude": "../Research/mask-local-references/*.svg",
+      "afterInclude": "../Research/mask-local-references/clip-target-translation.svg;../Research/mask-local-references/gradient-general-map.svg;../Research/mask-local-references/mask-clipped-use-forward.svg;../Research/mask-local-references/mask-target-translation.svg;../Research/mask-local-references/mask-use-gradient-forward.svg;../Research/mask-local-references/mask-use-target-reflection.svg",
+      "beforeFiles": 19,
+      "afterFiles": 6,
+      "beforeBytes": 12363,
+      "afterBytes": 3672,
+      "retainedInputs": [
+        "clip-target-translation.svg",
+        "gradient-general-map.svg",
+        "mask-clipped-use-forward.svg",
+        "mask-target-translation.svg",
+        "mask-use-gradient-forward.svg",
+        "mask-use-target-reflection.svg"
+      ],
+      "uncopiedInputs": [
+        "clip-use-forward.svg",
+        "far-clipped-linear-paint.svg",
+        "far-clipped-mask-target.svg",
+        "far-translated-linear-paint.svg",
+        "far-translated-mask-opacity.svg",
+        "far-translated-mask-paint.svg",
+        "large-mask-use-alpha.svg",
+        "large-sloped-linear-paint.svg",
+        "large-sloped-mask-use.svg",
+        "mask-nested-gradient.svg",
+        "mask-use-gradient-backward.svg",
+        "mask-use-opacity.svg",
+        "mask-use-target-translation.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgGradientMaskTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "mask-content-order",
+      "beforeInclude": "../Research/mask-content-order/*.svg",
+      "afterInclude": "../Research/mask-content-order/alpha-mask-content-order.svg;../Research/mask-content-order/gradient-mask-content-order.svg;../Research/mask-content-order/inverse-use-mask.svg;../Research/mask-content-order/masked-curved-reference-stroke.svg;../Research/mask-content-order/reversed-use-mask.svg;../Research/mask-content-order/two-reference-mask-leaves.svg",
+      "beforeFiles": 12,
+      "afterFiles": 6,
+      "beforeBytes": 5478,
+      "afterBytes": 2807,
+      "retainedInputs": [
+        "alpha-mask-content-order.svg",
+        "gradient-mask-content-order.svg",
+        "inverse-use-mask.svg",
+        "masked-curved-reference-stroke.svg",
+        "reversed-use-mask.svg",
+        "two-reference-mask-leaves.svg"
+      ],
+      "uncopiedInputs": [
+        "forward-use-mask.svg",
+        "masked-group-opacity.svg",
+        "masked-group-overlap.svg",
+        "partial-path-use-mask.svg",
+        "radial-target-use-mask.svg",
+        "two-solid-mask-leaves.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgMaskContentReplayTests.cs",
+        "../../Lokad.Svg.Tests/SvgGradientMaskTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "mask-group-scopes",
+      "beforeInclude": "../Research/mask-group-scopes/*.svg",
+      "afterInclude": "../Research/mask-group-scopes/empty-inner-masked-sibling.svg;../Research/mask-group-scopes/inner-opacity-outer-mask.svg;../Research/mask-group-scopes/shared-group-clip-and-mask.svg;../Research/mask-group-scopes/shared-start-nested-sibling.svg;../Research/mask-group-scopes/triple-nested-siblings.svg",
+      "beforeFiles": 16,
+      "afterFiles": 5,
+      "beforeBytes": 10816,
+      "afterBytes": 3695,
+      "retainedInputs": [
+        "empty-inner-masked-sibling.svg",
+        "inner-opacity-outer-mask.svg",
+        "shared-group-clip-and-mask.svg",
+        "shared-start-nested-sibling.svg",
+        "triple-nested-siblings.svg"
+      ],
+      "uncopiedInputs": [
+        "empty-nested-masked-group.svg",
+        "empty-preceding-masked-sibling.svg",
+        "explicit-mask-path-fill.svg",
+        "forward-group-masks.svg",
+        "independent-masked-siblings.svg",
+        "inherited-mask-path-fill.svg",
+        "near-opaque-inner-mask.svg",
+        "outer-opacity-nested-mask.svg",
+        "prefix-and-suffix-children.svg",
+        "shared-end-nested-prefix.svg",
+        "shared-start-reversed-masks.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgGradientMaskTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "paint-order",
+      "beforeInclude": "../Research/paint-order/*.svg",
+      "afterInclude": "../Research/paint-order/linear-stroked-rectangle.svg;../Research/paint-order/path-opacity.svg;../Research/paint-order/pattern-content-inheritance.svg;../Research/paint-order/pattern-presentation-alias.svg;../Research/paint-order/symbol-container-inheritance.svg;../Research/paint-order/symbol-nested-use.svg",
+      "beforeFiles": 29,
+      "afterFiles": 6,
+      "beforeBytes": 8038,
+      "afterBytes": 1907,
+      "retainedInputs": [
+        "linear-stroked-rectangle.svg",
+        "path-opacity.svg",
+        "pattern-content-inheritance.svg",
+        "pattern-presentation-alias.svg",
+        "symbol-container-inheritance.svg",
+        "symbol-nested-use.svg"
+      ],
+      "uncopiedInputs": [
+        "circle.svg",
+        "explicit-inherit.svg",
+        "fill-markers-stroke.svg",
+        "fill-stroke-markers.svg",
+        "fill.svg",
+        "group-and-own-override.svg",
+        "initial-resets-parent.svg",
+        "inline-priority.svg",
+        "linear-filled-rectangle.svg",
+        "markers-fill-stroke.svg",
+        "markers-stroke-fill.svg",
+        "markers-stroke.svg",
+        "normal.svg",
+        "pattern-filled-rectangle.svg",
+        "root-inheritance.svg",
+        "stroke-fill-markers.svg",
+        "stroke-markers-fill.svg",
+        "stroke.svg",
+        "stylesheet-important.svg",
+        "symbol-instance-inheritance.svg",
+        "unused-clip-stop-style.svg",
+        "use-inheritance.svg",
+        "use-source-override.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgPaintOrderTests.cs",
+        "../../Lokad.Svg.Tests/SvgPatternTemplateTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "The ownership reader loads path-opacity; pattern-circle is inline. Template InlineData selects pattern-presentation-alias."
+    },
+    {
+      "bank": "mask-presentation",
+      "beforeInclude": "../Research/mask-presentation/*.svg",
+      "afterInclude": "../Research/mask-presentation/fractional-explicit-mask-boundary.svg;../Research/mask-presentation/fractional-mask-nested-opacity-and-sibling.svg;../Research/mask-presentation/fractional-mask-shader-stroke.svg;../Research/mask-presentation/gradient-mask-inherited-alpha.svg;../Research/mask-presentation/linear-ellipse-dashed-solid-stroke.svg;../Research/mask-presentation/pattern-ellipse-solid-stroke.svg;../Research/mask-presentation/stylesheet-overrides-mask-presentation.svg;../Research/mask-presentation/uniform-inherited-fill-alpha.svg;../Research/mask-presentation/use-source-alpha-override.svg",
+      "beforeFiles": 33,
+      "afterFiles": 9,
+      "beforeBytes": 14932,
+      "afterBytes": 3972,
+      "retainedInputs": [
+        "fractional-explicit-mask-boundary.svg",
+        "fractional-mask-nested-opacity-and-sibling.svg",
+        "fractional-mask-shader-stroke.svg",
+        "gradient-mask-inherited-alpha.svg",
+        "linear-ellipse-dashed-solid-stroke.svg",
+        "pattern-ellipse-solid-stroke.svg",
+        "stylesheet-overrides-mask-presentation.svg",
+        "uniform-inherited-fill-alpha.svg",
+        "use-source-alpha-override.svg"
+      ],
+      "uncopiedInputs": [
+        "alpha-mask-inherited-alpha.svg",
+        "child-fill-alpha-override.svg",
+        "circle-mask-inherited-alpha.svg",
+        "direct-gradient-circle-stroke.svg",
+        "fractional-integral-device-mask-clip.svg",
+        "inherited-mask-current-color.svg",
+        "inline-overrides-mask-presentation.svg",
+        "ordered-inverse-inherited-alpha.svg",
+        "ordered-overlap-inherited-alpha.svg",
+        "radial-fill-independent-stroke-alpha.svg",
+        "root-alpha-mask-override.svg",
+        "scaled-layered-mask-shadows.svg",
+        "scaled-mask-shader-no-stroke.svg",
+        "scaled-mask-solid-stroke.svg",
+        "scaled-mask-stroke-only.svg",
+        "scaled-masked-shader-stroke.svg",
+        "scaled-unmasked-shader-stroke.svg",
+        "shader-fill-stroke-element-opacity.svg",
+        "sibling-mask-context-restoration.svg",
+        "single-fractional-mask-stroke.svg",
+        "single-fractional-unmasked-stroke.svg",
+        "single-fractional-white-mask-stroke.svg",
+        "unit-mask-shader-stroke.svg",
+        "use-inherited-mask-alpha.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgGradientMaskTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "compound-clip-content",
+      "beforeInclude": "../Research/compound-clip-content/*.svg",
+      "afterInclude": "../Research/compound-clip-content/arc-ring-implicit-close.svg;../Research/compound-clip-content/cubic-hole-evenodd.svg;../Research/compound-clip-content/disjoint-rotated-children.svg;../Research/compound-clip-content/mixed-line-curve-nested.svg;../Research/compound-clip-content/nested-local-clip-definitions.svg;../Research/compound-clip-content/percentage-affine-radial.svg",
+      "beforeFiles": 18,
+      "afterFiles": 6,
+      "beforeBytes": 9021,
+      "afterBytes": 2152,
+      "retainedInputs": [
+        "arc-ring-implicit-close.svg",
+        "cubic-hole-evenodd.svg",
+        "disjoint-rotated-children.svg",
+        "mixed-line-curve-nested.svg",
+        "nested-local-clip-definitions.svg",
+        "percentage-affine-radial.svg"
+      ],
+      "uncopiedInputs": [
+        "cubic-hole-nonzero.svg",
+        "curved-ring-scaled-viewbox.svg",
+        "mixed-line-curve-opaque.svg",
+        "mixed-line-curve-single.svg",
+        "oval-shared-boundary.svg",
+        "overlapping-cubic-union.svg",
+        "overlapping-opposite-children.svg",
+        "percentage-circle-clip.svg",
+        "reflected-cubic-ring.svg",
+        "rotated-arc-gradient.svg",
+        "union-boundary-start-permuted.svg",
+        "union-boundary-start.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Prefixed InlineData dispatch strips the bank-specific prefix before appending.svg."
+    },
+    {
+      "bank": "marker-content",
+      "beforeInclude": "../Research/marker-content/*.svg",
+      "afterInclude": "../Research/marker-content/marker-element-opacity.svg;../Research/marker-content/marker-forward-cascade.svg;../Research/marker-content/marker-reversed-diagonal.svg",
+      "beforeFiles": 20,
+      "afterFiles": 3,
+      "beforeBytes": 8457,
+      "afterBytes": 1438,
+      "retainedInputs": [
+        "marker-element-opacity.svg",
+        "marker-forward-cascade.svg",
+        "marker-reversed-diagonal.svg"
+      ],
+      "uncopiedInputs": [
+        "composed-line.svg",
+        "line-intermediate-marker.svg",
+        "marker-binary-edges.svg",
+        "marker-content-use.svg",
+        "marker-hidden-and-zero.svg",
+        "marker-missing-boundary.svg",
+        "marker-negative-size.svg",
+        "marker-percentage-anchor.svg",
+        "marker-recursion-boundary.svg",
+        "marker-reversed-axis.svg",
+        "marker-source-paint.svg",
+        "marker-stroke-width.svg",
+        "marker-use-boundary.svg",
+        "marker-user-space.svg",
+        "marker-without-viewbox.svg",
+        "odd-width-line.svg",
+        "path-marker-boundary.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Prefixed InlineData dispatch strips the bank-specific prefix before appending.svg."
+    },
+    {
+      "bank": "path-marker-content",
+      "beforeInclude": "../Research/path-marker-content/*.svg",
+      "afterInclude": "../Research/path-marker-content/path-css-closed-auto.svg;../Research/path-marker-content/path-css-opacity.svg;../Research/path-marker-content/path-forward-mid.svg",
+      "beforeFiles": 23,
+      "afterFiles": 3,
+      "beforeBytes": 10063,
+      "afterBytes": 1249,
+      "retainedInputs": [
+        "path-css-closed-auto.svg",
+        "path-css-opacity.svg",
+        "path-forward-mid.svg"
+      ],
+      "uncopiedInputs": [
+        "marker-css-overflow-boundary.svg",
+        "path-arc-boundary.svg",
+        "path-closed-auto.svg",
+        "path-css-curve-tangents.svg",
+        "path-css-degenerate-curves.svg",
+        "path-css-open-auto.svg",
+        "path-css-order-fill-markers-stroke.svg",
+        "path-css-order-markers-fill-stroke.svg",
+        "path-curve-tangents.svg",
+        "path-degenerate-curves.svg",
+        "path-global-subpaths.svg",
+        "path-mid-dashes.svg",
+        "path-opacity.svg",
+        "path-open-auto.svg",
+        "path-order-fill-markers-stroke.svg",
+        "path-order-markers-fill-stroke.svg",
+        "path-zero-vertices.svg",
+        "point-list-marker-boundary.svg",
+        "point-list-marker-longhand-boundary.svg",
+        "visible-marker-overflow.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Prefixed InlineData dispatch strips the bank-specific prefix before appending.svg."
+    },
+    {
+      "bank": "marker-instance-content",
+      "beforeInclude": "../Research/marker-instance-content/*.svg",
+      "afterInclude": "../Research/marker-instance-content/instance-affine-leaf.svg;../Research/marker-instance-content/instance-forward-alias.svg;../Research/marker-instance-content/instance-marker-source-paint.svg",
+      "beforeFiles": 15,
+      "afterFiles": 3,
+      "beforeBytes": 8188,
+      "afterBytes": 1590,
+      "retainedInputs": [
+        "instance-affine-leaf.svg",
+        "instance-forward-alias.svg",
+        "instance-marker-source-paint.svg"
+      ],
+      "uncopiedInputs": [
+        "instance-arc-boundary.svg",
+        "instance-authored-marker.svg",
+        "instance-css-priority.svg",
+        "instance-curve-auto.svg",
+        "instance-isolated-opacity.svg",
+        "instance-leaf-none.svg",
+        "instance-multiple-aliases.svg",
+        "instance-path-mid-dashes.svg",
+        "instance-point-list-boundary.svg",
+        "instance-recursive-marker-boundary.svg",
+        "instance-source-width.svg",
+        "instance-symbol-group.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Prefixed InlineData dispatch strips the bank-specific prefix before appending.svg."
+    },
+    {
+      "bank": "colored-effects-markers",
+      "beforeInclude": "../Research/colored-effects-markers/*.svg",
+      "afterInclude": "../Research/colored-effects-markers/arc-polyline-markers.svg;../Research/colored-effects-markers/colored-blend-multiply.svg;../Research/colored-effects-markers/colored-signal-diagram.svg;../Research/colored-effects-markers/flood-composite-in.svg;../Research/colored-effects-markers/fractional-offset-only.svg;../Research/colored-effects-markers/offset-identity-result.svg;../Research/colored-effects-markers/small-anisotropic-fractional-offset.svg",
+      "beforeFiles": 13,
+      "afterFiles": 7,
+      "beforeBytes": 7442,
+      "afterBytes": 4957,
+      "retainedInputs": [
+        "arc-polyline-markers.svg",
+        "colored-blend-multiply.svg",
+        "colored-signal-diagram.svg",
+        "flood-composite-in.svg",
+        "fractional-offset-only.svg",
+        "offset-identity-result.svg",
+        "small-anisotropic-fractional-offset.svg"
+      ],
+      "uncopiedInputs": [
+        "colored-blend-normal.svg",
+        "colored-blend-screen.svg",
+        "flood-composite-over.svg",
+        "offset-fractional-source.svg",
+        "offset-negative-offset.svg",
+        "offset-subpixel-offset.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgColoredFilterTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "static-css-images",
+      "beforeInclude": "../Research/static-css-images/*.svg",
+      "afterInclude": "../Research/static-css-images/*.svg",
+      "beforeFiles": 6,
+      "afterFiles": 6,
+      "beforeBytes": 3680,
+      "afterBytes": 3680,
+      "retainedInputs": [
+        "css-image-card.svg",
+        "gray-alpha-solid.svg",
+        "late-nested-cascade.svg",
+        "rgba-fractional-meet.svg",
+        "varied-clipped-opacity.svg",
+        "varied-integral-phase.svg"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgStaticCssImageTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "affine-image-maps",
+      "beforeInclude": "../Research/affine-image-maps/*.svg",
+      "afterInclude": "../Research/affine-image-maps/*.svg",
+      "beforeFiles": 4,
+      "afterFiles": 4,
+      "beforeBytes": 4451,
+      "afterBytes": 4451,
+      "retainedInputs": [
+        "affine-image-map-sheet.svg",
+        "affine-varied-placement.svg",
+        "image-resource-scope.svg",
+        "uniform-fractional-placement.svg"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgStaticCssImageTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "effects-marker-sheet",
+      "beforeInclude": "../Research/effects-marker-sheet/*.svg",
+      "afterInclude": "../Research/effects-marker-sheet/*.svg",
+      "beforeFiles": 12,
+      "afterFiles": 12,
+      "beforeBytes": 13898,
+      "afterBytes": 13898,
+      "retainedInputs": [
+        "affine-filter-regions.svg",
+        "effects-marker-sheet.svg",
+        "image-filter-clip.svg",
+        "image-filter-source.svg",
+        "marker-length-angle-units.svg",
+        "marker-overflow-cascade.svg",
+        "mixed-filter-branches.svg",
+        "mixed-filter-consumers.svg",
+        "mixed-filter-spaces.svg",
+        "nested-filter-halo.svg",
+        "nested-filter-source.svg",
+        "vector-filter-clips.svg"
+      ],
+      "uncopiedInputs": [],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgFontRequestDiscoveryTests.cs",
+        "../../Lokad.Svg.Tests/SvgStaticCssImageTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    },
+    {
+      "bank": "pattern-tile-sheet",
+      "beforeInclude": "../Research/pattern-tile-sheet/*.svg",
+      "afterInclude": "../Research/pattern-tile-sheet/filtered-tile.svg;../Research/pattern-tile-sheet/image-tile.svg;../Research/pattern-tile-sheet/object-box-affine-map.svg;../Research/pattern-tile-sheet/object-box-content.svg;../Research/pattern-tile-sheet/object-box-tile.svg",
+      "beforeFiles": 8,
+      "afterFiles": 5,
+      "beforeBytes": 6976,
+      "afterBytes": 2151,
+      "retainedInputs": [
+        "filtered-tile.svg",
+        "image-tile.svg",
+        "object-box-affine-map.svg",
+        "object-box-content.svg",
+        "object-box-tile.svg"
+      ],
+      "uncopiedInputs": [
+        "pattern-tile-sheet.svg",
+        "reflected-fractional-map.svg",
+        "supplied-font-tile.svg"
+      ],
+      "consumers": [
+        "../../Lokad.Svg.Tests/SvgStaticCssImageTests.cs"
+      ],
+      "manifestSources": [],
+      "binding": "Reviewed literal identities and family/identity InlineData passed to this bank reader; directory literals are excluded."
+    }
+  ],
+  "freshOutput": [
+    {
+      "framework": "net11.0",
+      "selectedFiles": 251,
+      "selectedBytes": 162210,
+      "everySelectedByteMatchesSource": true,
+      "noOmittedFilePresent": true,
+      "explicitAdjacentCopiesPreserved": [
+        "TestData/pattern-source-selection/inert-typography.svg"
+      ]
+    },
+    {
+      "framework": "net10.0",
+      "selectedFiles": 251,
+      "selectedBytes": 162210,
+      "everySelectedByteMatchesSource": true,
+      "noOmittedFilePresent": true,
+      "explicitAdjacentCopiesPreserved": [
+        "TestData/pattern-source-selection/inert-typography.svg"
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "stage": "before",
+      "host": "windows",
+      "framework": "net11.0",
+      "selection": "Unfiltered core suite from fresh isolated output",
+      "seconds": 65.20164520014077,
+      "exitCode": 0,
+      "counters": {
+        "executed": 47773,
+        "passed": 47773,
+        "failed": 0
+      },
+      "identitySha256": "e7935b1296cc64e44a1f620c96b449d02d0ff3d8aba49d80d91ce5b16890549f",
+      "librarySha256": "948701fde0006b88f23359be0d6c9ec22cce8536c5e2d7d4f8dbdd1a53fdcb7c",
+      "testAssemblySha256": "51fb10d64f977caecda72ffe35742b191a7e5958f59591ad4a99535a155fbc3f"
+    },
+    {
+      "stage": "before",
+      "host": "linux",
+      "framework": "net11.0",
+      "selection": "Unfiltered core suite from fresh isolated output",
+      "seconds": 69.62676020013168,
+      "exitCode": 0,
+      "counters": {
+        "executed": 47773,
+        "passed": 47773,
+        "failed": 0
+      },
+      "identitySha256": "7c34aa0126b7fb6420adfab871fa4f32068767759a1e900cf3d8737a3b3d3f37",
+      "librarySha256": "948701fde0006b88f23359be0d6c9ec22cce8536c5e2d7d4f8dbdd1a53fdcb7c",
+      "testAssemblySha256": "51fb10d64f977caecda72ffe35742b191a7e5958f59591ad4a99535a155fbc3f"
+    },
+    {
+      "stage": "after-final",
+      "host": "windows",
+      "framework": "net11.0",
+      "selection": "Unfiltered core suite from fresh isolated output",
+      "seconds": 66.07638680003583,
+      "exitCode": 0,
+      "counters": {
+        "executed": 47773,
+        "passed": 47773,
+        "failed": 0
+      },
+      "identitySha256": "e7935b1296cc64e44a1f620c96b449d02d0ff3d8aba49d80d91ce5b16890549f",
+      "librarySha256": "948701fde0006b88f23359be0d6c9ec22cce8536c5e2d7d4f8dbdd1a53fdcb7c",
+      "testAssemblySha256": "51fb10d64f977caecda72ffe35742b191a7e5958f59591ad4a99535a155fbc3f"
+    },
+    {
+      "stage": "after-final",
+      "host": "linux",
+      "framework": "net11.0",
+      "selection": "Unfiltered core suite from fresh isolated output",
+      "seconds": 69.68250839994289,
+      "exitCode": 0,
+      "counters": {
+        "executed": 47773,
+        "passed": 47773,
+        "failed": 0
+      },
+      "identitySha256": "7c34aa0126b7fb6420adfab871fa4f32068767759a1e900cf3d8737a3b3d3f37",
+      "librarySha256": "948701fde0006b88f23359be0d6c9ec22cce8536c5e2d7d4f8dbdd1a53fdcb7c",
+      "testAssemblySha256": "51fb10d64f977caecda72ffe35742b191a7e5958f59591ad4a99535a155fbc3f"
+    },
+    {
+      "stage": "after-final",
+      "host": "windows",
+      "framework": "net10.0",
+      "selection": "Unfiltered core suite from fresh isolated output",
+      "seconds": 86.26098709995858,
+      "exitCode": 0,
+      "counters": {
+        "executed": 47773,
+        "passed": 47773,
+        "failed": 0
+      },
+      "identitySha256": "e7935b1296cc64e44a1f620c96b449d02d0ff3d8aba49d80d91ce5b16890549f",
+      "librarySha256": "5c2d0fa663cbfeaebb1f7c4f53c86cf9228949cdc1fe3d171b8761309d37ee92",
+      "testAssemblySha256": "fac4dc11c0530bbab2c72bf903dc9efca987b8d390f5d5708b203f8c2af26b73"
+    },
+    {
+      "stage": "after-final",
+      "host": "linux",
+      "framework": "net10.0",
+      "selection": "Unfiltered core suite from fresh isolated output",
+      "seconds": 92.82038089982234,
+      "exitCode": 0,
+      "counters": {
+        "executed": 47773,
+        "passed": 47773,
+        "failed": 0
+      },
+      "identitySha256": "7c34aa0126b7fb6420adfab871fa4f32068767759a1e900cf3d8737a3b3d3f37",
+      "librarySha256": "5c2d0fa663cbfeaebb1f7c4f53c86cf9228949cdc1fe3d171b8761309d37ee92",
+      "testAssemblySha256": "fac4dc11c0530bbab2c72bf903dc9efca987b8d390f5d5708b203f8c2af26b73"
+    }
+  ],
+  "measurements": [
+    {
+      "stage": "build-before-net11.0",
+      "copyTaskMilliseconds": 219,
+      "copyTaskCalls": 12,
+      "buildElapsed": "00:00:28.22"
+    },
+    {
+      "stage": "build-after-final-net11.0",
+      "copyTaskMilliseconds": 240,
+      "copyTaskCalls": 12,
+      "buildElapsed": "00:00:12.28"
+    },
+    {
+      "stage": "build-after-final-net10.0",
+      "copyTaskMilliseconds": 279,
+      "copyTaskCalls": 12,
+      "buildElapsed": "00:00:07.53"
+    }
+  ],
+  "measurementScope": "Copy task times cover all copied assemblies/assets, not just these banks. Builds reuse intermediate compilation and warm caches. Core execution includes discovery/host/TRX and paired host runs. Fewer copied files and bytes are established; no measured build, test-throughput or renderer-speed improvement is claimed.",
+  "retainedDiscoveryDuties": [
+    "Every manifest-selected54 pattern source and512 selection mechanisms",
+    "All23 font programs across six cohorts, including manifest-selected4/5/2 Windows fonts and shared partial-class GposExtension",
+    "Prefix dispatch for compound clips and marker banks",
+    "Both family/identity InlineData orders",
+    "Inert-typography and all other explicit adjacent copies",
+    "All known parser/raster memory refusal, cancellation, cleanup, retry and native pixel duties"
+  ],
+  "initialProjectionGuard": {
+    "failedCases": 6,
+    "missingInputs": [
+      "bowtie-ordered-group.svg",
+      "bowtie-oval-strokes.svg",
+      "concave-leaf.svg",
+      "star-evenodd.svg",
+      "star-stylesheet-priority.svg"
+    ],
+    "cases": [
+      "Lokad.Svg.Tests.SvgCurvedClipSourceTests.Native_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(content: \"concave-leaf\")",
+      "Lokad.Svg.Tests.SvgNativeClipWindingTests.Partial_clip_replay_cancellation_preserves_borrowed_commands_and_identical_retry(isEvenOdd: True)",
+      "Lokad.Svg.Tests.SvgNativeClipWindingTests.Partial_clip_replay_cancellation_preserves_borrowed_commands_and_identical_retry(isEvenOdd: False)",
+      "Lokad.Svg.Tests.SvgCurvedClipSourceTests.Native_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(content: \"bowtie-oval-strokes\")",
+      "Lokad.Svg.Tests.SvgCurvedClipSourceTests.Native_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(content: \"star-evenodd\")",
+      "Lokad.Svg.Tests.SvgCurvedClipSourceTests.Native_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(content: \"star-stylesheet-priority\")"
+    ],
+    "corrected": "Restored five native-clip inputs selected by additional InlineData and the second winding reader; new empty outputs pass all original cases."
+  },
+  "renderer": {
+    "qualification": "filter-source-dependency.json",
+    "sourceCommit": "b82bf0e6ca0602340afa66adf59c14b707bb5895",
+    "packageSha256": "afb51ab0cac03b024b927924d69384fd45ea043cfdc9abf72e2a1c94a04249be",
+    "librarySha256": {
+      "net11": "948701fde0006b88f23359be0d6c9ec22cce8536c5e2d7d4f8dbdd1a53fdcb7c",
+      "net10": "5c2d0fa663cbfeaebb1f7c4f53c86cf9228949cdc1fe3d171b8761309d37ee92"
+    },
+    "hostedReplay": "Not repeated for output-copy-only changes; ../svgweb/originals.json#/currentReview retains the exact current runtime/package/W1 binding."
+  }
+}

@@ -244,6 +244,22 @@ code, fixture inputs, native images, capture metadata or licenses changed.
 
 ## Shared corpus and explicit export
 
+The [core output-asset audit](core-output-assets.json) joins all 39 wildcard rules
+to their actual consumers. Twenty-six now copy explicit slices; thirteen fully
+consumed banks retain their globs. Fresh output contains 251 of the original 549
+SVG/font files, avoiding 298 copies and 125,565 bytes per framework. All 549 source
+assets and their native references remain committed. Selection includes manifests,
+prefix dispatch, both family/identity argument orders and shared partial-class
+font readers; adjacent explicit copies remain intact.
+
+All 47,773 core cases pass on Windows/Linux under .NET 11 and .NET 10, preserving
+every case identity and assertion. The .NET 11 test assembly is byte-identical
+before/after. An initial projection missed five clip inputs; six failures exposed
+them, and corrected empty outputs pass the full suite. .NET 11 wall time was
+65.20/66.08 s before/after on Windows and 69.63/69.68 s on Linux. Copy-task time
+was 219/240 ms; builds reused intermediate compilation and warm caches. This
+establishes fewer copied files and bytes, with no measured throughput improvement.
+
 Visual tests resolve the committed research corpus once per process and read it
 in place. They prefer the checkout to stale copies from previous builds. An
 explicit `LOKAD_SVG_RESEARCH_ROOT` overrides discovery; missing explicit roots fail.

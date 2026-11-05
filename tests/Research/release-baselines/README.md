@@ -104,6 +104,10 @@ loops and complete bank qualification, with measured setup costs and metadata us
 mechanism/contract JSON dependencies and leaves twelve rendering/research reports
 in the corpus. Fresh outputs retain byte-identical test assemblies and all 47,699
 core cases on both hosts/runtimes; no reference or test was removed.
+[Core output assets](core-output-assets.json) closes all 39 SVG/font wildcard
+rules: 251 consumed files replace 549 copies, preserving the complete source
+banks and all 47,773 core case identities on both hosts/runtimes. Fresh outputs
+verify consumer joins; measured full-suite time remains flat.
 [Test selection](test-selection.json) separates Research from responsibility layers
 and preserves the relocated background witness, full cases and .NET 10 selection.
 [Filter/mask responsibilities](filter-test-responsibilities.json) classifies 22 mixed
