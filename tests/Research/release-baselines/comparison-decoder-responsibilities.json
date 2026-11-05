@@ -365,7 +365,53 @@
       },
       "interpretation": "Whole-assembly discovery dominates this filtered run. The class split does not bypass discovery or reduce its data enumeration. Single noisy functional observations establish no speedup or renderer throughput; no repeated benchmark or discovery batching."
     },
-    "qualificationScope": "Test-only restructuring with exact original source and case-identity reconstruction. Production libraries match the existing qualified package assets; no new full-suite/package CI claim. Full milestone results and the unchanged frozen Windows DejaVu discrepancy remain in decoration-fragment-order.json. No reference, fixture, tolerance, runtime, public API, package or CI policy changes."
+    "qualificationScope": "Test-only restructuring with exact original source and case-identity reconstruction. Production libraries match the existing qualified package assets; no new full-suite/package CI claim. Full milestone results and the unchanged frozen Windows DejaVu discrepancy remain in decoration-fragment-order.json. No reference, fixture, tolerance, runtime, public API, package or CI policy changes.",
+    "providerInvestigation": {
+      "sourceCommit": "88efd53c4ba4ad1aaea6d8c0af7aa3a35ae3b438",
+      "host": "windows",
+      "framework": "net11.0",
+      "testAssemblySha256": "2fb8ea752f1abe20f52c80356bd3e5a8a0834fbf7c8af507e1a819de912924e6",
+      "memberDataUses": 97,
+      "rows": 75967,
+      "errors": 0,
+      "method": "Standalone process loads the existing test assembly and dependencies. Before loading types, set AppContext base to the test asset directory and assert it. Enumerate public test methods by ordinal type/method name, resolve each MemberData static provider, invoke once with no arguments and enumerate every object[] row. Stopwatch includes provider invocation, deferred enumeration and first static initialization. Record GC total allocated byte deltas, not live or peak memory. No test body runs; no adapter filtering, discovery enumeration or test identity changes.",
+      "milliseconds": 324.4517,
+      "allocatedBytes": 160516120,
+      "slowest": [
+        {
+          "provider": "Lokad.Svg.VisualTests.SvgPaintInputReferenceTests.ResearchCases",
+          "rows": 7269,
+          "milliseconds": 187.58,
+          "allocatedBytes": 130836304
+        },
+        {
+          "provider": "Lokad.Svg.VisualTests.SvgFilterSourceContextReferenceTests.ResearchCases",
+          "rows": 9190,
+          "milliseconds": 26.2079,
+          "allocatedBytes": 6280904
+        },
+        {
+          "provider": "Lokad.Svg.VisualTests.SvgAffineSourceReferenceTests.Cases",
+          "rows": 84,
+          "milliseconds": 21.9121,
+          "allocatedBytes": 277368
+        },
+        {
+          "provider": "Lokad.Svg.VisualTests.SvgShaderContextReferenceTests.ResearchCases",
+          "rows": 12924,
+          "milliseconds": 15.0998,
+          "allocatedBytes": 7690752
+        },
+        {
+          "provider": "Lokad.Svg.VisualTests.SvgSymbolInstanceReferenceTests.Cases",
+          "rows": 1625,
+          "milliseconds": 7.559,
+          "allocatedBytes": 1632752
+        }
+      ],
+      "providerMembershipSha256": "b56f35b02b959bc9b19d980350fbb3a656cfd23799deb55246c9a8dce54da04d",
+      "interpretation": "Provider-only enumeration is about0.32s versus the independently observed8.63\u201310.15s adapter discovery interval. This probe excludes adapter case construction, identity/serialization, messaging and adapter GC pressure; it does not attribute that remainder to a specific cause. No expensive provider bottleneck is established that warrants another rewrite, generated index or project split. Existing lightweight bank selection and individually discovered cases stay intact. No speedup or renderer-performance claim."
+    }
   },
-  "nextAction": "Keep filtered class checks for iteration and both mechanism/rendering siblings for comparison or codec changes. Any future discovery optimization must first identify an expensive provider, preserve individually discovered identities and native/source checks, and justify project isolation by measured benefit."
+  "nextAction": "The provider investigation closes this bounded discovery diagnostic without a source change. Resume concrete correctness/ownership work; investigate adapter costs only with a measured development need, preserving every individually discovered identity and native/source assertion."
 }
