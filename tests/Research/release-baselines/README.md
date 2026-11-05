@@ -212,12 +212,18 @@ R49/R60/R61 findings: all 54 named declarations join 45 independently qualified
 native cases. The full R48 screen, R103/R104 paint screen and R108 path-baseline
 cohorts remain required regressions. Further text corrections need a new witness.
 
+The [original shader/alpha acceptance](shader-original-acceptance.json) joins
+all 200 R44 pairs, 364 R69 pairs and three supplied-font symbol pairs to current
+independent native targets. Existing numerical, text-box, sampling, API and
+ownership controls retain their separate duties. The optional Research screen
+preserves all 1,134 declarations and 158 platform differences without changing
+production code, layout, references or tolerances.
+
 The outstanding review starts at these committed collections:
 
 | Findings | Evidence and next review |
 | --- | --- |
-| R54/R55/R69; R85/R86 | [Color alpha](../gradient-color-alpha/README.md), [shader strokes](../shader-hairlines/capture.json), [effect contexts](../shader-contexts/README.md), [source contexts](../filter-source-contexts/README.md) and [symbol canvases](symbol-canvas-qualification.json): bounds/maps, focal arithmetic and nonconstant paints. The context screens retain all 12,960, 9,216 and 960 original identities, including unequal native pairs; broader shader findings remain separate. |
-| R70 | [Decorations](../stroked-decorations/README.md): glyph intersections through paint, font and effect scopes. The [ink review](decoration-ink-review.json) retains source-width/stretch evidence. The [clip qualification](decoration-clip-qualification.json) closes its three precision failures: all 39 ink and 13 style controls are native exact, with shared canonical contours and independently rounded exclusion unions. Glyph layout and frozen targets remain unchanged. |
+| R85/R86 | [Shader strokes](../shader-hairlines/capture.json), [effect contexts](../shader-contexts/README.md), [source contexts](../filter-source-contexts/README.md) and [symbol canvases](symbol-canvas-qualification.json): retain their complete source/native joins. Recover the remaining wide lineage's upstream source recipes before claiming complete historical provenance. |
 | R74/C04 | [Reviewed selection failures closed](resource-selection.md); nested SVG in retained definitions remains a documented exclusion with its native control. |
 | D01-D03 | [Support](../../../docs/SUPPORT_MATRIX.md), API and documentation agreement as the next-release contracts change. |
 

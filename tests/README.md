@@ -41,6 +41,13 @@ preserves the original constructions without another SVG/PNG collection. Existin
 mechanism and ownership tests protect shaping, ink exclusions, budgets and retry;
 the rendering inputs use the canonical conversion path.
 
+The [original shader/alpha screen](Research/shader-originals/capture.json) keeps
+1,134 independently discovered comparisons plus one integrity case as Research.
+Select `FullyQualifiedName~SvgShaderOriginalReferenceTests`. Its
+[recipes](Lokad.Svg.VisualTests/SvgShaderOriginalReferenceTests.Sources.cs) reconstruct
+the original gradient and alpha cohorts; six small symbol sources remain explicit.
+Numerical boundaries, ownership and API forms stay in their existing tests.
+
 Text declaration/family parsing and whitespace/list normalization are direct
 mechanisms. Their public early-failure, cancellation, storage transfer and growth
 checks remain contracts. The [qualification](Research/release-baselines/text-front-end-responsibilities.json)

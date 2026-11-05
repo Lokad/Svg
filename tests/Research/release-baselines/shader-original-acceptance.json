@@ -1,0 +1,433 @@
+{
+  "status": "Original R54/R55/R69 source/native acceptance joins and local focused/integration qualification pass. Full CI record is pending; renderer/package/W1 qualification is inherited from the identical already-qualified library assets.",
+  "sourceBaseCommit": "e7e3c56bd1683d132c3800b623b56539bfb6c741",
+  "renderingBank": "../shader-originals/capture.json",
+  "sourceFactory": "../../Lokad.Svg.VisualTests/SvgShaderOriginalReferenceTests.Sources.cs",
+  "originals": {
+    "pairs": 567,
+    "inputs": 1134,
+    "groups": {
+      "r44-consumers": 384,
+      "r44-focal": 16,
+      "color-alpha": 80,
+      "percentage-color-alpha": 480,
+      "percentage-alpha-consumers": 168,
+      "r47-expanded-consumers": 6
+    },
+    "unequalNativePairs": {
+      "windows": 60,
+      "linux": 60
+    },
+    "platformDifferences": 158,
+    "reconstructedInputs": 1128,
+    "retainedSymbolSourceInputs": 6
+  },
+  "originalCollections": [
+    {
+      "group": "r44-consumers",
+      "inputs": 384,
+      "originalCollectionSha256": "e88d5c0b1f6e996719b58fa9330c3350abf1b5869c4067ed883ba69655b862dd",
+      "sourceOptionsSha256": "748b4de2395ad45bbc9f2923059b22cf5ffc5d0a8ae7273e07091f1b2aecf361"
+    },
+    {
+      "group": "r44-focal",
+      "inputs": 16,
+      "originalCollectionSha256": "e88d5c0b1f6e996719b58fa9330c3350abf1b5869c4067ed883ba69655b862dd",
+      "sourceOptionsSha256": "900472a7745ea31b10924573f0717de2a1e6920a3c5b82dee75c1beacec75f23"
+    },
+    {
+      "group": "color-alpha",
+      "inputs": 80,
+      "originalCollectionSha256": "a290b5776e4ba61673f8ee5d300ae13fc561e0ea33e68b62777f74e8aade80f4",
+      "sourceOptionsSha256": "dbeb0d315cd8ae641719c8f405ab50ffcf3a067f0ffd26e5bd7d5f12c9dcaabc"
+    },
+    {
+      "group": "percentage-color-alpha",
+      "inputs": 480,
+      "originalCollectionSha256": "dd8612a54529847b8ad271dd36950f4996212b547ec87211e05ff2056c808c23",
+      "sourceOptionsSha256": "21c11bba6a9aa4441d64ded0ce040e7e494217d5d7585eb10c7e04cce4f951d6"
+    },
+    {
+      "group": "percentage-alpha-consumers",
+      "inputs": 168,
+      "originalCollectionSha256": "122223d3eac640a2a8209a03db13d4cbbeceae7b8dbbeb8043717e999eac9985",
+      "sourceOptionsSha256": "67fb3a94ad705be43d10a8bff73e9af7282b4fa805f230812e19a0747404de4a"
+    },
+    {
+      "group": "r47-expanded-consumers",
+      "inputs": 6,
+      "originalCollectionSha256": "c7cfb2b952e9145a4c0a217e2fe8aec275df44abf28d9dc6f275ba56e4ceb627",
+      "sourceOptionsSha256": "75b2ad3d3c304176684b7d55aac48dc8e1c443b3fc83f15aef7ed55089c25b91"
+    }
+  ],
+  "namedWitnesses": {
+    "R54": [
+      "r44-consumers-linearGradient-objectBoundingBox-shear-False-text-reflect-candidate",
+      "r44-consumers-linearGradient-objectBoundingBox-shear-False-text-reflect-control",
+      "r44-consumers-linearGradient-objectBoundingBox-shear-True-textstroke-reflect-candidate",
+      "r44-consumers-linearGradient-objectBoundingBox-shear-True-textstroke-reflect-control",
+      "r44-consumers-radialGradient-objectBoundingBox-shear-False-text-reflect-candidate",
+      "r44-consumers-radialGradient-objectBoundingBox-shear-False-text-reflect-control",
+      "r44-consumers-radialGradient-objectBoundingBox-shear-True-textstroke-reflect-candidate",
+      "r44-consumers-radialGradient-objectBoundingBox-shear-True-textstroke-reflect-control",
+      "batch3-273-candidate",
+      "batch3-273-control",
+      "batch3-562-candidate",
+      "batch3-562-control",
+      "batch3-849-candidate",
+      "batch3-849-control"
+    ],
+    "R55": [
+      "r44-consumers-radialGradient-userSpaceOnUse-shear-True-stroke-reflect-candidate",
+      "r44-consumers-radialGradient-userSpaceOnUse-shear-True-stroke-reflect-control",
+      "r44-consumers-radialGradient-userSpaceOnUse-shear-True-marker-reflect-candidate",
+      "r44-consumers-radialGradient-userSpaceOnUse-shear-True-marker-reflect-control"
+    ],
+    "R69": [
+      "color-alpha-0960-candidate",
+      "color-alpha-0960-control",
+      "color-alpha-0961-candidate",
+      "color-alpha-0961-control",
+      "color-alpha-0964-candidate",
+      "color-alpha-0964-control",
+      "color-alpha-0965-candidate",
+      "color-alpha-0965-control",
+      "percentage-color-alpha-b-0248-candidate",
+      "percentage-color-alpha-b-0248-control",
+      "percentage-color-alpha-b-0250-candidate",
+      "percentage-color-alpha-b-0250-control",
+      "percentage-color-alpha-b-0252-candidate",
+      "percentage-color-alpha-b-0252-control",
+      "percentage-color-alpha-b-0254-candidate",
+      "percentage-color-alpha-b-0254-control",
+      "percentage-color-alpha-b-0272-candidate",
+      "percentage-color-alpha-b-0272-control",
+      "percentage-alpha-consumers-c-0060-candidate",
+      "percentage-alpha-consumers-c-0060-control",
+      "percentage-alpha-consumers-c-0070-candidate",
+      "percentage-alpha-consumers-c-0070-control",
+      "percentage-alpha-consumers-c-0074-candidate",
+      "percentage-alpha-consumers-c-0074-control",
+      "percentage-alpha-consumers-c-0082-candidate",
+      "percentage-alpha-consumers-c-0082-control",
+      "percentage-alpha-consumers-c-0094-candidate",
+      "percentage-alpha-consumers-c-0094-control",
+      "percentage-alpha-consumers-c-0106-candidate",
+      "percentage-alpha-consumers-c-0106-control",
+      "percentage-alpha-consumers-c-0118-candidate",
+      "percentage-alpha-consumers-c-0118-control",
+      "percentage-alpha-consumers-c-0130-candidate",
+      "percentage-alpha-consumers-c-0130-control"
+    ]
+  },
+  "acceptance": [
+    {
+      "finding": "R54",
+      "requirement": "Calibrate source object boxes separately from shader-local/reference/drawing maps; retain glyph alpha and exact user-space controls.",
+      "evidence": [
+        "../text-paint-bounds/capture.json",
+        "../text-paint-bounds/path-capture.json",
+        "../../Lokad.Svg.Tests/SvgTextPaintBoundsTests.cs",
+        "../../Lokad.Svg.Tests/SvgRecordedShaderCoordinatesTests.cs",
+        "source-paint-qualification.json",
+        "paint-stages.md"
+      ],
+      "reason": "Independent DOM bounds, source character widths and native matrix vectors protect their distinct numerical stages. The complete original consumer bank checks both shader kinds/paint roles, template and standalone sources, affine maps and both units against actual browser targets."
+    },
+    {
+      "finding": "R54",
+      "requirement": "Supplied-font instances/resources, runs/chunks/spans, fractional fonts/scales and raw/prepared APIs retain shaping, fitting and ownership.",
+      "evidence": [
+        "../text-paint-bounds/image-capture.json",
+        "../text-paint-bounds/precision-screening.json",
+        "text-paint-replay.json",
+        "text-layout-acceptance.json",
+        "../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs"
+      ],
+      "reason": "All134 supplied-font declarations in the original screen retain independent platform pixels. Existing wider text-box/paint banks and representative prepared/node contracts retain fractional positions, mixed fonts, fitted text and resource replay; their inputs and assertions are unchanged."
+    },
+    {
+      "finding": "R55",
+      "requirement": "Keep focal-circle coordinates, spread, stops, alpha, output maps and interpolation/quantization stages distinct.",
+      "evidence": [
+        "../../Lokad.Svg.Tests/SvgGradientCoordinateTests.cs",
+        "../../Lokad.Svg.Tests/SvgRadialSourceBindingTests.cs",
+        "../../Lokad.Svg.Tests/SvgRadialInheritanceTests.cs",
+        "../../Lokad.Svg.Tests/SvgGradientRampTests.cs",
+        "../radial-axis-source-maps/capture.json",
+        "../gradient-spread-stages/capture.json"
+      ],
+      "reason": "Original radial/focal sources now match their actual native targets. Independent compiled-native lane/position/pixel vectors, separate retained definition/local/drawing matrices and existing bounded spread/ramp cases protect the shared cause without channel bias or tolerance changes."
+    },
+    {
+      "finding": "R55",
+      "requirement": "Preserve existing exact radial banks and allocation/cancellation/ownership contracts.",
+      "evidence": [
+        "../../Lokad.Svg.Tests/SvgRadialPaintStorageTests.cs",
+        "../../Lokad.Svg.Tests/SvgAffineRadialPaintTests.cs",
+        "../../Lokad.Svg.Tests/SvgRectangleShaderOwnershipTests.cs",
+        "../../Lokad.Svg.Tests/SvgShaderHairlineOwnershipTests.cs",
+        "shader-ownership.json"
+      ],
+      "reason": "Existing retained-paint ownership, sibling scene reservations, separate parser/raster allowances, late refusal, mid-replay cancellation, cleanup and retry remain. No new paint metadata or allocation path is introduced."
+    },
+    {
+      "finding": "R69",
+      "requirement": "Keep numeric, percentage and encoded-byte alpha, RGB/HSL grammar and rounding boundaries distinct.",
+      "evidence": [
+        "../../Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs",
+        "../../Lokad.Svg.Tests/SvgGradientStopPrecisionTests.cs",
+        "../gradient-color-alpha/capture.json",
+        "../gradient-color-alpha/resolved-known-differences.json",
+        "../gradient-color-alpha/README.md"
+      ],
+      "reason": "The728 original alpha declarations remain separate, including60 independently unequal pairs. Direct parser/constant-store vectors retain exhaustive useful boundaries; the existing10204-input gradient bank retains its own native targets and144 former differences."
+    },
+    {
+      "finding": "R69",
+      "requirement": "Retain stop/flood opacity, source-over/backgrounds, text/markers, resources and color-space transitions without changing public byte-color contracts.",
+      "evidence": [
+        "../solid-paint-alpha/capture.json",
+        "../filter-uniform-precision/capture.json",
+        "../../Lokad.Svg.Tests/SvgCoverageAlphaTests.cs",
+        "../../Lokad.Svg.Tests/SvgFilterColorProgramCoverageTests.cs",
+        "../../Lokad.Svg.Tests/SvgSolidPaintOwnershipTests.cs",
+        "../../Lokad.Svg.Tests/SvgConversionApiContractTests.cs"
+      ],
+      "reason": "The original screen keeps direct/use/symbol/pattern and solid/gradient/stop/flood/mask/marker/text sources. Existing canonical banks protect remaining composition/color-space interactions; direct mechanisms, representative APIs and refusal/cancellation/retry stay separate. No public contract, runtime, target or tolerance changes."
+    }
+  ],
+  "validation": {
+    "focused": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "a92fb686fbd70317a92a56767c5bd02e5769d1c5553abb5b964ecc63f1fbec4d",
+        "selection": "FullyQualifiedName~SvgShaderOriginalReferenceTests",
+        "exitCode": 0,
+        "seconds": 12.156207100022584,
+        "counters": {
+          "executed": "1135",
+          "passed": "1135",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "a92fb686fbd70317a92a56767c5bd02e5769d1c5553abb5b964ecc63f1fbec4d",
+        "selection": "FullyQualifiedName~SvgShaderOriginalReferenceTests",
+        "exitCode": 0,
+        "seconds": 15.095389900030568,
+        "counters": {
+          "executed": "1135",
+          "passed": "1135",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "67f3f01934833c301fff02e7937bd3c998517f6652189c2fc77e442ec6988aa7",
+        "selection": "FullyQualifiedName~SvgShaderOriginalReferenceTests",
+        "exitCode": 0,
+        "seconds": 11.754587200004607,
+        "counters": {
+          "executed": "1135",
+          "passed": "1135",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "67f3f01934833c301fff02e7937bd3c998517f6652189c2fc77e442ec6988aa7",
+        "selection": "FullyQualifiedName~SvgShaderOriginalReferenceTests",
+        "exitCode": 0,
+        "seconds": 13.25710629997775,
+        "counters": {
+          "executed": "1135",
+          "passed": "1135",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "affectedIntegration": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "892f262950ad56b64fa8f044eb34952fee1520cb6959583fe04cdba3ede43437",
+        "selection": "FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgGradientCoordinateTests|FullyQualifiedName~SvgGradientStopPrecisionTests|FullyQualifiedName~SvgGradientRampTests|FullyQualifiedName~SvgRadialSourceBindingTests|FullyQualifiedName~SvgRadialInheritanceTests|FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgSolidPaintOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests|FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgAffineRadialPaintTests|FullyQualifiedName~SvgCoverageAlphaTests|FullyQualifiedName~SvgFilterColorProgramCoverageTests",
+        "exitCode": 0,
+        "seconds": 12.050893399864435,
+        "counters": {
+          "executed": "1582",
+          "passed": "1582",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "892f262950ad56b64fa8f044eb34952fee1520cb6959583fe04cdba3ede43437",
+        "selection": "FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgGradientCoordinateTests|FullyQualifiedName~SvgGradientStopPrecisionTests|FullyQualifiedName~SvgGradientRampTests|FullyQualifiedName~SvgRadialSourceBindingTests|FullyQualifiedName~SvgRadialInheritanceTests|FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgSolidPaintOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests|FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgAffineRadialPaintTests|FullyQualifiedName~SvgCoverageAlphaTests|FullyQualifiedName~SvgFilterColorProgramCoverageTests",
+        "exitCode": 0,
+        "seconds": 16.920162100112066,
+        "counters": {
+          "executed": "1582",
+          "passed": "1582",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "a92fb686fbd70317a92a56767c5bd02e5769d1c5553abb5b964ecc63f1fbec4d",
+        "selection": "FullyQualifiedName~SvgShaderOriginalReferenceTests|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~solid-paint-alpha|DisplayName~gradient-color-alpha|DisplayName~gradient-factory-colors|DisplayName~gradient-stop-preparation))|FullyQualifiedName~Declared_stroked_decoration_outputs|FullyQualifiedName~Text_paint_sheet_releases_owners",
+        "exitCode": 0,
+        "seconds": 74.11971409991384,
+        "counters": {
+          "executed": "30136",
+          "passed": "30136",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "a92fb686fbd70317a92a56767c5bd02e5769d1c5553abb5b964ecc63f1fbec4d",
+        "selection": "FullyQualifiedName~SvgShaderOriginalReferenceTests|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~solid-paint-alpha|DisplayName~gradient-color-alpha|DisplayName~gradient-factory-colors|DisplayName~gradient-stop-preparation))|FullyQualifiedName~Declared_stroked_decoration_outputs|FullyQualifiedName~Text_paint_sheet_releases_owners",
+        "exitCode": 0,
+        "seconds": 114.09007259993814,
+        "counters": {
+          "executed": "30136",
+          "passed": "30136",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "ff9d06897229d0277b19e014b201b00839d263551988602c2ff39f76653230ea",
+        "selection": "FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgGradientCoordinateTests|FullyQualifiedName~SvgGradientStopPrecisionTests|FullyQualifiedName~SvgGradientRampTests|FullyQualifiedName~SvgRadialSourceBindingTests|FullyQualifiedName~SvgRadialInheritanceTests|FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgSolidPaintOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests|FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgAffineRadialPaintTests|FullyQualifiedName~SvgCoverageAlphaTests|FullyQualifiedName~SvgFilterColorProgramCoverageTests",
+        "exitCode": 0,
+        "seconds": 11.369805800030008,
+        "counters": {
+          "executed": "1582",
+          "passed": "1582",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "ff9d06897229d0277b19e014b201b00839d263551988602c2ff39f76653230ea",
+        "selection": "FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgGradientCoordinateTests|FullyQualifiedName~SvgGradientStopPrecisionTests|FullyQualifiedName~SvgGradientRampTests|FullyQualifiedName~SvgRadialSourceBindingTests|FullyQualifiedName~SvgRadialInheritanceTests|FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgSolidPaintOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests|FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgAffineRadialPaintTests|FullyQualifiedName~SvgCoverageAlphaTests|FullyQualifiedName~SvgFilterColorProgramCoverageTests",
+        "exitCode": 0,
+        "seconds": 13.273709100205451,
+        "counters": {
+          "executed": "1582",
+          "passed": "1582",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "67f3f01934833c301fff02e7937bd3c998517f6652189c2fc77e442ec6988aa7",
+        "selection": "FullyQualifiedName~SvgShaderOriginalReferenceTests|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~solid-paint-alpha|DisplayName~gradient-color-alpha|DisplayName~gradient-factory-colors|DisplayName~gradient-stop-preparation))|FullyQualifiedName~Declared_stroked_decoration_outputs|FullyQualifiedName~Text_paint_sheet_releases_owners",
+        "exitCode": 0,
+        "seconds": 50.64689900004305,
+        "counters": {
+          "executed": "30136",
+          "passed": "30136",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "67f3f01934833c301fff02e7937bd3c998517f6652189c2fc77e442ec6988aa7",
+        "selection": "FullyQualifiedName~SvgShaderOriginalReferenceTests|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~solid-paint-alpha|DisplayName~gradient-color-alpha|DisplayName~gradient-factory-colors|DisplayName~gradient-stop-preparation))|FullyQualifiedName~Declared_stroked_decoration_outputs|FullyQualifiedName~Text_paint_sheet_releases_owners",
+        "exitCode": 0,
+        "seconds": 113.66907520010136,
+        "counters": {
+          "executed": "30136",
+          "passed": "30136",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "qualifiedRenderer": {
+    "sourceCommit": "1740d2c39d1bd93bc21680f4f344e9e8727ecc72",
+    "evidence": "decoration-fragment-order.json",
+    "librarySha256": {
+      "net11.0": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+      "net10.0": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1"
+    },
+    "packageFiles": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "c4cbdf6a520e32814161f3ea8d764fda49cf5ef1d97996d36a198feb3182785a",
+        "bytes": 2437376
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "08f346caed2b033f4fc2680b4a74708990379948457ac7552ef3b19c5bae666c",
+        "bytes": 726144
+      }
+    ],
+    "inherited": "Full Windows/Linux.NET11/.NET10 package-asset suites, repeat packages, installed consumers and204 hosted originals/22 font contexts/13 diagnostics remain bound to these identical assets. Source code and all prior test source/assertions/references are unchanged; no repeated runtime/package/W1 gate is needed for these added Research recipes."
+  },
+  "coverage": {
+    "reconstructedInputs": 1128,
+    "explicitSymbolInputs": 6,
+    "addedRenderingCases": 1134,
+    "addedIntegrityCases": 1,
+    "category": "Research",
+    "canonicalConversionsPerInput": 1,
+    "repeatedApiProduct": false,
+    "priorSourcesAndNativeReferencesChanged": 0,
+    "fastSelectionChanged": false,
+    "previousFailingRegressions": "Every prior routine and Research case remains. New optional original-source tests complement existing failing-before orthogonal regressions; equal resulting images are not used as a redundancy proof."
+  },
+  "measurementScope": "Single-run functional validation seconds include discovery/host/TRX and exclude build. Focused1135-case scope takes11.75\u201315.10s on the four host/runtime combinations. This is new optional coverage, not a before/after speedup or renderer throughput claim.",
+  "remaining": "The broader R85/R86 wide-lineage upstream-source provenance, W1 admission boundaries, support audit and test-responsibility review remain separate."
+}
