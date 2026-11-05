@@ -45,6 +45,11 @@ ownership remain distinct; all executable tokens and 12,271 compiled methods are
 before optimized line lowering and keep text-path percentages in their numeric
 domain. Direct failing-before controls and one frozen native fixture protect both changes.
 
+[Decoration fragment order](decoration-fragment-order.json) shares direct/path
+painting without changing glyph layout. All 684 original inputs preserve their
+independent native targets; 22 routine regressions and existing ink, style,
+ownership and API controls retain the known interactions.
+
 [Filter graph demand](filter-graph-demand.json) separates final-result pixel
 dependencies from declaration validation and region defaults. Ten failing-before
 allocation contracts retain unread branches without private pixel planes;

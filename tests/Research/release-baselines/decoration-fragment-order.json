@@ -1,5 +1,5 @@
 {
-  "status": "R70 shared fragment-order correction passes focused and affected integration checks. Full committed runtime/package/original-source/CI qualification is pending.",
+  "status": "R70 is closed: the shared fragment painter preserves every original decoration/glyph target,52 style/ink controls and existing direct/path/resource/ownership interactions. Clean committed package assets pass full Windows/Linux.NET11/.NET10 qualification apart from the unchanged frozen Windows DejaVu authority case. Linux CI passes; Windows CI has that sole known failure.",
   "baselineSourceCommit": "1f194273b9dd3edd3282905f52c720caad79bdc8",
   "change": {
     "file": "../../../src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs",
@@ -321,8 +321,8 @@
   "retainedControls": {
     "inputs": 52,
     "manifests": [
-      "../text-paint-bounds/decoration-model-review.json",
-      "../text-paint-bounds/decoration-ink-review.json"
+      "decoration-model-review.json",
+      "decoration-ink-review.json"
     ],
     "result": "Every pre-existing native target remains exact on Windows and Linux."
   },
@@ -499,7 +499,635 @@
         "failures": []
       }
     ],
-    "scope": "Functional validation elapsed seconds, not renderer throughput. No ownership/API product was multiplied across the new images; the330 affected core checks retain their existing distinct contracts."
+    "scope": "Functional validation elapsed seconds, not renderer throughput. No ownership/API product was multiplied across the new images; the330 affected core checks retain their existing distinct contracts.",
+    "fullPackageAssets": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "892f262950ad56b64fa8f044eb34952fee1520cb6959583fe04cdba3ede43437",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 71.96571039990522,
+        "counters": {
+          "executed": "47926",
+          "passed": "47926",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "892f262950ad56b64fa8f044eb34952fee1520cb6959583fe04cdba3ede43437",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 77.5209259998519,
+        "counters": {
+          "executed": "47926",
+          "passed": "47926",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "02e939fb55963ab2654992b227c393c4c1f4fed97bb36bfbf6b23e018a043b90",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 330.9256730999332,
+        "counters": {
+          "executed": "75735",
+          "passed": "75734",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "02e939fb55963ab2654992b227c393c4c1f4fed97bb36bfbf6b23e018a043b90",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 339.0240333999973,
+        "counters": {
+          "executed": "75735",
+          "passed": "75735",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "0934e3489f44921c1a0e043b89feb2a2491a4933a93df9afae7293724757d50e",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 2.7114764999132603,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "0934e3489f44921c1a0e043b89feb2a2491a4933a93df9afae7293724757d50e",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.2947450999636203,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "ff9d06897229d0277b19e014b201b00839d263551988602c2ff39f76653230ea",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 69.83317550015636,
+        "counters": {
+          "executed": "47926",
+          "passed": "47926",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "ff9d06897229d0277b19e014b201b00839d263551988602c2ff39f76653230ea",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 67.45864020008594,
+        "counters": {
+          "executed": "47926",
+          "passed": "47926",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "a62ea9b86d14b5e3bb0a5dd2adc1ca27da1757141c68ab2e24447a1fb3362770",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 171.68493560003117,
+        "counters": {
+          "executed": "75735",
+          "passed": "75734",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "a62ea9b86d14b5e3bb0a5dd2adc1ca27da1757141c68ab2e24447a1fb3362770",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 250.73592730006203,
+        "counters": {
+          "executed": "75735",
+          "passed": "75735",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "3663bfaac412fb6a90c9c834d116cfa86f0b655ac37ebfc2c107f5e646d7ca9c",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 2.798341100104153,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "3663bfaac412fb6a90c9c834d116cfa86f0b655ac37ebfc2c107f5e646d7ca9c",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.3040199999231845,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "caseIdentities": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "previousCases": 47878,
+        "addedCases": 48,
+        "total": 47926,
+        "removedCases": 0,
+        "caseIdentitySha256": "ad0764756e5ede5e03c97fbe7251cb7c3622066ccbc1dea5dd273c67cea42148",
+        "normalization": "Only the single documented SvgTextSyntaxTests inline-font fact rename; original input and four strengthened assertions are bound in text-front-end-responsibilities.json."
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "previousCases": 73538,
+        "addedCases": 2197,
+        "total": 75735,
+        "removedCases": 0,
+        "caseIdentitySha256": "d8753dd4b6c43cc9a1d866b36034bff983cc8289b27c52fbc52abb00659a0776",
+        "normalization": "None; full names, arguments and multiplicities retained."
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "font",
+        "previousCases": 10,
+        "addedCases": 0,
+        "total": 10,
+        "removedCases": 0,
+        "caseIdentitySha256": "a1bb11808a35f4e0c1d95a9c02d8d52f341d01c51fd651b06365ba6436d4568f",
+        "normalization": "None; full names, arguments and multiplicities retained."
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "previousCases": 47878,
+        "addedCases": 48,
+        "total": 47926,
+        "removedCases": 0,
+        "caseIdentitySha256": "a650d40aa3f333883812f7781480b00771fab463e3531e10b277ca7f3762455b",
+        "normalization": "Only the single documented SvgTextSyntaxTests inline-font fact rename; original input and four strengthened assertions are bound in text-front-end-responsibilities.json."
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "previousCases": 73538,
+        "addedCases": 2197,
+        "total": 75735,
+        "removedCases": 0,
+        "caseIdentitySha256": "af6baa372433b861bdc5c200985bcc67274e6150e78bb474563ef273cb20f448",
+        "normalization": "None; full names, arguments and multiplicities retained."
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "font",
+        "previousCases": 10,
+        "addedCases": 0,
+        "total": 10,
+        "removedCases": 0,
+        "caseIdentitySha256": "a1bb11808a35f4e0c1d95a9c02d8d52f341d01c51fd651b06365ba6436d4568f",
+        "normalization": "None; full names, arguments and multiplicities retained."
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "previousCases": 47878,
+        "addedCases": 48,
+        "total": 47926,
+        "removedCases": 0,
+        "caseIdentitySha256": "ad0764756e5ede5e03c97fbe7251cb7c3622066ccbc1dea5dd273c67cea42148",
+        "normalization": "Only the single documented SvgTextSyntaxTests inline-font fact rename; original input and four strengthened assertions are bound in text-front-end-responsibilities.json."
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "previousCases": 73538,
+        "addedCases": 2197,
+        "total": 75735,
+        "removedCases": 0,
+        "caseIdentitySha256": "d8753dd4b6c43cc9a1d866b36034bff983cc8289b27c52fbc52abb00659a0776",
+        "normalization": "None; full names, arguments and multiplicities retained."
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font",
+        "previousCases": 10,
+        "addedCases": 0,
+        "total": 10,
+        "removedCases": 0,
+        "caseIdentitySha256": "a1bb11808a35f4e0c1d95a9c02d8d52f341d01c51fd651b06365ba6436d4568f",
+        "normalization": "None; full names, arguments and multiplicities retained."
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "previousCases": 47878,
+        "addedCases": 48,
+        "total": 47926,
+        "removedCases": 0,
+        "caseIdentitySha256": "a650d40aa3f333883812f7781480b00771fab463e3531e10b277ca7f3762455b",
+        "normalization": "Only the single documented SvgTextSyntaxTests inline-font fact rename; original input and four strengthened assertions are bound in text-front-end-responsibilities.json."
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "previousCases": 73538,
+        "addedCases": 2197,
+        "total": 75735,
+        "removedCases": 0,
+        "caseIdentitySha256": "af6baa372433b861bdc5c200985bcc67274e6150e78bb474563ef273cb20f448",
+        "normalization": "None; full names, arguments and multiplicities retained."
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font",
+        "previousCases": 10,
+        "addedCases": 0,
+        "total": 10,
+        "removedCases": 0,
+        "caseIdentitySha256": "a1bb11808a35f4e0c1d95a9c02d8d52f341d01c51fd651b06365ba6436d4568f",
+        "normalization": "None; full names, arguments and multiplicities retained."
+      }
+    ],
+    "packagedNamedOriginals": [
+      {
+        "host": "windows",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "inputs": 122,
+        "exactNative": 122,
+        "shaderAlphaInputs": 100,
+        "decorationInputs": 22,
+        "seconds": 2.26560499984771
+      },
+      {
+        "host": "linux",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "inputs": 122,
+        "exactNative": 122,
+        "shaderAlphaInputs": 100,
+        "decorationInputs": 22,
+        "seconds": 2.6004821001552045
+      }
+    ]
   },
-  "remaining": "R54/R55/R69 named shader/alpha sources are exact in the private122-input audit, but their full original acceptance joins remain separate. This record does not close those findings or the wider source-provenance backlog."
+  "remaining": "R54/R55/R69 named shader/alpha sources are exact in the private122-input audit, but their full original acceptance joins remain separate. This record does not close those findings or the wider source-provenance backlog.",
+  "sourceCommit": "1740d2c39d1bd93bc21680f4f344e9e8727ecc72",
+  "implementationLfSha256": "9866bcaadcf1bd764fd48870a4c08b77e23442bb63d8cda77d4cee7b87e4ad88",
+  "acceptance": [
+    {
+      "requirement": "Mixed paints/fonts, repeated/inherited declarations, every line, descenders and positive/negative overlap",
+      "evidence": "../text-paint-bounds/decoration-screening.json",
+      "reason": "All342 original pairs retain684 independent source/font/options/native identities, including isolated and undecorated companions.22 named inputs remain routine."
+    },
+    {
+      "requirement": "Declaring paint, fill/stroke order and exact isolated controls",
+      "evidence": [
+        "decoration-model-review.json",
+        "decoration-ink-review.json",
+        "decoration-clip-qualification.json"
+      ],
+      "reason": "All52 pre-existing independent controls remain exact; canonical contours, ink exclusions and binary clip truth tables are unchanged."
+    },
+    {
+      "requirement": "Direct/path text, instances, clipping/effects and output placement/scale",
+      "evidence": "../../Lokad.Svg.VisualTests/SvgFontLayoutDiagramTests.cs",
+      "reason": "Existing native layout, solid/stroked decoration, text clipping, retained resource and paint-bound banks pass in the complete suites. Their original inputs, targets and meaningful platform differences remain."
+    },
+    {
+      "requirement": "Discovery/raw/prepared APIs, refusal/cancellation/retry and retained ownership",
+      "evidence": [
+        "../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs",
+        "../../Lokad.Svg.Tests/SvgConversionApiContractTests.cs",
+        "../../Lokad.Svg.VisualTests/SvgFontLayoutDiagramTests.cs"
+      ],
+      "reason": "Existing representative API/node paths and Decoration_ink_clips_and_affine_fragments_release_on_denial_cancellation_and_retry / Stroked_decoration_compound_clips_release_render_storage_on_denial_cancellation_and_retry retain parse-time mid-expansion cancellation, separate raster refusal, exact cancellation tokens, cleanup, immutable input and reusable owners. No repeated API product per image."
+    }
+  ],
+  "inventory": {
+    "methods": 5145,
+    "sourceFiles": 737,
+    "coreMethods": 4688,
+    "visualMethods": 457,
+    "layers": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1155,
+        "Mechanism": 1777,
+        "Contract": 695,
+        "Rendering": 1060,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 277,
+        "Contract": 34,
+        "Integrity": 24,
+        "Rendering": 121,
+        "Mechanism": 1
+      }
+    },
+    "all5139PriorMethodsAndTraitsRetained": true,
+    "addedMethods": [
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests",
+        "name": "Original_anchor_screen_preserves_each_independent_native_target",
+        "layers": [
+          "Rendering"
+        ]
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests",
+        "name": "Original_anchor_screen_retains_source_font_options_and_healthy_native_triples",
+        "layers": [
+          "Integrity"
+        ]
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests",
+        "name": "Decoration_fragments_preserve_each_original_mixed_paint_target",
+        "layers": [
+          "Rendering"
+        ]
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests",
+        "name": "Decoration_fragments_retain_original_sources_font_binding_and_healthy_native_triples",
+        "layers": [
+          "Integrity"
+        ]
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests",
+        "name": "Full_decoration_screen_preserves_each_original_native_target",
+        "layers": [
+          "Rendering"
+        ]
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests",
+        "name": "Full_decoration_screen_retains_sources_fonts_and_healthy_native_triples",
+        "layers": [
+          "Integrity"
+        ]
+      }
+    ],
+    "fullCoreCases": 47926,
+    "fullVisualCases": 75735,
+    "fontHostCases": 10
+  },
+  "package": {
+    "sourceCommit": "1740d2c39d1bd93bc21680f4f344e9e8727ecc72",
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "c4cbdf6a520e32814161f3ea8d764fda49cf5ef1d97996d36a198feb3182785a",
+        "bytes": 2437376
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "08f346caed2b033f4fc2680b4a74708990379948457ac7552ef3b19c5bae666c",
+        "bytes": 726144
+      }
+    ],
+    "librarySha256": {
+      "net11.0": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+      "net10.0": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1"
+    },
+    "byteIdenticalRepeats": true,
+    "noRuntimeDependencies": true,
+    "noSvgOrRuntimeSpecificAssets": true,
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.957500200020149
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 103.7263934998773
+      }
+    ]
+  },
+  "svgweb": {
+    "originals": 204,
+    "suppliedContexts": 22,
+    "staticDiagnostics": 13,
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+    "sourceBodiesRetained": 0,
+    "rawAttributesRetained": 0
+  },
+  "primaryCi": {
+    "run": 42103672654,
+    "status": "Terminal CLOSED; never repoll or refetch.",
+    "jobs": [
+      {
+        "host": "windows",
+        "job": 127512762627,
+        "conclusion": "failure",
+        "logSha256": "80a535f7dbe57c9495329bd5b5cd8fe447ab8803aac6fc1354e3a9b245d64dd9",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47926,
+            "total": 47926
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 75734,
+            "total": 75735
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "job": 127512761991,
+        "conclusion": "success",
+        "logSha256": "7a8c461561c4ea6a5e01dd3df9348655b65e490658431de71a5bbf8d16003812",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47926,
+            "total": 47926
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 75735,
+            "total": 75735
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12222,
+            "total": 12222
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1151,
+            "total": 1151
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ]
+      }
+    ]
+  },
+  "compatibilitySelection": "The existing.NET10 native CI filter additionally selects FullyQualifiedName~Decoration_fragments_ (24 cases). The684-input exploratory screen remains Research. All24 execute in both local full.NET10 host suites.",
+  "relativeLinksChecked": 317,
+  "allResolved": true,
+  "handoffReview": {
+    "sourceCommit": "1740d2c39d1bd93bc21680f4f344e9e8727ecc72",
+    "sourceMarkdownFiles": 194,
+    "remainingTodoOrHandoffFiles": [],
+    "disposition": "Already folded into high-priority PLAN acceptance and removed; no duplicate file or second resolver needed."
+  },
+  "compatibilityFilter": {
+    "existingSelectionByteForByteRetained": true,
+    "addedTerm": "FullyQualifiedName~Decoration_fragments_",
+    "cases": 24,
+    "qualification": "All24 selected cases pass in both complete.NET10 package-asset suites."
+  }
 }
