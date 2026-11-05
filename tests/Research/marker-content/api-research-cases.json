@@ -3,15 +3,15 @@
   "manifests": [
     {
       "bank": "marker-content",
-      "sha256": "d68ce7f5c8488e3d4bc98eff01efe7f2112aee89f3d5d560472b96fe330ea072"
+      "lfSha256": "c00295455a7cbdd3f34844a44196546d0feed432efa5b57c198a7658da05d9bd"
     },
     {
       "bank": "path-marker-content",
-      "sha256": "8317bc0c44c612ef2d5f17e3fa1241f0659a3249f95f77d160c0d71e577797c7"
+      "lfSha256": "e5f4c760447bccced8ae780f76e1e0458560af509b66d8fb0dd0a22cee4ca8df"
     },
     {
       "bank": "marker-instance-content",
-      "sha256": "7326bf0bd52e9020c00201d63d64d8e1621505fd9caaf1669b0449479e7dbbf3"
+      "lfSha256": "7326bf0bd52e9020c00201d63d64d8e1621505fd9caaf1669b0449479e7dbbf3"
     }
   ],
   "routineInteractions": [
@@ -120,5 +120,6 @@
     "marker-instance-content/instance-marker-source-paint",
     "marker-instance-content/instance-arc-boundary",
     "marker-instance-content/instance-point-list-boundary"
-  ]
+  ],
+  "manifestHashEncoding": "UTF-8 JSON with CRLF normalized to LF; all source and reference hashes retain their raw-byte contract."
 }

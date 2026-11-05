@@ -59,8 +59,9 @@ public sealed class SvgMarkerReferenceTests
         {
             string family = Required(source, "bank");
             byte[] bytes = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, family, "manifest.json"));
-            Assert.Equal(Required(source, "sha256"), Convert.ToHexStringLower(SHA256.HashData(bytes)));
             using JsonDocument manifest = JsonDocument.Parse(bytes);
+            byte[] normalized = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(bytes).Replace("\r\n", "\n", StringComparison.Ordinal));
+            Assert.Equal(Required(source, "lfSha256"), Convert.ToHexStringLower(SHA256.HashData(normalized)));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
             {
                 string identity = Required(item, "id");

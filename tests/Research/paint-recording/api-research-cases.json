@@ -3,7 +3,7 @@
   "manifests": [
     {
       "bank": "paint-recording",
-      "sha256": "ed48ca9227e0b9fb0ecc5e5777d1f929304eafc4567ce73703656af0a4d4581f"
+      "lfSha256": "82ccfe266307cf369880972363d94176bc938f69c53d874ddf1e832f48b09de6"
     }
   ],
   "routineInteractions": [
@@ -233,5 +233,6 @@
     "zero-area-stroke-scaled-solid",
     "zero-area-stroke-scaled-linear",
     "zero-area-stroke-scaled-radial"
-  ]
+  ],
+  "manifestHashEncoding": "UTF-8 JSON with CRLF normalized to LF; all source and reference hashes retain their raw-byte contract."
 }
