@@ -56,5 +56,7 @@ discovery and TRX but excluding build:
 | Linux .NET 10 | 9.19 s | 13.16 s |
 
 These are validation costs, not renderer performance or evidence of an end-to-end
-speedup. Broader R48/R49/R60/R61 precision/raster acceptance and the R103/R104/R108
-residuals remain open; this cohort does not establish their closure.
+speedup. The [full R103/R104 screen](text-screen-qualification.json) and
+[R108 path-baseline declarations](text-baseline-paint.md) are closed, retaining all
+39 precision witnesses. Broader R48/R49/R60/R61 node/anchor/phase acceptance remains
+open; this cohort does not establish its closure.

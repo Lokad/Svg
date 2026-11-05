@@ -54,6 +54,10 @@ across 28 contracts while retaining all 42 affected cases and distinct allowance
 at 21 construction sites while preserving each message, synchronous failure and
 cancellation policy. All 246 original affected cases remain; two direct guards
 protect the helper's two policies independently of rendering fixtures.
+[Analytic probe contexts](analytic-probe-context.json) removes a global scope
+counter and private scope class that silenced inherited child callbacks. Four
+context contracts extend the existing guards; buffer-growth/replay cancellation,
+ownership, native images, packages and original-source replay remain qualified.
 [Text-paint output assets](text-paint-output-assets.json) keeps thirteen core
 mechanism/contract JSON dependencies and leaves twelve rendering/research reports
 in the corpus. Fresh outputs retain byte-identical test assemblies and all 47,699

@@ -1,0 +1,533 @@
+{
+  "status": "Analytic-paint diagnostic callbacks follow their execution context after parent scope disposal. The unsound process-wide armed counter and private scope class are removed; existing AsyncLocal notifications, thread cache and shared scope supply the contract. Ordinary pixel/map/numerical code is unchanged.",
+  "sourceCommit": "e8428611a42c3ef1b429e2aefa3b2ae0b3881254",
+  "source": {
+    "baseCommit": "bca1c7a8d327680c2d73cb6439fad29f03d32499",
+    "productionFilesChanged": [
+      "src/Lokad.Svg/Rendering/SvgAnalyticPaintProbe.cs"
+    ],
+    "numericalAndMapSourcesUnchanged": true,
+    "existingScopeReused": "src/Lokad.Svg/SvgProbeScope.cs",
+    "globalCounterAndCustomScopeRemoved": true,
+    "diagnosticProbeClassesAudited": 13,
+    "originalTestFileReconstructed": true,
+    "originalCasesRetained": 12,
+    "addedContextCases": 4,
+    "layer": "Contract",
+    "testLfSha256": "46593c0b49193cfe4f3c66801bb500c99df94e261922c1ff0e9c2e0dd73590d5",
+    "probeBeforeLfSha256": "4c8e5891fd56dc2b14c9b4d4f03962a93fcb7872bb8cf1272dab3ecd14ce1bf6",
+    "probeAfterLfSha256": "486985b805c611e143364ea8b7dd55b0ce5851ca2d576593524486fc331de548"
+  },
+  "regression": {
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "79de9ba8d3ae0fe0597ac9d54e635e7f452c5a17ecae8a7c4f7c0b23ec8da7c4",
+        "selection": "FullyQualifiedName~SvgProbeExecutionContextTests",
+        "exitCode": 1,
+        "seconds": 10.4977108000312,
+        "counters": {
+          "executed": "16",
+          "passed": "15",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgProbeExecutionContextTests.Inherited_child_callback_survives_parent_scope_disposal(kind: AnalyticPaint)",
+            "message": "Assert.Equal() Failure: Values differ\r\nExpected: 1\r\nActual:   0"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "79de9ba8d3ae0fe0597ac9d54e635e7f452c5a17ecae8a7c4f7c0b23ec8da7c4",
+        "selection": "FullyQualifiedName~SvgProbeExecutionContextTests",
+        "exitCode": 1,
+        "seconds": 12.110245400108397,
+        "counters": {
+          "executed": "16",
+          "passed": "15",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgProbeExecutionContextTests.Inherited_child_callback_survives_parent_scope_disposal(kind: AnalyticPaint)",
+            "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0"
+          }
+        ]
+      }
+    ],
+    "afterContextCases": [
+      {
+        "host": "windows",
+        "passed": 16,
+        "identitySha256": "848fe598cd3454103df018684f3350336c9cc39bf978d61e48dac2033c0b5f5a"
+      },
+      {
+        "host": "linux",
+        "passed": 16,
+        "identitySha256": "848fe598cd3454103df018684f3350336c9cc39bf978d61e48dac2033c0b5f5a"
+      }
+    ],
+    "preservedCases": 12,
+    "addedCases": 4,
+    "responsibility": "Contract: nested/idempotent restoration, concurrent contexts across awaits, inherited child lifetime and suppressed flow. Continuous analytic observations stay distinct from one-shot glyph hooks. Real buffer-growth/replay cancellation, memory refusal, cleanup and retry retain all affected cases.",
+    "fastSelectionAdditionalCases": 16,
+    "newFrameworksOrPublicApis": 0
+  },
+  "validation": {
+    "selections": {
+      "coreClasses": [
+        "SvgAffinePaintReplayTests",
+        "SvgAffineRadialPaintTests",
+        "SvgAnalyticPaintClipTests",
+        "SvgAnalyticPaintTests",
+        "SvgClipIntersectionTests",
+        "SvgDeferredPaintLeafTests",
+        "SvgDirectPaintSpillTests",
+        "SvgFilterPlaybackTests",
+        "SvgGradientStopPrecisionTests",
+        "SvgGroupMaskCropTests",
+        "SvgIChingTests",
+        "SvgInheritedClipIsolationTests",
+        "SvgMaskContentReplayTests",
+        "SvgNativeClipWindingTests",
+        "SvgPaintOrderTests",
+        "SvgPatternContentTests",
+        "SvgProbeExecutionContextTests",
+        "SvgShaderStrokePathTests",
+        "SvgStaticCssImageTests",
+        "SvgViewportClipStorageTests"
+      ],
+      "coreSelection": "FullyQualifiedName~SvgAffinePaintReplayTests|FullyQualifiedName~SvgAffineRadialPaintTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgClipIntersectionTests|FullyQualifiedName~SvgDeferredPaintLeafTests|FullyQualifiedName~SvgDirectPaintSpillTests|FullyQualifiedName~SvgFilterPlaybackTests|FullyQualifiedName~SvgGradientStopPrecisionTests|FullyQualifiedName~SvgGroupMaskCropTests|FullyQualifiedName~SvgIChingTests|FullyQualifiedName~SvgInheritedClipIsolationTests|FullyQualifiedName~SvgMaskContentReplayTests|FullyQualifiedName~SvgNativeClipWindingTests|FullyQualifiedName~SvgPaintOrderTests|FullyQualifiedName~SvgPatternContentTests|FullyQualifiedName~SvgProbeExecutionContextTests|FullyQualifiedName~SvgShaderStrokePathTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgViewportClipStorageTests",
+      "visualSelection": "FullyQualifiedName~AntialiasedPaintClipReferenceTests|FullyQualifiedName~ClipPairRouteReferenceTests|FullyQualifiedName~CpuRasterContextReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests"
+    },
+    "checks": [
+      {
+        "stage": "affected-net11",
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "counters": {
+          "executed": 403,
+          "passed": 403,
+          "failed": 0
+        },
+        "seconds": 16.715893799904734,
+        "librarySha256": "2b87656beb3d6140be5f0386e73006d05e15e8ef971b9eeed60f1e7f57946625"
+      },
+      {
+        "stage": "affected-net11",
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "counters": {
+          "executed": 403,
+          "passed": 403,
+          "failed": 0
+        },
+        "seconds": 20.620752200018615,
+        "librarySha256": "2b87656beb3d6140be5f0386e73006d05e15e8ef971b9eeed60f1e7f57946625"
+      },
+      {
+        "stage": "affected-net11",
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "counters": {
+          "executed": 38,
+          "passed": 38,
+          "failed": 0
+        },
+        "seconds": 13.510576699860394,
+        "librarySha256": "2b87656beb3d6140be5f0386e73006d05e15e8ef971b9eeed60f1e7f57946625"
+      },
+      {
+        "stage": "affected-net11",
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "counters": {
+          "executed": 38,
+          "passed": 38,
+          "failed": 0
+        },
+        "seconds": 10.459884000010788,
+        "librarySha256": "2b87656beb3d6140be5f0386e73006d05e15e8ef971b9eeed60f1e7f57946625"
+      },
+      {
+        "stage": "affected-net10",
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "counters": {
+          "executed": 403,
+          "passed": 403,
+          "failed": 0
+        },
+        "seconds": 11.836683199973777,
+        "librarySha256": "1823d5f277ffd069f494a4a7fa4be792ab1f21f87e456d956c42bf2bac10ab56"
+      },
+      {
+        "stage": "affected-net10",
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "counters": {
+          "executed": 403,
+          "passed": 403,
+          "failed": 0
+        },
+        "seconds": 10.64019690011628,
+        "librarySha256": "1823d5f277ffd069f494a4a7fa4be792ab1f21f87e456d956c42bf2bac10ab56"
+      },
+      {
+        "stage": "affected-net10",
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "counters": {
+          "executed": 38,
+          "passed": 38,
+          "failed": 0
+        },
+        "seconds": 14.503151200013235,
+        "librarySha256": "1823d5f277ffd069f494a4a7fa4be792ab1f21f87e456d956c42bf2bac10ab56"
+      },
+      {
+        "stage": "affected-net10",
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "counters": {
+          "executed": 38,
+          "passed": 38,
+          "failed": 0
+        },
+        "seconds": 16.322471900144592,
+        "librarySha256": "1823d5f277ffd069f494a4a7fa4be792ab1f21f87e456d956c42bf2bac10ab56"
+      },
+      {
+        "stage": "package-affected-net11",
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "counters": {
+          "executed": 403,
+          "passed": 403,
+          "failed": 0
+        },
+        "seconds": 12.030716800130904,
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "stage": "package-affected-net11",
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "counters": {
+          "executed": 403,
+          "passed": 403,
+          "failed": 0
+        },
+        "seconds": 13.476926600094885,
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "stage": "package-affected-net11",
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "counters": {
+          "executed": 38,
+          "passed": 38,
+          "failed": 0
+        },
+        "seconds": 12.588681100169197,
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "stage": "package-affected-net11",
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "counters": {
+          "executed": 38,
+          "passed": 38,
+          "failed": 0
+        },
+        "seconds": 10.438942400040105,
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "stage": "full-packaged-net10",
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "counters": {
+          "executed": 47703,
+          "passed": 47703,
+          "failed": 0
+        },
+        "seconds": 77.1513906000182,
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "stage": "full-packaged-net10",
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "counters": {
+          "executed": 47703,
+          "passed": 47703,
+          "failed": 0
+        },
+        "seconds": 56.70081629999913,
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "stage": "full-packaged-net10",
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "counters": {
+          "executed": 73566,
+          "passed": 73565,
+          "failed": 1
+        },
+        "seconds": 305.651281400118,
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "stage": "full-packaged-net10",
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "counters": {
+          "executed": 73566,
+          "passed": 73566,
+          "failed": 0
+        },
+        "seconds": 303.37730409996584,
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "stage": "full-packaged-net10",
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font",
+        "counters": {
+          "executed": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "seconds": 2.721338300034404,
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "stage": "full-packaged-net10",
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font",
+        "counters": {
+          "executed": 10,
+          "passed": 10,
+          "failed": 0
+        },
+        "seconds": 1.3734226999804378,
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      }
+    ],
+    "inventory": {
+      "declaredMethods": 5109,
+      "sourceFiles": 724,
+      "layers": {
+        "Lokad.Svg.Tests": {
+          "Unclassified": 1802,
+          "Mechanism": 1317,
+          "Contract": 556,
+          "Rendering": 985,
+          "Integrity": 1
+        },
+        "Lokad.Svg.VisualTests": {
+          "Unclassified": 277,
+          "Contract": 34,
+          "Integrity": 21,
+          "Rendering": 115,
+          "Mechanism": 1
+        }
+      }
+    },
+    "policy": "Focused contracts and native cases on both supported hosts/runtimes; exact package assets; full local compatibility suite and full primary CI. No rendering fixtures repeat the entire API matrix for this hook change.",
+    "timingBoundary": "Concurrent functional process/discovery/TRX costs, with no renderer or development speedup claim. Quiet-VM throughput remains unmeasured."
+  },
+  "promotion": {
+    "package": {
+      "sourceCommit": "e8428611a42c3ef1b429e2aefa3b2ae0b3881254",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "d49f9f05e053fc31d6b93f0ed966a012cc6f431af58abfe69a69923cf2ff2a82"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "196711f17091316c3201cb67f095a0e5d8833d586f5cf2442a266fdd6bbdd353"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d",
+        "net10.0": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 6.729215600062162
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0
+      }
+    ],
+    "published": false
+  },
+  "hostedOriginalReplay": {
+    "originals": 204,
+    "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "allSourceHashesAndDiagnosticMetadataUnchanged": true,
+    "suppliedOriginalContextsExactPerHost": 22,
+    "staticDiagnosticsExactPerHost": 13,
+    "hostedSvgBodiesFragmentsAndRawAttributesRetained": 0,
+    "previousEvidence": "filter-input-demand.json",
+    "scope": "Default outcomes, supplied-font contexts and declared static diagnostics remain separate; complete original static admission remains open."
+  },
+  "documentation": "Text-acceptance and path-baseline guides now link the closed 960-input R103/R104 screen and 204 R108 declarations, retaining all 39 precision witnesses and broader unjoined node/anchor/phase duties. No historical observations or native references were rewritten.",
+  "ci": {
+    "runId": 41999425668,
+    "sourceCommit": "e8428611a42c3ef1b429e2aefa3b2ae0b3881254",
+    "terminalClosed": true,
+    "jobs": {
+      "linux": {
+        "jobId": 127150616729,
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47703,
+            "total": 47703
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73566,
+            "total": 73566
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "abf71e23c9483423e13f4c7f0bad240bf1dff6cf3bd666089d9a6e9e9a27803b"
+      },
+      "windows": {
+        "jobId": 127150616176,
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47703,
+            "total": 47703
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73565,
+            "total": 73566
+          }
+        ],
+        "logSha256": "ec5261ab7fd5a62b639e8cb2113bb21e443428e28c8d8aa831678f2529d9272c"
+      }
+    },
+    "boundary": "Ubuntu full/compatibility/tools/package gates pass. Windows retains solely the unchanged frozen DejaVu discrepancy; preserve its reference and assertion."
+  },
+  "remaining": "Shared scene/layer preparation, test responsibility/context products, complete original-source admission, historical provenance, documentation audit and quiet-VM performance remain in PLAN.md."
+}

@@ -8,6 +8,10 @@ keeps Research on the separate category axis and the background native witness i
 the rendering class. Unclassified methods remain; layer-only selection does not
 replace affected/full coverage.
 The explicit `Category=Research` selection remains independent of the layer.
+The [execution-context contracts](analytic-probe-context.json) keep all twelve
+original probe cases and add four for analytic paint. Nested restoration, awaited
+isolation, inherited child lifetime and suppressed flow run directly; rendering
+fixtures retain their separate real cancellation and storage interactions.
 
 | Responsibility | Retained coverage |
 | --- | --- |

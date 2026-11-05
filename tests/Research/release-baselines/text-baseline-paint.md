@@ -32,11 +32,12 @@ existing [regular](../supplied-font-labels/README.md) and
 Before correction, 179 of these 204 declarations matched each host's reference.
 All 204 now match exactly under both supported runtimes, with zero exact losses.
 The four original residuals, straight-path scaling failure and hanging-path
-failures close together through the shared metric distinction. This does not
-close the broader R48/R49/R60/R61 or R103/R104 precision review.
+failures close together through the shared metric distinction. Broader
+R48/R49/R60/R61 node/anchor/phase review remains open.
 [Thirty-nine retained paint/fitting witnesses](../text-paint-bounds/precision-residuals.json)
 keep their original sources, options and independent platform images. The
-[current replay](precision-current.md) separates exact results from remaining differences.
+[current replay](precision-current.md) closes all 39 and the
+[full 960-input screen](text-screen-qualification.json).
 
 [Fourteen mechanism vectors](../../Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs)
 exercise fractional layout versus recorded paint metrics and integer boundaries
