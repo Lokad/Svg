@@ -25,6 +25,10 @@ valid mechanisms and canonical rendering retain their separate responsibilities.
 work-charge descriptions while retaining actual memory admission and cancellation.
 Every executable token and compiled method body remains unchanged on both runtimes.
 
+[Analytic preparation contracts](analytic-preparation-contracts.json) correct stale
+edge-copy, clipped/contained dispatch and row-order descriptions. Geometry and walker
+ownership remain distinct; all executable tokens and 12,271 compiled methods are unchanged.
+
 [Filter graph demand](filter-graph-demand.json) separates final-result pixel
 dependencies from declaration validation and region defaults. Ten failing-before
 allocation contracts retain unread branches without private pixel planes;

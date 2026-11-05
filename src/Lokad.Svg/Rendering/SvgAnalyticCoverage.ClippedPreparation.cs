@@ -10,7 +10,14 @@ internal ref partial struct SvgAnalyticCoverage
 
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
-    /// <remarks>Both passes observe cancellation during clipping, validation and traversal. Authored points map directly into bitmap coordinates; all clipped verbs construct there, combine there, then translate their fixed walk/curve state to canvas space. Source contours are borrowed during construction and no extra mapped tape is allocated. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. All curve edges retain live state, including convex polynomial quadratics. The complete scan window and span scratch remain independent of the owned output row. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
+    /// <remarks>Both passes observe cancellation while borrowing immutable source contours.
+    /// Verbs map, clip and construct in bitmap coordinates; fixed walk/curve state then translates to canvas space.
+    /// Rational verbs convert after mapping through bounded piece scratch, without another contour tape.
+    /// The first pass bounds emitted edges; the second reserves edge objects and builder capacity before construction.
+    /// Completed builder storage is sorted in place and retained by the walker; no final edge-array copy is made.
+    /// Empty clipped curves stay empty and curve edges retain live state. The scan window and span scratch
+    /// remain separate from the owned output row and AA paint clipping. Reservations transfer to the
+    /// single-threaded result or release on failure; dispose it after row consumers finish.</remarks>
     private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, SvgPreparedPathContours? source, SvgAffineTransform sourceMap, SvgAnalyticScanWindow walkWindow, int spanWidth, RenderBudget budget, out bool eligible, CancellationToken token)
     {
         eligible = false;

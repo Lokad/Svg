@@ -1279,25 +1279,28 @@ internal ref partial struct SvgAnalyticCoverage
         // Edges carry 36 integers, two links and an object header (176 bytes on
         // x64); retain the conservative 32-byte reference envelope for list growth
         // and its completed capacity, now retained without an exact-size copy.
-        // The old 80-byte envelope predates retained live-curve snapshots.
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 2) + ParserCollectionMemory.GetArrayByteCount<byte>(spanWidth + 4) + ParserCollectionMemory.GetArrayByteCount<byte>(spanWidth + 4) + 32 + ((long)pointCount + maximumCurveEdges + 2) * 208); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic coverage storage exceeds the supported accounting range."); }
         return bytes;
     }
-    /// <summary>Validates retained contours like the shared fan path, then reserves analytic scratch within the admitted contact gates.</summary>
-    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Single rings keep the exact legacy sequence, extended to nonzero pure-crossing rings on curve-flattened payloads whose signed winding the edge walk accumulates directly; multi-contour sets additionally admit disjoint-or-nested contact-free loops with per-contour area and vote filtering plus a set-level contact scan, and nonzero span-free orthogonal contact sets with a cached direction scan and signed-winding accumulation, extended to nonzero crossing-, touching- or self-touching sets on curve-flattened payloads without coincident contacts, keeping integer and fractional straight-edge payloads on the exact fan path, with self-touching loops walking their shared vertices through the same signed-winding accumulation, reporting ineligible without reserving otherwise, so the caller keeps the legacy path; the returned value still requires disposal.</remarks>
+    /// <summary>Prepares analytic coverage when contour structure and mapping admit it.</summary>
+    /// <remarks>Validates contour partitions and winding votes consistently with fan coverage.
+    /// Eligibility retains distinct directed-fill, stroke and flattened-geometry gates;
+    /// a false result selects the caller's fallback. Geometry is borrowed during preparation.
+    /// Dispose the returned walker, including an empty result; its scratch belongs to the supplied budget.
+    /// Preparation and row replay observe cancellation and are single-threaded.</remarks>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
     {
         return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out eligible, cancellationToken);
     }
 
-    /// <summary>Prepares one analytic fill, substituting analytic quad segments for retained span ranges under single-contour clean-structure gating.</summary>
+    /// <summary>Prepares analytic coverage with retained quadratic spans through the shared eligibility gates.</summary>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
     {
         return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, Array.Empty<SvgCubicSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out eligible, cancellationToken);
     }
 
-    /// <summary>Prepares one analytic fill, substituting analytic curve segments for retained quadratic and cubic span ranges under single-contour clean-structure gating.</summary>
+    /// <summary>Prepares analytic coverage with retained quadratic and cubic spans through the shared eligibility gates.</summary>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
         => Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, new(0, outputWidth), budget, out eligible, cancellationToken);
 
@@ -1315,12 +1318,20 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Builds one raster context from borrowed geometry, caching clip-independent classification once.</summary>
-    /// <remarks>The preparation and geometry remain immutable except for cached classifications in this single-threaded scope. Construction clipping and paint-clip dispatch are independent: an AA paint consumer forces run storage even for contained or small paths, and forwards specialized fringe pairs as ordinary runs. This context-local choice is not cached with geometry. Each returned walker independently owns its reserved edges, rows and events; it retains no borrowed spans or reference to the cache. Cancellation applies before and during classification and construction.</remarks>
+    /// <remarks>Borrowed geometry stays immutable; classifications are cached in the caller's
+    /// single-threaded preparation. Construction clipping and paint clipping remain independent:
+    /// AA painting forces run storage and forwards fringe pairs as ordinary runs, without changing
+    /// the shared classifications. The returned walker owns its edge backing buffer, rows and events
+    /// under the supplied budget; it retains neither caller geometry nor the preparation cache.
+    /// Classification and construction observe cancellation. Dispose the walker after all row consumers finish.</remarks>
     internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, SvgAnalyticPaintClip paintClip, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
         => Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, new(0, 0), constructionClip, paintClip, budget, out eligible, cancellationToken);
 
-    /// <summary>Builds contained edges in their owning bitmap without invoking construction clipping.</summary>
-    /// <remarks>Source operands map on demand with no additional storage. Fixed edge and curve state translates after construction. Classification, curve dispatch, paint clipping, cancellation and ownership remain shared with the uncut and clipped routes.</remarks>
+    /// <summary>Builds clipped or contained edges in their owning bitmap.</summary>
+    /// <remarks>A construction clip selects clipped construction; its absence keeps the contained route.
+    /// Source operands map on demand without another contour tape. Fixed edge and curve state translate
+    /// after construction. Classification, paint clipping, budget ownership and cancellation follow
+    /// the shared preparation contract.</remarks>
     internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgCpuBitmapOrigin bitmapOrigin, SvgAnalyticClipContext? constructionClip, SvgAnalyticPaintClip paintClip, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
     {
         ReadOnlySpan<SvgDevicePoint> points = preparation.Points;
@@ -2363,7 +2374,11 @@ internal ref partial struct SvgAnalyticCoverage
         return (left, rite, y);
     }
     /// <summary>Restores the retained edges and prepares the requested mask/run row and direct paint events.</summary>
-    /// <remarks>Rows arrive in ascending order within the preparation window. Each call restores curve state and links; allocated event capacity is reused. Clearing, restoration, strip traversal, event recording/replay and buffer growth observe cancellation. Growth reserves memory before allocation. Cancellation preserves its token; Dispose owns all buffers, including after refusal or cancellation.</remarks>
+    /// <remarks>Each call restores curve state and links, so rows may be revisited within the
+    /// preparation window. Event capacity is reused; row state lasts until the next call.
+    /// Clearing, restoration, traversal, replay and growth observe cancellation with its original token.
+    /// Growth reserves memory before allocation. Dispose releases all buffers after consumers finish,
+    /// including after refusal or cancellation; instances are single-threaded.</remarks>
     internal void PrepareRow(int y, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

@@ -1,0 +1,101 @@
+{
+  "status": "Corrected eight analytic-preparation documentation blocks without changing executable syntax, directives or any of12271 compiled methods on either runtime. Current buffer ownership, clipped/contained dispatch and row rewind replace stale construction history. Runtime and original-source qualification remain unchanged.",
+  "source": {
+    "baseCommit": "ad04e215900630c015272c7d8ee7ce7134939190",
+    "files": [
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs",
+        "beforeLfSha256": "5611e3653385834772b8b1b0ada5afe2553b421a235faff2d8fe330ab8e4abbe",
+        "afterLfSha256": "0ac72d6d21672482c329433cc65d024ff2bbe29cbd87d60731659a10493b476e",
+        "edits": 7,
+        "tokenCount": 26223,
+        "unchangedTokenSha256": "e8e169450e2cfc13fe7c47d5cf9aa4ff402cb2df0564d2b502e83a6328538d2a",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.ClippedPreparation.cs",
+        "beforeLfSha256": "326ece9b4a3eb90f5c884f070d7dd6d3d0c5198c1cf8b7363a323ccd90fcbc7a",
+        "afterLfSha256": "b474ae7e94e87ba875058a09b29e8df8766ab815e4aeb957fc80c15e07fccf1d",
+        "edits": 1,
+        "tokenCount": 2117,
+        "unchangedTokenSha256": "3d9a8a62fc551cf01ec5342e8b1da529b02c36aeb0976bc79de3bcbeca7dd080",
+        "allNonCommentLinesIdentical": true
+      }
+    ]
+  },
+  "contracts": {
+    "storage": "Completed edge builders retain their backing buffers under the existing reservation; clipping makes no final edge-array copy. Source contours are borrowed during construction, while walkers own edge, row and event state.",
+    "dispatch": "The shared entry point handles clipped and contained construction. Single-contour span helpers are not the complete dispatch contract:directed fills, strokes and flattened payloads retain their distinct gates.",
+    "rows": "Every PrepareRow restores edge/curve/link state. Revisiting rows is supported; prior row state ends at the next call. Consumers finish before disposal; each walker remains single-threaded.",
+    "bounds": "Source, complete dispatch, construction, row storage and AA paint clips retain separate domains. Fixed state translates after construction in the owning bitmap.",
+    "accounting": "The current208-byte edge envelope and all reservations/cancellation checks are unchanged; the historical80-byte note is removed."
+  },
+  "sharedModelReview": {
+    "scope": "Existing scene replay, mapped/source polygon preparation, per-bitmap dash filtering and analytic paint traversal. This is a bounded code/contract review, not proof that every historical correctness area is closed.",
+    "retained": [
+      {
+        "file": "../../../src/Lokad.Svg/Parsing/SvgRoot.cs",
+        "basis": "Readonly scene values and command slices share retained arrays and resource indices; they do not copy scene storage."
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Parsing/SvgVectorContent.cs",
+        "basis": "Pattern/mask replay borrows the parent-owned sealed scene; it needs no competing replay owner."
+      },
+      {
+        "file": "../../../src/Lokad.Svg/SvgConverter.PolygonRaster.cs",
+        "basis": "Mapped classification coordinates and authored source operands serve distinct rounding/construction stages. Per-bitmap dash filtering changes the emitted outline, so its prepared storage is not an identical copy. No safe removal was established."
+      },
+      {
+        "file": "../../../src/Lokad.Svg/SvgConverter.cs",
+        "basis": "The common shader polygon traversal shares coverage setup. Whole-path dispatch, bitmap construction and exclusive painting still require independent bounds; global-stride layer buffers cannot be compacted by changing allocation alone."
+      }
+    ],
+    "disposition": "No additional redundant owner/tape was established in these seams. Preserve the existing shared implementation and resume witnessed correctness/admission work; do not introduce a general coordinate/replay framework.",
+    "priorEvidence": [
+      "bounds-map-contracts.md",
+      "shader-polygon-paint.json",
+      "polygon-map-work.json",
+      "analytic-edge-storage.json"
+    ]
+  },
+  "validation": {
+    "roslyn": "Every token kind/text and directive is identical; syntax trees are equivalent. Every non-comment source line is also identical.",
+    "compiledBodies": [
+      {
+        "framework": "net11.0",
+        "methods": 12271,
+        "identicalBodies": true,
+        "methodBodyIdentitySha256": "37cfb6c1df2b567e0fd6fa92909724c54fb3c7b1336861b3dbe461935106cdf5"
+      },
+      {
+        "framework": "net10.0",
+        "methods": 12271,
+        "identicalBodies": true,
+        "methodBodyIdentitySha256": "37cfb6c1df2b567e0fd6fa92909724c54fb3c7b1336861b3dbe461935106cdf5"
+      }
+    ],
+    "builds": {
+      "frameworks": [
+        "net11.0",
+        "net10.0"
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "outputs": "Isolated build directories; qualified test/runtime assets were not overwritten."
+    },
+    "scope": "Documentation-only change. No new tests, native capture, full CI, package or SVGWeb replay is required or claimed for unchanged executable code.",
+    "existingWitnesses": [
+      "../../Lokad.Svg.Tests/SvgAnalyticEdgeStorageTests.cs",
+      "../../Lokad.Svg.Tests/SvgContourEligibilityTests.cs",
+      "../../Lokad.Svg.Tests/SvgAuthoredPathTests.cs",
+      "../../Lokad.Svg.Tests/SvgGradientCoordinateTests.cs"
+    ]
+  },
+  "renderer": {
+    "qualification": "font-source-await.json",
+    "sourceCommit": "9f9720f02aec86fa5f81a8d2ff2886567df219c6",
+    "originalReplay": "../svgweb/originals.json#/currentReview",
+    "unchangedTestsFixturesReferencesAndLicenses": true
+  },
+  "remaining": "Named historical source joins and text/shader correctness, original SVGWeb admission semantics and the broader support/units/limits/provenance audit remain open in PLAN.md."
+}
