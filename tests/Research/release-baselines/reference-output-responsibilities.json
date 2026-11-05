@@ -1,0 +1,1212 @@
+{
+  "status": "Seven reference groups retain every original six-form API matrix while separating canonical rendering from routine representatives and individual Research replays. Numerical/native comparisons, inputs, backgrounds, other methods, references and exactness are preserved. Production code and qualified package assets are unchanged.",
+  "sourceCommit": "0b2d41f8e3d90d6bb911c4d0c5fd7955306844da",
+  "baseCommit": "58e24fb211f3b0f39d596f671945c3700f13f1e4",
+  "groups": [
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgInertPresentationTests.cs",
+      "originalMethod": "Inactive_presentation_preserves_pixels_through_six_public_outputs",
+      "canonicalMethod": "Inactive_presentation_preserves_pixels",
+      "signature": "string context",
+      "all": [
+        "inline",
+        "root",
+        "group",
+        "stylesheet",
+        "use",
+        "attributes",
+        "important",
+        "duplicate",
+        "visible-inline",
+        "visible-group",
+        "visible-stylesheet",
+        "visible-attributes",
+        "background-root-attribute",
+        "background-root-inline",
+        "background-group-attribute",
+        "background-group-inline",
+        "background-stylesheet",
+        "background-use",
+        "background-leaf",
+        "background-viewport",
+        "background-partial-one",
+        "background-partial-two",
+        "background-partial-three"
+      ],
+      "routine": [
+        "inline",
+        "use",
+        "stylesheet",
+        "background-viewport",
+        "visible-group",
+        "important"
+      ],
+      "research": [
+        "root",
+        "group",
+        "attributes",
+        "duplicate",
+        "visible-inline",
+        "visible-stylesheet",
+        "visible-attributes",
+        "background-root-attribute",
+        "background-root-inline",
+        "background-group-attribute",
+        "background-group-inline",
+        "background-stylesheet",
+        "background-use",
+        "background-leaf",
+        "background-partial-one",
+        "background-partial-two",
+        "background-partial-three"
+      ],
+      "routineReason": "Leaf CSS, retained instance, stylesheet, nested viewport, group visibility and cascade interaction.",
+      "bodyWithoutGateLfSha256": "9a8b42f370a0a1d4f46627439ac5cdbafb33f49f45fe53930dfa1853425642d6",
+      "gate": "if (!allOutputs) return;",
+      "allOriginalAssertionsPreserved": true,
+      "beforeLfSha256": "b2ab47261376abcc42fd5ce232982ed83847b1e7041a28c192dadd49789a7043",
+      "afterLfSha256": "ee94ee69d08364daa33e3243f0e1e907aaa391435f4109f63336e22f9a2dc755",
+      "entireBeforeFileReconstructed": true
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgSymbolLocationReferenceTests.cs",
+      "originalMethod": "Symbol_instances_match_stable_browser_references_through_all_six_outputs",
+      "canonicalMethod": "Symbol_instances_match_stable_browser_references",
+      "signature": "string identity",
+      "all": [
+        "root-mixed",
+        "root-forward",
+        "root-unused",
+        "group-definition-transform",
+        "group-definition-hidden",
+        "root-stylesheet",
+        "root-empty",
+        "symbol-descriptions",
+        "nested-group",
+        "nested-use-backward",
+        "nested-use-forward",
+        "empty-location-siblings",
+        "anonymous-empty-unused",
+        "anonymous-child-alias"
+      ],
+      "routine": [
+        "root-mixed",
+        "root-forward",
+        "group-definition-hidden",
+        "nested-use-forward",
+        "anonymous-child-alias",
+        "anonymous-empty-unused"
+      ],
+      "research": [
+        "root-unused",
+        "group-definition-transform",
+        "root-stylesheet",
+        "root-empty",
+        "symbol-descriptions",
+        "nested-group",
+        "nested-use-backward",
+        "empty-location-siblings"
+      ],
+      "routineReason": "Mixed siblings, forward definitions, hidden resource construction, nested forward use, child alias and empty unused definitions.",
+      "bodyWithoutGateLfSha256": "cc7ad769afd0e05998642ab193e5ed6c8a916db81d28be72d63e304ae092c5e7",
+      "gate": "if (!allOutputs) return;",
+      "allOriginalAssertionsPreserved": true,
+      "beforeLfSha256": "0537af6cdfa216ad65b76e2490e11f2ca11f18a22bb6f1b987554cc55339c20b",
+      "afterLfSha256": "ec100d2a29dcdf54a8613d1f8057325bb46b9b4a6900750ff0d0b44ff4626af3",
+      "entireBeforeFileReconstructed": true
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgUniformGroupMaskReferenceTests.cs",
+      "originalMethod": "Composed_group_masks_match_browser_pixels_for_three_backgrounds_and_all_six_outputs",
+      "canonicalMethod": "Composed_group_masks_match_browser_pixels_for_three_backgrounds",
+      "signature": "string name",
+      "all": [
+        "round-backward",
+        "round-forward",
+        "overlap-backward",
+        "overlap-forward",
+        "fractional-box",
+        "round-stroke",
+        "round-pattern",
+        "round-mask-opacity",
+        "round-alpha-mask",
+        "round-gray-40",
+        "round-gray-c0"
+      ],
+      "routine": [
+        "fractional-box",
+        "round-pattern",
+        "round-mask-opacity",
+        "round-alpha-mask"
+      ],
+      "research": [
+        "round-backward",
+        "round-forward",
+        "overlap-backward",
+        "overlap-forward",
+        "round-stroke",
+        "round-gray-40",
+        "round-gray-c0"
+      ],
+      "routineReason": "Fractional bounds, pattern child, compounded mask opacity and alpha-mask execution; all three backgrounds remain in each original case.",
+      "bodyWithoutGateLfSha256": "0ec4685f324ea51cb8abeeb0b5309e52108e6d1b577ec6356a7b1eba9e59ad3e",
+      "gate": "if (!allOutputs) continue;",
+      "allOriginalAssertionsPreserved": true,
+      "beforeLfSha256": "2e27a2e350588711e6fba59270f8759bf86447bd0068cb996dd3c06791e09a31",
+      "afterLfSha256": "3bd97a4fcc889e31f43f14e2a4787587196cf0475cbd3fa6d00ddcb3903cb287",
+      "entireBeforeFileReconstructed": true
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgRoundedRectReferenceTests.cs",
+      "originalMethod": "Rounded_source_geometry_matches_browser_pixels_through_all_six_outputs",
+      "canonicalMethod": "Rounded_source_geometry_matches_browser_pixels",
+      "signature": "string name",
+      "all": [
+        "rounded-source-decimal",
+        "rounded-source-oval",
+        "rounded-source-half-width",
+        "rounded-source-half-height",
+        "rounded-source-clamped-width",
+        "rounded-source-reflection",
+        "rounded-source-fractional-stroke",
+        "rounded-source-fill-and-stroke"
+      ],
+      "routine": [
+        "rounded-source-decimal",
+        "rounded-source-fractional-stroke",
+        "rounded-source-fill-and-stroke"
+      ],
+      "research": [
+        "rounded-source-oval",
+        "rounded-source-half-width",
+        "rounded-source-half-height",
+        "rounded-source-clamped-width",
+        "rounded-source-reflection"
+      ],
+      "routineReason": "Rounded fill, fractional stroke and ordered fill/stroke output interactions.",
+      "bodyWithoutGateLfSha256": "241803fc6f7b584a4be738a2b284653623d0340442a8f8b9707aa7996f7b1bfd",
+      "gate": "if (!allOutputs) return;",
+      "allOriginalAssertionsPreserved": true,
+      "beforeLfSha256": "092a53284db5d1390471befd83fcfe8156366ca479a495cf3fa761dd722e6624",
+      "afterLfSha256": "2cb1b16310834d7c352222af44eefef25b9d1de9b838df503f31196f87f77608",
+      "entireBeforeFileReconstructed": true
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgGaussianBlurReferenceTests.cs",
+      "originalMethod": "Whole_filter_playback_matches_the_same_frozen_control_through_six_outputs",
+      "canonicalMethod": "Whole_filter_playback_matches_the_same_frozen_control",
+      "signature": "string identity",
+      "all": [
+        "retained-question-deviation",
+        "retained-star-deviation",
+        "retained-shadow-deviation",
+        "anisotropic-identity-axis",
+        "transparent-frame-boundary",
+        "colored-premultiplied-channels"
+      ],
+      "routine": [
+        "retained-question-deviation",
+        "anisotropic-identity-axis",
+        "colored-premultiplied-channels"
+      ],
+      "research": [
+        "retained-star-deviation",
+        "retained-shadow-deviation",
+        "transparent-frame-boundary"
+      ],
+      "routineReason": "Original deviation regression, one-axis identity and colored premultiplied storage; all six direct numerical/native kernel cases remain unchanged.",
+      "bodyWithoutGateLfSha256": "ca05a8508e4872e07ba95ec478d0f8c2dd9eb4cc279b95f35032fadb5276c0cf",
+      "gate": "if (!allOutputs) return;",
+      "allOriginalAssertionsPreserved": true,
+      "beforeLfSha256": "cbb3a6c9b656818345fd0c72ae0ae8f4fa7469cb7c64ee61ffcf9f1747138e95",
+      "afterLfSha256": "8cb37e6c54d9980b4a4bbad036ee712add0a56f9b1ce1bcc43a5a155975fd56f",
+      "entireBeforeFileReconstructed": true
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgInertTypographyReferenceTests.cs",
+      "originalMethod": "Inert_geometry_typography_matches_frozen_browser_controls_through_six_outputs",
+      "canonicalMethod": "Inert_geometry_typography_matches_frozen_browser_controls",
+      "signature": "string identity",
+      "all": [
+        "inline-outlined-path",
+        "presentation-outlined-path",
+        "all-geometric-leaves",
+        "retained-local-instance",
+        "pattern-content",
+        "filtered-source"
+      ],
+      "routine": [
+        "retained-local-instance",
+        "pattern-content",
+        "filtered-source"
+      ],
+      "research": [
+        "inline-outlined-path",
+        "presentation-outlined-path",
+        "all-geometric-leaves"
+      ],
+      "routineReason": "Retained instance, pattern content and filter source retain their distinct resource/execution paths.",
+      "bodyWithoutGateLfSha256": "246dd3d9035c0c53ce8ea74dddf82bb772a59b15f49768f9e94c5b2d28f34b3c",
+      "gate": "if (!allOutputs) return;",
+      "allOriginalAssertionsPreserved": true,
+      "beforeLfSha256": "b5dbafa9b0148df9688d8cdcb552f9a87b5b4bb86f7d998a3e306bc2b2e8ddf9",
+      "afterLfSha256": "940fe5f3d4795e8235cd43da04c464bb3b69fb36f10de462e6f9be1ddacd1d11",
+      "entireBeforeFileReconstructed": true
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgSingleStopGradientReferenceTests.cs",
+      "originalMethod": "Single_stop_gradients_preserve_browser_comparisons_through_all_six_outputs",
+      "canonicalMethod": "Single_stop_gradients_preserve_browser_comparisons",
+      "signature": "string name, int pixels, int channel",
+      "all": [
+        "one-stop-alpha-direct",
+        "radial-one-stop-alpha-direct",
+        "one-stop-alpha-leaf",
+        "one-stop-alpha-parent",
+        "override-one-stop-alpha-leaf"
+      ],
+      "routine": [
+        "one-stop-alpha-direct",
+        "radial-one-stop-alpha-direct",
+        "override-one-stop-alpha-leaf"
+      ],
+      "research": [
+        "one-stop-alpha-leaf",
+        "one-stop-alpha-parent"
+      ],
+      "routineReason": "Linear and radial dispatch plus overriding inherited leaf alpha; all exact numerical native comparisons remain routine.",
+      "bodyWithoutGateLfSha256": "44e8d46b8809fc576d8017b1d5d34a1a1aa0c69a048678627098a3e6a2d80853",
+      "gate": "if (!allOutputs) return;",
+      "allOriginalAssertionsPreserved": true,
+      "beforeLfSha256": "ff2ee3c853b5ee80f845d51aca44cf8cf860e4e89c03651dd2648bf843baa373",
+      "afterLfSha256": "97482f4ec69622a3fa2870fc4efb8ae6489c498b55f5c15717994378e21ee7ab",
+      "entireBeforeFileReconstructed": true
+    }
+  ],
+  "caseJoins": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "method": "Inactive_presentation_preserves_pixels_through_six_public_outputs",
+      "originalMatrices": 23,
+      "canonicalCases": 23,
+      "routineMatrices": 6,
+      "researchMatrices": 17,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Symbol_instances_match_stable_browser_references_through_all_six_outputs",
+      "originalMatrices": 14,
+      "canonicalCases": 14,
+      "routineMatrices": 6,
+      "researchMatrices": 8,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Composed_group_masks_match_browser_pixels_for_three_backgrounds_and_all_six_outputs",
+      "originalMatrices": 11,
+      "canonicalCases": 11,
+      "routineMatrices": 4,
+      "researchMatrices": 7,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Rounded_source_geometry_matches_browser_pixels_through_all_six_outputs",
+      "originalMatrices": 8,
+      "canonicalCases": 8,
+      "routineMatrices": 3,
+      "researchMatrices": 5,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Whole_filter_playback_matches_the_same_frozen_control_through_six_outputs",
+      "originalMatrices": 6,
+      "canonicalCases": 6,
+      "routineMatrices": 3,
+      "researchMatrices": 3,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Inert_geometry_typography_matches_frozen_browser_controls_through_six_outputs",
+      "originalMatrices": 6,
+      "canonicalCases": 6,
+      "routineMatrices": 3,
+      "researchMatrices": 3,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Single_stop_gradients_preserve_browser_comparisons_through_all_six_outputs",
+      "originalMatrices": 5,
+      "canonicalCases": 5,
+      "routineMatrices": 3,
+      "researchMatrices": 2,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "method": "Inactive_presentation_preserves_pixels_through_six_public_outputs",
+      "originalMatrices": 23,
+      "canonicalCases": 23,
+      "routineMatrices": 6,
+      "researchMatrices": 17,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Symbol_instances_match_stable_browser_references_through_all_six_outputs",
+      "originalMatrices": 14,
+      "canonicalCases": 14,
+      "routineMatrices": 6,
+      "researchMatrices": 8,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Composed_group_masks_match_browser_pixels_for_three_backgrounds_and_all_six_outputs",
+      "originalMatrices": 11,
+      "canonicalCases": 11,
+      "routineMatrices": 4,
+      "researchMatrices": 7,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Rounded_source_geometry_matches_browser_pixels_through_all_six_outputs",
+      "originalMatrices": 8,
+      "canonicalCases": 8,
+      "routineMatrices": 3,
+      "researchMatrices": 5,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Whole_filter_playback_matches_the_same_frozen_control_through_six_outputs",
+      "originalMatrices": 6,
+      "canonicalCases": 6,
+      "routineMatrices": 3,
+      "researchMatrices": 3,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Inert_geometry_typography_matches_frozen_browser_controls_through_six_outputs",
+      "originalMatrices": 6,
+      "canonicalCases": 6,
+      "routineMatrices": 3,
+      "researchMatrices": 3,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "visual",
+      "method": "Single_stop_gradients_preserve_browser_comparisons_through_all_six_outputs",
+      "originalMatrices": 5,
+      "canonicalCases": 5,
+      "routineMatrices": 3,
+      "researchMatrices": 2,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "core",
+      "method": "Inactive_presentation_preserves_pixels_through_six_public_outputs",
+      "originalMatrices": 23,
+      "canonicalCases": 23,
+      "routineMatrices": 6,
+      "researchMatrices": 17,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Symbol_instances_match_stable_browser_references_through_all_six_outputs",
+      "originalMatrices": 14,
+      "canonicalCases": 14,
+      "routineMatrices": 6,
+      "researchMatrices": 8,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Composed_group_masks_match_browser_pixels_for_three_backgrounds_and_all_six_outputs",
+      "originalMatrices": 11,
+      "canonicalCases": 11,
+      "routineMatrices": 4,
+      "researchMatrices": 7,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Rounded_source_geometry_matches_browser_pixels_through_all_six_outputs",
+      "originalMatrices": 8,
+      "canonicalCases": 8,
+      "routineMatrices": 3,
+      "researchMatrices": 5,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Whole_filter_playback_matches_the_same_frozen_control_through_six_outputs",
+      "originalMatrices": 6,
+      "canonicalCases": 6,
+      "routineMatrices": 3,
+      "researchMatrices": 3,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Inert_geometry_typography_matches_frozen_browser_controls_through_six_outputs",
+      "originalMatrices": 6,
+      "canonicalCases": 6,
+      "routineMatrices": 3,
+      "researchMatrices": 3,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Single_stop_gradients_preserve_browser_comparisons_through_all_six_outputs",
+      "originalMatrices": 5,
+      "canonicalCases": 5,
+      "routineMatrices": 3,
+      "researchMatrices": 2,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "core",
+      "method": "Inactive_presentation_preserves_pixels_through_six_public_outputs",
+      "originalMatrices": 23,
+      "canonicalCases": 23,
+      "routineMatrices": 6,
+      "researchMatrices": 17,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Symbol_instances_match_stable_browser_references_through_all_six_outputs",
+      "originalMatrices": 14,
+      "canonicalCases": 14,
+      "routineMatrices": 6,
+      "researchMatrices": 8,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Composed_group_masks_match_browser_pixels_for_three_backgrounds_and_all_six_outputs",
+      "originalMatrices": 11,
+      "canonicalCases": 11,
+      "routineMatrices": 4,
+      "researchMatrices": 7,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Rounded_source_geometry_matches_browser_pixels_through_all_six_outputs",
+      "originalMatrices": 8,
+      "canonicalCases": 8,
+      "routineMatrices": 3,
+      "researchMatrices": 5,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Whole_filter_playback_matches_the_same_frozen_control_through_six_outputs",
+      "originalMatrices": 6,
+      "canonicalCases": 6,
+      "routineMatrices": 3,
+      "researchMatrices": 3,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Inert_geometry_typography_matches_frozen_browser_controls_through_six_outputs",
+      "originalMatrices": 6,
+      "canonicalCases": 6,
+      "routineMatrices": 3,
+      "researchMatrices": 3,
+      "caseMultiplicityPreserved": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "visual",
+      "method": "Single_stop_gradients_preserve_browser_comparisons_through_all_six_outputs",
+      "originalMatrices": 5,
+      "canonicalCases": 5,
+      "routineMatrices": 3,
+      "researchMatrices": 2,
+      "caseMultiplicityPreserved": true
+    }
+  ],
+  "coverage": {
+    "canonicalInputs": 73,
+    "originalApiMatrices": 73,
+    "routineApiMatrices": 28,
+    "researchApiMatrices": 45,
+    "nativeMaskBackgroundsPerInput": 3,
+    "directNativeBlurMechanismsUnchanged": 6,
+    "otherCoreCasesUnchanged": 42,
+    "beforeAffectedRoutineCases": 121,
+    "afterAffectedRoutineCases": 149,
+    "afterAffectedFullCases": 194,
+    "originalCaseMultiplicityPreserved": true,
+    "inventory": {
+      "declaredMethods": 5105,
+      "sourceFiles": 721,
+      "layers": {
+        "Lokad.Svg.Tests": {
+          "Unclassified": 1806,
+          "Mechanism": 1316,
+          "Contract": 549,
+          "Rendering": 985,
+          "Integrity": 1
+        },
+        "Lokad.Svg.VisualTests": {
+          "Unclassified": 277,
+          "Contract": 34,
+          "Integrity": 21,
+          "Rendering": 115,
+          "Mechanism": 1
+        }
+      }
+    },
+    "fullCoreCases": 47679,
+    "fullVisualCases": 73566,
+    "fastCoreCases": 19147,
+    "newDeclaredMethods": 14,
+    "oldUnclassifiedMethodsNowClassified": 8
+  },
+  "routineConversionWork": {
+    "beforeCalls": 593,
+    "afterCalls": 340,
+    "fullAfterCalls": 711,
+    "scope": "SVG conversion calls in the73 original matrix inputs only. Mask cases retain all3 backgrounds; inert-presentation control conversions are included. The42 other core cases and6 direct numerical kernels are unchanged. This is source-reviewed execution accounting, not a timing or image-equivalence inference."
+  },
+  "validation": {
+    "checks": [
+      {
+        "phase": "before-routine",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "583a91cf649fd16955b80000c3e34945c65debcd1a9aad86322e9d8b86122d0c",
+        "selection": "(FullyQualifiedName~SvgInertPresentationTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 8.825614899862558,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "583a91cf649fd16955b80000c3e34945c65debcd1a9aad86322e9d8b86122d0c",
+        "selection": "(FullyQualifiedName~SvgInertPresentationTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 13.730084400158376,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "c8ca46d000609cebb484c9a0120c2a620fab0e6b45ec6d67e405e42667756b47",
+        "selection": "(FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.298927299911156,
+        "counters": {
+          "executed": "56",
+          "passed": "56",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "c8ca46d000609cebb484c9a0120c2a620fab0e6b45ec6d67e405e42667756b47",
+        "selection": "(FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.393729600124061,
+        "counters": {
+          "executed": "56",
+          "passed": "56",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "79a6a038f695ef791d811cd90bdb8e7ddab0f8cc9bf5d2607d0a13cd9ce55bda",
+        "selection": "(FullyQualifiedName~SvgInertPresentationTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.366091900039464,
+        "counters": {
+          "executed": "71",
+          "passed": "71",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "79a6a038f695ef791d811cd90bdb8e7ddab0f8cc9bf5d2607d0a13cd9ce55bda",
+        "selection": "(FullyQualifiedName~SvgInertPresentationTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 12.160369100049138,
+        "counters": {
+          "executed": "71",
+          "passed": "71",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "440ea68196e0622993d63af85f94085ce17a6e08468ff938125451d8d4791de3",
+        "selection": "(FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 11.775078499922529,
+        "counters": {
+          "executed": "78",
+          "passed": "78",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "440ea68196e0622993d63af85f94085ce17a6e08468ff938125451d8d4791de3",
+        "selection": "(FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 8.764255299931392,
+        "counters": {
+          "executed": "78",
+          "passed": "78",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "79a6a038f695ef791d811cd90bdb8e7ddab0f8cc9bf5d2607d0a13cd9ce55bda",
+        "selection": "FullyQualifiedName~SvgInertPresentationTests",
+        "exitCode": 0,
+        "seconds": 8.640933400020003,
+        "counters": {
+          "executed": "88",
+          "passed": "88",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "79a6a038f695ef791d811cd90bdb8e7ddab0f8cc9bf5d2607d0a13cd9ce55bda",
+        "selection": "FullyQualifiedName~SvgInertPresentationTests",
+        "exitCode": 0,
+        "seconds": 11.02566900011152,
+        "counters": {
+          "executed": "88",
+          "passed": "88",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "440ea68196e0622993d63af85f94085ce17a6e08468ff938125451d8d4791de3",
+        "selection": "FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests",
+        "exitCode": 0,
+        "seconds": 9.92034720000811,
+        "counters": {
+          "executed": "106",
+          "passed": "106",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+        "testAssemblySha256": "440ea68196e0622993d63af85f94085ce17a6e08468ff938125451d8d4791de3",
+        "selection": "FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests",
+        "exitCode": 0,
+        "seconds": 9.22977830003947,
+        "counters": {
+          "executed": "106",
+          "passed": "106",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "eec9ec160e81f46c0e65abcda988a6030a147d1ff731aadd789652c15c45cb12",
+        "selection": "(FullyQualifiedName~SvgInertPresentationTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 7.811127700144425,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "eec9ec160e81f46c0e65abcda988a6030a147d1ff731aadd789652c15c45cb12",
+        "selection": "(FullyQualifiedName~SvgInertPresentationTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 8.24851020006463,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "c63c5b6270e766c56c97045676369c69de9a4d2059de04b26b7a2d90c2569f14",
+        "selection": "(FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.074700499884784,
+        "counters": {
+          "executed": "56",
+          "passed": "56",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "c63c5b6270e766c56c97045676369c69de9a4d2059de04b26b7a2d90c2569f14",
+        "selection": "(FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.647642299998552,
+        "counters": {
+          "executed": "56",
+          "passed": "56",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "a52196cbdde80e8bce3b8599e1305d44f1f4f7d22892e27bcdf8e71045a24431",
+        "selection": "(FullyQualifiedName~SvgInertPresentationTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.670693499967456,
+        "counters": {
+          "executed": "71",
+          "passed": "71",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "a52196cbdde80e8bce3b8599e1305d44f1f4f7d22892e27bcdf8e71045a24431",
+        "selection": "(FullyQualifiedName~SvgInertPresentationTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 8.549590999959037,
+        "counters": {
+          "executed": "71",
+          "passed": "71",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "5b5e8025b33083f22769bdf5c86580125d9a08d743f04abf45d3fcb023be0b20",
+        "selection": "(FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 11.272672899998724,
+        "counters": {
+          "executed": "78",
+          "passed": "78",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "5b5e8025b33083f22769bdf5c86580125d9a08d743f04abf45d3fcb023be0b20",
+        "selection": "(FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.08270929986611,
+        "counters": {
+          "executed": "78",
+          "passed": "78",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "a52196cbdde80e8bce3b8599e1305d44f1f4f7d22892e27bcdf8e71045a24431",
+        "selection": "FullyQualifiedName~SvgInertPresentationTests",
+        "exitCode": 0,
+        "seconds": 8.03152919979766,
+        "counters": {
+          "executed": "88",
+          "passed": "88",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "a52196cbdde80e8bce3b8599e1305d44f1f4f7d22892e27bcdf8e71045a24431",
+        "selection": "FullyQualifiedName~SvgInertPresentationTests",
+        "exitCode": 0,
+        "seconds": 8.234761700034142,
+        "counters": {
+          "executed": "88",
+          "passed": "88",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "5b5e8025b33083f22769bdf5c86580125d9a08d743f04abf45d3fcb023be0b20",
+        "selection": "FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests",
+        "exitCode": 0,
+        "seconds": 9.581155899912119,
+        "counters": {
+          "executed": "106",
+          "passed": "106",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "5b5e8025b33083f22769bdf5c86580125d9a08d743f04abf45d3fcb023be0b20",
+        "selection": "FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgUniformGroupMaskReferenceTests|FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgGaussianBlurReferenceTests|FullyQualifiedName~SvgInertTypographyReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests",
+        "exitCode": 0,
+        "seconds": 9.118459800025448,
+        "counters": {
+          "executed": "106",
+          "passed": "106",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "fast",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "a52196cbdde80e8bce3b8599e1305d44f1f4f7d22892e27bcdf8e71045a24431",
+        "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 26.585721199866384,
+        "counters": {
+          "executed": "19147",
+          "passed": "19147",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "fast",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141",
+        "testAssemblySha256": "a52196cbdde80e8bce3b8599e1305d44f1f4f7d22892e27bcdf8e71045a24431",
+        "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 27.604780999943614,
+        "counters": {
+          "executed": "19147",
+          "passed": "19147",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "routineBeforeAfter": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforeProjectProcessSeconds": 19.124542199773714,
+        "afterProjectProcessSeconds": 22.141170399961993
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforeProjectProcessSeconds": 23.123814000282437,
+        "afterProjectProcessSeconds": 20.92462439998053
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "beforeProjectProcessSeconds": 17.88582820002921,
+        "afterProjectProcessSeconds": 20.94336639996618
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "beforeProjectProcessSeconds": 17.89615250006318,
+        "afterProjectProcessSeconds": 17.632300299825147
+      }
+    ],
+    "timingScope": "Sum of two project process/discovery/TRX wall times per host/runtime. Same pinned libraries, mixed warmup and overlapping Windows/Linux/runtime processes; single observations. Reduced conversion work does not establish an overall wall-time or renderer speedup.",
+    "policy": "Focused routine and complete affected checks on both hosts/runtimes, then the fast .NET10 selection and full primary .NET11 CI. Existing original-matrix method bodies reconstruct exactly after removal of one early gate. No new test framework or assertion batching."
+  },
+  "productionQualification": {
+    "evidence": "empty-filter-stage-storage.json",
+    "runtimeSourceCommit": "e996eea9981289378f6a2939c8733c3308f5f364",
+    "librarySha256": {
+      "net11.0": "9b48128cfa04ea1f5e43e96992fa057a0e3cf786fbbb0790ba80ada96c2e878f",
+      "net10.0": "c7135aa6006e980b08d6fb73523c74678c9ae43bc59380737a3784cd431b7141"
+    },
+    "packagesRegenerated": false,
+    "originalsReplayedAgain": false,
+    "reason": "Test-only responsibility changes use exact previously qualified assets. Production, the204 original outcomes,168 rendered originals per host,22 supplied contexts and13 diagnostics retain their existing source-bound qualification and originals.currentReview ledger."
+  },
+  "ci": {
+    "runId": 41983439576,
+    "sourceCommit": "0b2d41f8e3d90d6bb911c4d0c5fd7955306844da",
+    "terminalClosed": true,
+    "jobs": {
+      "linux": {
+        "jobId": 127098577798,
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47679,
+            "total": 47679
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73566,
+            "total": 73566
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "42401f6433e748113a2384c3ff349a8e1791db579de0488c00863fadeb4ed6f8"
+      },
+      "windows": {
+        "jobId": 127098577388,
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47679,
+            "total": 47679
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73565,
+            "total": 73566
+          }
+        ],
+        "logSha256": "60d5cfaf2840b2c6a5dd0ddaaead4fe31b21d4122ba6469fcff504e1dee1d7ca"
+      }
+    },
+    "boundary": "Ubuntu full/compatibility/tools/package gates pass. Windows retains solely the unchanged frozen DejaVu discrepancy; preserve its reference and assertion."
+  },
+  "retainedDistinctInteraction": "The96 mask-text inheritance cases remain intact. Their actual calls combine direct raster, raw PNG and prepared-document font selection; a call-site count does not prove a six-form API product.",
+  "remaining": "Other mixed responsibility classes, ownership/font setup sharing, measured color/filter consumer/context selection, scene/layer structural work, original static admission and historical provenance. No renderer performance claim."
+}

@@ -40,6 +40,8 @@ gradient groups retain 73 canonical inputs, 28 routine six-output contracts and
 all three backgrounds and six direct blur-kernel controls stay separate. New
 inputs remain routine. Prepared mask-text inheritance retains its full matrix
 because font selection through preparation is part of that interaction.
+The [qualification](Research/release-baselines/reference-output-responsibilities.json)
+records each retained case, selection reason and measured validation time.
 
 Parser characterization uses a [test-owned rectangle projection](Lokad.Svg.Tests/SvgRectangleCharacterization.cs)
 of root or retained-scene geometry. It preserves the assertion view's stroke bands

@@ -42,6 +42,10 @@ assertions; fast selection preserves every previous member and adds eight checks
 202 canonical native inputs and all 207 six-form API matrices, separating 40 routine
 contracts from 167 individual Research replays. All five boundary matrices remain
 routine; JSON identities are qualified under both checkout newline forms.
+[Smaller reference output responsibilities](reference-output-responsibilities.json)
+retain all 73 symbol/mask/geometry/style/blur/gradient API matrices while separating
+canonical rendering, 28 routine representatives and 45 individual Research replays.
+All backgrounds, direct kernels, original assertion bodies and exact targets remain.
 [Supplied-font test responsibilities](font-output-responsibilities.md) separate
 37 native rendering inputs from seven routine and 30 extended output matrices.
 [Raster ownership setup](raster-ownership.json) shares the parse-once lifetime

@@ -27,6 +27,8 @@ Seven smaller reference groups also separate 73 canonical inputs from 28 routine
 and 45 Research output matrices. Every original matrix and its comparison body
 remain; three mask backgrounds and six direct blur mechanisms stay intact.
 The explicit research identities live in each class; new inputs remain routine.
+The [qualification](reference-output-responsibilities.json) binds the selections,
+unchanged bodies, source/compiled inventory and both-host/runtime case joins.
 
 ## Paint-bank discovery and loading
 
