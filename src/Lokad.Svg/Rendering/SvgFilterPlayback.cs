@@ -626,7 +626,9 @@ internal static class SvgFilterPlayback
                 SvgFilterColorSpace colorSpace = primitive.Kind == SvgFilterPrimitiveKind.Flood
                     ? SvgFilterColorSpace.Srgb : primitive.ColorSpace ?? resource.ColorSpace;
                 bool inputLinear = primitive.Input.Index >= 0 && primitive.Input.Index < index && linear[primitive.Input.Index];
-                ReadOnlySpan<byte> input = ReadInput(primitive.Input, index, graphic);
+                // Flood has no pixel input; merge and matrix read their resolved operands below.
+                ReadOnlySpan<byte> input = ReadInput(primitive.Input, index, graphic,
+                    primitive.Kind is not (SvgFilterPrimitiveKind.Flood or SvgFilterPrimitiveKind.Merge or SvgFilterPrimitiveKind.ColorMatrix));
                 outputs[index] = Allocate();
                 Span<byte> output = outputs[index].Pixels;
                 imageBounds[index] = new(0, 0, width, height);
@@ -774,7 +776,7 @@ internal static class SvgFilterPlayback
                     }
                     SvgFilterColorSpace firstSpace = resource.Primitives.Items[matrixStages[stages - 1]].ColorSpace ?? resource.ColorSpace;
                     bool matrixInputLinear = matrixInput.Index >= 0 && linear[matrixInput.Index];
-                    ReadOnlySpan<byte> matrixSource = ReadInput(matrixInput, index, graphic);
+                    ReadOnlySpan<byte> matrixSource = ReadInput(matrixInput, index, graphic, true);
                     bool sampled = TryPrepareSample(matrixInput, requests[index], out SvgShaderMatrix inverse);
                     linear[index] = colorSpace == SvgFilterColorSpace.LinearRgb;
                     bool evaluatedMatrix = false;
@@ -814,7 +816,7 @@ internal static class SvgFilterPlayback
                             deferredImage = new(imageToSource, image.Bounds, regions[index], sampling)
                             { ColorProgram = program, Constant = constant,
                                 ColorFilter = constant is not null ? SvgFilterDeferredColorFilter.UniformFill : SvgFilterDeferredColorFilter.None };
-                            ReadInput(image.Input, index, graphic).CopyTo(output);
+                            ReadInput(image.Input, index, graphic, true).CopyTo(output);
                             linear[index] = image.Input.Index >= 0 && linear[image.Input.Index];
                             evaluatedMatrix = true;
                         }
@@ -836,7 +838,7 @@ internal static class SvgFilterPlayback
                             SvgPaintBounds actual = imageBounds[index];
                             imageBounds[index] = new(MathF.Max(wanted.Left, actual.Left), MathF.Max(wanted.Top, actual.Top),
                                 MathF.Min(wanted.Right, actual.Right), MathF.Min(wanted.Bottom, actual.Bottom));
-                            Offset(ReadInput(image.Input, index, graphic), output, image.DrawPlacement.TranslateX,
+                            Offset(ReadInput(image.Input, index, graphic, true), output, image.DrawPlacement.TranslateX,
                                 image.DrawPlacement.TranslateY, new(image.Bounds, true), null, image.NativeDraw,
                                 OffsetImagePaint.Packed, new(program.SourceSpace, colorSpace, colorSpace) { ColorProgram = program }, imageBounds[index]);
                             sampledOffsets[index] = null;
@@ -882,7 +884,7 @@ internal static class SvgFilterPlayback
                 }
                 else if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
                 {
-                    ReadOnlySpan<byte> second = ReadInput(primitive.SecondInput, index, graphic);
+                    ReadOnlySpan<byte> second = ReadInput(primitive.SecondInput, index, graphic, true);
                     bool secondLinear = primitive.SecondInput.Index >= 0 && linear[primitive.SecondInput.Index];
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
                     token.ThrowIfCancellationRequested();
@@ -951,7 +953,7 @@ internal static class SvgFilterPlayback
                                 new(1, 0, retained.Bounds.Left - nativeOrigin.X, 0, 1, retained.Bounds.Top - nativeOrigin.Y));
                             deferredImage = new(imageToSource, retained.Bounds, regions[index], SvgFilterImageSampling.Nearest)
                                 { ColorProgram = colorProgram with { LastStage = index } };
-                            ReadInput(retained.Input, index, graphic).CopyTo(output);
+                            ReadInput(retained.Input, index, graphic, true).CopyTo(output);
                             linear[index] = retained.Input.Index >= 0 && linear[retained.Input.Index];
                         }
                     }
@@ -1096,7 +1098,7 @@ internal static class SvgFilterPlayback
                             SvgShaderMatrix placement = SvgShaderMatrix.Concat(placed, pending.DrawPlacement);
                             SvgFilterColorSpace sourceSpace = pending.Input.Index >= 0 && linear[pending.Input.Index]
                                 ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb;
-                            Offset(ReadInput(pending.Input, index, graphic), output, placement.TranslateX, placement.TranslateY,
+                            Offset(ReadInput(pending.Input, index, graphic, true), output, placement.TranslateX, placement.TranslateY,
                                 new(pending.Bounds, pending.IsResolvedView), null, null, OffsetImagePaint.FloatingSamples,
                                 new(sourceSpace, colorSpace, colorSpace) { ColorProgram = program with { LastStage = index } }, imageBounds[index]);
                             inputLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
@@ -1119,7 +1121,7 @@ internal static class SvgFilterPlayback
                     {
                         SvgFilterInput merged = resource.MergeInputs.Items[primitive.MergeFirst];
                         token.ThrowIfCancellationRequested();
-                        ReadInput(merged, index, graphic).CopyTo(output);
+                        ReadInput(merged, index, graphic, true).CopyTo(output);
                         linear[index] = merged.Index >= 0 && linear[merged.Index];
                         RetainSampling(index, merged, false);
                         SvgPaintBounds sourceBounds = merged.Index >= 0 ? imageBounds[merged.Index]
@@ -1136,7 +1138,7 @@ internal static class SvgFilterPlayback
                     SvgPaintBounds mergedImageBounds = default;
                     foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
                     {
-                        ReadOnlySpan<byte> layer = ReadInput(merged, index, graphic);
+                        ReadOnlySpan<byte> layer = ReadInput(merged, index, graphic, true);
                         bool layerLinear = merged.Index >= 0 && linear[merged.Index];
                         Composite(layer, output, merged, layerLinear, colorSpace, graphic);
                         token.ThrowIfCancellationRequested();
@@ -1477,11 +1479,12 @@ internal static class SvgFilterPlayback
             catch { owner.Dispose(); throw; }
         }
 
-        ReadOnlySpan<byte> ReadInput(SvgFilterInput reference, int before, ReadOnlySpan<byte> graphic)
+        ReadOnlySpan<byte> ReadInput(SvgFilterInput reference, int before, ReadOnlySpan<byte> graphic, bool requirePixels)
         {
-            if (reference == SvgFilterInput.SourceGraphic) return graphic;
+            if (reference == SvgFilterInput.SourceGraphic) return requirePixels ? graphic : default;
             if (reference == SvgFilterInput.SourceAlpha)
             {
+                if (!requirePixels) return default;
                 if (outputs[count].Pixels is null)
                 {
                     token.ThrowIfCancellationRequested();
@@ -1494,7 +1497,11 @@ internal static class SvgFilterPlayback
                 }
                 return outputs[count].Pixels;
             }
-            if ((uint)reference.Index < (uint)before) return outputs[reference.Index].Pixels ?? TransparentInput().Pixels;
+            if ((uint)reference.Index < (uint)before)
+            {
+                if (!requirePixels) return default;
+                return outputs[reference.Index].Pixels ?? TransparentInput().Pixels;
+            }
             throw new SvgException(SvgErrorCode.MalformedInput, "Filter graph input is outside its earlier results.");
         }
 
@@ -1527,7 +1534,7 @@ internal static class SvgFilterPlayback
                 SvgShaderMatrix transform = retained.InputToOutput;
                 SvgShaderMatrix? matrix = transform.ScaleX == 1 && transform.ScaleY == 1
                     && transform.SkewX == 0 && transform.SkewY == 0 ? null : transform;
-                ReadOnlySpan<byte> image = ReadInput(retained.Input, sampledReference.Index, graphic);
+                ReadOnlySpan<byte> image = ReadInput(retained.Input, sampledReference.Index, graphic, true);
                 OffsetImagePaint retainedPaint = retained.Input == SvgFilterInput.SourceAlpha ? OffsetImagePaint.SourceAlpha : OffsetImagePaint.Packed;
                 Offset(image, output, transform.TranslateX, transform.TranslateY,
                     new(retained.Bounds, retained.IsResolvedView), null, matrix, retainedPaint,
@@ -1620,7 +1627,7 @@ internal static class SvgFilterPlayback
             if (x <= image.Bounds.Left || x > image.Bounds.Right || y <= image.Bounds.Top || y > image.Bounds.Bottom) return default;
             int column = (int)MathF.Floor(MathF.BitDecrement(x)), row = (int)MathF.Floor(MathF.BitDecrement(y));
             if ((uint)column >= (uint)width || (uint)row >= (uint)height) return default;
-            ReadOnlySpan<byte> input = ReadInput(image.Input, reference.Index, graphic);
+            ReadOnlySpan<byte> input = ReadInput(image.Input, reference.Index, graphic, true);
             bool sourceLinear = image.Input.Index >= 0 && linear[image.Input.Index];
             if (image.ColorProgram is {} program)
             {

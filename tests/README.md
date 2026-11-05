@@ -89,6 +89,11 @@ copying every source command into raster storage.
 empty, single and maximum-size graphs, allocation-free metadata and graph borrowing.
 Numerical bounds/storage cases and pixel-storage refusal remain separate checks.
 
+[Input-demand contracts](Lokad.Svg.Tests/SvgFilterInputStorageTests.cs) distinguish
+unused primary references from consumed merge inputs, including SourceAlpha.
+Six admission/refund/retry cases cover cropped predecessors and unplaced graphs;
+four direct mechanisms preserve malformed-reference errors before pixel allocation.
+
 [Empty-stage storage contracts](Lokad.Svg.Tests/SvgEmptyFilterStageStorageTests.cs)
 cover repeated cropped stages under a one-output allowance, a clear final frame
 and color-matrix bias reading an empty result. They retain exact pixels, refusal,

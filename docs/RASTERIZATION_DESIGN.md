@@ -32,6 +32,9 @@ retained scene. Rewritten command envelopes remain separately owned. Matching
 capture/playback grids can borrow pixels with a transparent guard; expanded or
 shifted grids retain admitted copies. Capture owners outlive restoration.
 Graph queries use bounded scratch; stored pixels retain their independent owners.
+Reference validation is independent of pixel demand. Flood consumes no image,
+merge reads its nodes and color-matrix reads its resolved source; unused primary
+references do not materialize alpha or transparent planes.
 
 A prepared document retains one scene/font operation and permits one conversion.
 Font programs remain immutable for their borrowed lifetime. Raster scratch ends
