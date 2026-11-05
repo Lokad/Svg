@@ -1,0 +1,317 @@
+{
+  "sourceCommit": "200144c3e41780a67cc33a2cecb33cddc2e0dfa7",
+  "files": {
+    "tools/Lokad.Svg.Chrome/ChromeProcess.cs": "011fba6553956361c78044c86eb531b508206147e220f0342a5e2c2ffdff51d3",
+    "tests/Lokad.Svg.VisualTests/ChromeProcessTests.cs": "f8fcd900ac39ffd4f868f250d00b182e38d314e3da0b90f6e555e346d0beba15"
+  },
+  "problem": "A full local .NET 10 run failed when a cleanup assertion compared all global Chrome temp profiles while other processes created or removed their own. The original failure and passing isolated rerun remain in path-bounds-reuse.json.",
+  "change": "Both original cases observe only their launch parent. Failed launch must remove its new profile while preserving an unrelated sibling and marker. A missing executable must leave even the parent absent. A small internal overload borrows the parent; ordinary launches retain the original temporary-directory behavior. No environment mutation or serialization.",
+  "sourcePreservation": {
+    "rendererTreeUnchangedAtSource": true,
+    "launchBodyUnchangedExceptExplicitParentAndValidation": true,
+    "launchFlagsAndProcessCleanupUnchanged": true
+  },
+  "coverage": {
+    "originalCases": 2,
+    "afterCases": 2,
+    "removed": 0,
+    "addedApiMatrix": 0,
+    "layer": "Contract",
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 47,
+        "seconds": 16.49,
+        "testAssemblySha256": "dd2d09a05623cafccc7848ac0588cd7dffce33ec67cb1bba3fed96a06499d77a",
+        "chromeAssemblySha256": "c4fd4e587f75b3463f12849f72fbd2c078566977b95cf63113f20df995e67ca1"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 47,
+        "seconds": 17.49,
+        "testAssemblySha256": "dd2d09a05623cafccc7848ac0588cd7dffce33ec67cb1bba3fed96a06499d77a",
+        "chromeAssemblySha256": "c4fd4e587f75b3463f12849f72fbd2c078566977b95cf63113f20df995e67ca1"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 47,
+        "seconds": 16.35,
+        "testAssemblySha256": "ffd2e903691f6e765b0a20fed4f1f803d0462715379589102c8be5407c6a188f",
+        "chromeAssemblySha256": "45aef4330b444ab7a8424ec25af95566dc50a447b3d0b1dfc6f0226d75b20f61"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 47,
+        "seconds": 17.91,
+        "testAssemblySha256": "ffd2e903691f6e765b0a20fed4f1f803d0462715379589102c8be5407c6a188f",
+        "chromeAssemblySha256": "45aef4330b444ab7a8424ec25af95566dc50a447b3d0b1dfc6f0226d75b20f61"
+      }
+    ],
+    "visualLayerSelection": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 301,
+        "seconds": 23.71,
+        "testAssemblySha256": "dd2d09a05623cafccc7848ac0588cd7dffce33ec67cb1bba3fed96a06499d77a",
+        "chromeAssemblySha256": "c4fd4e587f75b3463f12849f72fbd2c078566977b95cf63113f20df995e67ca1"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 301,
+        "seconds": 24.83,
+        "testAssemblySha256": "dd2d09a05623cafccc7848ac0588cd7dffce33ec67cb1bba3fed96a06499d77a",
+        "chromeAssemblySha256": "c4fd4e587f75b3463f12849f72fbd2c078566977b95cf63113f20df995e67ca1"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 301,
+        "seconds": 23.71,
+        "testAssemblySha256": "ffd2e903691f6e765b0a20fed4f1f803d0462715379589102c8be5407c6a188f",
+        "chromeAssemblySha256": "45aef4330b444ab7a8424ec25af95566dc50a447b3d0b1dfc6f0226d75b20f61"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 301,
+        "seconds": 25.68,
+        "testAssemblySha256": "ffd2e903691f6e765b0a20fed4f1f803d0462715379589102c8be5407c6a188f",
+        "chromeAssemblySha256": "45aef4330b444ab7a8424ec25af95566dc50a447b3d0b1dfc6f0226d75b20f61"
+      }
+    ],
+    "layerSelection": "Layer=Mechanism|Layer=Contract",
+    "selectedVisualCases": 301,
+    "newlyClassifiedFacts": 2,
+    "negativeControl": {
+      "scope": "Private counterfactual tool omits failed-launch profile deletion; production sources/assemblies are untouched.",
+      "executed": 2,
+      "passed": 1,
+      "failed": 1,
+      "failures": [
+        "Lokad.Svg.VisualTests.ChromeProcessTests.Failed_launch_cleans_its_profile"
+      ],
+      "seconds": 12.25672519998625,
+      "toolSha256": "391f1fd9400e989cb67cd8ded32468bde781746191fcaee8da57a3953f131323",
+      "testAssemblySha256": "dd2d09a05623cafccc7848ac0588cd7dffce33ec67cb1bba3fed96a06499d77a"
+    },
+    "nativeCaptures": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "toolSha256": "c4fd4e587f75b3463f12849f72fbd2c078566977b95cf63113f20df995e67ca1",
+        "browserExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "sourceSha256": "4a1f61723747af9e33d1e2f9655c89d40dbe66e332045cac644ae454019e0610",
+        "referenceSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+        "captures": [
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          },
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          },
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          }
+        ],
+        "seconds": 2.477524399990216
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "toolSha256": "c4fd4e587f75b3463f12849f72fbd2c078566977b95cf63113f20df995e67ca1",
+        "browserExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "sourceSha256": "4a1f61723747af9e33d1e2f9655c89d40dbe66e332045cac644ae454019e0610",
+        "referenceSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+        "captures": [
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          },
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          },
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          }
+        ],
+        "seconds": 14.538867899915203
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "toolSha256": "45aef4330b444ab7a8424ec25af95566dc50a447b3d0b1dfc6f0226d75b20f61",
+        "browserExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "sourceSha256": "4a1f61723747af9e33d1e2f9655c89d40dbe66e332045cac644ae454019e0610",
+        "referenceSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+        "captures": [
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          },
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          },
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          }
+        ],
+        "seconds": 2.024997300002724
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "toolSha256": "45aef4330b444ab7a8424ec25af95566dc50a447b3d0b1dfc6f0226d75b20f61",
+        "browserExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "sourceSha256": "4a1f61723747af9e33d1e2f9655c89d40dbe66e332045cac644ae454019e0610",
+        "referenceSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+        "captures": [
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          },
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          },
+          {
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+            "healthy": true,
+            "profileCleaned": true,
+            "exactFrozenPixels": true
+          }
+        ],
+        "seconds": 9.873298400081694
+      }
+    ]
+  },
+  "timing": {
+    "host": "windows",
+    "framework": "net10.0",
+    "selection": "FullyQualifiedName~ChromeProcessTests",
+    "beforeSeconds": 16.7,
+    "afterSeconds": 8.56,
+    "casesPerRun": 2,
+    "scope": "One local functional sample each, including runner startup; no renderer-performance or benchmark claim."
+  },
+  "ci": {
+    "runId": 41947577794,
+    "sourceCommit": "200144c3e41780a67cc33a2cecb33cddc2e0dfa7",
+    "status": "completed",
+    "terminalClosed": true,
+    "conclusion": "failure",
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47639,
+            "total": 47639
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12875,
+            "total": 12875
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "0ac932e20c8017534ff0294de38dcb0f97dc007aa214790444d0df456756b818"
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47639,
+            "total": 47639
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "total": 73312
+          }
+        ],
+        "logSha256": "667764a8eec5efc91cc168c3a62edfb2d4053da3b74b386daed4eca70d4e3c58"
+      }
+    },
+    "boundary": "Windows retains only frozen DejaVu; compatibility/tool/package steps there skip after that failure. Both local runtimes/hosts pass affected and fast checks. Ubuntu full/compatibility/tools/package gates pass."
+  },
+  "remaining": "The smoke script also compares global profile/capture roots. Review its direct-child and wrapper timeout ownership separately; retain publication, deadline and cleanup assertions. The runtime qualification and hosted-source binding remain in path-bounds-reuse.json."
+}

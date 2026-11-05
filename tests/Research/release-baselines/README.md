@@ -51,6 +51,9 @@ copies and index remapping while retaining the rewritten command envelope and sc
 preserving separate outlines and coordinate maps. Six authored controls, full rendering,
 packages and original-source replay retain exactness; the local Chrome cleanup race
 and its isolated rerun remain recorded separately from the known DejaVu discrepancy.
+[Chrome cleanup isolation](chrome-cleanup-isolation.json) closes that launch-test
+race through per-invocation ownership, preserving both cases, a cleanup-omission
+control, concurrent host/runtime checks and independent healthy captures.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200

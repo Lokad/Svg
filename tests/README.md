@@ -39,7 +39,8 @@ regressions remain separate.
 invocation's profile parent, preserving unrelated siblings and detecting leaked
 profiles without comparing a machine-wide temporary-directory snapshot. Missing
 executables must leave even the parent absent; cancellation and healthy browser
-capture remain separate checks.
+capture remain separate checks. Their [qualification](Research/release-baselines/chrome-cleanup-isolation.json)
+retains the original failure and a negative control that omits profile deletion.
 
 Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs)
 while retaining separate names, inputs and allocation paths. Add one representative
