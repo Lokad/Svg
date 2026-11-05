@@ -171,13 +171,13 @@ public sealed class SvgFilterSourceHintTests
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(300, 300), region);
-            RenderBudget scratch = new(new HostMemoryBudget(1_000_000));
+
             // Independent saveLayer observations are retained in the SVGWeb stage records.
             Assert.Equal(expected,
-                SvgFilterPlayback.ParameterCaptureBounds(resource, new(1, 1), context, visual, scratch, CancellationToken.None));
+                SvgFilterPlayback.ParameterCaptureBounds(resource, new(1, 1), context, visual, CancellationToken.None));
             Assert.Equal(withoutSourceEnclosure, SvgFilterPlayback.RoundParameterBounds(
-                SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, visual, scratch, CancellationToken.None)));
-            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+                SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, visual, CancellationToken.None)));
+
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
@@ -240,13 +240,12 @@ public sealed class SvgFilterSourceHintTests
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(32, 32), new(-100, -100, 100, 100));
-            RenderBudget scratch = new RenderBudget(new HostMemoryBudget(1_000_000));
-            SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, new(6, 11, 26, 22),
-                scratch, CancellationToken.None);
+
+            SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, new(6, 11, 26, 22), CancellationToken.None);
             // Native source capture encloses both source and shifted output in
             // parameter coordinates. Layer-space inset rounding belongs later.
             Assert.Equal(new SvgPaintBounds(left, top, right, bottom), SvgFilterPlayback.RoundParameterBounds(hint));
-            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }

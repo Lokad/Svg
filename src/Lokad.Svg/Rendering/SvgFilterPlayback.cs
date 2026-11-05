@@ -179,11 +179,11 @@ internal static class SvgFilterPlayback
         => new(MathF.Floor(value.Left), MathF.Floor(value.Top), MathF.Ceiling(value.Right), MathF.Ceiling(value.Bottom));
 
     /// <summary>Encloses source visuals before graph expansion, then encloses the parameter-space capture.</summary>
-    /// <remarks>Resources and finite source bounds are borrowed. Graph work, temporary ownership,
-    /// cancellation and cleanup follow SourceLayerBounds; object and sampled-image bounds stay separate.</remarks>
+    /// <remarks>Resources and finite source bounds are borrowed. Bounded stack scratch and cancellation
+    /// follow SourceLayerBounds; object and sampled-image bounds stay separate.</remarks>
     internal static SvgPaintBounds ParameterCaptureBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, CancellationToken token)
-        => RoundParameterBounds(SourceLayerBounds(resource, map, context, RoundParameterBounds(source), budget, token));
+        SvgFilterRegionContext context, SvgPaintBounds source, CancellationToken token)
+        => RoundParameterBounds(SourceLayerBounds(resource, map, context, RoundParameterBounds(source), token));
 
     /// <summary>Encloses the requested native source image independently of capture storage and transparent guard pixels.</summary>
     /// <remarks>Intersects the image hint and propagated request before integer admission; callers admit nonempty requests.
@@ -210,25 +210,24 @@ internal static class SvgFilterPlayback
     }
 
     /// <summary>Computes a conservative source-capture hint before layer scaling and integer enclosure.</summary>
-    /// <remarks>Source/result bounds remain separate from object bounds and pixel ownership. Temporary
-    /// arrays share the conversion budget, release on every exit and charge bounded graph visits.</remarks>
+    /// <remarks>Borrows an admitted graph of at most 256 primitives. Stack scratch owns no heap storage;
+    /// every graph visit observes cancellation. Source/result, object and pixel bounds stay separate.</remarks>
     internal static SvgPaintBounds SourceLayerBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, CancellationToken token)
-        => SourceLayerBounds(resource, map, context, source, SvgFilterBoundsKind.CaptureHint, budget, token);
+        SvgFilterRegionContext context, SvgPaintBounds source, CancellationToken token)
+        => SourceLayerBounds(resource, map, context, source, SvgFilterBoundsKind.CaptureHint, token);
 
     /// <summary>Propagates capture hints, stored-image bounds or painted output through the same finite graph.</summary>
     /// <remarks>Stored bounds retain native kernel outsets and materialization rounding independently
-    /// of compact pixel storage. Resources are borrowed; temporary ownership, work and cancellation
+    /// of compact pixel storage. Borrowed resources, bounded stack scratch and cancellation
     /// follow the capture-hint overload.</remarks>
     internal static SvgPaintBounds SourceLayerBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds source, SvgFilterBoundsKind kind,
-        RenderBudget budget, CancellationToken token)
+        SvgFilterRegionContext context, SvgPaintBounds source, SvgFilterBoundsKind kind, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         int count = resource.Primitives.Items.Length;
         if (count == 0) return default;
-        using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
-        SvgPaintBounds[] regions = new SvgPaintBounds[count], bounds = new SvgPaintBounds[count];
+        Span<SvgPaintBounds> regions = stackalloc SvgPaintBounds[count];
+        Span<SvgPaintBounds> bounds = stackalloc SvgPaintBounds[count];
         PrepareRegions(resource, regions, context, token);
         PrepareOutputBounds(resource, map, source, kind, regions, bounds, Span<SvgFilterImageStorage>.Empty, token);
         return kind == SvgFilterBoundsKind.CaptureHint ? Union(source, bounds[^1]) : bounds[^1];
@@ -240,25 +239,24 @@ internal static class SvgFilterPlayback
     }
 
     /// <summary>Propagates stored image bounds without mistaking cropped padding for a transparent outset.</summary>
-    /// <remarks>Resources remain borrowed. Temporary bounds/storage arrays are admitted before allocation,
-    /// released on every exit and visited with cancellation. Returned metadata owns no storage.</remarks>
+    /// <remarks>Borrows an admitted graph of at most 256 primitives. Bounded stack scratch is visited
+    /// with cancellation; returned metadata owns no storage.</remarks>
     internal static SvgFilterImageBounds SourceImageBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, CancellationToken token)
+        SvgFilterRegionContext context, SvgPaintBounds source, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         int count = resource.Primitives.Items.Length;
         if (count == 0) return new(default, SvgFilterImageStorage.Deferred);
-        using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count)
-            + ParserCollectionMemory.GetArrayByteCount<SvgFilterImageStorage>(count), SvgMemoryCategory.Temporary);
-        SvgPaintBounds[] regions = new SvgPaintBounds[count], bounds = new SvgPaintBounds[count];
-        SvgFilterImageStorage[] storage = new SvgFilterImageStorage[count];
+        Span<SvgPaintBounds> regions = stackalloc SvgPaintBounds[count];
+        Span<SvgPaintBounds> bounds = stackalloc SvgPaintBounds[count];
+        Span<SvgFilterImageStorage> storage = stackalloc SvgFilterImageStorage[count];
         PrepareRegions(resource, regions, context, token);
         PrepareOutputBounds(resource, map, source, SvgFilterBoundsKind.StoredImage, regions, bounds, storage, token);
         return new(bounds[^1], storage[^1]);
     }
 
     // Propagates possible output bounds before request planning. The kind
-    // retains its rounding domain; borrowed arrays and graph visits stay budgeted.
+    // retains its rounding domain; borrowed spans are visited with cancellation.
     private static void PrepareOutputBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgPaintBounds source, SvgFilterBoundsKind kind, ReadOnlySpan<SvgPaintBounds> regions,
         Span<SvgPaintBounds> bounds, Span<SvgFilterImageStorage> storage, CancellationToken token)
@@ -335,19 +333,19 @@ internal static class SvgFilterPlayback
     }
 
     /// <summary>Back-propagates a bounded output through earlier local results to the dynamic source.</summary>
-    /// <remarks>Resources are borrowed and immutable. Temporary request/region arrays share the conversion
-    /// budget and release on every exit; all graph visits observe cancellation. Coordinates
+    /// <remarks>Resources are borrowed and immutable; admitted graphs contain at most 256 primitives.
+    /// Bounded stack scratch is visited with cancellation. Coordinates
     /// use the caller's device grid. No pixels or caller storage are changed.</remarks>
     internal static SvgPaintBounds RequiredSourceBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds requested, RenderBudget budget, CancellationToken token)
-        => RequiredSourceBounds(resource, map, context, requested, budget, token, out _);
+        SvgFilterRegionContext context, SvgPaintBounds requested, CancellationToken token)
+        => RequiredSourceBounds(resource, map, context, requested, token, out _);
 
     /// <summary>Plans dynamic source demand and the input view retained by a terminal fractional offset.</summary>
     /// <remarks>Both bounds use the requested output and primitive crops, independently of final image storage.
-    /// Resources are borrowed; all scratch shares the conversion budget, releases on every exit and
-    /// observes cancellation. Returned immutable bounds own no pixels.</remarks>
+    /// Resources are borrowed; bounded stack scratch and cancellation follow the source-demand overload.
+    /// Returned immutable bounds own no pixels.</remarks>
     internal static SvgPaintBounds RequiredSourceBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds requested, RenderBudget budget, CancellationToken token,
+        SvgFilterRegionContext context, SvgPaintBounds requested, CancellationToken token,
         out SvgPaintBounds? retainedInput)
     {
         retainedInput = null;
@@ -359,8 +357,9 @@ internal static class SvgFilterPlayback
             && HasFractionalOffset(terminal, map);
         bool plansStoredInput = retainsInput && context.SourceBounds is not null
             && resource.Primitives.Items[final.Index].Input.Index >= 0;
-        using RenderBudget.BudgetReservation owner = budget.Reserve((plansStoredInput ? 3 : 2) * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
-        SvgPaintBounds[] regions = new SvgPaintBounds[count], requests = new SvgPaintBounds[count];
+        Span<SvgPaintBounds> regions = stackalloc SvgPaintBounds[count];
+        Span<SvgPaintBounds> requests = stackalloc SvgPaintBounds[count];
+        requests.Clear();
         SvgPaintBounds source = PrepareRequests(resource, map, context, requested, regions, requests, Span<SvgPaintBounds>.Empty, token);
         if (retainsInput)
         {
@@ -371,7 +370,7 @@ internal static class SvgFilterPlayback
                 SvgPaintBounds extent = sourceHint;
                 if (plansStoredInput)
                 {
-                    SvgPaintBounds[] possible = new SvgPaintBounds[count];
+                    Span<SvgPaintBounds> possible = stackalloc SvgPaintBounds[count];
                     PrepareOutputBounds(resource, map, sourceHint, SvgFilterBoundsKind.StoredImage, regions, possible,
                         Span<SvgFilterImageStorage>.Empty, token);
                     extent = possible[input.Index];
@@ -413,10 +412,10 @@ internal static class SvgFilterPlayback
     }
 
     // Plans each node's requested output in the same grid as primitive regions.
-    // Arrays are borrowed from the caller's budgeted scratch; graph work and
-    // cancellation use the supplied counter. No pixel ownership is transferred.
+    // Spans are borrowed from the caller; graph visits observe the supplied token.
+    // No pixel ownership is transferred.
     private static SvgPaintBounds PrepareRequests(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds requested, SvgPaintBounds[] regions, SvgPaintBounds[] requests, Span<SvgPaintBounds> bounds,
+        SvgFilterRegionContext context, SvgPaintBounds requested, Span<SvgPaintBounds> regions, Span<SvgPaintBounds> requests, Span<SvgPaintBounds> bounds,
         CancellationToken token)
     {
         int count = resource.Primitives.Items.Length;
@@ -457,15 +456,16 @@ internal static class SvgFilterPlayback
                 input = new(input.Left - radiusX, input.Top - radiusY, input.Right + radiusX, input.Bottom + radiusY);
             }
             if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
-                foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount)) Add(merged, output);
+                foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount)) Add(merged, output, requests, index, ref source, token);
             else
             {
-                Add(primitive.Input, input);
-                if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow) Add(primitive.Input, output);
-                if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend) Add(primitive.SecondInput, output);
+                Add(primitive.Input, input, requests, index, ref source, token);
+                if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow) Add(primitive.Input, output, requests, index, ref source, token);
+                if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend) Add(primitive.SecondInput, output, requests, index, ref source, token);
             }
 
-            void Add(SvgFilterInput target, SvgPaintBounds bounds)
+            static void Add(SvgFilterInput target, SvgPaintBounds bounds, Span<SvgPaintBounds> requests, int index,
+                ref SvgPaintBounds source, CancellationToken token)
             {
                 token.ThrowIfCancellationRequested();
                 if (target.Index < 0) source = Union(source, bounds);

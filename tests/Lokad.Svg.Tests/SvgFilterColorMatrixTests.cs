@@ -67,11 +67,11 @@ public sealed class SvgFilterColorMatrixTests
             SvgFilterUnits.UserSpace, SvgFilterColorSpace.Srgb, new([primitive], null), null);
         SvgPaintBounds source = new(4.25f, 5.5f, 8.75f, 9.25f);
         SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(16, 16), new(0, 0, 16, 16));
-        RenderBudget scratch = new(new HostMemoryBudget(10_000));
+
         SvgPaintBounds actual = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, source,
-            SvgFilterBoundsKind.Output, scratch, CancellationToken.None);
+            SvgFilterBoundsKind.Output, CancellationToken.None);
         Assert.Equal(bias > 0 ? context.FilterRegion : source, actual);
-        Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+
     }
 
     [Theory]

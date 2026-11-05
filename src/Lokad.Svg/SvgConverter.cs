@@ -864,7 +864,7 @@ public static partial class SvgConverter
                 SvgFilterRegionContext sourceContext = new(sourceCoordinates,
                     objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
                 SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext,
-                    new((float)requestedLeft, (float)requestedTop, (float)requestedRight, (float)requestedBottom), budget, cancellationToken);
+                    new((float)requestedLeft, (float)requestedTop, (float)requestedRight, (float)requestedBottom), cancellationToken);
                 SvgPaintBounds painted = new((float)(imageVisual.Left * horizontalScale + horizontalOffset), (float)(imageVisual.Top * verticalScale + verticalOffset),
                     (float)(imageVisual.Right * horizontalScale + horizontalOffset), (float)(imageVisual.Bottom * verticalScale + verticalOffset));
                 SvgPaintBounds outputHint = MapParameterSourceBounds(elementVisual, SvgFilterBoundsKind.Output,
@@ -1287,7 +1287,7 @@ public static partial class SvgConverter
                     SvgFilterRegionContext context = new(objectUnits
                         ? SvgAffineTransform.FromScaleOffset(distances.ScaleX, distances.ScaleY, objects.Left, objects.Top) : layerMap,
                         objectUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), layerRegion);
-                    SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, distances, context, visual, budget, cancellationToken);
+                    SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, distances, context, visual, cancellationToken);
                     // Capture hints are rounded before layer scaling. Inverting a
                     // layer-space hint loses authored fringes and perturbs integers.
                     // Prefer the source traversal's recording enclosure, including
@@ -1303,7 +1303,7 @@ public static partial class SvgConverter
                         ? SvgAffineTransform.FromScaleOffset(parameterDistances.ScaleX, parameterDistances.ScaleY, parameterObjects.Left, parameterObjects.Top)
                         : SvgAffineTransform.Identity, context.LengthBases, FilterRegion(parameterBinding, resource, SvgAffineTransform.Identity));
                     SvgPaintBounds parameterHint = SvgFilterPlayback.ParameterCaptureBounds(resource, parameterDistances,
-                        parameterContext, parameterVisual, budget, cancellationToken);
+                        parameterContext, parameterVisual, cancellationToken);
                     // A recorded child filter can extend beyond the parent's layout hint.
                     // Keep fractional child placements after the parent's own enclosure.
                     for (int childIndex = first; childIndex < end; childIndex++)
@@ -1323,14 +1323,14 @@ public static partial class SvgConverter
                             ? SvgAffineTransform.FromScaleOffset(childDistances.ScaleX,childDistances.ScaleY,childObjects.Left,childObjects.Top) : SvgAffineTransform.Identity,
                             childObjectUnits ? new(1,1) : new(childBinding.LengthBases.Width ?? width,childBinding.LengthBases.Height ?? height),
                             FilterRegion(childLocal,childFilter,SvgAffineTransform.Identity));
-                        SvgPaintBounds childHint = SvgFilterPlayback.ParameterCaptureBounds(childFilter,childDistances,childContext,childVisual,budget,cancellationToken)
+                        SvgPaintBounds childHint = SvgFilterPlayback.ParameterCaptureBounds(childFilter,childDistances,childContext,childVisual,cancellationToken)
                             .MapLayout(parameterInverse.Compose(childBinding.Transform),cancellationToken);
                         parameterHint = new(MathF.Min(parameterHint.Left,childHint.Left),MathF.Min(parameterHint.Top,childHint.Top),
                             MathF.Max(parameterHint.Right,childHint.Right),MathF.Max(parameterHint.Bottom,childHint.Bottom));
                     }
                     SvgPaintBounds nativeHint = new(parameterHint.Left * scaleX, parameterHint.Top * scaleY, parameterHint.Right * scaleX, parameterHint.Bottom * scaleY);
                     SvgPaintBounds nativeSource = SvgFilterPlayback.RoundLayerBounds(nativeHint);
-                    SvgFilterImageBounds storedImage = SvgFilterPlayback.SourceImageBounds(resource, distances, context, nativeSource, budget, cancellationToken);
+                    SvgFilterImageBounds storedImage = SvgFilterPlayback.SourceImageBounds(resource, distances, context, nativeSource, cancellationToken);
                     SvgPaintBounds nativeImage = storedImage.Bounds;
                     if (nativeImage.Right <= nativeImage.Left || nativeImage.Bottom <= nativeImage.Top) return;
                     SvgPaintBounds desired = new(Math.Max(layerBounds.Left, bitmap.BitmapClip.Left), Math.Max(layerBounds.Top, bitmap.BitmapClip.Top),
@@ -1342,14 +1342,13 @@ public static partial class SvgConverter
                         && resource.Primitives.Items[^1].Input.Index < 0;
                     SvgPaintBounds? retainedInput;
                     {
-                        SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, distances, context with { SourceBounds = nativeSource }, desired,
-                            budget, cancellationToken, out retainedInput);
+                        SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, distances, context with { SourceBounds = nativeSource }, desired, cancellationToken, out retainedInput);
                         if (deferredSource || needed.Right > needed.Left && needed.Bottom > needed.Top)
                         {
                             nativeSource = new(MathF.Max(nativeSource.Left, needed.Left), MathF.Max(nativeSource.Top, needed.Top),
                                 MathF.Min(nativeSource.Right, needed.Right), MathF.Min(nativeSource.Bottom, needed.Bottom));
                             if (nativeSource.Right <= nativeSource.Left || nativeSource.Bottom <= nativeSource.Top) return;
-                            storedImage = SvgFilterPlayback.SourceImageBounds(resource, distances, context, nativeSource, budget, cancellationToken);
+                            storedImage = SvgFilterPlayback.SourceImageBounds(resource, distances, context, nativeSource, cancellationToken);
                             nativeImage = storedImage.Bounds;
                         }
                     }
@@ -1987,9 +1986,9 @@ public static partial class SvgConverter
                     FilterRegion(local, resource, SvgAffineTransform.Identity));
                 SvgPaintBounds parameterSource = retainedParameter ?? source.Map(inverse, cancellationToken);
                 SvgPaintBounds hint = kind == SvgFilterBoundsKind.CaptureHint
-                    ? SvgFilterPlayback.ParameterCaptureBounds(resource, distances, context, parameterSource, budget, cancellationToken)
+                    ? SvgFilterPlayback.ParameterCaptureBounds(resource, distances, context, parameterSource, cancellationToken)
                     : SvgFilterPlayback.RoundParameterBounds(SvgFilterPlayback.SourceLayerBounds(resource, distances, context,
-                        SvgFilterPlayback.RoundParameterBounds(parameterSource), kind, budget, cancellationToken));
+                        SvgFilterPlayback.RoundParameterBounds(parameterSource), kind, cancellationToken));
                 return hint.Map(MapFilterDrawingTransform(binding.Transform), cancellationToken);
             }
 
@@ -2146,7 +2145,7 @@ public static partial class SvgConverter
                         requestedSource = new(MathF.Max(requestedSource.Left, bitmapClip.Left), MathF.Max(requestedSource.Top, bitmapClip.Top),
                             MathF.Min(requestedSource.Right, bitmapClip.Right), MathF.Min(requestedSource.Bottom, bitmapClip.Bottom));
                     if (requestedSource.Right <= requestedSource.Left || requestedSource.Bottom <= requestedSource.Top) continue;
-                    SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext, requestedSource, budget, cancellationToken);
+                    SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext, requestedSource, cancellationToken);
                     SvgPaintBounds painted = new((float)(imageVisual.Left * horizontalScale + horizontalOffset), (float)(imageVisual.Top * verticalScale + verticalOffset),
                         (float)(imageVisual.Right * horizontalScale + horizontalOffset), (float)(imageVisual.Bottom * verticalScale + verticalOffset));
                     SvgPaintBounds outputHint = MapParameterSourceBounds(elementVisual, SvgFilterBoundsKind.Output,
@@ -2461,7 +2460,7 @@ public static partial class SvgConverter
                     objectUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), localRegion);
                 SvgPaintBounds sourceHint = new(MathF.Min(local.VisualBounds.Left, local.ObjectBounds.Left), MathF.Min(local.VisualBounds.Top, local.ObjectBounds.Top),
                     MathF.Max(local.VisualBounds.Right, local.ObjectBounds.Right), MathF.Max(local.VisualBounds.Bottom, local.ObjectBounds.Bottom));
-                bool dependsOnSource = DependsOnSource(filter, budget, cancellationToken);
+                bool dependsOnSource = DependsOnSource(filter, cancellationToken);
                 if (kind != SvgFilterBoundsKind.Output && dependsOnSource)
                 {
                     SvgAffineTransform ctm = MapFilterDrawingTransform(binding.Transform);
@@ -2480,29 +2479,30 @@ public static partial class SvgConverter
                         ? SvgAffineTransform.FromScaleOffset(nativeDistances.ScaleX, nativeDistances.ScaleY, nativeBinding.ObjectBounds.Left, nativeBinding.ObjectBounds.Top) : layerMap,
                         context.LengthBases, FilterRegion(nativeBinding, filter, SvgAffineTransform.Identity));
                     SvgPaintBounds parameterHint = SvgFilterPlayback.ParameterCaptureBounds(filter, distances,
-                        context, sourceHint, budget, cancellationToken);
+                        context, sourceHint, cancellationToken);
                     SvgPaintBounds nativeSource = SvgFilterPlayback.RoundLayerBounds(new(parameterHint.Left * scaleX, parameterHint.Top * scaleY,
                         parameterHint.Right * scaleX, parameterHint.Bottom * scaleY));
                     return SvgFilterPlayback.SourceLayerBounds(filter, nativeDistances, nativeContext, nativeSource,
-                        SvgFilterBoundsKind.StoredImage, budget, cancellationToken).Map(remainder, cancellationToken);
+                        SvgFilterBoundsKind.StoredImage, cancellationToken).Map(remainder, cancellationToken);
                 }
                 // Dynamic source images enclose their parameter-space capture
                 // before the graph maps them. Source-free paint keeps its logical
                 // extent until the enclosing opacity layer is prepared.
                 if (dependsOnSource) sourceHint = SvgFilterPlayback.RoundParameterBounds(sourceHint);
                 SvgPaintBounds outputBounds = SvgFilterPlayback.SourceLayerBounds(filter, distances, context,
-                    sourceHint, SvgFilterBoundsKind.Output, budget, cancellationToken);
+                    sourceHint, SvgFilterBoundsKind.Output, cancellationToken);
                 outputBounds = SvgFilterPlayback.RoundParameterBounds(outputBounds);
                 filtered = outputBounds.Map(MapFilterDrawingTransform(binding.Transform), cancellationToken);
             }
             return filtered;
 
-            static bool DependsOnSource(SvgFilterResource filter, RenderBudget budget, CancellationToken token)
+            static bool DependsOnSource(SvgFilterResource filter, CancellationToken token)
             {
                 int count = filter.Primitives.Items.Length;
                 if (count == 0) return false;
-                using RenderBudget.BudgetReservation owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<bool>(count), SvgMemoryCategory.Temporary);
-                bool[] sources = new bool[count];
+                // Definitions admit at most 256 primitives; each input names
+                // the source or an earlier slot, already written by this walk.
+                Span<bool> sources = stackalloc bool[count];
                 for (int index = 0; index < count; index++)
                 {
                     token.ThrowIfCancellationRequested();

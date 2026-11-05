@@ -79,7 +79,7 @@ public sealed class SvgFilterPlaybackTests
 
     [Fact]
     [Trait("Layer", "Mechanism")]
-    public void Source_layer_bounds_match_the_native_two_blur_hint_and_release_temporary_owners()
+    public void Source_layer_bounds_match_the_native_two_blur_hint_and_observe_cancellation()
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1.125'/><feGaussianBlur stdDeviation='1.125'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
         RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -89,16 +89,16 @@ public sealed class SvgFilterPlaybackTests
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(144, 108), new(-100, -100, 200, 200));
             SvgPaintBounds source = new(7.25f, 19.5f, 61.75f, 84.75f);
-            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
-            SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, source, budget, CancellationToken.None);
+
+            SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, source, CancellationToken.None);
             // The retained native command trace records [0,12,69,92].
             Assert.Equal((0d, 12d, 69d, 92d), (Math.Floor(hint.Left), Math.Floor(hint.Top), Math.Ceiling(hint.Right), Math.Ceiling(hint.Bottom)));
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgFilterPlayback.SourceLayerBounds(resource,
-                new(1, 1), context, source, budget, cancellation.Token)).CancellationToken);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+                new(1, 1), context, source, cancellation.Token)).CancellationToken);
+
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
@@ -133,17 +133,17 @@ public sealed class SvgFilterPlaybackTests
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(200, 200), new(-100, -100, 100, 100));
-            RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
+
             // The direct branch needs [10,20,30,40]. The shifted blur needs
             // [5,23,25,43] expanded by its native three-sigma radius of 3.
             Assert.Equal(new SvgPaintBounds(2, 20, 30, 46), SvgFilterPlayback.RequiredSourceBounds(resource,
-                new(1, 1), context, new(10, 20, 30, 40), budget, CancellationToken.None));
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+                new(1, 1), context, new(10, 20, 30, 40), CancellationToken.None));
+
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgFilterPlayback.RequiredSourceBounds(resource,
-                new(1, 1), context, new(10, 20, 30, 40), budget, cancellation.Token)).CancellationToken);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+                new(1, 1), context, new(10, 20, 30, 40), cancellation.Token)).CancellationToken);
+
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }

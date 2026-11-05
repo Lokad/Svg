@@ -17,16 +17,15 @@ public sealed class SvgFilterImageStorageTests
     {
         string x = dx.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         string y = dy.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
-        RenderBudget parser = new(new HostMemoryBudget(1_000_000)), scratch = new(new HostMemoryBudget(1_000_000));
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = Parse("<feGaussianBlur stdDeviation='1.25 .75'/><feOffset dx='" + x
             + "' dy='" + y + "' result='shift'/>" + suffix, parser))
         {
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(16, 16), new(-10_000, -10_000, 10_000, 10_000))
             { SourceBounds = new(4, 4, 12, 12) };
-            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(6, 6, 10, 10),
-                scratch, CancellationToken.None, out SvgPaintBounds? retained);
+            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(6, 6, 10, 10), CancellationToken.None, out SvgPaintBounds? retained);
             Assert.Equal(new SvgPaintBounds(left, top, right, bottom), retained);
-            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
@@ -40,14 +39,13 @@ public sealed class SvgFilterImageStorageTests
     {
         string x = dx.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
         string y = dy.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
-        RenderBudget parser = new(new HostMemoryBudget(1_000_000)), scratch = new(new HostMemoryBudget(1_000_000));
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = Parse("<feGaussianBlur stdDeviation='1.25 .75'/><feOffset dx='" + x + "' dy='" + y + "'/>", parser))
         {
             SvgFilterRegionContext context = Context(false) with { SourceBounds = new(4, 4, 12, 12) };
-            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(left, top, right, bottom),
-                scratch, CancellationToken.None, out SvgPaintBounds? retained);
+            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(left, top, right, bottom), CancellationToken.None, out SvgPaintBounds? retained);
             Assert.Null(retained);
-            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
@@ -56,15 +54,14 @@ public sealed class SvgFilterImageStorageTests
     [Trait("Layer", "Mechanism")]
     public void Retained_storage_is_bounded_by_the_input_image_inside_a_large_filter_region()
     {
-        RenderBudget parser = new(new HostMemoryBudget(1_000_000)), scratch = new(new HostMemoryBudget(1_000_000));
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = Parse("<feGaussianBlur stdDeviation='1.25 .75'/><feOffset dx='2.25' dy='1.5'/>", parser))
         {
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(16, 16), new(-10_000, -10_000, 10_000, 10_000))
             { SourceBounds = new(4, 4, 12, 12) };
-            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(-5_000, -5_000, 5_000, 5_000),
-                scratch, CancellationToken.None, out SvgPaintBounds? retained);
+            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(-5_000, -5_000, 5_000, 5_000), CancellationToken.None, out SvgPaintBounds? retained);
             Assert.Equal(new SvgPaintBounds(0, 1, 16, 15), retained);
-            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
@@ -81,15 +78,15 @@ public sealed class SvgFilterImageStorageTests
     public void Bounds_retain_materialization_and_padding_history(string graph, bool cropped, string expected)
     {
         RenderBudget parser = new(new HostMemoryBudget(1_000_000));
-        RenderBudget scratch = new(new HostMemoryBudget(1_000_000));
+
         using (SvgRoot root = Parse(graph, parser))
         {
             SvgFilterRegionContext context = Context(cropped);
-            SvgFilterImageBounds image = SvgFilterPlayback.SourceImageBounds(Resource(root), new(1, 1), context, new(4, 4, 12, 12), scratch, CancellationToken.None);
+            SvgFilterImageBounds image = SvgFilterPlayback.SourceImageBounds(Resource(root), new(1, 1), context, new(4, 4, 12, 12), CancellationToken.None);
             Assert.Equal(Enum.Parse<SvgFilterImageStorage>(expected), image.Storage);
-            Assert.Equal(SvgFilterPlayback.SourceLayerBounds(Resource(root), new(1, 1), context, new(4, 4, 12, 12), SvgFilterBoundsKind.StoredImage, scratch, CancellationToken.None), image.Bounds);
+            Assert.Equal(SvgFilterPlayback.SourceLayerBounds(Resource(root), new(1, 1), context, new(4, 4, 12, 12), SvgFilterBoundsKind.StoredImage, CancellationToken.None), image.Bounds);
             if (cropped) Assert.Equal(new SvgPaintBounds(5, 5, 11, 11), image.Bounds);
-            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
@@ -101,33 +98,32 @@ public sealed class SvgFilterImageStorageTests
         foreach (float sigma in new[] { .03f, float.BitIncrement(.03f) })
         {
             Assert.True(SvgGaussianBlur.HasIdentityKernel(new(sigma, sigma)));
-            RenderBudget scratch = new(new HostMemoryBudget(1_000_000));
+
             using SvgFilterResource resource = new(new(new(0, false), new(0, false), new(16, false), new(16, false), SvgFilterUnits.UserSpace),
                 SvgFilterUnits.UserSpace, SvgFilterColorSpace.Srgb,
                 new([new(SvgFilterPrimitiveKind.GaussianBlur, SvgFilterInput.SourceGraphic, sigma, sigma, 0, 0, default)], null), null);
-            SvgFilterImageBounds image = SvgFilterPlayback.SourceImageBounds(resource, new(1, 1), Context(false), new(4, 4, 12, 12), scratch, CancellationToken.None);
+            SvgFilterImageBounds image = SvgFilterPlayback.SourceImageBounds(resource, new(1, 1), Context(false), new(4, 4, 12, 12), CancellationToken.None);
             Assert.Equal(sigma == .03f ? SvgFilterImageStorage.Deferred : SvgFilterImageStorage.InitializedPadding, image.Storage);
-            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+
         }
     }
 
     [Fact]
     [Trait("Layer", "Contract")]
-    public void Metadata_query_releases_admission_and_observes_cancellation()
+    public void Metadata_query_borrows_graph_and_observes_cancellation()
     {
         RenderBudget parser = new(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = Parse("<feGaussianBlur stdDeviation='.5'/>", parser))
         {
-            RenderBudget refused = new(new HostMemoryBudget(1));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgFilterPlayback.SourceImageBounds(Resource(root), new(1, 1), Context(true), new(4, 4, 12, 12), refused, CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, refused.Snapshot().CurrentBytes);
-            RenderBudget scratch = new(new HostMemoryBudget(1_000_000));
+            SvgFilterResource resource = Resource(root);
+            SvgFilterPrimitive[] unchanged = resource.Primitives.Items.ToArray();
+            long retainedScene = parser.Snapshot().CurrentBytes;
             using CancellationTokenSource cancellation = new(); cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
-                SvgFilterPlayback.SourceImageBounds(Resource(root), new(1, 1), Context(true), new(4, 4, 12, 12), scratch, cancellation.Token)).CancellationToken);
-            Assert.Equal(SvgFilterImageStorage.Cropped, SvgFilterPlayback.SourceImageBounds(Resource(root), new(1, 1), Context(true), new(4, 4, 12, 12), scratch, CancellationToken.None).Storage);
-            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+                SvgFilterPlayback.SourceImageBounds(Resource(root), new(1, 1), Context(true), new(4, 4, 12, 12), cancellation.Token)).CancellationToken);
+            Assert.Equal(SvgFilterImageStorage.Cropped, SvgFilterPlayback.SourceImageBounds(Resource(root), new(1, 1), Context(true), new(4, 4, 12, 12), CancellationToken.None).Storage);
+            Assert.Equal(unchanged, resource.Primitives.Items);
+            Assert.Equal(retainedScene, parser.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
