@@ -1,0 +1,431 @@
+{
+  "status": "Eight mixed shader classes retain every original case, body, data provider, loop axis and exact assertion. Individual Layer traits separate direct mechanisms, API/ownership and rendering. No production, reference, tolerance or Research selection changes.",
+  "source": {
+    "baseCommit": "155116235c02a1b1086290ac4dbf9a7e68a4615f",
+    "files": [
+      {
+        "file": "../../Lokad.Svg.Tests/SvgGradientCoordinateTests.cs",
+        "beforeLfSha256": "7b6a4a1bcc9a69333195e7f7b3d237f4014fede2085ed6c3586279887737fcdd",
+        "afterLfSha256": "28b31ca0485ffee24b38467de535c665918c24a44c9ad8b0fbece4261b4ca814",
+        "methods": {
+          "Mechanism": [
+            "Captured_gradient_coordinates_and_dither_share_the_source_bitmap_origin",
+            "Gradient_skew_spelling_preserves_the_shared_affine_map",
+            "Gradient_skew_requires_one_finite_angle",
+            "Gradient_transform_numbers_match_browser_dom_bits",
+            "Gradient_stop_offsets_match_frozen_browser_decimal_percentage_and_exponent_lanes",
+            "Gradient_transform_numeric_reading_observes_cancellation",
+            "Coordinate_and_normalized_material_stages_match_compiled_native_float_lanes_and_pixels",
+            "Bitmap_local_radial_matrix_order_matches_native_positions_material_lanes_and_pixels"
+          ],
+          "Contract": [
+            "Separate_radial_local_and_drawing_matrices_preserve_six_output_parity"
+          ],
+          "Rendering": []
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgGradientPolygonTests.cs",
+        "beforeLfSha256": "7236a767ec1b506d1f748b0307c0e6ff079a7428000dcbe418a46a16de37759d",
+        "afterLfSha256": "fddd64506cbe8d05b8fd9ef3fe98e794d2d5534edab5df64d96844c2e9fe5284",
+        "methods": {
+          "Mechanism": [
+            "Gradient_polygon_retains_contours_paint_and_box",
+            "Similarity_covers_rotation_reflection_and_uniform_scales",
+            "Similarity_rejects_skew_and_rotation_with_nonuniform_scale",
+            "Radial_polygon_retains_contours_circle_and_box",
+            "Gradient_transform_compose_applies_inner_first",
+            "Gradient_transform_try_invert_round_trips_general_matrix",
+            "Gradient_transform_try_invert_rejects_singular_matrix",
+            "Shift_general_radial_composes_translation_exactly",
+            "Scale_general_radial_composes_axis_map_exactly",
+            "Scale_general_radial_marks_collapsed_reference_axes_empty",
+            "Map_user_space_radial_general_composes_element_and_frame"
+          ],
+          "Contract": [],
+          "Rendering": []
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgShaderPaintTests.cs",
+        "beforeLfSha256": "30ed5732d01b6c9d3bcd6c1e51326ce671bd814217efe9c821119e16af84924d",
+        "afterLfSha256": "c4db58267d723783dbc9c2b58eaf01c4510d704d0e936b34a80cc85f8bf84383",
+        "methods": {
+          "Mechanism": [
+            "Float_material_stages_match_compiled_native_pixels"
+          ],
+          "Contract": [
+            "Six_outputs_agree_for_translucent_shader_clips",
+            "Raster_memory_denial_releases_shader_storage",
+            "Cancellation_during_initialization_releases_shader_storage"
+          ],
+          "Rendering": []
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgShaderStrokePathTests.cs",
+        "beforeLfSha256": "b221380effe758cb0e200cb574fba210fac899273b5926b3450851f7068b9ca1",
+        "afterLfSha256": "bcad148198eba4ed63bc4f2166de000c087c35db144274a95228f9c38fe26f0c",
+        "methods": {
+          "Mechanism": [],
+          "Contract": [
+            "Mixed_shader_strokes_preserve_source_and_release_owners_after_denial_cancellation_and_retry",
+            "Shader_stroke_admission_preserves_invalid_style_errors_without_output"
+          ],
+          "Rendering": [
+            "Unpainted_curved_fill_preserves_the_source_box_for_gradient_stroke"
+          ]
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgSingleStopGradientTests.cs",
+        "beforeLfSha256": "f8c6d2e134df9908f34639da44373b5b60b178c8349dc0cd732d300542e1dcf5",
+        "afterLfSha256": "c0c34295656723e1639e071fb4e553508ed6c1abf32638b574bc166c1dd8c28d",
+        "methods": {
+          "Mechanism": [],
+          "Contract": [
+            "A_single_stop_releases_owners_on_memory_and_cancellation_denial"
+          ],
+          "Rendering": [
+            "A_single_stop_keeps_browser_alpha_and_gradient_factory_dither"
+          ]
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgPatternCoordinateTests.cs",
+        "beforeLfSha256": "e068344ed313d3b72db2a32f3f4744f9e996bd8e40078109fd545fd21506f705",
+        "afterLfSha256": "dc2ade9f1dae3be16124e509c675213fb4f01cc8c5ccde1daf3863c6e1378308",
+        "methods": {
+          "Mechanism": [],
+          "Contract": [
+            "Object_relative_texture_dimensions_remain_bounded"
+          ],
+          "Rendering": [
+            "Object_box_units_use_the_untransformed_shape_bounds",
+            "Reused_patterns_bind_each_original_box_before_clipping_and_stroking",
+            "Empty_object_boxes_do_not_paint_pattern_textures",
+            "Skewed_oval_patterns_bind_original_object_units_before_native_source_replay",
+            "Zero_radius_oval_patterns_do_not_paint"
+          ]
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgPatternRecordingTransformTests.cs",
+        "beforeLfSha256": "d219f87da8f851c3b6ce17f601524fe66f85bf8c0f7c97e20ad674c5899b8836",
+        "afterLfSha256": "42c0f1275f3667e8d2f1f84d9db727340e6346931c12228958b1563dfd0e5524",
+        "methods": {
+          "Mechanism": [],
+          "Contract": [
+            "Deep_recording_chains_release_storage_on_denial_cancellation_and_retry",
+            "Shared_recording_nodes_keep_output_matrices_local_to_each_draw"
+          ],
+          "Rendering": [
+            "Pattern_sampling_retains_native_recording_boundaries",
+            "Authored_viewports_and_external_output_scale_preserve_their_distinct_native_picture_matrices"
+          ]
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgAffineRadialPaintTests.cs",
+        "beforeLfSha256": "dbef00ef02d8719bd5f8e34bed5495dd7246d73f14c3c9aa489de6a8a542a0ea",
+        "afterLfSha256": "16bfa767cc6c4c4418a88e1c8ae67e6828b2d6d16807daaaa0d9404b8d1a9d6f",
+        "methods": {
+          "Mechanism": [],
+          "Contract": [
+            "Tiled_curved_clip_releases_border_owners_after_late_denial_and_partial_replay_cancellation",
+            "Affine_paint_and_clip_replay_releases_owners_on_denial_and_preserves_source_for_retry"
+          ],
+          "Rendering": [
+            "Empty_affine_paint_and_disjoint_curved_clip_remain_transparent"
+          ]
+        }
+      }
+    ],
+    "methodCounts": {
+      "Mechanism": 20,
+      "Contract": 12,
+      "Rendering": 10
+    },
+    "onlyLayerAttributesChanged": true,
+    "inputsAssertionsAndControlFlowUnchanged": true,
+    "sourceCommit": "d647b233bb7a8c727ffb115c34023562810953ff",
+    "unchangedProductionTree": "a2812eaf32e0a9d1ba071525bf4924095eb7af99"
+  },
+  "coverage": {
+    "cases": {
+      "Mechanism": 25,
+      "Contract": 28,
+      "Rendering": 40
+    },
+    "nativeVectors": [
+      {
+        "file": "../../Lokad.Svg.Tests/TestData/shader-paint-native.csv",
+        "vectors": 5760,
+        "sourceLfSha256": "d619443060209a2508810bd7af248cd408f9e53d1ee0863d733acd8309ea526f"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/TestData/gradient-coordinates-native.csv",
+        "vectors": 192,
+        "sourceLfSha256": "47df1c54518ed9ee08ed17a10605207ca97c08c3d5399cd9e1b53e557a2c7ca9"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/TestData/radial-local-matrix-native.csv",
+        "vectors": 384,
+        "sourceLfSha256": "c325a6d57b74997e4796c24364d555cb951f122f6f95b1efda04a15a657a7faa"
+      }
+    ],
+    "mechanism": "Native float/material arithmetic retains all 5,760 shader vectors, 192 coordinate rows and 384 radial local-matrix rows in the original methods. Parsing/DOM bits, bitmap origin/dither, transform inversion/composition, collapsed axes and polygon metadata remain direct checks.",
+    "contract": "Six-output clip/radial parity; parse/raster/tile admission; initialization and mid/late-replay cancellation; shared and separate allowance cleanup/retry; original path immutability; deep recording scratch and concurrent per-draw matrices remain distinct.",
+    "rendering": "Forty core cases retain source-box, constant/dither, empty/disjoint, object-box and recording relations/native pixel witnesses. The separate104 affected visual cases retain independent native references. Full CI retains every Research and platform case.",
+    "consolidation": "Classification only: no case, matrix, assertion or setup is removed or batched. Each responsibility is selectable without running all other shader responsibilities."
+  },
+  "validation": {
+    "membership": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "affectedCases": 93,
+        "layers": {
+          "Rendering": 40,
+          "Mechanism": 25,
+          "Contract": 28
+        },
+        "oldFastCases": 19072,
+        "newFastCases": 19125,
+        "oldFastCasesLost": 0,
+        "addedFastCases": 53,
+        "affectedIdentitySha256": "f73ad828c96acef3e80c6c557730746c3a404dfd63ed27ace8418b22076362f0",
+        "addedFastIdentitySha256": "ae9add4145930b49a08fe40fe33514ba0af65c335931b510dc1086fffaece0ce",
+        "beforeFastIdentitySha256": "d64f97eb0dc1eadc51b658c31e02681854e64f350386b82a86d581a1f9406881",
+        "afterFastIdentitySha256": "95202504dd55e9559dc3cb511be7d0dffcbd4475b859b1c0ff8705303124ed36"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "affectedCases": 93,
+        "layers": {
+          "Mechanism": 25,
+          "Rendering": 40,
+          "Contract": 28
+        },
+        "oldFastCases": 19072,
+        "newFastCases": 19125,
+        "oldFastCasesLost": 0,
+        "addedFastCases": 53,
+        "affectedIdentitySha256": "f73ad828c96acef3e80c6c557730746c3a404dfd63ed27ace8418b22076362f0",
+        "addedFastIdentitySha256": "ae9add4145930b49a08fe40fe33514ba0af65c335931b510dc1086fffaece0ce",
+        "beforeFastIdentitySha256": "d3ce0cf1d65160d5bf24a838b80164572baaef5c4c5c6a0a199f3080b8052ef4",
+        "afterFastIdentitySha256": "509f0a0f6f8912bee323afdf8a32944df9991c4b9ff2fbbdc72b4dec3106176b"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "affectedCases": 93,
+        "layers": {
+          "Mechanism": 25,
+          "Contract": 28,
+          "Rendering": 40
+        },
+        "oldFastCases": 19072,
+        "newFastCases": 19125,
+        "oldFastCasesLost": 0,
+        "addedFastCases": 53,
+        "affectedIdentitySha256": "f73ad828c96acef3e80c6c557730746c3a404dfd63ed27ace8418b22076362f0",
+        "addedFastIdentitySha256": "ae9add4145930b49a08fe40fe33514ba0af65c335931b510dc1086fffaece0ce",
+        "beforeFastIdentitySha256": "d64f97eb0dc1eadc51b658c31e02681854e64f350386b82a86d581a1f9406881",
+        "afterFastIdentitySha256": "95202504dd55e9559dc3cb511be7d0dffcbd4475b859b1c0ff8705303124ed36"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "affectedCases": 93,
+        "layers": {
+          "Mechanism": 25,
+          "Contract": 28,
+          "Rendering": 40
+        },
+        "oldFastCases": 19072,
+        "newFastCases": 19125,
+        "oldFastCasesLost": 0,
+        "addedFastCases": 53,
+        "affectedIdentitySha256": "f73ad828c96acef3e80c6c557730746c3a404dfd63ed27ace8418b22076362f0",
+        "addedFastIdentitySha256": "ae9add4145930b49a08fe40fe33514ba0af65c335931b510dc1086fffaece0ce",
+        "beforeFastIdentitySha256": "d3ce0cf1d65160d5bf24a838b80164572baaef5c4c5c6a0a199f3080b8052ef4",
+        "afterFastIdentitySha256": "509f0a0f6f8912bee323afdf8a32944df9991c4b9ff2fbbdc72b4dec3106176b"
+      }
+    ],
+    "compiledInventory": {
+      "testAssemblySha256": "492c7798618d91d060476ed179fbb507864d521c44eb33a3e5c971ce062c1a7f",
+      "declaredTestMethods": 4652,
+      "unclassified": 1831,
+      "multipleLayers": 0,
+      "layers": {
+        "Mechanism": 1315,
+        "Contract": 541,
+        "Rendering": 964,
+        "Integrity": 1
+      },
+      "scope": "Compiled declared Fact/Theory methods, combining explicit class and method Layer attributes.",
+      "unclassifiedBefore": 1873
+    },
+    "selections": {
+      "affected": "FullyQualifiedName~SvgGradientCoordinateTests|FullyQualifiedName~SvgGradientPolygonTests|FullyQualifiedName~SvgShaderPaintTests|FullyQualifiedName~SvgShaderStrokePathTests|FullyQualifiedName~SvgSingleStopGradientTests|FullyQualifiedName~SvgPatternCoordinateTests|FullyQualifiedName~SvgPatternRecordingTransformTests|FullyQualifiedName~SvgAffineRadialPaintTests",
+      "fast": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "visual": "Category!=Research&(FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests|FullyQualifiedName~SvgPatternRepeatReferenceTests|FullyQualifiedName~SvgPatternRecordingReferenceTests|FullyQualifiedName~SvgNestedPatternReferenceTests|FullyQualifiedName~SvgFilterGradientSamplingReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgShaderContextReferenceTests)"
+    },
+    "measurements": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "seconds": {
+          "before": 11.2,
+          "affected": 11.05,
+          "fast-before": 27.67,
+          "fast-after": 27.0
+        },
+        "affectedVisualSeconds": 13.97
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "seconds": {
+          "before": 13.72,
+          "affected": 14.35,
+          "fast-before": 25.35,
+          "fast-after": 23.95
+        },
+        "affectedVisualSeconds": 11.34
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "seconds": {
+          "before": 13.41,
+          "affected": 10.6,
+          "fast-before": 26.74,
+          "fast-after": 28.04
+        },
+        "affectedVisualSeconds": 12.82
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "seconds": {
+          "before": 16.56,
+          "affected": 12.89,
+          "fast-before": 24.24,
+          "fast-after": 26.12
+        },
+        "affectedVisualSeconds": 11.45
+      }
+    ],
+    "coreTestAssemblySha256": {
+      "net11/before": "884fbe2b84bc0888547e444d5309ea3bab09f97c7751e8fb41340260f1dd8ec7",
+      "net11/after": "492c7798618d91d060476ed179fbb507864d521c44eb33a3e5c971ce062c1a7f",
+      "net10/before": "32a440d78f93384da3324aab91ac7b3e9c95cd5baefda5e02a4af7926bc19034",
+      "net10/after": "6e785c54f5eb394409fa7d0e54ea84c7402f7b748662875410d1e367bb10055e"
+    },
+    "affectedPassedPerHostFramework": {
+      "core": 93,
+      "visual": 104
+    },
+    "timingScope": "Fresh-process functional checks including discovery/host/TRX, excluding build. Concurrency and workload vary; no renderer speedup or quiet-VM benchmark is claimed."
+  },
+  "runtime": {
+    "evidence": "shader-polygon-paint.json",
+    "sourceCommit": "e1057647517a0c0ce2c996061dde576ac1a59b55",
+    "librarySha256": {
+      "net11.0": "49d06c4b96de576ae66ca733087257ffbdeee08645b022d6d854f6a5b6e082f2",
+      "net10.0": "cf29c85459e05480aa4aa2fd05ca49a05dd0a401e12cf4b35598bfc0bbff4033"
+    },
+    "localChecksUseExactPackageAssets": true,
+    "originalLedgerRebound": false,
+    "reason": "Only test traits change. Existing package, installed-consumer and204-original qualification remains bound to the unchanged renderer; no repeated package/original sweep or publication."
+  },
+  "ci": {
+    "runId": 41960045303,
+    "sourceCommit": "d647b233bb7a8c727ffb115c34023562810953ff",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47648,
+            "total": 47648
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "b0d24403553fa8f218b2b5ab8b71a2d64699e87181ebe21787015aa4e91755c3"
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47648,
+            "total": 47648
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "total": 73312
+          }
+        ],
+        "logSha256": "6592fb81ba982def82c44360f6bad89f7e78ea0acd6db70b9dd09f340e297881"
+      }
+    },
+    "boundary": "Ubuntu full/compatibility/tools/package gates pass. Windows fails only the unchanged frozen DejaVu target; preserve its assertion/reference pending authority."
+  },
+  "remaining": "Core responsibility inventory remains incomplete. Distinct renderer paths and full original-source acceptance remain open; this classification does not close those duties."
+}

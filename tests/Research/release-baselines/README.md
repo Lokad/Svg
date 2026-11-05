@@ -64,6 +64,9 @@ empty, single and maximum-size graphs; all numerical and pixel-ownership paths r
 radial and pattern coverage loop while preserving material coordinates and owners.
 Source expansion, existing mechanisms/contracts, native images and packaged replay
 qualify the extraction; solid/font and distinct rectangle arithmetic remain separate.
+[Mixed shader responsibilities](shader-test-responsibilities.json) classify 42 methods
+individually, retaining all 93 cases and every numerical vector, API and ownership
+path. Exact membership checks preserve the prior fast selection and add 53 cases.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200

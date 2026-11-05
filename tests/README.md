@@ -79,6 +79,11 @@ retains existing analytic mechanisms, material ownership and native-reference ca
 Mid-paint cancellation under a shared allowance remains distinct from pre-cancelled
 calls with separate budgets. The extraction changes no tests or frozen targets.
 
+The [mixed shader responsibility map](Research/release-baselines/shader-test-responsibilities.json)
+keeps all 93 cases: 25 direct mechanisms, 28 API/ownership contracts and 40 rendering
+checks. Numerical vector loops, six-output parity and late-cancellation/refusal paths
+remain intact. The fast selection gains exactly 53 cases and loses none.
+
 [Scene-admission contracts](Research/release-baselines/invocation-ownership.json)
 cover raw, catalog-prepared and HTTP-prepared rejection after lowering. They retain
 the source diagnostic, one preparation, borrowed owners, released charges and

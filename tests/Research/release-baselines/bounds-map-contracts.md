@@ -35,3 +35,11 @@ This closes the descriptor/contract review for these qualified boundaries, with 
 new witnessed runtime discrepancy. It does not qualify every historical source or
 close invocation/preparation separation and allocation review. Further changes need
 a concrete missing boundary or unnecessary allocation/copy, preserving these witnesses.
+
+The scene-replay follow-up uses the [qualified renderer](shader-polygon-paint.json).
+[SvgRoot](../../../src/Lokad.Svg/Parsing/SvgRoot.cs) is a readonly value type:
+command slices and mask scene views borrow existing arrays and resource indices.
+[Vector content](../../../src/Lokad.Svg/Parsing/SvgVectorContent.cs) remains parent-owned
+through replay. Mask/group pixel buffers retain the output stride and independent
+construction/paint clips; smaller storage requires a complete stride/origin change.
+This review establishes no redundant root allocation or need for another replay context.
