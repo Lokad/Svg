@@ -43,11 +43,15 @@ metadata are checked for identity agreement; duplicate/unknown historical and
 research IDs fail. Lazy initialization is synchronized for concurrent readers.
 The original capture/status/selection manifests remain the only index. Rendering,
 font ownership, source hashes, reference hashes and pixel assertions are unchanged.
+Font-recipe discovery reads two presence flags from that same index. Only selected
+font-bearing partitions get recipe cases: 12 replace 46, preserving all 10,894
+font-row checks. The 34 removed cases had no selected font rows. Discovery keeps
+full metadata lazy; loading verifies that the font-presence flags still agree.
 
 The previous all-bank static constructor and per-case JSON clones mapped to these
 same 41,334 individually discovered rendering cases. Both enumeration methods,
 case names, source/options, order and routine/research membership are preserved.
-This pass removes no case and introduces no batched rendering assertion.
+Rendering cases and individual image assertions were preserved.
 
 | Bank | Routine | Research |
 | --- | ---: | ---: |
@@ -76,6 +80,7 @@ This pass removes no case and introduces no batched rendering assertion.
 | hairline-clip-rounding | 24 | 0 |
 | **Total** | **34,470** | **7,269** |
 
+
 The separate partition check adds one integrity case. The filter-uniform bank
 includes 1,206 resolved historical cases, including its two routine shadow cases;
 no historical status record or independent reference was rewritten.
@@ -96,6 +101,31 @@ and six orthogonal scope controls through the same canonical harness, plus one
 deep-recording ownership interaction. Existing rendering case names and assertions
 remain; the five corpus enumerators and two matching provenance recipes share small
 local helpers.
+
+## Color and filter edit loops
+
+The [consumer audit](color-filter-responsibilities.json) retains all 20,707 inputs
+in the color-alpha, uniform-filter and source-composition banks, including every
+historical regression. Each keeps its canonical native conversion; the 96-case
+API matrix and representative ownership checks stay separate. Exhaustive alpha
+mechanisms and the dedicated gradient boundary fixtures remain intact.
+
+After a Release build, select the relevant mechanism and native interaction:
+
+```powershell
+dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter '(FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgGradientStopPrecisionTests)&Layer=Mechanism'
+$paint = 'FullyQualifiedName~SvgPaintInputReferenceTests.Paint_inputs_match_each_native_image'
+dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter "$paint&DisplayName~gradient-color-alpha&(DisplayName~extended-|DisplayName~syntax-|DisplayName~full-canvas-|DisplayName~consumer-effects-)"
+dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter "$paint&DisplayName~filter-uniform-precision&(DisplayName~placements-|DisplayName~controls-graphs-srgb-13-control-1p5|DisplayName~controls-graphs-linear-37-control-1p5)"
+```
+
+These select 1,302 mechanisms, 2,504 alpha/syntax/consumer images and 584 placement
+images respectively. The alpha selection includes all 144 historical color cases;
+placement explicitly retains both compact-shadow witnesses outside its ID prefix.
+Use affected ownership and complete bank integration before promotion. Unfiltered
+qualification still runs every routine and Research case; these edit loops have
+different scopes and do not replace it. The audit records the exact filters and
+both-host/runtime results.
 
 ## Local setup-cost check
 

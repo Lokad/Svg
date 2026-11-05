@@ -1,0 +1,1156 @@
+{
+  "status": "Font recipe cases are discovered only for selected supplied-font rows. Thirty-four empty checks are removed while all rendering identities, all 10,894 font-row checks, existing recipe/image bodies and every source/reference/status/research-selection file remain. Color/filter edit-loop selections retain explicit interaction witnesses and full qualification.",
+  "sourceCommit": "7b3f0b915e1547c2c8176fd7af69382238f00b70",
+  "baseCommit": "4f935ae2353762d46ac9cc382b57c678079b3f09",
+  "source": {
+    "files": [
+      "tests/Lokad.Svg.VisualTests/PaintReferenceBank.cs",
+      "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs"
+    ],
+    "proof": {
+      "renderRoutine": 34470,
+      "renderResearch": 7269,
+      "routineIdentitySha256": "04c9f7005430064889308a473c43149366ef5ebe3e7bbd1a8c283cc04e5ae696",
+      "researchIdentitySha256": "78e9de0c370fe08ad53f1ca0095720ac934879d53c0f4f64e2aa1910fb441e4b",
+      "fontRowsPreserved": 10894,
+      "recipePartitionsBefore": 46,
+      "recipePartitionsAfter": 12,
+      "noOpPartitionsRemoved": 34,
+      "loadedMetadataBefore": 23,
+      "loadedMetadataAfter": 11,
+      "renderAndRecipeBodiesUnchanged": {
+        "AssertFontProvenance": "a7ffc78f180156f6cc60a0ce814aac2a3944aee5670454c3a0c6d70f861ebbe4",
+        "AssertNativeImage": "a4145f0af67593d262c3378eff06d69cea9a697bf423c3a83d803ecfa0316605"
+      },
+      "productionUnchanged": true,
+      "allCaptureStatusSelectionFilesUnchanged": true,
+      "median": {
+        "before": {
+          "discoveryMilliseconds": 200.4411,
+          "discoveryBytes": 142162632,
+          "recipeMilliseconds": 3841.6824,
+          "recipeBytes": 234640792,
+          "peakWorkingSet": 224411648
+        },
+        "after": {
+          "discoveryMilliseconds": 211.8523,
+          "discoveryBytes": 142513264,
+          "recipeMilliseconds": 3834.1277,
+          "recipeBytes": 207101160,
+          "peakWorkingSet": 200953856
+        }
+      },
+      "testSourceLfSha256": {
+        "PaintReferenceBank.cs": "9844c4070096f7774114868d2447fbc8d8866e657bf7b16665b0e6e8c16a5c56",
+        "SvgPaintInputReferenceTests.cs": "76a46d5694b5aa2f9570d65c93ce40a243a3df754020f3234ff117363d8cfc39"
+      }
+    },
+    "model": "The existing lightweight index reads a boolean font flag and retains only routine/research presence booleans. It owns no new rendering document or font snapshot. Lazy full metadata verifies the same presence; the existing raw-manifest integrity check independently verifies provider membership. New font-bearing captures enroll automatically."
+  },
+  "fontPartitions": [
+    {
+      "bank": "filter-merge-image-draw",
+      "routineRows": 8,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "ed99a905b63b68208a305742decb8b4565149d2c5b0633d9575dd2f14c90d779",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "radial-axis-source-maps",
+      "routineRows": 180,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "59e200b4f2e1b63f99e1538830908bdfaab9cb2a08a8314fdb0f94764b2ab9d1",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "gradient-spread-stages",
+      "routineRows": 192,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "7b2ccbbc2cb06d7c5c13199311a688b545141c11435d5e600c89ab4328e0c435",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "gradient-paint-replay",
+      "routineRows": 416,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "55d6d722472546e753c6742c9569eeebb1cd11e0bb1c7c2f588b94a4f349c961",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "gradient-factory-colors",
+      "routineRows": 432,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "41fe73d6807ba2900fa56828463f364a0009cdd9a878083ece5b4cf6ecafbcc8",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "linear-periodic-stops",
+      "routineRows": 576,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "8f4f155eb752535a44f744829c0309383184aec98daa79b79e482eefe9e43dce",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "gradient-stop-preparation",
+      "routineRows": 4480,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "16550bb8b5ff0271915a88ed80ce0d74d3c3072ca22fcd86eda4f5397dac56be",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "gradient-color-alpha",
+      "routineRows": 2064,
+      "researchRows": 312,
+      "routineFontIdsLfSha256": "f2ccfff08579c0485bd228bba1e41e53c58511f8d95d20f34854e3740c1033eb",
+      "researchFontIdsLfSha256": "9355e41dca002c87b63ce07e6f464a10b6de9df7294854b1bbe771eeee4b4fdd"
+    },
+    {
+      "bank": "solid-paint-alpha",
+      "routineRows": 1325,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "b2d80019ede66f9bd625a367366922b2c8bf925106f1f2857ea7c1dd7879152e",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "pattern-source-selection",
+      "routineRows": 54,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "98fc669e2e2da791d6fa967d2fb0a215da771ef705bd55cdc50433a59529dc18",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bank": "text-node-boundaries",
+      "routineRows": 855,
+      "researchRows": 0,
+      "routineFontIdsLfSha256": "391301769db6f364215ac67b1b331a3200751cbb2a13246594e81a44657f2462",
+      "researchFontIdsLfSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "consumerAudit": {
+    "banks": [
+      {
+        "bank": "gradient-color-alpha",
+        "cases": 10204,
+        "routine": 8904,
+        "research": 1300,
+        "historical": 144,
+        "routineHistorical": 144,
+        "distinctSourceOptions": 10204,
+        "sources": 6154,
+        "manifestLfSha256": {
+          "capture.json": "31a95968da1c0a4df475b359351c9ed4198b8c3ca287dd325548fcbf82f78288",
+          "research-cases.json": "d0423bcf93ccfc0d9f718f775638b61c684340618c17de2a8fe2314e271355a5",
+          "resolved-known-differences.json": "817f0ec742debb1c4fe3bd8e75dc1265c92f4e5f1ecdfad50134c30383fd92d6"
+        },
+        "families": {
+          "consumer-effects": {
+            "routine": 400,
+            "research": 32,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 22,
+            "opacityTokens": 2,
+            "filterPrimitives": [
+              "feOffset"
+            ]
+          },
+          "consumer-factory": {
+            "routine": 288,
+            "research": 36,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 20,
+            "opacityTokens": 1,
+            "filterPrimitives": []
+          },
+          "consumer-glyph-fill": {
+            "routine": 768,
+            "research": 96,
+            "fontCases": 864,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 20,
+            "opacityTokens": 2,
+            "filterPrimitives": []
+          },
+          "consumer-glyph-stroke": {
+            "routine": 768,
+            "research": 96,
+            "fontCases": 864,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 21,
+            "opacityTokens": 2,
+            "filterPrimitives": []
+          },
+          "extended-boundary": {
+            "routine": 1277,
+            "research": 0,
+            "fontCases": 0,
+            "scales": [
+              1
+            ],
+            "colorTokens": 1024,
+            "opacityTokens": 1,
+            "filterPrimitives": []
+          },
+          "extended-syntax": {
+            "routine": 431,
+            "research": 0,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 105,
+            "opacityTokens": 2,
+            "filterPrimitives": []
+          },
+          "flood": {
+            "routine": 528,
+            "research": 120,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 55,
+            "opacityTokens": 3,
+            "filterPrimitives": [
+              "feFlood"
+            ]
+          },
+          "full-canvas-full": {
+            "routine": 20,
+            "research": 0,
+            "fontCases": 0,
+            "scales": [
+              1
+            ],
+            "colorTokens": 11,
+            "opacityTokens": 1,
+            "filterPrimitives": []
+          },
+          "full-canvas-partial": {
+            "routine": 20,
+            "research": 0,
+            "fontCases": 0,
+            "scales": [
+              1
+            ],
+            "colorTokens": 11,
+            "opacityTokens": 1,
+            "filterPrimitives": []
+          },
+          "glyph": {
+            "routine": 528,
+            "research": 120,
+            "fontCases": 648,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 54,
+            "opacityTokens": 3,
+            "filterPrimitives": []
+          },
+          "gradient": {
+            "routine": 528,
+            "research": 120,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 56,
+            "opacityTokens": 3,
+            "filterPrimitives": []
+          },
+          "marker": {
+            "routine": 528,
+            "research": 120,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 56,
+            "opacityTokens": 3,
+            "filterPrimitives": []
+          },
+          "mask": {
+            "routine": 528,
+            "research": 120,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 55,
+            "opacityTokens": 3,
+            "filterPrimitives": []
+          },
+          "path": {
+            "routine": 528,
+            "research": 120,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 54,
+            "opacityTokens": 3,
+            "filterPrimitives": []
+          },
+          "rect": {
+            "routine": 528,
+            "research": 120,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 54,
+            "opacityTokens": 3,
+            "filterPrimitives": []
+          },
+          "stop-opacity": {
+            "routine": 352,
+            "research": 80,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 56,
+            "opacityTokens": 3,
+            "filterPrimitives": []
+          },
+          "stroke": {
+            "routine": 528,
+            "research": 120,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 55,
+            "opacityTokens": 3,
+            "filterPrimitives": []
+          },
+          "syntax-gradient": {
+            "routine": 196,
+            "research": 0,
+            "fontCases": 0,
+            "scales": [
+              1
+            ],
+            "colorTokens": 92,
+            "opacityTokens": 2,
+            "filterPrimitives": []
+          },
+          "syntax-rect": {
+            "routine": 160,
+            "research": 0,
+            "fontCases": 0,
+            "scales": [
+              1
+            ],
+            "colorTokens": 72,
+            "opacityTokens": 2,
+            "filterPrimitives": []
+          }
+        }
+      },
+      {
+        "bank": "filter-uniform-precision",
+        "cases": 8250,
+        "routine": 4534,
+        "research": 3716,
+        "historical": 1206,
+        "routineHistorical": 2,
+        "distinctSourceOptions": 8250,
+        "sources": 5274,
+        "manifestLfSha256": {
+          "capture.json": "473463fcd105b2c6faae06ec182b1118e3c75752efffcffe3eae6f61911458db",
+          "research-cases.json": "2222ad646b907ea4c3333676f3e583882e2be966862e78c9516e8cb622af97ed",
+          "resolved-known-differences.json": "5fa1be49894c03af116f6e2c21a832cdb07aaafe1ff230fcb98f8397dd41a40d"
+        },
+        "families": {
+          "aliases-aliases-linear": {
+            "routine": 488,
+            "research": 184,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 6,
+            "opacityTokens": 2,
+            "filterPrimitives": [
+              "feFlood",
+              "feGaussianBlur",
+              "feMerge",
+              "feMergeNode",
+              "feOffset"
+            ]
+          },
+          "aliases-aliases-srgb": {
+            "routine": 400,
+            "research": 272,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 6,
+            "opacityTokens": 2,
+            "filterPrimitives": [
+              "feFlood",
+              "feGaussianBlur",
+              "feMerge",
+              "feMergeNode",
+              "feOffset"
+            ]
+          },
+          "controls-color-midpoints": {
+            "routine": 20,
+            "research": 1256,
+            "fontCases": 0,
+            "scales": [
+              1
+            ],
+            "colorTokens": 1023,
+            "opacityTokens": 2,
+            "filterPrimitives": [
+              "feFlood"
+            ]
+          },
+          "controls-graphs-linear": {
+            "routine": 667,
+            "research": 53,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 14,
+            "opacityTokens": 4,
+            "filterPrimitives": [
+              "feComposite",
+              "feDropShadow",
+              "feFlood",
+              "feMerge",
+              "feMergeNode"
+            ]
+          },
+          "controls-graphs-srgb": {
+            "routine": 629,
+            "research": 89,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 14,
+            "opacityTokens": 4,
+            "filterPrimitives": [
+              "feComposite",
+              "feDropShadow",
+              "feFlood",
+              "feMerge",
+              "feMergeNode"
+            ]
+          },
+          "controls-opacity-midpoints": {
+            "routine": 20,
+            "research": 1256,
+            "fontCases": 0,
+            "scales": [
+              1
+            ],
+            "colorTokens": 259,
+            "opacityTokens": 767,
+            "filterPrimitives": [
+              "feFlood"
+            ]
+          },
+          "graphs-more-linear": {
+            "routine": 864,
+            "research": 0,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 15,
+            "opacityTokens": 5,
+            "filterPrimitives": [
+              "feBlend",
+              "feComposite",
+              "feFlood",
+              "feGaussianBlur",
+              "feMerge",
+              "feMergeNode",
+              "feOffset"
+            ]
+          },
+          "graphs-more-srgb": {
+            "routine": 864,
+            "research": 0,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 15,
+            "opacityTokens": 5,
+            "filterPrimitives": [
+              "feBlend",
+              "feComposite",
+              "feFlood",
+              "feGaussianBlur",
+              "feMerge",
+              "feMergeNode",
+              "feOffset"
+            ]
+          },
+          "placements-affine-linearrgb": {
+            "routine": 132,
+            "research": 84,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 4,
+            "opacityTokens": 1,
+            "filterPrimitives": [
+              "feFlood",
+              "feGaussianBlur",
+              "feMerge",
+              "feMergeNode",
+              "feOffset"
+            ]
+          },
+          "placements-affine-srgb": {
+            "routine": 112,
+            "research": 104,
+            "fontCases": 0,
+            "scales": [
+              1,
+              1.5
+            ],
+            "colorTokens": 4,
+            "opacityTokens": 1,
+            "filterPrimitives": [
+              "feFlood",
+              "feGaussianBlur",
+              "feMerge",
+              "feMergeNode",
+              "feOffset"
+            ]
+          },
+          "placements-displaced-linearrgb": {
+            "routine": 252,
+            "research": 126,
+            "fontCases": 0,
+            "scales": [
+              0.75,
+              1,
+              1.5
+            ],
+            "colorTokens": 4,
+            "opacityTokens": 1,
+            "filterPrimitives": [
+              "feFlood",
+              "feOffset"
+            ]
+          },
+          "placements-displaced-srgb": {
+            "routine": 86,
+            "research": 292,
+            "fontCases": 0,
+            "scales": [
+              0.75,
+              1,
+              1.5
+            ],
+            "colorTokens": 4,
+            "opacityTokens": 1,
+            "filterPrimitives": [
+              "feFlood",
+              "feOffset"
+            ]
+          }
+        }
+      },
+      {
+        "bank": "filter-source-composition",
+        "cases": 2253,
+        "routine": 0,
+        "research": 2253,
+        "historical": 0,
+        "routineHistorical": 0,
+        "distinctSourceOptions": 2253,
+        "sources": 2253,
+        "manifestLfSha256": {
+          "capture.json": "cb8327a9496252849af75023423093d61ee6785712032a2bd56de3368810f204",
+          "research-cases.json": "81d6425ad8795a3dc6622f0fb5f24cfaae5e15b5878c340628988234acda8ec0",
+          "before-correction.json": "58125232a4098ef5481748ad6a5357a99c25bfda1115be52f481581162681b70",
+          "coverage-index.json": "d9fca58bd321686d158599221a56ac6b9d07d292d9b317ee88374d09273ff9c1"
+        },
+        "families": {
+          "source-composition": {
+            "routine": 0,
+            "research": 2253,
+            "fontCases": 0,
+            "scales": [
+              1
+            ],
+            "colorTokens": 4,
+            "opacityTokens": 6,
+            "filterPrimitives": [
+              "feBlend",
+              "feComposite",
+              "feFlood",
+              "feGaussianBlur",
+              "feMerge",
+              "feMergeNode",
+              "feOffset"
+            ]
+          }
+        }
+      }
+    ],
+    "sourceOptionsContexts": 20707,
+    "identityLfSha256": "8d7937d07a3fe6e98100821a7958e771da8fa4cdea333226f793e4a0b438f15c",
+    "allSourceAndReferenceFilesHashChecked": true,
+    "hashedFiles": 18365,
+    "sameSourceOptionsDuplicates": 0,
+    "sourceComposition": {
+      "originalRoles": 2478,
+      "roleMappings": {
+        "filter-merge-image-draw": 65,
+        "offset-merge-inputs": 146,
+        "filter-source-composition": 2267
+      },
+      "allRoleTargetSourceHashesJoined": true,
+      "precedingInexactByHost": {
+        "windows": 877,
+        "linux": 877
+      },
+      "currentSourceCompositionCases": 2253
+    },
+    "decision": "Retain the current numerical/context partition. Dedicated 1,278 flood-token mechanisms and 1,277 gradient boundary fixtures remain exhaustive; other consumer/graph/placement families preserve distinct arithmetic and scales. No further demotion or assertion batching, and image equality is not a redundancy criterion."
+  },
+  "validation": {
+    "checks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "profile": "recipes",
+        "seconds": 15.107077499851584,
+        "counters": {
+          "executed": 13,
+          "passed": 13,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "profile": "recipes",
+        "seconds": 33.96555530000478,
+        "counters": {
+          "executed": 13,
+          "passed": 13,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "profile": "mechanisms",
+        "seconds": 11.61235520010814,
+        "counters": {
+          "executed": 1302,
+          "passed": 1302,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "profile": "mechanisms",
+        "seconds": 10.092757300008088,
+        "counters": {
+          "executed": 1302,
+          "passed": 1302,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "profile": "ownership",
+        "seconds": 9.710866699926555,
+        "counters": {
+          "executed": 49,
+          "passed": 49,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "profile": "ownership",
+        "seconds": 10.411984500009567,
+        "counters": {
+          "executed": 49,
+          "passed": 49,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "profile": "alpha",
+        "seconds": 14.544675200013444,
+        "counters": {
+          "executed": 2504,
+          "passed": 2504,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "profile": "alpha",
+        "seconds": 19.372116399928927,
+        "counters": {
+          "executed": 2504,
+          "passed": 2504,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "profile": "placement",
+        "seconds": 17.430907299974933,
+        "counters": {
+          "executed": 584,
+          "passed": 584,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "profile": "placement",
+        "seconds": 20.13896430004388,
+        "counters": {
+          "executed": 584,
+          "passed": 584,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "profile": "integration",
+        "seconds": 36.568337600212544,
+        "counters": {
+          "executed": 20713,
+          "passed": 20713,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "profile": "integration",
+        "seconds": 73.3799505000934,
+        "counters": {
+          "executed": 20713,
+          "passed": 20713,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "profile": "loader",
+        "seconds": 45.264780999859795,
+        "counters": {
+          "executed": 25140,
+          "passed": 25140,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "profile": "loader",
+        "seconds": 39.86495739989914,
+        "counters": {
+          "executed": 25140,
+          "passed": 25140,
+          "failed": 0
+        },
+        "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "profile": "recipes",
+        "seconds": 16.8811568999663,
+        "counters": {
+          "executed": 13,
+          "passed": 13,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "profile": "recipes",
+        "seconds": 35.52709240000695,
+        "counters": {
+          "executed": 13,
+          "passed": 13,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "profile": "mechanisms",
+        "seconds": 11.274247899884358,
+        "counters": {
+          "executed": 1302,
+          "passed": 1302,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "profile": "mechanisms",
+        "seconds": 9.090824600076303,
+        "counters": {
+          "executed": 1302,
+          "passed": 1302,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "profile": "ownership",
+        "seconds": 8.5169603000395,
+        "counters": {
+          "executed": 49,
+          "passed": 49,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "profile": "ownership",
+        "seconds": 9.122058999957517,
+        "counters": {
+          "executed": 49,
+          "passed": 49,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "profile": "alpha",
+        "seconds": 14.143140399828553,
+        "counters": {
+          "executed": 2504,
+          "passed": 2504,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "profile": "alpha",
+        "seconds": 17.035293400054798,
+        "counters": {
+          "executed": 2504,
+          "passed": 2504,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "profile": "placement",
+        "seconds": 12.396223600022495,
+        "counters": {
+          "executed": 584,
+          "passed": 584,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "profile": "placement",
+        "seconds": 14.170198500156403,
+        "counters": {
+          "executed": 584,
+          "passed": 584,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "profile": "integration",
+        "seconds": 37.10522420005873,
+        "counters": {
+          "executed": 20713,
+          "passed": 20713,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "profile": "integration",
+        "seconds": 108.50197040010244,
+        "counters": {
+          "executed": 20713,
+          "passed": 20713,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "profile": "loader",
+        "seconds": 44.372205700026825,
+        "counters": {
+          "executed": 25140,
+          "passed": 25140,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "profile": "loader",
+        "seconds": 38.07640090002678,
+        "counters": {
+          "executed": 25140,
+          "passed": 25140,
+          "failed": 0
+        },
+        "librarySha256": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+      }
+    ],
+    "profiles": {
+      "mechanisms": [
+        "core",
+        "(FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgGradientStopPrecisionTests)&Layer=Mechanism",
+        1302
+      ],
+      "ownership": [
+        "core",
+        "(FullyQualifiedName~SvgGradientStopPrecisionTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgSolidPaintOwnershipTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests)&Layer=Contract",
+        null
+      ],
+      "alpha": [
+        "visual",
+        "FullyQualifiedName~SvgPaintInputReferenceTests.Paint_inputs_match_each_native_image&DisplayName~gradient-color-alpha&(DisplayName~extended-|DisplayName~syntax-|DisplayName~full-canvas-|DisplayName~consumer-effects-)",
+        2504
+      ],
+      "placement": [
+        "visual",
+        "FullyQualifiedName~SvgPaintInputReferenceTests.Paint_inputs_match_each_native_image&DisplayName~filter-uniform-precision&(DisplayName~placements-|DisplayName~controls-graphs-srgb-13-control-1p5|DisplayName~controls-graphs-linear-37-control-1p5)",
+        584
+      ],
+      "recipes": [
+        "visual",
+        "FullyQualifiedName~Paint_font_capture_recipes_match_provenance|FullyQualifiedName~Extended_paint_font_capture_recipes_match_provenance|FullyQualifiedName~Routine_and_research_cases_partition_the_resolved_capture_corpus",
+        13
+      ],
+      "integration": [
+        "visual",
+        "(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~gradient-color-alpha|DisplayName~filter-uniform-precision|DisplayName~filter-source-composition))|FullyQualifiedName~Routine_and_research_cases_partition_the_resolved_capture_corpus",
+        20713
+      ],
+      "loader": [
+        "visual",
+        "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgFilterSourceContextReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests|FullyQualifiedName~SvgShaderContextReferenceTests|FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        null
+      ]
+    },
+    "scope": "The 2,504-image alpha edit loop contains all 144 historical color regressions; the 584-image placement loop adds both routine compact-shadow witnesses outside the placement prefix. These narrow edit loops are followed by 49 ownership contracts, full three-bank integration, all other loader consumers and unfiltered milestone CI. Scope reductions are not like-for-like speedups."
+  },
+  "measurement": {
+    "protocol": "Three fresh sequential Windows .NET11 processes per phase, with the same qualified renderer. Discovery enumerates all routine/research render rows and recipe providers; no rendering metadata may be forced. Recipe timing/allocation invokes the unchanged actual recipe methods, after fixture initialization. Assembly load and fixture initialization are outside the measured intervals. Both phases retain the same native identity hashes and font-row work.",
+    "median": {
+      "before": {
+        "discoveryMilliseconds": 200.4411,
+        "discoveryBytes": 142162632,
+        "recipeMilliseconds": 3841.6824,
+        "recipeBytes": 234640792,
+        "peakWorkingSet": 224411648
+      },
+      "after": {
+        "discoveryMilliseconds": 211.8523,
+        "discoveryBytes": 142513264,
+        "recipeMilliseconds": 3834.1277,
+        "recipeBytes": 207101160,
+        "peakWorkingSet": 200953856
+      }
+    },
+    "metadataBanksLoaded": {
+      "before": 23,
+      "after": 11
+    },
+    "conclusion": "Recipe allocation falls by 27,539,632 bytes; recipe median remains about 3.84 seconds. Discovery adds about 0.35 MB and 11 ms. These are setup observations, not a renderer speedup or quiet-VM performance result."
+  },
+  "productionQualification": {
+    "sourceCommit": "e8428611a42c3ef1b429e2aefa3b2ae0b3881254",
+    "evidence": "analytic-probe-context.json",
+    "librarySha256": {
+      "net11.0": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d",
+      "net10.0": "11a43084f3db39531ef3010db28f315d281e0f1231892ae9a016c0f9168a61cd"
+    },
+    "packagesRegenerated": false,
+    "originalsReplayedAgain": false,
+    "reason": "Only test discovery and documentation change; exact qualified renderer assets and the existing original-source ledger remain authoritative."
+  },
+  "ci": {
+    "runId": 42007466624,
+    "sourceCommit": "7b3f0b915e1547c2c8176fd7af69382238f00b70",
+    "terminalClosed": true,
+    "jobs": {
+      "linux": {
+        "jobId": 127177744042,
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47703,
+            "total": 47703
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73532,
+            "total": 73532
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "0d9ee529c0f23355172160e033aa05b344030b5e96ca2fb8765c0c6419b01b86"
+      },
+      "windows": {
+        "jobId": 127177744747,
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47703,
+            "total": 47703
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73531,
+            "total": 73532
+          }
+        ],
+        "logSha256": "9472233dc8acf32bfa4340cb29230aa9ea9cf40e730e97ed5b7bf1ea5e6c2df8"
+      }
+    },
+    "boundary": "Ubuntu full/compatibility/tools/package gates pass. Windows retains solely the unchanged frozen DejaVu discrepancy; preserve the reference and assertion."
+  },
+  "remaining": "Other subsystem classification and ownership setup, shared scene/layer work, original static acceptance, historical provenance and quiet-VM performance remain open in PLAN.md."
+}

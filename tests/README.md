@@ -566,6 +566,8 @@ and [ownership](Lokad.Svg.Tests/SvgRootParserOwnershipTests.cs); include both fo
 integration. Start with the affected mechanism/class and follow with its rendering
 bank and ownership paths. `Category!=Research` excludes only explicitly selected extended
 matrices; other browser-backed research references remain routine.
+The [color/filter profiles](Research/release-baselines/test-responsibilities.md#color-and-filter-edit-loops)
+provide narrower edit loops while preserving full bank and ownership qualification.
 For affected paint integration, omit `Layer=Rendering` to include the separate
 font-capture recipe checks. Reference images share reads/decoding within the
 fixture; every case still validates its source and declared reference hash.

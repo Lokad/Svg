@@ -58,6 +58,10 @@ protect the helper's two policies independently of rendering fixtures.
 counter and private scope class that silenced inherited child callbacks. Four
 context contracts extend the existing guards; buffer-growth/replay cancellation,
 ownership, native images, packages and original-source replay remain qualified.
+[Color/filter responsibilities](color-filter-responsibilities.json) retains every
+native input and substantive font-recipe assertion while removing 34 empty recipe
+partitions. It maps numerical, ownership and rendering duties to focused edit
+loops and complete bank qualification, with measured setup costs and metadata use.
 [Text-paint output assets](text-paint-output-assets.json) keeps thirteen core
 mechanism/contract JSON dependencies and leaves twelve rendering/research reports
 in the corpus. Fresh outputs retain byte-identical test assemblies and all 47,699
