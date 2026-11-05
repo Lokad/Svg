@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Paint text decorations with their own source fragments, preserving mixed-font
+  and mixed-color glyph overlap through the shared direct/path painter.
 - Resolve fixed CSS stroke widths before optimized axis-line lowering, including
   physical-unit zero widths. Reject extra length suffixes in text-path percentages.
 - Reject invalid unescaped CSS selector names while retaining quoted numeric

@@ -31,6 +31,16 @@ Select `FullyQualifiedName~Original_anchor_screen_` for this optional Research b
 Its [source recipe](Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Anchors.cs)
 reconstructs the originals without copying another SVG/PNG collection.
 
+The [decoration regressions](Research/text-paint-bounds/decoration-fragment-images.json)
+retain 22 original mixed-paint inputs with frozen native PNGs. The broader
+[decoration screen](Research/text-paint-bounds/decoration-screening.json) retains
+342 pairs as 684 independent comparisons and one integrity case; select
+`FullyQualifiedName~Full_decoration_screen_` for this Research bank. Its
+[source recipe](Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.DecorationScreening.cs)
+preserves the original constructions without another SVG/PNG collection. Existing
+mechanism and ownership tests protect shaping, ink exclusions, budgets and retry;
+the rendering inputs use the canonical conversion path.
+
 Text declaration/family parsing and whitespace/list normalization are direct
 mechanisms. Their public early-failure, cancellation, storage transfer and growth
 checks remain contracts. The [qualification](Research/release-baselines/text-front-end-responsibilities.json)

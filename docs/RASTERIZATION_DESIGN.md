@@ -52,6 +52,11 @@ Font programs remain immutable for their borrowed lifetime. Raster scratch ends
 with execution; independently owned PNG results retain sibling storage until
 disposal. [HTTP font guidance](HTTP_FONTS.md) owns resolver/cache lifetimes.
 
+Text painting orders under/overlines, glyph fill/stroke and line-through within
+each retained source fragment. Paths additionally separate placed glyphs. Direct
+and path text share this painter while retaining their distinct widths, drawing
+maps and ink exclusions; layout and shaping remain independent of paint order.
+
 ## Geometry and native raster routes
 
 Retain directed lines, quadratics, cubics and rational conics until placement and

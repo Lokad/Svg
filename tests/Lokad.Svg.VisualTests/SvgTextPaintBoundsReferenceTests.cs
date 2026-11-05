@@ -16,7 +16,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
         "image-capture.json", "shared-layout-images.json", "filter-source-images.json",
         "precision-pattern-images.json", "paint-stage-images.json", "precision-stroke-images.json",
         "fragment-stages.json", "precision-source-images.json", "precision-screening.json",
-        "decoration-ink-images.json", "anchor-screening.json"
+        "decoration-ink-images.json", "anchor-screening.json", "decoration-fragment-images.json", "decoration-screening.json"
     }.ToFrozenDictionary(static file => file,
         static file => new PaintReferenceBank("text-paint-bounds", file), StringComparer.Ordinal);
     public static IEnumerable<object[]> Cases()
@@ -294,9 +294,10 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
         {
             "precision-screening.json" => CreateScreeningSource(row.GetProperty("screenIndex").GetInt32(), Required(row, "role")),
             "anchor-screening.json" => CreateAnchorScreeningSource(Required(row, "cohort"), row.GetProperty("screenIndex").GetInt32(), Required(row, "role")),
+            "decoration-screening.json" => CreateDecorationScreeningSource(row),
             _ => File.ReadAllBytes(Path.Combine(Folder(), row.GetProperty("input").GetString() ?? throw new InvalidDataException()))
         };
-        byte[]? reference = (captureFile is "precision-screening.json" or "anchor-screening.json") && !image.TryGetProperty("path", out _)
+        byte[]? reference = (captureFile is "precision-screening.json" or "anchor-screening.json" or "decoration-screening.json") && !image.TryGetProperty("path", out _)
             ? null : File.ReadAllBytes(Path.Combine(referenceDirectory, Required(image, "path")));
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         if (reference is not null)

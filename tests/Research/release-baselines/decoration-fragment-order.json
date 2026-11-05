@@ -1,0 +1,505 @@
+{
+  "status": "R70 shared fragment-order correction passes focused and affected integration checks. Full committed runtime/package/original-source/CI qualification is pending.",
+  "baselineSourceCommit": "1f194273b9dd3edd3282905f52c720caad79bdc8",
+  "change": {
+    "file": "../../../src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs",
+    "reason": "Direct text painted every decoration before or after the entire run, crossing source-fragment glyph boundaries. Direct and path text now share the existing per-fragment painter. Direct fragments retain their original source width/origin; path glyph fragments retain their placed widths. Layout, shaping, ink exclusion and raster arithmetic are unchanged."
+  },
+  "routine": {
+    "manifest": "../text-paint-bounds/decoration-fragment-images.json",
+    "originalInputs": 22,
+    "selection": "FullyQualifiedName~Decoration_fragments_",
+    "selectedCases": 24,
+    "extraExistingCase": "SvgFontLayoutDiagramTests.Decoration_fragments_follow_glyph_clusters_and_position_boundaries",
+    "before": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+        "testAssemblySha256": "d4cc1faf39429615d91473c31dec4806c970dbe68414b0ce86e0c9ca34d4a4dd",
+        "seconds": 12.686889000004157,
+        "counters": {
+          "executed": "24",
+          "passed": "13",
+          "failed": "11"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0748-control\")",
+            "message": "decoration-scopes-0748-control"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0150-candidate\")",
+            "message": "decoration-overlap-c-0150-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0162-candidate\")",
+            "message": "decoration-overlap-c-0162-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0744-control\")",
+            "message": "decoration-scopes-0744-control"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-isolation-b-0440-candidate\")",
+            "message": "decoration-isolation-b-0440-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0713-candidate\")",
+            "message": "decoration-scopes-0713-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0748-candidate\")",
+            "message": "decoration-scopes-0748-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0186-candidate\")",
+            "message": "decoration-overlap-c-0186-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-isolation-b-0432-candidate\")",
+            "message": "decoration-isolation-b-0432-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0744-candidate\")",
+            "message": "decoration-scopes-0744-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0165-candidate\")",
+            "message": "decoration-overlap-c-0165-candidate"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+        "testAssemblySha256": "d4cc1faf39429615d91473c31dec4806c970dbe68414b0ce86e0c9ca34d4a4dd",
+        "seconds": 17.2961895999033,
+        "counters": {
+          "executed": "24",
+          "passed": "15",
+          "failed": "9"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0748-candidate\")",
+            "message": "decoration-scopes-0748-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-isolation-b-0440-candidate\")",
+            "message": "decoration-isolation-b-0440-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0165-candidate\")",
+            "message": "decoration-overlap-c-0165-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0744-control\")",
+            "message": "decoration-scopes-0744-control"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0162-candidate\")",
+            "message": "decoration-overlap-c-0162-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0744-candidate\")",
+            "message": "decoration-scopes-0744-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0713-candidate\")",
+            "message": "decoration-scopes-0713-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-isolation-b-0432-candidate\")",
+            "message": "decoration-isolation-b-0432-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0748-control\")",
+            "message": "decoration-scopes-0748-control"
+          }
+        ]
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+        "testAssemblySha256": "eeb60cd859f2c1c3eec87fbca41fcae70cd96260bdd422a3378f110cd6d2834f",
+        "seconds": 13.029518200084567,
+        "counters": {
+          "executed": "24",
+          "passed": "13",
+          "failed": "11"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-isolation-b-0432-candidate\")",
+            "message": "decoration-isolation-b-0432-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0713-candidate\")",
+            "message": "decoration-scopes-0713-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0748-control\")",
+            "message": "decoration-scopes-0748-control"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0150-candidate\")",
+            "message": "decoration-overlap-c-0150-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-isolation-b-0440-candidate\")",
+            "message": "decoration-isolation-b-0440-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0186-candidate\")",
+            "message": "decoration-overlap-c-0186-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0748-candidate\")",
+            "message": "decoration-scopes-0748-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0744-control\")",
+            "message": "decoration-scopes-0744-control"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0165-candidate\")",
+            "message": "decoration-overlap-c-0165-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0162-candidate\")",
+            "message": "decoration-overlap-c-0162-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0744-candidate\")",
+            "message": "decoration-scopes-0744-candidate"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+        "testAssemblySha256": "eeb60cd859f2c1c3eec87fbca41fcae70cd96260bdd422a3378f110cd6d2834f",
+        "seconds": 14.443877799902111,
+        "counters": {
+          "executed": "24",
+          "passed": "15",
+          "failed": "9"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0713-candidate\")",
+            "message": "decoration-scopes-0713-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-isolation-b-0432-candidate\")",
+            "message": "decoration-isolation-b-0432-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0744-candidate\")",
+            "message": "decoration-scopes-0744-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0748-candidate\")",
+            "message": "decoration-scopes-0748-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0744-control\")",
+            "message": "decoration-scopes-0744-control"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0162-candidate\")",
+            "message": "decoration-overlap-c-0162-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-overlap-c-0165-candidate\")",
+            "message": "decoration-overlap-c-0165-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-scopes-0748-control\")",
+            "message": "decoration-scopes-0748-control"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Decoration_fragments_preserve_each_original_mixed_paint_target(id: \"decoration-isolation-b-0440-candidate\")",
+            "message": "decoration-isolation-b-0440-candidate"
+          }
+        ]
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "5951dba34fea3ca0b8ea877dd231d7307521119528e4e1e0ab96b347fb9fa6f8",
+        "testAssemblySha256": "d4cc1faf39429615d91473c31dec4806c970dbe68414b0ce86e0c9ca34d4a4dd",
+        "seconds": 11.089476800058037,
+        "counters": {
+          "executed": "24",
+          "passed": "24",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "5951dba34fea3ca0b8ea877dd231d7307521119528e4e1e0ab96b347fb9fa6f8",
+        "testAssemblySha256": "d4cc1faf39429615d91473c31dec4806c970dbe68414b0ce86e0c9ca34d4a4dd",
+        "seconds": 11.202488000039011,
+        "counters": {
+          "executed": "24",
+          "passed": "24",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e48b29d29fad9a766ec35e2d4932d569cd50d4585eaf0f3ff902437c0f5f1a7e",
+        "testAssemblySha256": "eeb60cd859f2c1c3eec87fbca41fcae70cd96260bdd422a3378f110cd6d2834f",
+        "seconds": 10.875186099903658,
+        "counters": {
+          "executed": "24",
+          "passed": "24",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e48b29d29fad9a766ec35e2d4932d569cd50d4585eaf0f3ff902437c0f5f1a7e",
+        "testAssemblySha256": "eeb60cd859f2c1c3eec87fbca41fcae70cd96260bdd422a3378f110cd6d2834f",
+        "seconds": 12.642468799836934,
+        "counters": {
+          "executed": "24",
+          "passed": "24",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "screen": {
+    "manifest": "../text-paint-bounds/decoration-screening.json",
+    "recipe": "../../Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.DecorationScreening.cs",
+    "pairs": 342,
+    "inputs": 684,
+    "groups": {
+      "decoration-scopes": 384,
+      "decoration-isolation": 192,
+      "decoration-overlap": 108
+    },
+    "exactBefore": {
+      "windows": 536,
+      "linux": 600
+    },
+    "exactAfter": {
+      "windows": 684,
+      "linux": 684
+    },
+    "routineOriginalsRetained": 22,
+    "unequalNativePairs": {
+      "windows": 294,
+      "linux": 294
+    },
+    "platformDifferences": 612,
+    "nativeCapture": "Three healthy, independently launched, byte-stable Chrome captures per host; sources, font program, dimensions and options are frozen. Every input retains its own exact native RGBA hash. No target or tolerance changed."
+  },
+  "retainedControls": {
+    "inputs": 52,
+    "manifests": [
+      "../text-paint-bounds/decoration-model-review.json",
+      "../text-paint-bounds/decoration-ink-review.json"
+    ],
+    "result": "Every pre-existing native target remains exact on Windows and Linux."
+  },
+  "validation": {
+    "focused": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "5951dba34fea3ca0b8ea877dd231d7307521119528e4e1e0ab96b347fb9fa6f8",
+        "testAssemblySha256": "582391eea407115cd27bdc8e0a89d1336c56bac63d1b5a5a4b99814d0d3dd14e",
+        "seconds": 20.58206869987771,
+        "counters": {
+          "executed": "709",
+          "passed": "709",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "5951dba34fea3ca0b8ea877dd231d7307521119528e4e1e0ab96b347fb9fa6f8",
+        "testAssemblySha256": "582391eea407115cd27bdc8e0a89d1336c56bac63d1b5a5a4b99814d0d3dd14e",
+        "seconds": 24.366217999951914,
+        "counters": {
+          "executed": "709",
+          "passed": "709",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e48b29d29fad9a766ec35e2d4932d569cd50d4585eaf0f3ff902437c0f5f1a7e",
+        "testAssemblySha256": "bf6b57325c62075f260512a8e06127028a9cba7f35440f29e99b0326e672cf4c",
+        "seconds": 17.32198020000942,
+        "counters": {
+          "executed": "709",
+          "passed": "709",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e48b29d29fad9a766ec35e2d4932d569cd50d4585eaf0f3ff902437c0f5f1a7e",
+        "testAssemblySha256": "bf6b57325c62075f260512a8e06127028a9cba7f35440f29e99b0326e672cf4c",
+        "seconds": 16.994307699846104,
+        "counters": {
+          "executed": "709",
+          "passed": "709",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "affectedIntegration": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "5951dba34fea3ca0b8ea877dd231d7307521119528e4e1e0ab96b347fb9fa6f8",
+        "testAssemblySha256": "d4cc1faf39429615d91473c31dec4806c970dbe68414b0ce86e0c9ca34d4a4dd",
+        "seconds": 38.14297579997219,
+        "counters": {
+          "executed": "4160",
+          "passed": "4160",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "5951dba34fea3ca0b8ea877dd231d7307521119528e4e1e0ab96b347fb9fa6f8",
+        "testAssemblySha256": "d4cc1faf39429615d91473c31dec4806c970dbe68414b0ce86e0c9ca34d4a4dd",
+        "seconds": 37.3238506000489,
+        "counters": {
+          "executed": "4160",
+          "passed": "4160",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e48b29d29fad9a766ec35e2d4932d569cd50d4585eaf0f3ff902437c0f5f1a7e",
+        "testAssemblySha256": "eeb60cd859f2c1c3eec87fbca41fcae70cd96260bdd422a3378f110cd6d2834f",
+        "seconds": 33.843701500212774,
+        "counters": {
+          "executed": "4160",
+          "passed": "4160",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e48b29d29fad9a766ec35e2d4932d569cd50d4585eaf0f3ff902437c0f5f1a7e",
+        "testAssemblySha256": "eeb60cd859f2c1c3eec87fbca41fcae70cd96260bdd422a3378f110cd6d2834f",
+        "seconds": 33.02827039989643,
+        "counters": {
+          "executed": "4160",
+          "passed": "4160",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5951dba34fea3ca0b8ea877dd231d7307521119528e4e1e0ab96b347fb9fa6f8",
+        "testAssemblySha256": "8294fbf941756a9f7410ecf94314e0155de320588f20bfa270419077e00746a1",
+        "seconds": 15.299540099920705,
+        "counters": {
+          "executed": "330",
+          "passed": "330",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5951dba34fea3ca0b8ea877dd231d7307521119528e4e1e0ab96b347fb9fa6f8",
+        "testAssemblySha256": "8294fbf941756a9f7410ecf94314e0155de320588f20bfa270419077e00746a1",
+        "seconds": 17.393754299962893,
+        "counters": {
+          "executed": "330",
+          "passed": "330",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e48b29d29fad9a766ec35e2d4932d569cd50d4585eaf0f3ff902437c0f5f1a7e",
+        "testAssemblySha256": "5e0db33ede5423deb22e3a091332900769338c3a0e925fe8755f64095987f591",
+        "seconds": 12.8490560001228,
+        "counters": {
+          "executed": "330",
+          "passed": "330",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e48b29d29fad9a766ec35e2d4932d569cd50d4585eaf0f3ff902437c0f5f1a7e",
+        "testAssemblySha256": "5e0db33ede5423deb22e3a091332900769338c3a0e925fe8755f64095987f591",
+        "seconds": 15.36666029994376,
+        "counters": {
+          "executed": "330",
+          "passed": "330",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "scope": "Functional validation elapsed seconds, not renderer throughput. No ownership/API product was multiplied across the new images; the330 affected core checks retain their existing distinct contracts."
+  },
+  "remaining": "R54/R55/R69 named shader/alpha sources are exact in the private122-input audit, but their full original acceptance joins remain separate. This record does not close those findings or the wider source-provenance backlog."
+}

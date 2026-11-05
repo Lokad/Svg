@@ -74,18 +74,7 @@ internal static class SvgTextGlyphPainter
 
     internal static void EmitDirect(SvgTextRun run, SvgAffineTransform placement, SvgLeafMaskBinding? clip, SvgColor fallback,
         SvgDocumentState state, int maximumCommands, RenderBudget budget, SvgRecordedTransform? recording, SvgRectangle? objectBox, CancellationToken token)
-    {
-        SvgTextPaintPreparation prepared = SvgTextPaintPreparation.Create(run, token);
-        prepared.ObjectBox = objectBox;
-        if (state.OutputMap.Compose(placement).IsSingular)
-        {
-            Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, recording, ref prepared, token);
-            return;
-        }
-        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, false, maximumCommands, budget, recording, ref prepared, token);
-        Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, recording, ref prepared, token);
-        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, true, maximumCommands, budget, recording, ref prepared, token);
-    }
+        => Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, recording, objectBox, token);
 
     internal static void Emit(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements,
         SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, SvgRecordedTransform? recording, CancellationToken token)
@@ -130,22 +119,23 @@ internal static class SvgTextGlyphPainter
             SvgTextGlyphPaint fragmentPaint = run.GetGlyphPaint(fragment.Start, fallback);
             if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgPaintReference.TryParseId(strokeValue, out _))
                 shader = Bind(strokeValue, run, placement, pathPlacements, state, ref prepared, token);
-            // A direct run shares each paint pass. Path text paints independently
-            // placed glyphs, so an adjacent glyph's stroke follows the prior fill.
+            // Decorations surround the glyph paint of their own source fragment.
+            // Path text further separates independently placed glyphs.
             int start = fragment.Start;
             while (start < fragment.End)
             {
                 int end = pathPlacements.IsEmpty ? fragment.End : start + 1;
                 SvgTextGlyphPaint paint = run.GetGlyphPaint(start, fallback);
                 bool strokeFirst = paint.Stroke?.PaintOrder.StrokeFirst() == true;
-                double decorationWidth = run.GlyphStretch == 0 ? 0 : (float)run.Glyphs[start].Advance / (float)run.GlyphStretch;
-                ReadOnlySpan<SvgTextPaintFragment> decoration = [new(start, end, decorationWidth)];
-                if (!pathPlacements.IsEmpty)
+                SvgTextPaintFragment decorationFragment = pathPlacements.IsEmpty ? fragment
+                    : new(start, end, run.GlyphStretch == 0 ? 0 : (float)run.Glyphs[start].Advance / (float)run.GlyphStretch);
+                ReadOnlySpan<SvgTextPaintFragment> decoration = [decorationFragment];
+                if (paint.Decoration is not null)
                     SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, false, maximumCommands, budget, recording, ref prepared, token);
                 if (strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, recording, ref prepared, token);
                 if (paint.HasFill) Fill(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, recording, ref prepared, token);
                 if (!strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, recording, ref prepared, token);
-                if (!pathPlacements.IsEmpty)
+                if (paint.Decoration is not null)
                     SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, true, maximumCommands, budget, recording, ref prepared, token);
                 start = end;
             }
