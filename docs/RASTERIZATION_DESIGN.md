@@ -456,7 +456,10 @@ coordinate-buffer boundaries; equal coverage bytes can still cross such a bounda
 Element composition follows [filter â†’ mask â†’ clip â†’ opacity](SUPPORT_MATRIX.md#clips-masks-and-composition).
 Ancestor clips surround child filter output; source-local clips remain inside
 the filter. Group isolation/restore applies each clip and opacity once. Identity
-groups avoid unnecessary offscreen images; real opacity isolates.
+groups avoid unnecessary offscreen images; partial opacity isolates. Zero-opacity
+scopes and constant-zero masks skip descendant painting without allocating child
+surfaces. Preparation still validates their content and retains source bounds for
+ancestor effects; geometric clip collection continues to ignore paint opacity.
 
 Clip unions retain ordered original operands, winding and cyclic starts. Convex
 operands share native normalization; other unions use bounded boundary operations.

@@ -2817,6 +2817,22 @@ public static partial class SvgConverter
                     }
                     if (command.Kind == SvgDrawCommandKind.BeginGroup)
                     {
+                        // Transparent output still retains its prepared geometry and bounds.
+                        // Clip collection uses geometry independently of paint opacity.
+                        if (!collectingViewportClip && (command.SourceOpacity.Value == 0
+                            || command.RegionKind != SvgLayerRegionKind.Filter && command.MaskAlpha == 0))
+                        {
+                            int depth = 1;
+                            while (index < root.Commands.Length && depth != 0)
+                            {
+                                cancellationToken.ThrowIfCancellationRequested();
+                                SvgDrawCommand child = root.Commands[index++];
+                                if (child.Kind == SvgDrawCommandKind.BeginGroup) depth++;
+                                else if (child.Kind == SvgDrawCommandKind.EndGroup) depth--;
+                            }
+                            if (depth != 0) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
+                            continue;
+                        }
                         if (command.RegionKind == SvgLayerRegionKind.Filter)
                         {
                             index = RenderFilter(index, command, destination, null);

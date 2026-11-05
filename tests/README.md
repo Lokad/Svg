@@ -71,6 +71,11 @@ separate aligned-buffer reuse, wider blur requests, color-matrix output and shif
 grid copying. Four allowance/refusal/retry cases retain pre-change pixel hashes;
 existing stage and browser-reference tests protect filter arithmetic and interactions.
 
+[Transparent-scope contracts](Lokad.Svg.Tests/SvgTransparentGroupStorageTests.cs)
+distinguish zero opacity, constant-zero masks and zero-opacity filters. They check
+surface admission, exact sibling output and borrowed-scene refusal/cleanup/retry;
+existing bounds, clip and native regressions retain their separate responsibilities.
+
 [Affine geometry ownership](Research/release-baselines/affine-geometry-ownership.json)
 keeps original scene indices through the rewritten command envelope. Small, large
 and sparse source controls protect bounded storage, parent immutability and retry;
