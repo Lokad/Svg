@@ -35,12 +35,22 @@ internal sealed class ChromeProcess : IAsyncDisposable
 
     internal string DebuggerAddress { get; private set; } = "";
 
-    internal static async Task<ChromeProcess> LaunchAsync(string executable, CancellationToken cancellationToken)
+    internal static Task<ChromeProcess> LaunchAsync(string executable, CancellationToken cancellationToken)
+        => LaunchAsync(executable, Path.GetTempPath(), cancellationToken);
+
+    /// <summary>Creates and owns one unique profile below the borrowed parent directory.</summary>
+    /// <remarks>
+    /// The caller retains the parent and its other children. Failure and disposal remove
+    /// only this launch's profile; cancellation before launch creates no directory.
+    /// Independent launches may share a parent concurrently.
+    /// </remarks>
+    internal static async Task<ChromeProcess> LaunchAsync(string executable, string profileParent, CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(executable);
+        ArgumentException.ThrowIfNullOrWhiteSpace(profileParent);
         cancellationToken.ThrowIfCancellationRequested();
         if (!File.Exists(executable)) throw new FileNotFoundException("Pinned Chrome executable was not found.", executable);
-        string profile = Path.Combine(Path.GetTempPath(), "lokad-svg-chrome-" + Guid.NewGuid().ToString("N"));
+        string profile = Path.Combine(profileParent, "lokad-svg-chrome-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(profile);
         ProcessStartInfo startInfo = new(executable)
         {

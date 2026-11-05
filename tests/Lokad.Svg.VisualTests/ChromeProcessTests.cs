@@ -3,32 +3,37 @@ using Lokad.Svg.Chrome;
 
 namespace Lokad.Svg.VisualTests;
 
-public sealed class ChromeProcessTests
+public sealed class ChromeProcessTests : IDisposable
 {
+    private readonly string _profileParent = Path.Combine(Path.GetTempPath(), "lokad-svg-launch-test-" + Guid.NewGuid().ToString("N"));
+
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Failed_launch_cleans_its_profile()
     {
-        HashSet<string> before = ProfileDirectories();
-        string decoy = Path.GetTempFileName();
-        try
-        {
-            File.WriteAllText(decoy, "not an executable");
-            await Assert.ThrowsAsync<Win32Exception>(async () => await ChromeProcess.LaunchAsync(decoy, CancellationToken.None));
-        }
-        finally { File.Delete(decoy); }
+        string unrelated = Directory.CreateDirectory(Path.Combine(_profileParent, "lokad-svg-chrome-unrelated")).FullName;
+        string marker = Path.Combine(unrelated, "keep.txt");
+        File.WriteAllText(marker, "borrowed parent");
+        string decoy = Path.Combine(_profileParent, "invalid-chrome.exe");
+        File.WriteAllText(decoy, "not an executable");
 
-        Assert.True(before.SetEquals(ProfileDirectories()));
+        await Assert.ThrowsAsync<Win32Exception>(async () => await ChromeProcess.LaunchAsync(decoy, _profileParent, CancellationToken.None));
+
+        Assert.Equal(unrelated, Assert.Single(Directory.GetDirectories(_profileParent)));
+        Assert.Equal("borrowed parent", File.ReadAllText(marker));
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Missing_executable_creates_no_profile()
     {
-        HashSet<string> before = ProfileDirectories();
+        await Assert.ThrowsAsync<FileNotFoundException>(async () => await ChromeProcess.LaunchAsync(Path.Combine(_profileParent, "missing"), _profileParent, CancellationToken.None));
 
-        await Assert.ThrowsAsync<FileNotFoundException>(async () => await ChromeProcess.LaunchAsync(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N")), CancellationToken.None));
-
-        Assert.True(before.SetEquals(ProfileDirectories()));
+        Assert.False(Directory.Exists(_profileParent));
     }
 
-    private static HashSet<string> ProfileDirectories() => Directory.GetDirectories(Path.GetTempPath(), "lokad-svg-chrome-*").ToHashSet(StringComparer.Ordinal);
+    public void Dispose()
+    {
+        if (Directory.Exists(_profileParent)) Directory.Delete(_profileParent, true);
+    }
 }

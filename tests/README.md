@@ -35,6 +35,12 @@ Research matrices. Full qualification retains all 96 original API conversions;
 raw checks construct no unused prepared document. Known ownership and interaction
 regressions remain separate.
 
+[Chrome launch contracts](Lokad.Svg.VisualTests/ChromeProcessTests.cs) inspect each
+invocation's profile parent, preserving unrelated siblings and detecting leaked
+profiles without comparing a machine-wide temporary-directory snapshot. Missing
+executables must leave even the parent absent; cancellation and healthy browser
+capture remain separate checks.
+
 Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs)
 while retaining separate names, inputs and allocation paths. Add one representative
 contract for a distinct path; rendering fixtures keep their canonical conversion.
