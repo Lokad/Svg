@@ -108,6 +108,29 @@ public sealed class PngImageDecoderTests
         Assert.Equal(unchanged, png);
     }
 
+    [Trait("Layer", "Contract")]
+    [Fact]
+    public void Fragmented_idat_storage_remains_charged_during_scanline_reconstruction()
+    {
+        const int side = 512;
+        byte[] scanlines = new byte[side * (1 + side * 4)];
+        byte[] compressed = ZlibCompress(scanlines);
+        Assert.True(compressed.Length > 256);
+        byte[] png = BuildPng([new("IHDR", TestIhdr(side, side, 6)), new("IDAT", compressed[..^1]),
+            new("IDAT", compressed[^1..]), new("IEND", [])]);
+        byte[] unchanged = png.ToArray();
+        long retainedCapacity = 2L * (compressed.Length - 1);
+        RenderBudget budget = new(new HostMemoryBudget(scanlines.Length + retainedCapacity + 64));
+
+        Assert.Equal(SvgColor.Transparent, Decode(png, budget, CancellationToken.None));
+
+        // Here decoded storage dominates the earlier compressed-array growth peak,
+        // so dropping the retained IDAT charge early cannot satisfy this bound.
+        Assert.True(budget.Snapshot().PeakBytes >= scanlines.Length + retainedCapacity);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, png);
+    }
+
     public static IEnumerable<object[]> InvalidChunkStructures()
     {
         List<TestChunk> rgb = ParseChunks(BuiltRgb());

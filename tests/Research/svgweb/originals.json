@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/png-color-admission.json",
+    "evidence": "../release-baselines/png-row-storage.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "8bae191f2459e9d8f99fa6fed6f40b820360d81f",
+    "sourceBaseline": "b04e118e445db411d0f1ab0b41c4faa96a1bb463",
     "sourceIdentity": "Clean-commit packaged renderer. Fresh primary-runtime replay covers all 204 originals, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics; prior both-runtime references remain frozen. Source/package hashes and inherited/fresh scopes are explicit in evidence.",
-    "librarySha256": "68db361f4bba885b82dae42266e41c58ab74cc8cb7185594e2125e43c84988ae",
+    "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10401,7 +10401,7 @@
           "ny1-static-review.json",
           "svg2009-static-review.json"
         ],
-        "currentReplay": "../release-baselines/png-color-admission.json"
+        "currentReplay": "../release-baselines/png-row-storage.json"
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0

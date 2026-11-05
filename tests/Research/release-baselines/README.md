@@ -14,6 +14,11 @@ failing-before cases, affected native images, committed packages, installed
 consumers and full SVGWeb replay retain their duties; terminal CI preserves
 only the separate frozen Windows DejaVu discrepancy.
 
+[PNG row storage](png-row-storage.json) reconstructs rows in their admitted byte
+plane, removing two scratch arrays and one copy per row. Twenty literal filter/
+stride vectors and two allocation contracts protect the shared mechanism;
+native images, package consumers and original SVGWeb contexts retain exactness.
+
 [Geometry test responsibilities](geometry-test-responsibilities.json) classifies
 direct contour/analytic vectors separately from cancellation, allocation and output
 contracts. All cases and assertion bodies remain; focused selection and the source/

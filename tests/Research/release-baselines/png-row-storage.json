@@ -1,5 +1,5 @@
 {
-  "status": "PNG scanlines reconstruct in their existing admitted byte plane, removing two row arrays and one copy per row. Twenty fixed predictor/stride cases remain exact; one storage case fails before and passes after on all four host/runtime combinations. Committed-source package and primary CI milestone qualification remains pending.",
+  "status": "PNG row-storage milestone CLOSED. Row reconstruction borrows the admitted scanline plane, removing both scratch arrays and the per-row copy. All 20 literal mechanisms, both failing-before storage contracts, existing allocation/error paths, committed packages, installed consumers, W1 replay and full primary suites retain their duties. Ubuntu all gates pass; Windows retains only its existing frozen DejaVu visual case. The separate release gate remains open.",
   "sourceBaseCommit": "7fe670c5c7f6f57ce282b5e6f0323f0c34cbc9a6",
   "previousRuntimeQualification": "png-color-admission.json",
   "source": {
@@ -14,7 +14,8 @@
     ],
     "tests": "../../Lokad.Svg.Tests/PngImageDecoderTests.cs",
     "allPriorTestSourceReconstructedExactlyExceptDeclaredPeakUpdate": true,
-    "peakAssertionUpdate": "Remove the lower bound that required two obsolete scratch rows. Retain the doubled-IDAT/decoded-plane coexistence bound and add the explicit old/new compressed-growth overlap bound. All existing cases, refusal thresholds, inputs, expected pixels and assertions otherwise remain."
+    "peakAssertionUpdate": "Remove the lower bound that required two obsolete scratch rows. Retain the doubled-IDAT/decoded-plane coexistence bound and add the explicit old/new compressed-growth overlap bound. All existing cases, refusal thresholds, inputs, expected pixels and assertions otherwise remain.",
+    "currentTestFileLfSha256": "36e83ebfb810075f225f65985d3fb1ff581992927885ffcd3509233c0666a3c0"
   },
   "mechanisms": {
     "specification": "https://www.w3.org/TR/2025/REC-png-3-20250624/#9Filters",
@@ -57,10 +58,11 @@
         "cases": 21,
         "caseIdentitySha256": "877156bbbc017634cfcf6ae33dbe16d07760ea7d5e4a5c385105e55732b1a1ab"
       }
-    ]
+    ],
+    "caseIdentityJoinScope": "The21 initial new cases:20 literal mechanisms and the first storage contract. The additional retained-IDAT contract has its own four joins in storage.retainedIdatSupplement."
   },
   "storage": {
-    "newCases": 1,
+    "newCases": 2,
     "contract": "A uniform128x16 RGBA image accepts the complete scanline plane plus512 bytes of compressed allowance, without two extra512-byte rows. Decoder ownership returns to zero and input PNG bytes remain unchanged.",
     "measurement": {
       "host": "windows",
@@ -96,7 +98,72 @@
           "finalCurrentBytes": 0
         }
       ],
-      "scope": "Deterministic RenderBudget tracked storage peaks for three authored uniform RGBA PNGs. No process/native peak, allocation/GC benchmark, quiet-VM timing or renderer throughput claim. Each reduction equals exactly two rows of source-channel bytes."
+      "scope": "Deterministic RenderBudget tracked storage peaks for three authored uniform RGBA PNGs. No process/native peak, allocation/GC benchmark, quiet-VM timing or renderer throughput claim. Each reduction equals exactly two rows of source-channel bytes.",
+      "committedPackageLibrarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+      "allThreePeaksAndRefundsReproducedByCommittedPackageAsset": true
+    },
+    "retainedIdatSupplement": {
+      "test": "Fragmented_idat_storage_remains_charged_during_scanline_reconstruction",
+      "sourceBaseCommit": "b04e118e445db411d0f1ab0b41c4faa96a1bb463",
+      "allPrimaryQualifiedTestSourceReconstructedExactly": true,
+      "caseCount": 1,
+      "reason": "The existing incompressible case has a growth peak large enough to hide premature release of the retained IDAT charge. This separate uniform512x512 compressible case makes decoded-plane/retained-buffer coexistence dominate growth. It catches that accounting regression while preserving the original incompressible growth case.",
+      "contract": "Split the compressed stream before its final byte to trigger capacity growth. Reserve the full scanline plane plus retained capacity and64 bytes; require its coexistence peak, exact transparent result, input immutability and zero retained charge. This is a distinct allocation path, without another rendering/API matrix.",
+      "checks": [
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "beforeLibrarySha256": "68db361f4bba885b82dae42266e41c58ab74cc8cb7185594e2125e43c84988ae",
+          "afterLibrarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+          "testAssemblySha256": "ecf3d7ff009b295acb09084a2172a20852bc4fd027f80ad8f9b66360bbe40fdd",
+          "beforePassed": 0,
+          "beforeFailed": 1,
+          "afterPassed": 1,
+          "afterFailed": 0,
+          "beforeSeconds": 8.136794100049883,
+          "afterSeconds": 7.414649200160056
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "beforeLibrarySha256": "68db361f4bba885b82dae42266e41c58ab74cc8cb7185594e2125e43c84988ae",
+          "afterLibrarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+          "testAssemblySha256": "ecf3d7ff009b295acb09084a2172a20852bc4fd027f80ad8f9b66360bbe40fdd",
+          "beforePassed": 0,
+          "beforeFailed": 1,
+          "afterPassed": 1,
+          "afterFailed": 0,
+          "beforeSeconds": 12.128790799994022,
+          "afterSeconds": 11.757325399899855
+        },
+        {
+          "host": "windows",
+          "framework": "net10.0",
+          "beforeLibrarySha256": "e0843c64aee79b6867acc68763f84cadf730832f5713a930f2d80160b79b3f13",
+          "afterLibrarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+          "testAssemblySha256": "4b18d15370d4af59890dd472bfd4f8b57ae58d04d4de5f93018ac2d265692e00",
+          "beforePassed": 0,
+          "beforeFailed": 1,
+          "afterPassed": 1,
+          "afterFailed": 0,
+          "beforeSeconds": 8.513290399918333,
+          "afterSeconds": 8.030705800047144
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "beforeLibrarySha256": "e0843c64aee79b6867acc68763f84cadf730832f5713a930f2d80160b79b3f13",
+          "afterLibrarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+          "testAssemblySha256": "4b18d15370d4af59890dd472bfd4f8b57ae58d04d4de5f93018ac2d265692e00",
+          "beforePassed": 0,
+          "beforeFailed": 1,
+          "afterPassed": 1,
+          "afterFailed": 0,
+          "beforeSeconds": 10.074127700179815,
+          "afterSeconds": 10.341345200082287
+        }
+      ],
+      "qualificationScope": "One supplementary Contract case added after primary CI. The exact committed runtime package assets are unchanged. All47,950 primary core cases and their source/traits remain; this extra case is tested on both hosts/runtimes. No new full-CI or unfiltered47,951-case run is claimed."
     }
   },
   "validation": {
@@ -288,6 +355,559 @@
     "builds": "Both Release target builds pass with warnings-as-errors and zero warnings/errors."
   },
   "milestone": {
-    "status": "Pending clean committed-source package assets, complete original/context replay and full primary CI. Prior qualification remains immutable."
+    "status": "CLOSED for PNG row storage; the separate frozen Windows DejaVu release gate stays open. Terminal CI is CLOSED; never repoll/refetch it or its logs.",
+    "sourceCommit": "b04e118e445db411d0f1ab0b41c4faa96a1bb463",
+    "previous": "png-color-admission.json",
+    "packages": {
+      "sourceCommit": "b04e118e445db411d0f1ab0b41c4faa96a1bb463",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "87dfa02c4098bb831b4486d3b8f8c1be5066e31afefd194774bc871d364fd328",
+          "bytes": 2437992
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "1b10b973e80040eb902826910c2946e500e6c267842da2b8833c0855edf55802",
+          "bytes": 726097
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "net10.0": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e"
+      },
+      "byteIdenticalRepeats": true,
+      "noRuntimeDependencies": true,
+      "noSvgOrRuntimeSpecificAssets": true
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.308187999995425,
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ],
+        "eachInstalledRuntimeAssetMatchesPackage": true,
+        "logSha256": "7916e0e5a51f19ffde28742c689adce9441eddfb8b2f1387661fca8a405ef325"
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 67.76455239998177,
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ],
+        "eachInstalledRuntimeAssetMatchesPackage": true,
+        "logSha256": "cbf5ed18567299e76ed2280d89432d805ff4cef79cab23c4e1f17bfa323fe3a8"
+      }
+    ],
+    "committedAssetAffectedChecks": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "testAssemblySha256": "272d2fdb1cfd0e5d330c5248081fccaf8efb6f17519f7d15daabf1fb09a44b2e",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 12.709606799995527,
+        "counters": {
+          "executed": "823",
+          "passed": "823",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "testAssemblySha256": "272d2fdb1cfd0e5d330c5248081fccaf8efb6f17519f7d15daabf1fb09a44b2e",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 16.38803689996712,
+        "counters": {
+          "executed": "823",
+          "passed": "823",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "testAssemblySha256": "fe0642a5abcb0a138b92a2105069a7f721e6a8320166de85d3db0bced1cabc1b",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 43.51669519999996,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "testAssemblySha256": "fe0642a5abcb0a138b92a2105069a7f721e6a8320166de85d3db0bced1cabc1b",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 39.8375345999375,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "86a4414f80df0baf540ca4056ef1262f774aff69ffbb3ae7c39b10a376b9b5c0",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 15.96467120014131,
+        "counters": {
+          "executed": "823",
+          "passed": "823",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "86a4414f80df0baf540ca4056ef1262f774aff69ffbb3ae7c39b10a376b9b5c0",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 16.1928761000745,
+        "counters": {
+          "executed": "823",
+          "passed": "823",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "ab6dc9df3c99d6224ead9c653c1aa911791c4ed4cba07000702a8ff4f79b573f",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 41.81689479993656,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "ab6dc9df3c99d6224ead9c653c1aa911791c4ed4cba07000702a8ff4f79b573f",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 44.56631959998049,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "windowsCompatibility": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "86a4414f80df0baf540ca4056ef1262f774aff69ffbb3ae7c39b10a376b9b5c0",
+        "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgLineStrokeLengthTests|FullyQualifiedName~SvgTextPathOffsetSyntaxTests|FullyQualifiedName~Canvas_background_survives_a_full_canvas_translucent_source|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgFilterCaptureStorageTests|FullyQualifiedName~SvgFilterQueryStorageTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgRectangleSourceTests|FullyQualifiedName~SvgEmptyFilterSourceTests|FullyQualifiedName~SvgSingularTransformTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 33.81281190016307,
+        "counters": {
+          "executed": "12222",
+          "passed": "12222",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "ab6dc9df3c99d6224ead9c653c1aa911791c4ed4cba07000702a8ff4f79b573f",
+        "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~Decoration_fragments_|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 16.576474600005895,
+        "counters": {
+          "executed": "1175",
+          "passed": "1175",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "testAssemblySha256": "86945fa5535bb2bae5b3c8ad5f19717385cc9d8599fe5b824a63017a9fd087db",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 3.269958300050348,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "inventory": {
+      "methods": 5151,
+      "files": 740,
+      "coreMethods": 4692,
+      "visualMethods": 459,
+      "layers": {
+        "Lokad.Svg.Tests": {
+          "Unclassified": 1138,
+          "Mechanism": 1780,
+          "Contract": 708,
+          "Rendering": 1065,
+          "Integrity": 1
+        },
+        "Lokad.Svg.VisualTests": {
+          "Unclassified": 219,
+          "Contract": 34,
+          "Integrity": 25,
+          "Mechanism": 18,
+          "Rendering": 163
+        }
+      },
+      "all5149PriorMethodsAndTraitsUnchanged": true,
+      "newMechanismMethods": 1,
+      "newContractMethods": 1,
+      "newCases": 21,
+      "existingCaseRemovals": 0,
+      "priorCoreCases": 47929,
+      "expectedFullCoreCases": 47950,
+      "fullVisualCasesUnchanged": 76870,
+      "fontHostCasesUnchanged": 10,
+      "priorFastCases": 20099,
+      "newFastEligibleCases": 21
+    },
+    "svgweb": {
+      "framework": "net11.0",
+      "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+      "directoryAudit": {
+        "checkedUtc": "2026-11-05T22:34:13.136921+00:00",
+        "httpStatus": 200,
+        "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+        "directSvgFiles": 204,
+        "sameMembership": true,
+        "newOrMissingOriginalNames": [],
+        "indexBodyRetained": false,
+        "sourceSvgBodiesRetained": 0
+      },
+      "originals": 204,
+      "sourceHashesRecheckedPerHost": 204,
+      "defaultHosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        }
+      },
+      "defaultCaseIdentitiesSha256": "342e9bcc7fd937df15f22d8e1998e5aba06e1aea08a2d08a791b098b11b39a72",
+      "suppliedContexts": 22,
+      "exactSuppliedContextIdentitiesSha256": "c3f3a619d219e4da3430e4669546338e07c17a35a22e7d9dd9c4ed90282b17e0",
+      "staticDiagnostics": 13,
+      "staticDiagnosticIdentitiesSha256": "0a5be1bfa6bcd5049ecef84ddb720618afc192664b3aedc9a56f143989f2a96b",
+      "specialStaticDiagnostics": [
+        {
+          "name": "ny1.svg",
+          "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+          "diagnosticInputSha256": "85bce8c43bf349c9accb3a34ef2b349fe46e47131c3f481167f451ea5c944988",
+          "nativeInputSha256": "6836c9b27080fbdd21921aa912abc64edb2fc8395afcd8fc095697ebaba43695",
+          "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+          "hosts": [
+            {
+              "host": "windows",
+              "seconds": 2.3028200999833643,
+              "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+              "libraryPngSha256": "68375e64d687b615d8b6c595ed63b3a52ecf0be00c27c247de5827d0fe1e0a60",
+              "nativePngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1",
+              "rgbaSha256": "feb7c63b2f604c7439fba0759a3d0df33f66d792b4c347a9367d22a8d3b733d6",
+              "width": 600,
+              "height": 388,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "seconds": 2.613053600070998,
+              "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+              "libraryPngSha256": "894d41161c338e74e514efbb75d8a1ee039b0d58adfdf7a128769e0974069d0d",
+              "nativePngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a",
+              "rgbaSha256": "6cf4835c9ea5fac9058191e851cd855135d1368aa91004725b481460b8ba3f19",
+              "width": 600,
+              "height": 388,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ],
+          "sourceBodiesRetained": 0,
+          "rawAttributeValuesRetained": 0
+        },
+        {
+          "name": "displayWebStats.svg",
+          "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
+          "diagnosticInputSha256": "eee3a71669f060293f50a2ad5e18df3a1bd4c0a61bcdded4ffb01609829d7668",
+          "nativeInputSha256": "5097794849ca64f51701af6684abbee2ca1a4da302a76658202f420e1e7d3765",
+          "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+          "hosts": [
+            {
+              "host": "windows",
+              "seconds": 1.747417900012806,
+              "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+              "libraryPngSha256": "a5d57028415487baa68574cf7708b2ef279260863c815d923028b729dfdc1deb",
+              "nativePngSha256": "8fc5f8e01b41bbc17a42565b4f42202211db2b06f1f06f837fd02aaaa5b763f4",
+              "rgbaSha256": "6f21efb966af4c0821c0de89a4e8e1fdc3558a70794dfb6956ff6ea3cdbb4171",
+              "width": 300,
+              "height": 150,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "seconds": 2.6445979999843985,
+              "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+              "libraryPngSha256": "7aa04163714793daeefc751b7498782d385a942016cfafb20e63bc094b242e8d",
+              "nativePngSha256": "5c460f80227e66b72fdbb66bee2b763c20033a6545db015bea8d3a5e3bda7ff9",
+              "rgbaSha256": "63e283ffc915fd08c043bd185daaa91ab177f0e10c40349cd5d4fa04736bf12c",
+              "width": 300,
+              "height": 150,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ],
+          "sourceBodiesRetained": 0,
+          "rawAttributeValuesRetained": 0
+        },
+        {
+          "name": "svg2009.svg",
+          "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+          "diagnosticInputSha256": "35ac8215e277b1ec6adfa3b0cc63502996b85b36be3f9d44123e9981bb022b1e",
+          "nativeInputSha256": "4a028a1495eadb04e26f259c829be9bd16ec42a8419ce4817d9c8266809031a7",
+          "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+          "hosts": [
+            {
+              "host": "windows",
+              "seconds": 2.1201725001446903,
+              "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+              "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+              "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+              "rgbaSha256": "fe4b03be37596a5941b414d7d4065466490c3d035d8f2f73cf295d14e5e88844",
+              "width": 850,
+              "height": 200,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "seconds": 2.387075699865818,
+              "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+              "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+              "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+              "rgbaSha256": "fe6829ca6177705e69a39b15d31972002f73127e35c5bfb0451a65d1dab355c6",
+              "width": 850,
+              "height": 200,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ],
+          "sourceBodiesRetained": 0,
+          "rawAttributeValuesRetained": 0
+        }
+      ],
+      "originalPngSurvey": {
+        "files": 204,
+        "allOriginalHashesMatch": true,
+        "hostedSvgBodiesRetained": 0,
+        "rawSvgAttributesRetained": 0,
+        "embeddedPngOccurrences": 0,
+        "cicpOccurrences": 0,
+        "rows": []
+      },
+      "sourceBodiesRetained": 0,
+      "rawAttributesRetained": 0,
+      "sourceCoverage": "The disjoint204-source partition remains168 defaults+22 supplied contexts+11 other static diagnostics+3 special source reviews. These fresh primary-runtime replays preserve previous PNG bytes and native targets; contexts do not admit absent resources, animation or repaired originals. Previous both-runtime diagnostic references remain frozen; this is a new primary-runtime source binding.",
+      "historicalReferences": "../svgweb/special-static-replay.json"
+    },
+    "primaryCi": {
+      "run": 42122196052,
+      "url": "https://github.com/Lokad/Svg/actions/runs/42122196052",
+      "status": "Terminal CLOSED; never repoll or refetch.",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "host": "linux",
+          "job": 127577155827,
+          "conclusion": "success",
+          "logSha256": "b6cb144dfed2a4ca05b2da597d5e49cef42f0e3121e9d8f5ea9925f4075978a5",
+          "tests": [
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 10,
+              "skipped": 0,
+              "total": 10
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 47950,
+              "skipped": 0,
+              "total": 47950
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 76870,
+              "skipped": 0,
+              "total": 76870
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 12222,
+              "skipped": 0,
+              "total": 12222
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 1175,
+              "skipped": 0,
+              "total": 1175
+            },
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 10,
+              "skipped": 0,
+              "total": 10
+            }
+          ],
+          "failures": []
+        },
+        {
+          "host": "windows",
+          "job": 127577156226,
+          "conclusion": "failure",
+          "logSha256": "81198c087b26380696902722828c64e6eaebfcfd9b97634f6dfaa5bdb9a30733",
+          "tests": [
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 10,
+              "skipped": 0,
+              "total": 10
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 47950,
+              "skipped": 0,
+              "total": 47950
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net11.0",
+              "failed": 1,
+              "passed": 76869,
+              "skipped": 0,
+              "total": 76870
+            }
+          ],
+          "failures": [
+            "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\") [599 ms]"
+          ]
+        }
+      ],
+      "scope": "Ubuntu full, compatibility, tool and package gates pass. Windows full tests retain only frozen DejaVu; its downstream CI steps are skipped. The same Windows.NET10 compatibility selections and installed package consumers were run locally against exact committed assets. No claim of green Windows CI or newly executed downstream Windows tool gates."
+    },
+    "currentTestInventory": {
+      "methods": 5152,
+      "files": 740,
+      "coreMethods": 4693,
+      "visualMethods": 459,
+      "layers": {
+        "Lokad.Svg.Tests": {
+          "Unclassified": 1138,
+          "Mechanism": 1780,
+          "Contract": 709,
+          "Rendering": 1065,
+          "Integrity": 1
+        },
+        "Lokad.Svg.VisualTests": {
+          "Unclassified": 219,
+          "Contract": 34,
+          "Integrity": 25,
+          "Mechanism": 18,
+          "Rendering": 163
+        }
+      },
+      "primaryCoreCases": 47950,
+      "supplementalCoreCases": 1,
+      "combinedQualifiedCoreCases": 47951,
+      "visualCases": 76870,
+      "fontHostCases": 10,
+      "fastEligibleCases": 20121,
+      "all5151PrimaryMethodsAndTraitsRetained": true,
+      "noOriginalCasesRemoved": true
+    }
   }
 }
