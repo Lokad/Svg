@@ -1,0 +1,269 @@
+{
+  "status": "Source capture and pixel playback share final-result dependencies. Five converter and two native regressions fail before and pass after; affected integration passes. Full runtime/package/original-source qualification follows at this milestone.",
+  "source": {
+    "baseCommit": "6bd2d7e8d8231257f335ff32a97739207a5b7f05",
+    "playback": {
+      "beforeLfSha256": "99b6f6bba2bc2d27067f2d7b6196aa38094046d9a5b2a9d5fcd67d3dae97dfad",
+      "afterLfSha256": "4fbcbd9fb4f45cc96d54b4c84bc5c8c92dcec8f86a51ba9be60b8560eb08059a",
+      "entireBeforeFileReconstructed": true,
+      "onlyHelperMovementClearingAndReachableCount": true
+    },
+    "capture": {
+      "beforeLfSha256": "3de53d9e2ea7c25afce5a99727d47641e536be22ed311b53929885875b95e377",
+      "afterLfSha256": "90b44d890374a1cc7ba2edf21b3b31bc915047af2423c1c6f161ef202f70fed6",
+      "numericalPaddingArithmeticAndFrameConstructionUnchanged": true
+    },
+    "noExistingTestOrReferenceChanges": true
+  },
+  "regressions": {
+    "contracts": "../../Lokad.Svg.Tests/SvgFilterCaptureDemandTests.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgFilterCaptureDemandReferenceTests.cs",
+    "nativeBank": "../filter-capture-demand/capture.json",
+    "beforeContracts": {
+      "counters": {
+        "executed": 5,
+        "passed": 0,
+        "failed": 5
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterCaptureDemandTests.Unread_halos_do_not_enlarge_source_capture(unread: \"<feGaussianBlur in='SourceAlpha' stdDeviation='100\"\u00b7\u00b7\u00b7, liveBlur: False)",
+          "message": "Lokad.Svg.SvgException : Filter source and halo exceed the configured surface limits."
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterCaptureDemandTests.Unread_halos_do_not_enlarge_source_capture(unread: \"<feGaussianBlur in='SourceAlpha' stdDeviation='100\"\u00b7\u00b7\u00b7, liveBlur: True)",
+          "message": "Lokad.Svg.SvgException : Filter source and halo exceed the configured surface limits."
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterCaptureDemandTests.Unread_shadow_keeps_its_deviation_limit_after_capture_planning",
+          "message": "Assert.Equal() Failure: Values differ\r\nExpected: UnsupportedFeature\r\nActual:   LimitExceeded"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterCaptureDemandTests.Unread_halos_do_not_enlarge_source_capture(unread: \"<feDropShadow in='SourceAlpha' stdDeviation='100' \"\u00b7\u00b7\u00b7, liveBlur: False)",
+          "message": "Lokad.Svg.SvgException : Filter source and halo exceed the configured surface limits."
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterCaptureDemandTests.Unread_halos_do_not_enlarge_source_capture(unread: \"<feOffset in='SourceAlpha' dx='10000' result='unus\"\u00b7\u00b7\u00b7, liveBlur: False)",
+          "message": "Lokad.Svg.SvgException : Filter source and halo exceed the configured surface limits."
+        }
+      ]
+    },
+    "beforeNative": {
+      "counters": {
+        "executed": 2,
+        "passed": 0,
+        "failed": 2
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgFilterCaptureDemandReferenceTests.Unread_halos_preserve_fractional_source_sampling(identity: \"selected-matrix\")",
+          "message": "Lokad.Svg.SvgException : Filter source and halo exceed the configured surface limits."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgFilterCaptureDemandReferenceTests.Unread_halos_preserve_fractional_source_sampling(identity: \"selected-blur\")",
+          "message": "Lokad.Svg.SvgException : Filter source and halo exceed the configured surface limits."
+        }
+      ]
+    },
+    "focusedAfter": {
+      "counters": {
+        "executed": 23,
+        "passed": 23,
+        "failed": 0
+      },
+      "failures": []
+    },
+    "existingReferencesAndAssertionsUnchanged": true,
+    "coverage": "Three distinct unused halo kinds, a selected single blur, source/input cleanup and the unsupported shadow deviation. Existing graph cohort retains malformed references, selected secondary/merge paths, region defaults, refusal, cancellation and retry."
+  },
+  "nativeCapture": {
+    "librarySha256": "6d841f4feb82eb9119474825aa02e337c01676484d2684d1693d99885a860d60",
+    "rows": [
+      {
+        "id": "selected-matrix",
+        "host": "windows",
+        "inputSha256": "a574d78ffe20fe933abd5ccfce4fb117d74166b3553a8fdaf899b1d58f870eb7",
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captures": [
+          {
+            "pngSha256": "e8d3ae2d7fa845a9b0f6bd70edc56cf40a3e607d7245a7edb89a00ae00af2b20",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "e8d3ae2d7fa845a9b0f6bd70edc56cf40a3e607d7245a7edb89a00ae00af2b20",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "e8d3ae2d7fa845a9b0f6bd70edc56cf40a3e607d7245a7edb89a00ae00af2b20",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ],
+        "rgbaSha256": "1e550cbf276c67070a857696f9c421eac810304befc2b2a1cd778cfff0425271",
+        "changedPixels": 0
+      },
+      {
+        "id": "selected-matrix",
+        "host": "linux",
+        "inputSha256": "a574d78ffe20fe933abd5ccfce4fb117d74166b3553a8fdaf899b1d58f870eb7",
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captures": [
+          {
+            "pngSha256": "e8d3ae2d7fa845a9b0f6bd70edc56cf40a3e607d7245a7edb89a00ae00af2b20",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "e8d3ae2d7fa845a9b0f6bd70edc56cf40a3e607d7245a7edb89a00ae00af2b20",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "e8d3ae2d7fa845a9b0f6bd70edc56cf40a3e607d7245a7edb89a00ae00af2b20",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ],
+        "rgbaSha256": "1e550cbf276c67070a857696f9c421eac810304befc2b2a1cd778cfff0425271",
+        "changedPixels": 0
+      },
+      {
+        "id": "selected-blur",
+        "host": "windows",
+        "inputSha256": "c565fc9e7ed06bd9c672fb3ebeffc787d19176f706d06ede9089931838a28796",
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captures": [
+          {
+            "pngSha256": "645ac108826449de753c6682bdf448ab71b9eb3847bd96ad4f8a37e32384689f",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "645ac108826449de753c6682bdf448ab71b9eb3847bd96ad4f8a37e32384689f",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "645ac108826449de753c6682bdf448ab71b9eb3847bd96ad4f8a37e32384689f",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ],
+        "rgbaSha256": "e3230935adf0d0377f8e3399de23b1c95ee9851db41520c9627e90db0871e249",
+        "changedPixels": 0
+      },
+      {
+        "id": "selected-blur",
+        "host": "linux",
+        "inputSha256": "c565fc9e7ed06bd9c672fb3ebeffc787d19176f706d06ede9089931838a28796",
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captures": [
+          {
+            "pngSha256": "645ac108826449de753c6682bdf448ab71b9eb3847bd96ad4f8a37e32384689f",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "645ac108826449de753c6682bdf448ab71b9eb3847bd96ad4f8a37e32384689f",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "645ac108826449de753c6682bdf448ab71b9eb3847bd96ad4f8a37e32384689f",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ],
+        "rgbaSha256": "e3230935adf0d0377f8e3399de23b1c95ee9851db41520c9627e90db0871e249",
+        "changedPixels": 0
+      }
+    ]
+  },
+  "affectedValidation": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "6d841f4feb82eb9119474825aa02e337c01676484d2684d1693d99885a860d60",
+      "testAssemblySha256": "dad7b1fe851d67632690822a83fc57ac5b5c12f2fff4bfaf163e65e7d30d9545",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDropShadowStorageTests|FullyQualifiedName~SvgGaussianBlurTests|FullyQualifiedName~SvgColoredFilterTests|FullyQualifiedName~SvgEmptyFilterStageStorageTests|FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 10.498121500015259,
+      "counters": {
+        "executed": "841",
+        "passed": "841",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "6d841f4feb82eb9119474825aa02e337c01676484d2684d1693d99885a860d60",
+      "testAssemblySha256": "dad7b1fe851d67632690822a83fc57ac5b5c12f2fff4bfaf163e65e7d30d9545",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDropShadowStorageTests|FullyQualifiedName~SvgGaussianBlurTests|FullyQualifiedName~SvgColoredFilterTests|FullyQualifiedName~SvgEmptyFilterStageStorageTests|FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 15.071089800214395,
+      "counters": {
+        "executed": "841",
+        "passed": "841",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "6d841f4feb82eb9119474825aa02e337c01676484d2684d1693d99885a860d60",
+      "testAssemblySha256": "4a3f8c5daa9596e555ed4e66063e7af50fdff3813436ec754dd3982d28b8c560",
+      "selection": "(Category!=Research&(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgAffineFilterCaptureReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests))|(FullyQualifiedName~SvgPaintInputReferenceTests&((DisplayName~filter-uniform-precision)|(DisplayName~filter-source-composition)|(DisplayName~gradient-color-alpha)))",
+      "exitCode": 0,
+      "seconds": 104.87675149994902,
+      "counters": {
+        "executed": "21159",
+        "passed": "21159",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "6d841f4feb82eb9119474825aa02e337c01676484d2684d1693d99885a860d60",
+      "testAssemblySha256": "4a3f8c5daa9596e555ed4e66063e7af50fdff3813436ec754dd3982d28b8c560",
+      "selection": "(Category!=Research&(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgAffineFilterCaptureReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests))|(FullyQualifiedName~SvgPaintInputReferenceTests&((DisplayName~filter-uniform-precision)|(DisplayName~filter-source-composition)|(DisplayName~gradient-color-alpha)))",
+      "exitCode": 0,
+      "seconds": 104.90768119995482,
+      "counters": {
+        "executed": "21159",
+        "passed": "21159",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "boundaries": {
+    "noNewGraphOrHeapOwner": true,
+    "boundedStackScratchOnly": true,
+    "declarationAndRegionPlanningUnchanged": true,
+    "numericalKernelsOwnersAndFrameConstructionUnchanged": true,
+    "sourceBodies": "New controls are independently authored CC0 work. Hosted SVGWeb originals remain RAM-only."
+  }
+}

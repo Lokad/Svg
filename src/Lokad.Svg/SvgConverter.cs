@@ -737,11 +737,15 @@ public static partial class SvgConverter
                 sourceLeft = Math.Min(sourceCaptureBounds.Left, Math.Floor(hint.Left)); sourceTop = Math.Min(sourceCaptureBounds.Top, Math.Floor(hint.Top));
                 sourceRight = Math.Max(sourceCaptureBounds.Right, Math.Ceiling(hint.Right)); sourceBottom = Math.Max(sourceCaptureBounds.Bottom, Math.Ceiling(hint.Bottom));
             }
+            Span<bool> neededPrimitives = stackalloc bool[resource.Primitives.Items.Length];
+            int neededCount = SvgFilterPlayback.MarkPixelDependencies(resource, neededPrimitives, cancellationToken);
             double paddingX = 0, paddingY = 0;
             double offsetPaddingX = 0, offsetPaddingY = 0;
-            foreach (SvgFilterPrimitive primitive in resource.Primitives.Items)
+            for (int index = 0; index < neededPrimitives.Length; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                if (!neededPrimitives[index]) continue;
+                SvgFilterPrimitive primitive = resource.Primitives.Items[index];
                 paddingX += Math.Ceiling(Math.Abs(primitive.SigmaX * primitiveMap.ScaleX) * 4) + Math.Ceiling(Math.Abs(primitive.OffsetX * primitiveMap.ScaleX));
                 paddingY += Math.Ceiling(Math.Abs(primitive.SigmaY * primitiveMap.ScaleY) * 4) + Math.Ceiling(Math.Abs(primitive.OffsetY * primitiveMap.ScaleY));
                 offsetPaddingX += Math.Ceiling(Math.Abs(primitive.OffsetX * primitiveMap.ScaleX));
@@ -798,7 +802,8 @@ public static partial class SvgConverter
                     (left, top, right, bottom) = (captureLeft, captureTop, captureRight, captureBottom);
                 }
             }
-            // Shifted and chained results may feed visible pixels from outside the
+            // Only selected pixel dependencies contribute capture padding. Shifted
+            // and chained results may feed visible pixels from outside the
             // final output window. A single blur needs only the complete source;
             // graphs retain conservative intermediate halo/shift allowances.
             if (frame is { FilterBinding: {} sourceBinding, NativeSourceBounds: {} sourceBounds } && sourceBinding.Index == command.MaskContentIndex)
@@ -814,8 +819,8 @@ public static partial class SvgConverter
             // Empty source scopes still run their filter graph over transparent input.
             if (right <= left || bottom <= top)
                 (left, top, right, bottom) = (requestedLeft, requestedTop, requestedRight, requestedBottom);
-            double replayPaddingX = resource.Primitives.Items.Length > 1 ? paddingX : offsetPaddingX;
-            double replayPaddingY = resource.Primitives.Items.Length > 1 ? paddingY : offsetPaddingY;
+            double replayPaddingX = neededCount > 1 ? paddingX : offsetPaddingX;
+            double replayPaddingY = neededCount > 1 ? paddingY : offsetPaddingY;
             double frameLeft = Math.Floor(Math.Min(left, requestedLeft - replayPaddingX)), frameTop = Math.Floor(Math.Min(top, requestedTop - replayPaddingY));
             double frameWidth = Math.Ceiling(Math.Max(right, requestedRight + replayPaddingX)) - frameLeft;
             double frameHeight = Math.Ceiling(Math.Max(bottom, requestedBottom + replayPaddingY)) - frameTop;

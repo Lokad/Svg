@@ -151,6 +151,13 @@ validation checks. Seven unread primitive paths, selected secondary/merge inputs
 and inherited region defaults keep distinct roles; existing native banks retain
 the image integration. No API matrix or new native reference is added.
 
+For source-capture routing, add `FullyQualifiedName~SvgFilterCaptureDemandTests`
+and `FullyQualifiedName~SvgFilterCaptureDemandReferenceTests`. The
+[capture cohort](filter-capture-demand.json) adds five converter contracts and two
+native cases. It separates limits/cleanup from fractional curved-gradient sampling;
+the selected single blur protects the reachable-stage count. Existing merge,
+secondary-input and metadata cases remain in the graph cohort.
+
 ## Local setup-cost check
 
 Three fresh .NET 11 Windows processes enumerated `Cases()` and `ResearchCases()`

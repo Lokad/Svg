@@ -3,7 +3,8 @@
 ## Unreleased
 
 - Evaluate filter pixels only along final-result dependencies, avoiding unused
-  intermediate planes while preserving declaration, region and scalar validation.
+  intermediate planes and source-capture halos while preserving declaration,
+  region and scalar validation.
 - Preserve source trailing spacing in text decorations and stretch ink-gap padding
   with glyphs while retaining text layout.
 - Share canonical glyph contours with decoration ink clipping and preserve separately

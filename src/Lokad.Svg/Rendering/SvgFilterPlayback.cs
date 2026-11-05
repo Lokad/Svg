@@ -334,6 +334,50 @@ internal static class SvgFilterPlayback
                 : new(MathF.Min(first.Left, second.Left), MathF.Min(first.Top, second.Top), MathF.Max(first.Right, second.Right), MathF.Max(first.Bottom, second.Bottom));
     }
 
+    /// <summary>Marks the earlier pixel results reachable from the final filter output.</summary>
+    /// <remarks>The resource is borrowed and immutable. Caller stack scratch has one entry per
+    /// primitive and is cleared and filled;
+    /// the returned count governs conservative source-capture padding as well as pixel playback.
+    /// Traversal observes cancellation and owns no storage. Declaration, scalar and reference
+    /// validation remain with the existing readers, including nodes without pixel demand.</remarks>
+    internal static int MarkPixelDependencies(SvgFilterResource resource, Span<bool> needed, CancellationToken token)
+    {
+        needed.Clear();
+        if (needed.IsEmpty) return 0;
+        int count = 0;
+        needed[^1] = true;
+        for (int index = needed.Length - 1; index >= 0; index--)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!needed[index]) continue;
+            count++;
+            SvgFilterPrimitive primitive = resource.Primitives.Items[index];
+            if (primitive.Kind == SvgFilterPrimitiveKind.Flood) continue;
+            if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
+            {
+                foreach (SvgFilterInput input in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
+                {
+                    token.ThrowIfCancellationRequested();
+                    Mark(input, index, needed);
+                }
+            }
+            else
+            {
+                Mark(primitive.Input, index, needed);
+                if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
+                    Mark(primitive.SecondInput, index, needed);
+            }
+        }
+
+        return count;
+
+        // Existing readers retain invalid-reference diagnostics and ordering.
+        static void Mark(SvgFilterInput input, int before, Span<bool> needed)
+        {
+            if ((uint)input.Index < (uint)before) needed[input.Index] = true;
+        }
+    }
+
     /// <summary>Back-propagates a bounded output through earlier local results to the dynamic source.</summary>
     /// <remarks>Resources are borrowed and immutable; admitted graphs contain at most 256 primitives.
     /// Bounded stack scratch is visited with cancellation. Coordinates
@@ -578,7 +622,6 @@ internal static class SvgFilterPlayback
         Span<bool> resolvedViews = stackalloc bool[count];
         resolvedViews.Clear();
         Span<bool> needed = stackalloc bool[count];
-        needed.Clear();
         using RenderBudget.BudgetReservation tableOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgConverter.RasterizedSurface>(count + 2)
             + 3 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count) + ParserCollectionMemory.GetArrayByteCount(count, System.Runtime.CompilerServices.Unsafe.SizeOf<SampledOffset?>()) + ParserCollectionMemory.GetArrayByteCount<bool>(count) + ParserCollectionMemory.GetArrayByteCount<UniformColor>(count), SvgMemoryCategory.Surface);
         SvgConverter.RasterizedSurface[] outputs = new SvgConverter.RasterizedSurface[count + 2];
@@ -613,7 +656,7 @@ internal static class SvgFilterPlayback
                 token.ThrowIfCancellationRequested();
             }
             int finalPaintIndex = count == 0 ? -1 : ResolvePaintSource(new(finalIndex)).Index;
-            MarkNeeded(resource, needed, token);
+            MarkPixelDependencies(resource, needed, token);
             for (int index = 0; index < count; index++)
             {
                 token.ThrowIfCancellationRequested();
@@ -1323,40 +1366,6 @@ internal static class SvgFilterPlayback
                 paint.Color.Blue / 255f * paint.Alpha, paint.Alpha);
 
         // Pixel dependencies differ from region defaults and declaration validation.
-        // The bounded stack bitmap owns no surfaces and follows only earlier results.
-        static void MarkNeeded(SvgFilterResource resource, Span<bool> needed, CancellationToken token)
-        {
-            if (needed.IsEmpty) return;
-            needed[^1] = true;
-            for (int index = needed.Length - 1; index >= 0; index--)
-            {
-                token.ThrowIfCancellationRequested();
-                if (!needed[index]) continue;
-                SvgFilterPrimitive primitive = resource.Primitives.Items[index];
-                if (primitive.Kind == SvgFilterPrimitiveKind.Flood) continue;
-                if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
-                {
-                    foreach (SvgFilterInput input in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        Mark(input, index, needed);
-                    }
-                }
-                else
-                {
-                    Mark(primitive.Input, index, needed);
-                    if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
-                        Mark(primitive.SecondInput, index, needed);
-                }
-            }
-
-            // Existing readers retain invalid-reference diagnostics and ordering.
-            static void Mark(SvgFilterInput input, int before, Span<bool> needed)
-            {
-                if ((uint)input.Index < (uint)before) needed[input.Index] = true;
-            }
-        }
-
         void ValidateUnread(SvgFilterPrimitive primitive, int index, ReadOnlySpan<byte> graphic)
         {
             ReadInput(primitive.Input, index, graphic, false);

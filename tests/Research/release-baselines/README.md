@@ -20,6 +20,11 @@ dependencies from declaration validation and region defaults. Ten failing-before
 allocation contracts retain unread branches without private pixel planes;
 selected readers, eight validation guards and existing native images remain.
 
+[Filter capture demand](filter-capture-demand.json) reuses the same marker for
+source halos and the single-stage padding decision. Five failing-before converter
+contracts and two independently captured curved-gradient controls protect
+admission, deviation validation, fractional sampling and the live blur.
+
 [Polygon contour ownership](contour-ownership.md) records the shared paint-binding
 storage contract and its failing-before refusal, transfer and retry witnesses.
 [Filter command views](command-view-qualification.json) remove unchanged subtree

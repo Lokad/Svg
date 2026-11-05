@@ -34,6 +34,11 @@ pixel demand. Existing native banks supply the rendering integration; the
 [qualification](Research/release-baselines/filter-graph-demand.json) records
 failing-before controls and milestone checks.
 
+[Source capture demand](Research/filter-capture-demand/README.md) shares that
+dependency marker with source padding. Five focused converter contracts protect
+surface/memory admission and the shadow limit; two independent native fixtures
+protect fractional source placement and a selected single blur.
+
 Paint-recording and marker validation retains 202 canonical native checks, 40
 routine six-output contracts (including every error boundary) and all 167 remaining
 API matrices as individual Research cases. The explicit selections live beside

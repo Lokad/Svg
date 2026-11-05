@@ -38,7 +38,9 @@ references do not materialize alpha or transparent planes.
 Only dependencies of the final result evaluate pixels. All primitive regions and
 declarations still prepare, so an unread node can supply region defaults without
 owning pixels. A bounded stack bitmap routes demand through primary, secondary
-and merge operands; existing numerical kernels and coarse result owners remain.
+and merge operands. Source capture shares this marker: only reachable stages
+contribute halo padding or change the single-stage capture mode. Existing numerical
+kernels and coarse result owners remain.
 
 A prepared document retains one scene/font operation and permits one conversion.
 Font programs remain immutable for their borrowed lifetime. Raster scratch ends
