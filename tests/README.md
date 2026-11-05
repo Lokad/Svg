@@ -43,6 +43,11 @@ separate aligned-buffer reuse, wider blur requests, color-matrix output and shif
 grid copying. Four allowance/refusal/retry cases retain pre-change pixel hashes;
 existing stage and browser-reference tests protect filter arithmetic and interactions.
 
+[Affine geometry ownership](Research/release-baselines/affine-geometry-ownership.json)
+keeps original scene indices through the rewritten command envelope. Small, large
+and sparse source controls protect bounded storage, parent immutability and retry;
+independent affine, nested-filter and supplied-font images remain separate.
+
 [Scene-admission contracts](Research/release-baselines/invocation-ownership.json)
 cover raw, catalog-prepared and HTTP-prepared rejection after lowering. They retain
 the source diagnostic, one preparation, borrowed owners, released charges and

@@ -40,6 +40,8 @@ filter descriptors to their owners, numerical boundaries and independent witness
 shares raw/catalog/HTTP scene admission, with unchanged raster members and hosted replay.
 [Filter capture storage](filter-capture-storage.json) removes a duplicate source
 buffer for matching grids, retaining guarded borrowing, shifted copies and exact pixels.
+[Affine geometry ownership](affine-geometry-ownership.json) removes unchanged geometry
+copies and index remapping while retaining the rewritten command envelope and scene owner.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200
