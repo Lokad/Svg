@@ -1204,11 +1204,8 @@ public static partial class SvgConverter
                 SvgAffineTransform placement = layerMap.ComposeChecked(parameterInverse);
                 int count = end - first;
                 using RenderBudget.BudgetReservation replayOwner = budget.Reserve(
-                    checked(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(count + 2)
-                        + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(count)), SvgMemoryCategory.Scene);
+                    ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(checked(count + 2)), SvgMemoryCategory.Scene);
                 SvgDrawCommand[] commands = new SvgDrawCommand[count + 2];
-                SvgGeometry[] geometries = new SvgGeometry[count];
-                int geometryCount = 0;
                 SvgPaintBounds? objectBounds = null, visualBounds = null;
                 SvgPaintBounds? parameterObjectBounds = null, parameterVisualBounds = null;
                 {
@@ -1231,14 +1228,11 @@ public static partial class SvgConverter
                                         parameterObjectBounds = Union(parameterObjectBounds, anchorBounds.Map(parameterInverse, cancellationToken));
                                     }
                                 }
-                                geometries[geometryCount] = geometry;
-                                commands[index - first + 1] = item with { GeometryIndex = geometryCount++ };
+                                commands[index - first + 1] = item;
                                 continue;
                             }
                             if (geometry.Kind == SvgGeometryKind.GlyphContours && geometry.Glyph.Source is not null)
                             {
-                                geometries[geometryCount] = geometry;
-                                item = item with { GeometryIndex = geometryCount++ };
                                 SvgPaintBounds layout = geometry.Glyph.Source.LayoutBounds(parameterInverse, cancellationToken);
                                 objectBounds = Union(objectBounds, layout.Map(layerMap, cancellationToken));
                                 parameterObjectBounds = Union(parameterObjectBounds, layout);
@@ -1255,8 +1249,6 @@ public static partial class SvgConverter
                             }
                             if (geometry.Kind is not (SvgGeometryKind.PolygonFill or SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon) || geometry.AuthoredPath is not {} source)
                                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter sources require retained geometry or supplied glyphs.");
-                            geometries[geometryCount] = geometry;
-                            item = item with { GeometryIndex = geometryCount++ };
                             SvgRecordedPaintValue sourcePaint = GetRecordedPaintValue(geometry.RecordedPaint);
                             SvgRectangle box = SvgPathBounds.Compute(source.Commands, cancellationToken);
                             SvgPaintBounds bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
@@ -1401,7 +1393,9 @@ public static partial class SvgConverter
                     // its restored image misses this tile entirely.
                     if (restoreRight <= restoreLeft || restoreBottom <= restoreTop) return;
                     SvgRenderLimits layerLimits = limits;
-                    SvgRoot borrowed = root with { Geometries = geometries, CommandMemory = commands};
+                    // Only the command envelope changes. The translation-only capture
+                    // borrows the retained geometry table and its original indices.
+                    SvgRoot borrowed = root with { CommandMemory = commands };
                     NativeBitmapDevice sourceParent = bitmapDevice.InBitmap(restoreBitmap.Origin);
                     SvgAffineTransform inverseDevice = InvertDevice(localRemainder);
                     SvgAffineTransform nativePlacement = inverseDevice.ComposeNative(sourceParent.FromGlobal);

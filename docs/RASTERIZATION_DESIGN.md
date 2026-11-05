@@ -32,7 +32,9 @@ Filter source replay borrows a read-only command range from its retained scene.
 Geometry and resource indices still address that scene; nested ranges use local
 command indices. Captures finish before parent disposal. Ordinary filter capture
 and terminal offset/merge replay share this rule; paths that rewrite commands
-retain their admitted arrays. [Ownership evidence](../tests/Research/release-baselines/command-view-qualification.json)
+retain their admitted arrays. Affine capture rewrites its opacity/group envelope
+while borrowing geometry with the original scene indices.
+[Ownership evidence](../tests/Research/release-baselines/command-view-qualification.json)
 protects fixed raster storage as the retained source grows.
 
 When capture dimensions and interior placement match the playback grid, the graph
