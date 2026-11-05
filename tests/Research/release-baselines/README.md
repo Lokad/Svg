@@ -85,6 +85,10 @@ ownership, alpha bias, cleanup/retry and native regression coverage remain disti
 input before blurring, removing one full RGBA allocation per shadow. Four admission
 regressions, eight frozen outputs, a clear-omission control and independent final
 sampling ownership qualify the lifetime change without changing filter arithmetic.
+[Filter input demand](filter-input-demand.json) separates reference validation from
+pixel materialization. Flood, merge and color-matrix consume their actual operands;
+six admission regressions and four malformed-reference mechanisms retain exact
+errors, ownership, pixels, cleanup/retry and required SourceAlpha storage.
 [Shader polygon painting](shader-polygon-paint.json) shares the identical linear,
 radial and pattern coverage loop while preserving material coordinates and owners.
 Source expansion, existing mechanisms/contracts, native images and packaged replay

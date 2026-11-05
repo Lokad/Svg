@@ -93,6 +93,8 @@ Numerical bounds/storage cases and pixel-storage refusal remain separate checks.
 unused primary references from consumed merge inputs, including SourceAlpha.
 Six admission/refund/retry cases cover cropped predecessors and unplaced graphs;
 four direct mechanisms preserve malformed-reference errors before pixel allocation.
+The [qualification](Research/release-baselines/filter-input-demand.json) joins
+these controls to native regressions, exact packages and unchanged original replay.
 
 [Empty-stage storage contracts](Lokad.Svg.Tests/SvgEmptyFilterStageStorageTests.cs)
 cover repeated cropped stages under a one-output allowance, a clear final frame
