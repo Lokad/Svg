@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 0)]
     [InlineData(true, 1)]
     public void Windows_arithmetic_does_not_invent_the_symmetric_getinfo_bit(bool windows, int odd)
@@ -19,6 +20,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("", 0, false, true, false, true)]
     [InlineData("", 21, false, true, false, true)]
     [InlineData("", 31, false, true, false, true)]

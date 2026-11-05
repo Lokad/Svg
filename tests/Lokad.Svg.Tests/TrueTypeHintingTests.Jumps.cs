@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("B00158B0061CB100634259B1000742")]
     [InlineData("B00158B1060178B100634259B1000742")]
     [InlineData("B00158B1060079B100634259B1000742")]

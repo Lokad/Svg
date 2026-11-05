@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("0,64,128,64,64,0,64,128", 64, 64)]
     [InlineData("0,0,128,128,0,128,128,0", 64, 64)]
     [InlineData("0,0,32,32,96,0,96,64", 96, 96)]
@@ -37,6 +38,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Intersection_reads_distinct_zones_and_keeps_twilight_originals()
     {
         TrueTypeHintPoint[] points = [new(0, 64, 0, 64), new(128, 64, 128, 64)];
@@ -50,6 +52,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("B400010203050F")]
     [InlineData("B400010205040F")]
     [InlineData("B400010503040F")]
@@ -68,6 +71,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Intersection_handles_aliased_destination_and_preserves_cancellation_bounds()
     {
         TrueTypeHintPoint[] points = [new(0, 64, 0, 64), new(128, 64, 128, 64), new(64, 0, 64, 0), new(64, 128, 64, 128)];

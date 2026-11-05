@@ -99,6 +99,9 @@ ownership, native images, packages and original-source replay remain qualified.
 [Analytic edge storage](analytic-edge-storage.json) retains completed builder
 buffers without three reference-copy sites. Separate single, compound and clipped
 controls preserve collection/rewind, admission and native ordering.
+[Hinting test responsibilities](hinting-test-responsibilities.json) classifies all
+183 TrueType/Latin-light/LCD methods into direct numerical and ownership duties,
+retaining 669 cases and every compiled body. Fast eligibility gains 616 cases.
 [Color/filter responsibilities](color-filter-responsibilities.json) retains every
 native input and substantive font-recipe assertion while removing 34 empty recipe
 partitions. It maps numerical, ownership and rendering duties to focused edit

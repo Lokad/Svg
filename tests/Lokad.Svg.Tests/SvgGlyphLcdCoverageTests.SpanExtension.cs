@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false, 8, 170, 255, 170)]
     [InlineData(false, true, 8, 170, 255, 213)]
     [InlineData(false, false, 9, 85, 0, 0)]
@@ -35,6 +36,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public void Native_span_extension_does_not_create_ink_in_an_empty_subpixel_interval(bool symmetric)

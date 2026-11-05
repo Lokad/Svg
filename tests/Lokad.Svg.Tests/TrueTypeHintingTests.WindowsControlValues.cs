@@ -9,6 +9,7 @@ public sealed partial class TrueTypeHintingTests
     // unit into a pixel. The resulting four-pixel band gives these independent
     // values, including the different signed-half rules of the two table axes.
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(1000, 11.5, 1, 714, 526)]
     [InlineData(1000, 11.5, 1, -714, -526)]
     [InlineData(1000, 11.5, .9990234375, 714, 526)]
@@ -26,6 +27,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(1.09765625, 399, 0x00, 363)]
     [InlineData(1.09765625, -399, 0x00, -363)]
     [InlineData(1.1240234375, 503, 0x00, 448)]
@@ -42,6 +44,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(1.09765625, 599, 0x00, 0x01, 658)]
     [InlineData(1.09765625, -599, 0x00, 0x01, -658)]
     [InlineData(1.1240234375, 383, 0x00, 0x01, 430)]

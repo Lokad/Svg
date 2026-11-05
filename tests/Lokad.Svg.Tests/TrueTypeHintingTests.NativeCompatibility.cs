@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(true, true, 0, true, false, false, 0)]
     [InlineData(true, true, 0, true, true, true, 0)]
     [InlineData(true, true, 0, true, false, true, 0)]
@@ -37,6 +38,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void VacuFormRound_reads_in_preparation_and_glyphs_preserve_writes_and_redefinitions()
     {
         TrueTypeHintTarget target = Target with { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
@@ -54,6 +56,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void A_native_compatibility_switch_does_not_hide_out_of_range_storage()
     {
         TrueTypeHintTarget target = Target with { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
@@ -64,6 +67,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public void Font_unit_control_writes_keep_their_scale_in_simple_and_composite_glyphs(bool composite)
@@ -79,6 +83,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(511, 0, 16, true, false)]
     [InlineData(511, 1, 16, true, true)]
     [InlineData(511, 2, 16, false, false)]
@@ -98,6 +103,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0)]
     [InlineData(1)]
     public void Composite_and_following_glyph_restore_prepared_simple_dropout_policy(byte scanType)

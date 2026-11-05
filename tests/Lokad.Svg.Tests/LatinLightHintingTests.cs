@@ -41,6 +41,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Pending_edges_bound_fitted_stems_before_serif_interpolation()
     {
         // Original boxes and a triangular spur keep a pending edge between two
@@ -60,6 +61,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Unlinked_serifs_keep_their_offset_when_they_cross_an_earlier_stem()
     {
         OpenTypeGlyphPoint[] points = [.. Box(0, 300, 0, 180), .. Box(500, 750, 499, 651),
@@ -77,6 +79,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(352, 88)]
     [InlineData(356, 87)]
     public void Stem_bounds_preserve_the_native_quarter_pixel_collapse_boundary(int spurY, int expectedStemY)
@@ -99,6 +102,7 @@ public sealed class LatinLightHintingTests
         => [new(left, bottom, true), new(left, top, true), new(right, top, true), new(right, bottom, true)];
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Standard_stem_bounds_edge_merging_independently_of_the_largest_linked_stem()
     {
         // Two original clockwise boxes have separate 20- and 80-unit horizontal
@@ -117,6 +121,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(1)]
     [InlineData(4)]
     [InlineData(32)]
@@ -132,6 +137,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Near_only_contours_keep_scaled_geometry_without_spurious_edges()
     {
         OpenTypeGlyphPoint[] points = [new(0, 300, true), new(0, 303, true), new(3, 303, true), new(3, 300, true)];
@@ -146,6 +152,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Fits_opposite_windings_to_the_same_alignment_zones()
     {
         OpenTypeGlyphPoint[] forward = [new(0, 0, true), new(0, 700, true), new(300, 700, true), new(300, 0, true)];
@@ -161,6 +168,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Scales_without_edges_when_the_face_has_no_Latin_alignment_samples()
     {
         OpenTypeGlyphPoint[] points = [new(-100, 0, true), new(0, 700, true), new(100, 0, true)];
@@ -173,6 +181,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Keeps_zero_scaled_subpixel_outlines_bounded()
     {
         OpenTypeGlyphPoint[] points = [new(0, 0, true), new(0, 700, true), new(300, 700, true), new(300, 0, true)];
@@ -186,6 +195,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0)]
     [InlineData(-1)]
     [InlineData(double.NaN)]
@@ -201,6 +211,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(1)]
     [InlineData(287)]
     [InlineData(288)]
@@ -219,6 +230,7 @@ public sealed class LatinLightHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Observes_cancellation_before_allocating_outline_scratch()
     {
         using var cancellation = new CancellationTokenSource();

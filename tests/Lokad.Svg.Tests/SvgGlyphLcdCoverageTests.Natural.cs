@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public void Natural_inherited_candidates_observe_preceding_surviving_dropouts(bool preceding)
@@ -24,6 +25,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 2, "AAAAAAAAAFWq/6pVAAAAAAAAVar//////6pVAFWq////qlUA")]
     [InlineData(false, 3, "AAAAAAAAACuA1dWAKwAAAAAAK4DV/////9WAKyuA1f//1YAr")]
     [InlineData(true, 2, "AAAAAAAAAFWq//////+qVQAAAAAAAAAAAAAAK4DV/6pVAAAAAABVqv//qlUAAAAAAAArgNX//6pVAAAAAABVqv//1YArAAAAAAAAAAAAAFWq//////+qVQAAAAAAAAAA")]
@@ -63,6 +65,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]
@@ -77,6 +80,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false, false)]
     [InlineData(false, false, true)]
     [InlineData(false, true, false)]
@@ -119,6 +123,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public void Natural_lower_dropout_bound_keeps_the_native_rounded_row(bool excludeStubs)
@@ -144,6 +149,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Natural_smart_second_pass_keeps_cells_already_selected_by_neighboring_first_pass_rows()
     {
         // Original CC0 thin quadrilateral: UPEM 1024, em 16, origin (20.25,80),
@@ -175,6 +181,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(-1, false, 69)]
     [InlineData(0, false, 69)]
     [InlineData(1, false, 69)]
@@ -197,6 +204,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false, 19, 76, 8, 4, "AAAAAAAAAAAAAAAAAAAAAAAAACsrKwAAAAAAAAAAAAAAAAAAAABVqv///9WAKwAAAAAAAAAAACuA1f////+qVQAAAAAAAAAAAABVqv///9WAKwAAAAAAAAAAAAAAAAAA")]
     [InlineData(false, true, 19, 78, 7, 2, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv///////////////9WAKwAA")]
     [InlineData(true, false, 19, 76, 8, 4, "AAAAAAAAAAAAAAAAAAAAAAAACSgoHwAAAAAAAAAAAAAAAAAABRlDdajJyaFVHwAAAAAAAAAJHjxplr7Tyax1QxkFAAAAAAAAAABMktO+ooBTLQ4FAAAAAAAAAAAAAAAA")]
@@ -239,6 +247,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Natural_row_storage_releases_denied_work_and_preserves_cancellation()
     {
         OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 1, 1);

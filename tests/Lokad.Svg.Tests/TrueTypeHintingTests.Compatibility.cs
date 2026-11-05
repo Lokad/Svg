@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, true, false, 1, 70, 95, 95)]
     [InlineData(true, false, false, 1, 70, 95, 95)]
     [InlineData(true, true, false, 1, 0, 95, 95)]
@@ -35,6 +36,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false, false, 1, 70, 95, 95)]
     [InlineData(true, false, false, 1, 70, 95, 70)]
     [InlineData(true, true, false, 1, 70, 95, 95)]
@@ -59,6 +61,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 73)]
     [InlineData(true, 65)]
     public void Subpixel_positioned_right_phantom_keeps_its_linear_position(bool subpixel, int expected)
@@ -78,6 +81,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false, 64)]
     [InlineData(true, false, 72)]
     [InlineData(true, true, 64)]
@@ -93,6 +97,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 0)]
     [InlineData(true, 8)]
     public void Composite_vertical_deltas_allow_previously_fitted_child_points(bool composite, int expected)
@@ -105,6 +110,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Ignoring_prepared_graphics_state_also_resets_the_native_ClearType_waiver()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 9,
@@ -116,6 +122,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Native_ClearType_waiver_is_glyph_local_and_control_deltas_remain_enabled()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [64], [], [], 9,
@@ -129,6 +136,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 23316)]
     [InlineData(true, 23318)]
     public void Native_projection_components_round_to_nearest_before_projecting(bool symmetric, int expected)
@@ -142,6 +150,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, -1)]
     [InlineData(true, 0)]
     public void Native_projection_rounds_an_exact_negative_half_toward_positive(bool symmetric, int expected)
@@ -154,6 +163,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 31)]
     [InlineData(true, 32)]
     public void Native_freedom_movement_rounds_an_exact_negative_half_toward_positive(bool symmetric, int expectedY)
@@ -166,6 +176,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(4, 3, 4, 20)]
     [InlineData(3, 4, 4, 20)]
     [InlineData(1, 1, 5, 20)]

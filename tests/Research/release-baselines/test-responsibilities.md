@@ -52,6 +52,29 @@ integration. During paint arithmetic work, for example, select
 records complete affected selections and observed validation times, without a
 renderer performance claim.
 
+## Font hinting and glyph coverage
+
+The [hinting responsibility audit](hinting-test-responsibilities.json) classifies
+the complete TrueType, Latin-light and glyph-LCD cohort: 183 methods retain all
+669 cases, with 654 direct mechanisms and 15 cancellation/storage/owner contracts.
+It adds 171 method labels across 33 existing files; existing labels, data providers,
+bytecode, native cell masks, loops and assertions remain. All 13,239 compiled core
+method bodies, signatures, locals and exception regions match on both runtimes.
+
+Mechanisms cover interpreter state, signed/fixed rounding, vector/grid policy,
+Latin stem fitting and direct glyph coverage. Contracts retain actual refusal,
+borrowed buffers, token identity, disposal and reuse. Mixed alias/depth controls
+stay intact as contracts; numerical native-mask cases retain incidental cleanup
+checks. Independent document rendering remains in its existing visual tests.
+
+For a VM edit, start with `FullyQualifiedName~TrueTypeHintingTests&Layer=Mechanism`;
+use the corresponding Latin-light or glyph-LCD class for fitting or cell coverage.
+Include `Layer=Contract` siblings for storage/cancellation changes and independent
+font rendering for integration. Fast eligibility gains 616 cases and loses none.
+The complete 669-case .NET 11 cohort took 11.61/10.09 s before/after on Windows
+and 15.83/13.36 s on Linux. These noisy functional observations establish no
+throughput improvement; the audit preserves both-runtime measurements and identities.
+
 ## CSS, cascade and paint-resource responsibilities
 
 The [CSS responsibility audit](css-test-responsibilities.json) classifies 73 methods

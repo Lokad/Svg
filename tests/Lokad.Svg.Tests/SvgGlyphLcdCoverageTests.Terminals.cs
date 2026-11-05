@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(70.296875, "dFFRUVxo")]
     [InlineData(70.28125, "dEcyJzxd")]
     public void Symmetric_conic_profiles_keep_native_flat_counter_terminals(double top, string rgb)

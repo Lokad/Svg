@@ -1,0 +1,539 @@
+{
+  "status": "Complete hinting/glyph-coverage cohort classified without changing test bodies, cases, inputs or references.669 existing cases retain654 direct mechanisms and15 lifetime/storage contracts. Full CI qualification pending.",
+  "source": {
+    "baseCommit": "c6e7c373e663b982d89d9039f802495cb22a857e",
+    "files": [
+      {
+        "path": "../../Lokad.Svg.Tests/LatinLightHintingTests.cs",
+        "beforeLfSha256": "bf4cffbf76b3c7c8ce24023612f76151dadfc56a54804f58badccb39d067292e",
+        "afterLfSha256": "896a883a2e933a0213fa7cbdf8389ecce97bb38413c3b1893f148d77215d1d17",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.cs",
+        "beforeLfSha256": "24e180a06c370d6d178f70b75d28fdbe3da5f5eb67501e7285d857d045ed429b",
+        "afterLfSha256": "cfb3db4154a06a3e234d39039eb6b5ca2d968af76be49a065df34379b2a75726",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.Natural.cs",
+        "beforeLfSha256": "e8f424849ed8f0c3bcae6e7da97faf53de4c012954ffcfb2526211e75a7fed98",
+        "afterLfSha256": "df53a72e26980dc62da286ff7d259200a495a9cb7266ccef9b6cde44f3a583dc",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalBoundaries.cs",
+        "beforeLfSha256": "20c2d32c31fc786249f422345cfb5793e28211b9ded36c7a96ee9e85c0a085e4",
+        "afterLfSha256": "55bb5b77c9d2a63592c29fb65e6e87918cd8324d7b977ea69a57f998609fa281",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalGrid.cs",
+        "beforeLfSha256": "76fdb19a11c5ed6ba75ff93798862b6eac7cd082155821e86fe8554008b70192",
+        "afterLfSha256": "60a83828ac2ed9ff83f2ca94f4f4ccf5099be5b548a82d4f2e117f0813fc0d69",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalIntegralParameters.cs",
+        "beforeLfSha256": "6d4940de00681af86f6ec7645e3c901dec3798d667308a3f8dc7582f8da9e8f5",
+        "afterLfSha256": "9daf251152b100967a719b3ff30d4c498c8aa4507b0376b40f3de321d9733ef0",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalInterpolation.cs",
+        "beforeLfSha256": "7e2edea80a1a4b95dbff7bf7c92e62a4f3347f406dab1a16aa6bd1270d3dcf3f",
+        "afterLfSha256": "16df9ed41e586f2c559d01ff67ad325bd73af12c9574002cfc495bbac077fc81",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalLines.cs",
+        "beforeLfSha256": "4f748f56d9804a1dc17d31794dc895f90df56d1374636d89cd3361833d9bc86a",
+        "afterLfSha256": "9923df405d9bccc11b19763f267cbee6c49d6577a31fd8afffe3a21a9b177f0e",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalOrdinates.cs",
+        "beforeLfSha256": "19e868a829360b3f7e39cd5479e59b945e11be91209204274e6e696799684b39",
+        "afterLfSha256": "5be35967c77eed3cf34712b1a034b5e2a3f51440d5ef12a2c0f5f21c8dd863be",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalParameters.cs",
+        "beforeLfSha256": "3d1343e0d5282dd2ea64bcd52d63932c4ba03a1685a46cd7b1d7fce24b1c4c4f",
+        "afterLfSha256": "06992753a5ddb714af2d394c5d6df60d0ccc9b4567cd77ddb079a289b101c613",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalTurningFill.cs",
+        "beforeLfSha256": "406713196706ebaa8ff4e228571ece8844fb05df4d8e29160e6adb50d6c64e96",
+        "afterLfSha256": "54e3ff1e08288b69bf45a1e64fd5b45cfdc70a89e854d8285ec9f0c2976b9fa5",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalTurningProfiles.cs",
+        "beforeLfSha256": "ee90881d929c7cd9d0efa1a3a7ae406d8b0b98ed37f8132e32ad75e9d8f4e867",
+        "afterLfSha256": "a0622b00df7803d248696e4035f0ee150d25d9e01cfa87f4271baed214ca8655",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.NaturalWholeGrid.cs",
+        "beforeLfSha256": "817b814794a3960c236d343201aeee348e83ef105a48996bf4c09f5b48db6ada",
+        "afterLfSha256": "24c62071f44b405baa24be69c5655c864944a46055c6b761e6328ae6b0c662a0",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SmartMidpoints.cs",
+        "beforeLfSha256": "ba742e0bc29dc1871b6b4bd3c3f4c63f5463f7ea4d10069650a73bb1f0574716",
+        "afterLfSha256": "6f50cbbdcfc2e7d301f8478effb9fa311c49f61f4efff01d5cdbf08b1367745e",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SpanExtension.cs",
+        "beforeLfSha256": "41fe36f6a44333afc98ab9b4cce7e0fce65679bb7146d320406986b96acb4d05",
+        "afterLfSha256": "850cbda1b5429f8ab8cef35342769ea2ac3bb29a77cc1fd3ac4e1a4b1c97754f",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.Stubs.cs",
+        "beforeLfSha256": "a65c646c9b76ac4117ba4ed654ca6f2a039afdb916154f9275cd918e4b9c4443",
+        "afterLfSha256": "c9e5a3b715aaa1c5d099866acce82077cbb64d982b3e4a3a1dc037cf974a30b1",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricBounds.cs",
+        "beforeLfSha256": "d81ccd2e15384e6e32e2976cbba540c6e575a539a4b30bc960f77dd96be71acd",
+        "afterLfSha256": "105b4fa5589b18cdf84ed73e2a388aea56320764326a8dd00862f7d8fd7d8f07",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricConics.cs",
+        "beforeLfSha256": "22a940c6e2c6514cfcd5514fffa2cfe212a05588dd547840521e9e9c94e7e56a",
+        "afterLfSha256": "b718bba62b3a469c79079088c936cf366d95afa5cd2a2d946a80a2e7eb483a64",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricCorners.cs",
+        "beforeLfSha256": "ed17aac3aa075ac1208d7a2735bf4e69bcb4a1e3aa542e201229ff7cd7ff5346",
+        "afterLfSha256": "5a643720202a949c038e2bdaa9b8cde0a16b586ca6c1371d5083063d7bde243d",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.SymmetricStubs.cs",
+        "beforeLfSha256": "889d00efc47d86735526fe8416b0578756fe73a5447fa6c255c5db23ff09043a",
+        "afterLfSha256": "51e2d5f0a4c6b6608ebdda0ba41fa8589a0dae09aaf4f0834e654ed99f249d3f",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgGlyphLcdCoverageTests.Terminals.cs",
+        "beforeLfSha256": "224967b1aec60de4001ad0253a8931619f9d7764f38e2b7c7583d61cf64360ec",
+        "afterLfSha256": "02df8fefe25d95be24a4b2cac6e25bfbd398e984bac82c767470e9af1523e17d",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.Compatibility.cs",
+        "beforeLfSha256": "cc161692ee88a38422186254c8d40c1f2c80175ba2eb939ee3caf4bb4fb3d9e6",
+        "afterLfSha256": "81288fa45e98c5d59c245a01b1c8071d7542b09a300928d472f22582f17d1d2a",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.cs",
+        "beforeLfSha256": "fefa26f60cad02bf520a2eeffb923a9c15d952ae75daa9650b8932c3f0f1695c",
+        "afterLfSha256": "b42c71ad802bbed5d7c724c39538ecc054b583da5f741ee066c4895dda929131",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.CurveTags.cs",
+        "beforeLfSha256": "682f6fa3ac1939b2356a4f241862e430b078186ad45ee42d8879cff3e2dabc1a",
+        "afterLfSha256": "ad0273862fd23f5a4169a924708e1c5bd89dfd8610646f942378ed6c5465fb04",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.Intersection.cs",
+        "beforeLfSha256": "78a857f98c52efdccffed35a1f03a7ace3308739d9420779c5e3887480bd2e5f",
+        "afterLfSha256": "1731610a601556d28a13c238563bebb9d679427fef11a198a9e8841e46789b1d",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.Jumps.cs",
+        "beforeLfSha256": "8f534ff08c1bb0ac57dc8b5afc260db6aaa53a13404b336e51139e43b6e8acbb",
+        "afterLfSha256": "5bbc4204fc00e55116fd204f11bfc98388565d4d8eea5836fe5d39632c11b5d3",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.NativeCompatibility.cs",
+        "beforeLfSha256": "fd33894a73d8ee0cdf600aa62179b015a8303910b3c6ef77c318e12ab4bb6552",
+        "afterLfSha256": "13a8bf9e2464dd470802d094fde7dde141f5ee9a782ca5f4e10ad19a3ca3f1a2",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.Parity.cs",
+        "beforeLfSha256": "25e75ab77ac39be857b7ca496af686ed295d7959ec0227ecf36bbf57f8f94f7d",
+        "afterLfSha256": "f01818035534175b882fd836eb1f7d13b408606ad1e047bdd963ed8def411cb5",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.RelativeMoves.cs",
+        "beforeLfSha256": "be5247b790a95a824a00c1df2787b74014faec533f459101e36afbcef2fe5a66",
+        "afterLfSha256": "a43098b7c579a0145b6dc456a9a3c35c0337edb935f3ab6855bff557954dc7f0",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.Rounding.cs",
+        "beforeLfSha256": "80ad48811fd1aa15791d8e32ee5b85f0f7f0d2a9e194d379d65874caf64e75bf",
+        "afterLfSha256": "bf8b47fb88d026fd361d762a26d8ef507114b4c0001e251b66785389a0d571ee",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.SuperRound.cs",
+        "beforeLfSha256": "3b3000f5978730e172cd6c557d791885496359f22e0aef88fe91fb1577114c0a",
+        "afterLfSha256": "2b95eb5159646e09138eda4a7b0b65bd3e227eef06ad1ba41b5d77d564b1715d",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.Vectors.cs",
+        "beforeLfSha256": "6676b281bd4b3b216f20b7587e0f3665cd1cc202a61f119196590edadd74dcb9",
+        "afterLfSha256": "c7507f129f7dffa74adb8f12a4bc1589b71d870f04080fdc7ec0f05cd8c40d63",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/TrueTypeHintingTests.WindowsControlValues.cs",
+        "beforeLfSha256": "f3c259fedcb6468b3ce83fce0e6f8c24a81db15f7371b652ec51f38b2fe38fa3",
+        "afterLfSha256": "e8779d26cb8c586783935e917340555f3d5d510b340f297f552fa35ed9026bb6",
+        "reversingOnlyAssignedLayerAttributesRestoresEntireFile": true
+      }
+    ],
+    "only171LayerAssignmentsAcross33ExistingFiles": true,
+    "productionProvidersFixturesReferencesLicensesUnchanged": true
+  },
+  "groups": [
+    {
+      "type": "Lokad.Svg.Tests.TrueTypeHintingTests",
+      "methods": 117,
+      "newAssignments": 108,
+      "roles": {
+        "Mechanism": 112,
+        "Contract": 5
+      },
+      "contractMethods": [
+        "Cancels_backward_jumps_and_bounds_recursive_calls_by_depth",
+        "Reserves_machine_arrays_before_allocation",
+        "Observes_cancellation_before_allocation_and_on_empty_or_inhibited_programs",
+        "Disposal_releases_program_borrows_and_rejects_reuse",
+        "Intersection_handles_aliased_destination_and_preserves_cancellation_bounds"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.Tests.LatinLightHintingTests",
+      "methods": 14,
+      "newAssignments": 12,
+      "roles": {
+        "Mechanism": 12,
+        "Contract": 2
+      },
+      "contractMethods": [
+        "Releases_point_and_topology_scratch_after_memory_denial",
+        "Observes_cancellation_before_allocating_outline_scratch"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgGlyphLcdCoverageTests",
+      "methods": 52,
+      "newAssignments": 51,
+      "roles": {
+        "Mechanism": 48,
+        "Contract": 4
+      },
+      "contractMethods": [
+        "Coverage_observes_original_cancellation",
+        "Row_preparation_checks_borrowed_storage_work_boundary_and_cancellation",
+        "Row_storage_refusal_preserves_the_live_owner_and_releases_its_aggregate_allowance",
+        "Natural_row_storage_releases_denied_work_and_preserves_cancellation"
+      ]
+    }
+  ],
+  "inventory": {
+    "coreUnclassifiedBefore": 1606,
+    "coreUnclassifiedAfter": 1435,
+    "declaredMethods": 5125,
+    "sourceFiles": 731,
+    "cohortMethods": 183,
+    "changedMethods": 171,
+    "cohortCases": 669,
+    "caseRoles": {
+      "Mechanism": 654,
+      "Contract": 15
+    },
+    "previousCaseRoles": {
+      "Unclassified": 616,
+      "Mechanism": 53
+    },
+    "priorFastEligibility": 19755,
+    "newFastEligibility": 20371,
+    "fastCasesAdded": 616,
+    "fastCasesRemoved": 0,
+    "allPriorMethodsAndTraitsPreservedOutside171Assignments": true
+  },
+  "compiledBodies": [
+    {
+      "framework": "net11.0",
+      "methods": 13239,
+      "identicalBodies": true,
+      "methodBodyIdentitySha256": "7032d8201dc7989a91177982024a9728d57de2185b81f73f7339ae9be41c2a8e"
+    },
+    {
+      "framework": "net10.0",
+      "methods": 13239,
+      "identicalBodies": true,
+      "methodBodyIdentitySha256": "7032d8201dc7989a91177982024a9728d57de2185b81f73f7339ae9be41c2a8e"
+    }
+  ],
+  "identityJoins": {
+    "cohort": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "cases": 669,
+        "beforeAfterIdentitySha256": "353d7f75212da297e79b876de069c5df2e16f2614ac2ac76bafae25f1a8b29db",
+        "identitiesAndMultiplicitiesUnchanged": true
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "cases": 669,
+        "beforeAfterIdentitySha256": "c81fc63df37d67a5d06ccc8c1428be613a0acef1883ca16a1dde6ba3f471b1d9",
+        "identitiesAndMultiplicitiesUnchanged": true
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "cases": 669,
+        "beforeAfterIdentitySha256": "353d7f75212da297e79b876de069c5df2e16f2614ac2ac76bafae25f1a8b29db",
+        "identitiesAndMultiplicitiesUnchanged": true
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "cases": 669,
+        "beforeAfterIdentitySha256": "c81fc63df37d67a5d06ccc8c1428be613a0acef1883ca16a1dde6ba3f471b1d9",
+        "identitiesAndMultiplicitiesUnchanged": true
+      }
+    ],
+    "fast": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "previousMeasuredCases": 19705,
+        "currentMeasuredCases": 20371,
+        "priorCasesLost": 0,
+        "addedCases": 666,
+        "previousIdentitySha256": "64f79985a44422ad85ef3aeeb6141feca18e1741c43e078354147c7ed731391d",
+        "currentIdentitySha256": "5217a003a69be76dcaf280f8e3e8e3b79afe7f31966fe2816ca38905784c72a3",
+        "addedByClass": {
+          "Lokad.Svg.Tests.TrueTypeHintingTests": 370,
+          "Lokad.Svg.Tests.SvgFilterSourceDependencyTests": 21,
+          "Lokad.Svg.Tests.SvgGlyphLcdCoverageTests": 224,
+          "Lokad.Svg.Tests.SvgCssSelectorIdentifierTests": 26,
+          "Lokad.Svg.Tests.LatinLightHintingTests": 22,
+          "Lokad.Svg.Tests.SvgAnalyticEdgeStorageTests": 3
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "previousMeasuredCases": 19705,
+        "currentMeasuredCases": 20371,
+        "priorCasesLost": 0,
+        "addedCases": 666,
+        "previousIdentitySha256": "bdabc36f6755e57893749133f8721428efeba8b5e2a960a88e596089a01cfdc0",
+        "currentIdentitySha256": "391a3fd1985e39a2dbd29776e4fccf2988ac79383d00b286ce007b08d55fe416",
+        "addedByClass": {
+          "Lokad.Svg.Tests.TrueTypeHintingTests": 370,
+          "Lokad.Svg.Tests.SvgGlyphLcdCoverageTests": 224,
+          "Lokad.Svg.Tests.SvgAnalyticEdgeStorageTests": 3,
+          "Lokad.Svg.Tests.SvgCssSelectorIdentifierTests": 26,
+          "Lokad.Svg.Tests.SvgFilterSourceDependencyTests": 21,
+          "Lokad.Svg.Tests.LatinLightHintingTests": 22
+        }
+      }
+    ]
+  },
+  "validation": [
+    {
+      "stage": "before-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "testAssemblySha256": "978c400d7cc66197e85a9ea919e69c270f3b9a4b10cb76dd6bcc1d69048ed84d",
+      "selection": "FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests",
+      "exitCode": 0,
+      "seconds": 11.609686400042847,
+      "counters": {
+        "executed": "669",
+        "passed": "669",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "testAssemblySha256": "978c400d7cc66197e85a9ea919e69c270f3b9a4b10cb76dd6bcc1d69048ed84d",
+      "selection": "FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests",
+      "exitCode": 0,
+      "seconds": 15.833715500077233,
+      "counters": {
+        "executed": "669",
+        "passed": "669",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "testAssemblySha256": "fae83a85910993eb4d504d4572c169684809d4906e5ca879b4a1fe6a3d79717a",
+      "selection": "FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests",
+      "exitCode": 0,
+      "seconds": 10.094599799951538,
+      "counters": {
+        "executed": "669",
+        "passed": "669",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "testAssemblySha256": "fae83a85910993eb4d504d4572c169684809d4906e5ca879b4a1fe6a3d79717a",
+      "selection": "FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests",
+      "exitCode": 0,
+      "seconds": 13.362552300095558,
+      "counters": {
+        "executed": "669",
+        "passed": "669",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "191c2a59edca754eb39a9607833502e6dd7463d34425aa6c38bf060279b151b1",
+      "testAssemblySha256": "ea10d5184b8eb13a1653a30122366cfa3004f1f3e9daa6e3af57995c5e471297",
+      "selection": "FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests",
+      "exitCode": 0,
+      "seconds": 11.05350390006788,
+      "counters": {
+        "executed": "669",
+        "passed": "669",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "191c2a59edca754eb39a9607833502e6dd7463d34425aa6c38bf060279b151b1",
+      "testAssemblySha256": "ea10d5184b8eb13a1653a30122366cfa3004f1f3e9daa6e3af57995c5e471297",
+      "selection": "FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests",
+      "exitCode": 0,
+      "seconds": 16.240191800054163,
+      "counters": {
+        "executed": "669",
+        "passed": "669",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "191c2a59edca754eb39a9607833502e6dd7463d34425aa6c38bf060279b151b1",
+      "testAssemblySha256": "a606a9dc2ddd66f22966c36c99f8effbb809a3b49118670d84b1a14650bfa82c",
+      "selection": "FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests",
+      "exitCode": 0,
+      "seconds": 9.60780160012655,
+      "counters": {
+        "executed": "669",
+        "passed": "669",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "191c2a59edca754eb39a9607833502e6dd7463d34425aa6c38bf060279b151b1",
+      "testAssemblySha256": "a606a9dc2ddd66f22966c36c99f8effbb809a3b49118670d84b1a14650bfa82c",
+      "selection": "FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests",
+      "exitCode": 0,
+      "seconds": 13.629474899964407,
+      "counters": {
+        "executed": "669",
+        "passed": "669",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "fast-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "testAssemblySha256": "fae83a85910993eb4d504d4572c169684809d4906e5ca879b4a1fe6a3d79717a",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 31.086469099856913,
+      "counters": {
+        "executed": "20371",
+        "passed": "20371",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "fast-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "testAssemblySha256": "fae83a85910993eb4d504d4572c169684809d4906e5ca879b4a1fe6a3d79717a",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 39.11518379999325,
+      "counters": {
+        "executed": "20371",
+        "passed": "20371",
+        "failed": "0"
+      }
+    }
+  ],
+  "measurementScope": "Functional wall times include discovery, host startup and TRX, exclude build, and use paired Windows/Linux runs for both frameworks. Warm caches and host variation can affect observations. Layer metadata alone establishes no renderer or test-throughput speedup. The full cohort remains669 cases; the newly measured fast profile has a broader scope than the previous19705-case run.",
+  "responsibilities": {
+    "mechanisms": "Direct bytecode execution, numerical admission, signed/fixed rounding, vector/grid profiles, interpolation, Latin edge/stem fitting, conic endpoints, winding and native dropout-cell vectors. Exhaustive parameter rows and every profile distinction remain.",
+    "contracts": "Actual interpreter/outline/scan-storage refusal, token-preserving cancellation, backward-loop interruption, borrowed row buffers, idempotent disposal and rejected reuse. Mixed alias/depth controls remain intact in their existing contract methods.",
+    "rendering": "Independent SVG/font document references and platform differences remain in existing visual tests. Direct native-derived kernel masks keep their exact original vectors; no reference or threshold is rewritten.",
+    "retention": "Every assertion, bytecode blob, native numeric mask, loop, data provider, method name and existing trait remains. Some numerical bodies retain incidental cleanup/refusal checks; classification follows their primary direct-kernel duty without splitting or hiding cases."
+  },
+  "renderer": {
+    "qualification": "analytic-edge-storage.json",
+    "sourceCommit": "0adbcfbb7475a4b09c678ac220c5227d7643ed4f",
+    "librarySha256": {
+      "net11": "53c3efc3ba4876869a152dd7a02125339ffbfcded4fcf70de264fc5e962ca3cf",
+      "net10": "191c2a59edca754eb39a9607833502e6dd7463d34425aa6c38bf060279b151b1"
+    },
+    "currentOriginalBinding": "../svgweb/originals.json#/currentReview",
+    "originalReplay": "Not repeated for metadata-only assignments. Production source and exact qualified library assets remain unchanged."
+  }
+}

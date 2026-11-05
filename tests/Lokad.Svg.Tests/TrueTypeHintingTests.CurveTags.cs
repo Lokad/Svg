@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x81, true)]
     [InlineData(0x82, false)]
     public void Curve_tag_ranges_are_inclusive_and_do_not_move_or_touch_points(byte opcode, bool expected)
@@ -22,6 +23,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x81)]
     [InlineData(0x82)]
     public void Reversed_curve_tag_ranges_are_empty_after_validating_endpoints(byte opcode)
@@ -34,6 +36,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false, true, false, false)]
     [InlineData(false, true, false, false, false)]
     [InlineData(false, true, true, false, true)]

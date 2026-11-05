@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0, 20, 78, 6, 2, "AAAAAAArgNX/////qlUAAAAAK4DV///VgCsAAAAAVar/1YAr")]
     [InlineData(1, 20, 78, 8, 2, "AAAAVar////////////////VgCsAAAAAK4DVqlUAAAAAAAAAAAAAAAArgNX/1YAr")]
     public void Natural_integral_monotonic_conics_retain_parameter_precision(int shape,

@@ -9,6 +9,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     private const string NaturalGrid254IncludeStubs = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVarVgCsAAAAAAAAAAAAAAAAAAAAAAAAAK4DV////qlUrgNX/1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(254, 0, 20.5, 80, false, true, NaturalGrid254)]
     [InlineData(254, 3, 20.5, 80, false, true, NaturalGrid254)]
     [InlineData(258, 4, 20.5, 80, false, true, NaturalGrid258)]
@@ -31,6 +32,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Natural_integer_point_counter_arcs_keep_the_native_result()
     {
         // Original CC0 arc and flat mate, independent DirectWrite RGB:

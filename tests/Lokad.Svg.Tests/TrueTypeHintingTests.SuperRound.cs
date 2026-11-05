@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x08, 21, 32)]
     [InlineData(0x48, 21, 0)]
     [InlineData(0x58, 21, 16)]
@@ -38,6 +39,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x08, 32)]
     [InlineData(0x48, 0)]
     [InlineData(0x58, 16)]
@@ -54,6 +56,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Super_round_parameters_are_restored_between_glyph_and_composite_calls()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 48,
@@ -71,6 +74,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0xC0)]
     [InlineData(0xC8)]
     [InlineData(0xFF)]

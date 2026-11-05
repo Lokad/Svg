@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData((int)TrueTypeHintGrid.Physical, 0x01, 0)]
     [InlineData((int)TrueTypeHintGrid.ClearType, 0x01, 20)]
     [InlineData((int)TrueTypeHintGrid.ClearType, 0x00, 0)]
@@ -22,6 +23,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x18, 20)]
     [InlineData(0x19, 22)]
     [InlineData(0x3D, 22)]
@@ -37,6 +39,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void ClearType_preparation_rounding_remains_on_the_physical_grid()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 1, 0, 0), [], [], [], 48,
@@ -46,6 +49,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData((int)TrueTypeHintGrid.Physical, 64)]
     [InlineData((int)TrueTypeHintGrid.ClearType, 32)]
     public void ClearType_horizontal_relative_minimum_is_half_the_authored_distance(int grid, int expected)
@@ -58,6 +62,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData((int)TrueTypeHintGrid.Physical, 64)]
     [InlineData((int)TrueTypeHintGrid.ClearType, 72)]
     public void ClearType_horizontal_relative_cutin_is_one_sixteenth_of_the_authored_value(int grid, int expected)
@@ -70,6 +75,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Unknown_grid_policy_rejects_before_scratch_allocation()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
@@ -79,6 +85,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Preparation_transition_cannot_change_the_grid_policy()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16,

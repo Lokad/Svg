@@ -9,6 +9,7 @@ public sealed partial class TrueTypeHintingTests
     private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.Single);
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Anisotropic_control_writes_and_size_queries_follow_the_selected_axis()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
@@ -23,6 +24,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Original_horizontal_distance_uses_its_independently_rounded_scale()
     {
         TrueTypeHintPoint[] points = [new(0, 0, 554, 0), new(0, 0, 0, 0)];
@@ -32,6 +34,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0)]
     [InlineData(-1)]
     [InlineData(double.NaN)]
@@ -44,6 +47,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(511, 4, 48, 0, true)]
     [InlineData(511, 2, 48, 0, false)]
     [InlineData(511, 5, 48, 0, true)]
@@ -65,6 +69,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(4)]
     [InlineData(5)]
     public void Child_scan_policy_is_restored_before_parent_and_next_glyph(byte scanType)
@@ -84,6 +89,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(2, (int)TrueTypeHintQueryFlags.Rotated)]
     [InlineData(4, (int)TrueTypeHintQueryFlags.Stretched)]
     [InlineData(8, (int)TrueTypeHintQueryFlags.FontVariations)]
@@ -104,6 +110,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Getinfo_combines_only_selected_supported_bits_and_requested_version()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, new(65536, 65536), Target with { Version = 42, QueryFlags = TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric }, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
@@ -113,6 +120,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_unknown_target_flags_before_scratch_allocation()
     {
         var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
@@ -121,6 +129,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("B9FFFF000362B0002342", -21)] // DIV truncates -64/3 toward zero.
     [InlineData("B9FFFF002063B0002342", -1)] // MUL rounds the negative half unit.
     [InlineData("B97FFF7FFF60B0002342", 65534)]
@@ -137,6 +146,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Distinguishes_fitted_and_original_distances_after_point_rounding()
     {
         TrueTypeHintPoint[] points = [new(40, 0, 40, 0), new(100, 0, 100, 0)];
@@ -153,6 +163,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Initializes_twilight_originals_from_cvt_before_rounding()
     {
         using TrueTypeHinting machine = Create([], [], [80], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
@@ -163,6 +174,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Interpolates_reversed_references_and_shifts_points_outside_them()
     {
         TrueTypeHintPoint[] points = [new(300, 0, 300, 0), new(150, 0, 150, 0), new(0, 0, 0, 0), new(-50, 0, -50, 0), new(350, 0, 350, 0)];
@@ -177,6 +189,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 793)]
     [InlineData(true, 794)]
     public void Windows_interpolation_rounds_the_final_device_coordinate_at_an_exact_half(bool symmetric, int expected)
@@ -201,6 +214,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Preparation_restores_cvt_but_retains_storage_functions_and_explicit_queries()
     {
         using TrueTypeHinting machine = Create([], [], [64], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
@@ -220,6 +234,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("B000584103581B5900B001584001591BB063591BB107054259", 5)]
     [InlineData("B00158B10704421B4002585959", 4)]
     public void Skips_nested_conditionals_without_treating_push_data_as_instructions(string program, int expected)
@@ -230,6 +245,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 32)]
     [InlineData(true, 64)]
     public void Instruction_control_restores_default_glyph_rounding_when_requested(bool reset, int expected)
@@ -242,6 +258,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Instruction_control_inhibits_glyph_execution()
     {
         using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
@@ -250,6 +267,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("21")]
     [InlineData("0A")]
     [InlineData("B0000A")]
@@ -299,6 +317,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("B0002CB007")]
     [InlineData("B0002CB0012C2D2D")]
     [InlineData("2D")]
@@ -309,6 +328,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("89")]
     public void Executed_unimplemented_instructions_remain_explicit(string program)
     {
@@ -317,6 +337,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x8B, 128, -64, 128)]
     [InlineData(0x8C, 128, -64, -64)]
     [InlineData(0x8B, -256, -128, -128)]
@@ -333,6 +354,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_vertical_phantom_access_without_inventing_metrics()
     {
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0) { Unavailable = true }];
@@ -341,6 +363,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Cancels_backward_jumps_and_bounds_recursive_calls_by_depth()
     {
         var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
@@ -361,6 +384,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Allows_empty_function_repetition_and_bounds_program_bytes()
     {
         using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
@@ -370,6 +394,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Enforces_declared_stack_capacity_during_a_push()
     {
         using TrueTypeHinting machine = Create([], [], [], new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
@@ -378,6 +403,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_unknown_query_policies_and_changes_to_the_creation_scale()
     {
         var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
@@ -389,6 +415,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(1)]
     [InlineData(500)]
     public void Reserves_machine_arrays_before_allocation(long maximumBytes)
@@ -400,6 +427,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Observes_cancellation_before_allocation_and_on_empty_or_inhibited_programs()
     {
         using var cancellation = new CancellationTokenSource();
@@ -416,6 +444,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(4097, 0, 0, 0)]
     [InlineData(16, 4097, 0, 0)]
     [InlineData(16, 0, 1025, 0)]
@@ -428,6 +457,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void An_empty_program_can_declare_zero_stack_storage()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(0, 0, 0, 0), [], [], [], 16, new(65536, 65536), Target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
@@ -436,6 +466,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0, 0)]
     [InlineData(1, 0)]
     [InlineData(0, 2)]
@@ -447,6 +478,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Disposal_releases_program_borrows_and_rejects_reuse()
     {
         var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));

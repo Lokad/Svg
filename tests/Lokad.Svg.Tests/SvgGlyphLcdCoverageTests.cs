@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(22, 0, 11, 15)]
     [InlineData(23, 15, 5, 0)]
     public void Instruction_free_simple_dropouts_keep_the_native_left_tip(int x, byte red, byte green, byte blue)
@@ -20,6 +21,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(62, 186, 71, 89, 58)]
     [InlineData(63, 186, 27, 0, 0)]
     [InlineData(57, 192, 0, 48, 124)]
@@ -49,6 +51,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0, 0, 0, 0, 5, 24)]
     [InlineData(0, 0, 0, 1, 4, 30)]
     [InlineData(0, 0, 0, 2, 6, 50)]
@@ -70,6 +73,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(-1, 0, 0, 85)]
     [InlineData(0, 170, 255, 255)]
     [InlineData(1, 255, 255, 255)]
@@ -79,6 +83,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
         => Assert.Equal(new SvgGlyphRgbCoverage(red, green, blue), Coverage(Rectangle(0, 0, 6, 6), x, 0));
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Opposite_winding_cancels_counters_and_same_winding_keeps_union()
     {
         OpenTypeQuadraticSegment[] outer = Rectangle(-1, -1, 2, 2), inner = Rectangle(0, 0, 1, 1);
@@ -88,6 +93,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]
@@ -110,6 +116,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Coverage_observes_original_cancellation()
     {
         OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 1, 1);
@@ -118,6 +125,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 0)]
     [InlineData(true, 28)]
     public void Native_thin_horizontal_stroke_requires_enabled_smart_dropouts(bool enabled, byte expected)
@@ -132,6 +140,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Native_slanted_stroke_preserves_last_row_dropout()
     {
         // Independent original CC0 trapezoid: points (0,0),(604,0),
@@ -143,6 +152,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Smart_dropout_preserves_native_coverage()
     {
         OpenTypeQuadraticSegment[] segments = Rectangle(0, -1d / 64, 6, 0);
@@ -159,6 +169,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 0, 0, 85, 170)]
     [InlineData(false, 6, 255, 213, 128)]
     [InlineData(true, 0, 0, 43, 128)]
@@ -173,6 +184,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, 163)]
     [InlineData(true, 92)]
     public void Native_exact_horizontal_center_follows_directed_contour_ownership(bool reverse, byte expected)
@@ -186,6 +198,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
         => SvgGlyphLcdCoverage.GetCoverage(segments, x, y, new SvgGlyphLcdCoverage.Crossing[segments.Length * 2], false, CancellationToken.None);
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public void Prepared_rows_preserve_curve_endpoints_and_reduce_actual_gathering_work(bool dropouts)
@@ -214,6 +227,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Row_preparation_checks_borrowed_storage_work_boundary_and_cancellation()
     {
         OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 6);
@@ -228,6 +242,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Row_storage_refusal_preserves_the_live_owner_and_releases_its_aggregate_allowance()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
@@ -253,6 +268,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Direct_unprepared_scan_keeps_independent_native_dropout_coverage()
     {
         OpenTypeQuadraticSegment[] segments = Rectangle(0, -1d / 64, 6, 0);

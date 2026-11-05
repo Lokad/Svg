@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class TrueTypeHintingTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x3A, 20, 50, 35)]
     [InlineData(0x3B, 20, 50, 55)]
     [InlineData(0x3A, -20, 10, 35)]
@@ -23,6 +24,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Stack_relative_move_updates_both_shift_reference_points()
     {
         TrueTypeHintPoint[] points = [new(10, 0, 10, 0), new(64, 0, 64, 0), new(0, 0, 0, 0), new(0, 0, 0, 0)];
@@ -34,6 +36,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Stack_relative_twilight_move_initializes_originals_from_the_original_reference()
     {
         TrueTypeHintPoint[] points = [new(13, 0, 13, 0)];
@@ -45,6 +48,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(true, 1889)]
     [InlineData(false, 1888)]
     public void Direct_relative_original_scaling_preserves_target_specific_negative_half_rounding(bool symmetric, int expected)
@@ -61,6 +65,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x32, 45)]
     [InlineData(0x33, 75)]
     public void Point_shifts_select_the_reference_displacement_and_move_from_current_coordinates(byte opcode, int expected)
@@ -75,6 +80,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0xE4, 100, 68, true, 84)]
     [InlineData(0xE4, 100, 20, true, 148)]
     [InlineData(0xE0, 100, 20, true, 85)]
@@ -92,6 +98,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Indirect_twilight_moves_initialize_original_location_before_fitting_relative_to_current_reference()
     {
         TrueTypeHintPoint[] points = [new(13, 0, 13, 0)];
@@ -103,6 +110,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(95, 64)]
     [InlineData(-96, -128)]
     public void Stack_rounding_uses_the_same_signed_round_state(short value, int expected)
@@ -114,6 +122,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Point_interpolation_preserves_relative_stretch_touches_points_and_resets_loop()
     {
         TrueTypeHintPoint[] points = [new(10, 0, 10, 0), new(100, 0, 100, 0), new(40, 0, 40, 0), new(70, 0, 70, 0)];
@@ -127,6 +136,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(98304, 43)]
     [InlineData(65536, 50)]
     public void Point_interpolation_preserves_native_uniform_and_anisotropic_original_precision(int verticalScale, int expected)
@@ -140,6 +150,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0xC0, 70, 92)]
     [InlineData(0xC4, 70, 86)]
     [InlineData(0xC8, 20, 86)]
@@ -156,6 +167,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0xC4, 22)]
     [InlineData(0xD4, 86)]
     public void Direct_relative_moves_update_reference_zero_only_when_requested(byte opcode, int expected)
@@ -169,6 +181,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Direct_relative_moves_respect_prepared_single_width_and_glyph_minimum_state_is_restored()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16,
@@ -184,6 +197,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x73, 9, 8, 72)]
     [InlineData(0x74, 25, 8, 72)]
     [InlineData(0x75, 41, 8, 72)]
@@ -198,6 +212,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Control_deltas_use_the_axis_ppem_and_normalize_anisotropic_storage()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [64], [], [], 9,
@@ -207,6 +222,7 @@ public sealed partial class TrueTypeHintingTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("B208010173")]
     [InlineData("B1080173")]
     [InlineData("B003D4")]

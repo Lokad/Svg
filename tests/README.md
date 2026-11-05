@@ -550,6 +550,11 @@ separates direct analytic/contour/conic/bounds checks from their allocation,
 cancellation and output contracts. For paint arithmetic, select
 `FullyQualifiedName~SvgAnalyticPaintTests&Layer=Mechanism`; include its contract
 siblings for preparation/replay changes and affected native images for integration.
+The [hinting and glyph-coverage map](Research/release-baselines/hinting-test-responsibilities.json)
+retains all 669 direct numerical and lifetime cases across TrueType, Latin-light
+and LCD coverage. Select the affected class with `Layer=Mechanism`, include its
+contract siblings for storage/cancellation edits, then run independent font rendering.
+Native cell vectors and platform profiles remain exact; these labels change no bodies.
 For direct mask-bound vectors, use `FullyQualifiedName~SvgMaskPaintRegionTests&Layer=Mechanism`;
 include its contract siblings for storage refusal, cancellation and replay.
 The [supplied-font output map](Research/release-baselines/font-output-responsibilities.md)

@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgGlyphLcdCoverageTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(-1, "ACuA1dWAKwAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData(0, "ACuA1dWAKwAAAAAAAAAAAAAAAAAAAAAA")]
     [InlineData(1, "AABVqtWAKwAAAAAAAAAAAAAAAAAAAAAA")]
@@ -25,6 +26,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(31)]
     [InlineData(32)]
     [InlineData(33)]
