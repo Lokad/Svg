@@ -36,7 +36,8 @@ retain their admitted arrays. Affine capture rewrites its opacity/group envelope
 while borrowing geometry with the original scene indices.
 Filter placement reuses a fill path's computed bounds when it has no separate
 outline; strokes retain independent outline bounds and coordinate maps.
-Filter graph metadata queries use bounded stack scratch for the admitted 256-node
+[Filter graph metadata queries](../tests/Research/release-baselines/filter-query-scratch.json)
+use bounded stack scratch for the admitted 256-node
 graphs. Forward bounds/storage and backward requests retain separate phases; request
 accumulation starts cleared. Pixel tables and surfaces keep their existing owners.
 [Ownership evidence](../tests/Research/release-baselines/command-view-qualification.json)

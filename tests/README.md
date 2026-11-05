@@ -55,6 +55,10 @@ keep source-size admission separate from canonical rendering: offset, blur and
 offset/merge replay retain refusal, cancellation, cleanup and retry without
 copying every source command into raster storage.
 
+[Graph-query contracts](Research/release-baselines/filter-query-scratch.json) cover
+empty, single and maximum-size graphs, allocation-free metadata and graph borrowing.
+Numerical bounds/storage cases and pixel-storage refusal remain separate checks.
+
 [Capture-storage contracts](Research/release-baselines/filter-capture-storage.json)
 separate aligned-buffer reuse, wider blur requests, color-matrix output and shifted
 grid copying. Four allowance/refusal/retry cases retain pre-change pixel hashes;

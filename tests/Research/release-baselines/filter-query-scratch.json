@@ -1,0 +1,528 @@
+{
+  "status": "Bounded filter dependency, forward bounds/storage and backward demand scratch share the existing admitted graph contract. Temporary heap tables and query-only budget arguments are removed; all numerical routines/maps, pixel owners and references remain. Full runtime/package/original-source qualification and terminal CI close this milestone.",
+  "source": {
+    "baseCommit": "70f0b49c7a2c4f5b43fc9f78a4140c699d983c1a",
+    "allOtherRasterAndFilterStatementsUnchanged": true,
+    "allNumericalBranchesAndRoundingPreserved": true,
+    "pixelTablesAndKernelsUnchanged": true,
+    "newCachesOrOwners": 0,
+    "requestZeroInitializationExplicit": true,
+    "sourceLfSha256": {
+      "src/Lokad.Svg/SvgConverter.cs": "265626238dc1a29aa26ab553a490745b83260a6f7f3ef2fce10977c2337058c9",
+      "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs": "7bfd741a752a51488e145b5dc8dd56dfaed5774ca83119281cbed4b63a089fb0"
+    },
+    "sourceCommit": "f8c1049a0a56e40509c5955d17a10e9e6fb5c507"
+  },
+  "change": {
+    "scope": "Dependency bool table plus SourceLayerBounds, SourceImageBounds and RequiredSourceBounds metadata scratch; ParameterCaptureBounds forwards the allocation-free contract.",
+    "bound": "Ordinary definition admission limits graphs to 256 primitives. The largest bound-table storage is 12 KiB: three tables of 256 rectangles, 16 bytes each. Queries return before recursive pixel capture; no retained cache, owner or field is introduced.",
+    "initialization": "Forward region/bounds/storage and dependency slots are assigned before use under earlier-input admission. Backward requests are explicitly cleared before accumulation. The optional stored-input extent table remains conditional.",
+    "ownership": "Stack scratch has no managed storage reservation. Actual playback pixel tables, images, surfaces and their refusal/cancellation/retry paths retain their existing ownership.",
+    "internalConsumers": "Remove query-only RenderBudget parameters and migrate all internal consumers together, including capture-hint forwarding. Published signatures remain unchanged.",
+    "tests": "Nine direct warmed-allocation contracts cover zero, one and256 nodes, including optional stored-input planning. Existing graph borrowing/cancellation/retry is retained; obsolete metadata heap-refusal and disconnected scratch-budget assertions are replaced or removed. All numerical inputs/assertions and actual pixel-storage refusal paths remain."
+  },
+  "allocation": {
+    "dependency": {
+      "scope": "Observed .NET 11 Windows allocation-counter deltas around dependency scratch construction/reservation in private instrumented libraries. Logging occurs after measurement. No throughput claim.",
+      "rows": [
+        {
+          "id": "fill-direct",
+          "sourceSha256": "ec24fcd699f796e4b97e7e5749a51e3c544347f665a03c27d665974e4da4690b",
+          "queries": 2,
+          "graphCounts": [
+            1,
+            1
+          ],
+          "beforeManagedBytes": 160,
+          "afterManagedBytes": 0,
+          "pngSha256": "0400d53931ba90a5dac8b18d80aa0cad8bc60bcff5da2d34a0fa14d55e885368"
+        },
+        {
+          "id": "fill-nested",
+          "sourceSha256": "46ef70c9c358bea8f0eb29e7822b3b0ac9df13f35639d0c4f5ddae1a4ba2c926",
+          "queries": 4,
+          "graphCounts": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "beforeManagedBytes": 320,
+          "afterManagedBytes": 0,
+          "pngSha256": "ac314e06c8476fb1ee983fc4224f7a3f852c7d3f457c254e7b8f5350bf767c90"
+        },
+        {
+          "id": "stroke-direct",
+          "sourceSha256": "1e2b49cd7161c023cd5f5cc20ba56ce1a025421a1f354ca5181d5e17eef8d28e",
+          "queries": 2,
+          "graphCounts": [
+            1,
+            1
+          ],
+          "beforeManagedBytes": 160,
+          "afterManagedBytes": 0,
+          "pngSha256": "50a163d7a8ce8254de23b26b5c588100fc8c0094b90726f0290249a7ac1d67b7"
+        },
+        {
+          "id": "stroke-nested",
+          "sourceSha256": "a6e58c47ab0f73ff681d66ddc47438be21b4366329f7b512aa1ad6b5dd88d561",
+          "queries": 4,
+          "graphCounts": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "beforeManagedBytes": 320,
+          "afterManagedBytes": 0,
+          "pngSha256": "caa85003fb08d3e3a353f270e15b405bbfbea9d55f93299ad9281a703ba02b03"
+        },
+        {
+          "id": "fill-stroke-direct",
+          "sourceSha256": "0dc5887be1dae394436d2a59c07aae0ca37c94184d1cbbb5ab51e4ddadc58d02",
+          "queries": 2,
+          "graphCounts": [
+            1,
+            1
+          ],
+          "beforeManagedBytes": 160,
+          "afterManagedBytes": 0,
+          "pngSha256": "fba1cbe5ff30b962396af7b89fb4db25d9158cc8aaa466fb313c454a630d07f9"
+        },
+        {
+          "id": "fill-stroke-nested",
+          "sourceSha256": "267b112237262e5e3f2c4fd7c35be747d5ce56c8e45b100288d4a3c29954b436",
+          "queries": 4,
+          "graphCounts": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "beforeManagedBytes": 320,
+          "afterManagedBytes": 0,
+          "pngSha256": "a627f259aed7044dd3a69de8d2f4fd008fb161590bbd1ff1abe95f1d52cdca53"
+        }
+      ]
+    },
+    "scope": "Managed allocation deltas on the named warmed query calls; private dependency construction counters exclude logging. These are not throughput, GC-frequency or quiet-VM benchmarks.",
+    "queryContractCases": [
+      {
+        "name": "Lokad.Svg.Tests.SvgFilterQueryStorageTests.Source_bounds_use_bounded_scratch(count: 1)",
+        "beforeManagedBytes": 128,
+        "afterManagedBytes": 0
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgFilterQueryStorageTests.Source_bounds_use_bounded_scratch(count: 256)",
+        "beforeManagedBytes": 8288,
+        "afterManagedBytes": 0
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgFilterQueryStorageTests.Source_demand_and_retained_offset_input_use_bounded_scratch(count: 1)",
+        "beforeManagedBytes": 128,
+        "afterManagedBytes": 0
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgFilterQueryStorageTests.Source_demand_and_retained_offset_input_use_bounded_scratch(count: 256)",
+        "beforeManagedBytes": 12408,
+        "afterManagedBytes": 0
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgFilterQueryStorageTests.Stored_image_bounds_use_bounded_scratch(count: 1)",
+        "beforeManagedBytes": 160,
+        "afterManagedBytes": 0
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgFilterQueryStorageTests.Stored_image_bounds_use_bounded_scratch(count: 256)",
+        "beforeManagedBytes": 8568,
+        "afterManagedBytes": 0
+      }
+    ],
+    "queryContractRuns": [
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "emptyGraphCasesPassBeforeAndAfter": 3,
+        "beforeSeconds": 14.304429800016806,
+        "afterSeconds": 11.397014199988917,
+        "beforeLibrarySha256": "bc5bf4e0a5b7ac73e1c1b435b0fa483e42d4942f5e316f168d6f4d3bc9deeb18",
+        "afterLibrarySha256": "55b1335b5e21f756c23f8219260012a382f0479a42b4e8a214287b00f56cba5b",
+        "beforeTestAssemblySha256": "c8e5cfbd393c988b0268fc02a3e9fd485fe1b420f635f7b817fa4bb6fd05cb2a",
+        "afterTestAssemblySha256": "16af18d321a1ddeffa7443137601bf9dc4e10d89ec406bb59f9a269acfeecc8c"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "emptyGraphCasesPassBeforeAndAfter": 3,
+        "beforeSeconds": 11.044976899866015,
+        "afterSeconds": 16.26113980007358,
+        "beforeLibrarySha256": "bc5bf4e0a5b7ac73e1c1b435b0fa483e42d4942f5e316f168d6f4d3bc9deeb18",
+        "afterLibrarySha256": "55b1335b5e21f756c23f8219260012a382f0479a42b4e8a214287b00f56cba5b",
+        "beforeTestAssemblySha256": "c8e5cfbd393c988b0268fc02a3e9fd485fe1b420f635f7b817fa4bb6fd05cb2a",
+        "afterTestAssemblySha256": "16af18d321a1ddeffa7443137601bf9dc4e10d89ec406bb59f9a269acfeecc8c"
+      }
+    ]
+  },
+  "validation": {
+    "fullLocal": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "corePassed": 47648,
+        "visualPassed": 73311,
+        "visualFailed": 1,
+        "fontPassed": 10,
+        "seconds": {
+          "core": 89.59,
+          "visual": 450.92,
+          "font": 2.62
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "corePassed": 47648,
+        "visualPassed": 73312,
+        "visualFailed": 0,
+        "fontPassed": 10,
+        "seconds": {
+          "core": 70.06,
+          "visual": 433.96,
+          "font": 10.93
+        }
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "corePassed": 47648,
+        "visualPassed": 73311,
+        "visualFailed": 1,
+        "fontPassed": 10,
+        "seconds": {
+          "core": 89.29,
+          "visual": 449.66,
+          "font": 2.78
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "corePassed": 47648,
+        "visualPassed": 73312,
+        "visualFailed": 0,
+        "fontPassed": 10,
+        "seconds": {
+          "core": 71.29,
+          "visual": 434.41,
+          "font": 12.44
+        }
+      }
+    ],
+    "affected": {
+      "passedPerHostFramework": {
+        "core": 850,
+        "visual": 17068
+      },
+      "runs": [
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "seconds": {
+            "core": 14.69,
+            "visual": 72.57
+          }
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "seconds": {
+            "core": 16.09,
+            "visual": 70.98
+          }
+        },
+        {
+          "host": "windows",
+          "framework": "net10.0",
+          "seconds": {
+            "core": 16.24,
+            "visual": 71.0
+          }
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "seconds": {
+            "core": 17.19,
+            "visual": 69.88
+          }
+        }
+      ]
+    },
+    "packagedAffected": {
+      "passedPerHostFramework": {
+        "core": 850,
+        "visual": 295
+      },
+      "runs": [
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "seconds": {
+            "core": 14.77,
+            "visual": 26.14
+          }
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "seconds": {
+            "core": 17.7,
+            "visual": 25.39
+          }
+        },
+        {
+          "host": "windows",
+          "framework": "net10.0",
+          "seconds": {
+            "core": 17.31,
+            "visual": 23.62
+          }
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "seconds": {
+            "core": 18.91,
+            "visual": 25.58
+          }
+        }
+      ],
+      "allMatchPackageAssets": true
+    },
+    "nativeReferencesRewritten": 0,
+    "testCasesRemoved": 0,
+    "newContractMethods": 3,
+    "newContractCases": 9,
+    "metadataContractRenamed": true,
+    "existingNumericalAndPixelOwnershipCasesRetained": true,
+    "fastCore": {
+      "filter": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "passedPerHostRuntime": 19072,
+      "previousCases": 19063,
+      "addedContractCases": 9,
+      "allMatchPackageAssets": true,
+      "runs": [
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "seconds": 34.55
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "seconds": 31.35
+        },
+        {
+          "host": "windows",
+          "framework": "net10.0",
+          "seconds": 33.73
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "seconds": 31.43
+        }
+      ]
+    },
+    "assemblies": {
+      "net11.0": {
+        "developmentLibrarySha256": "55b1335b5e21f756c23f8219260012a382f0479a42b4e8a214287b00f56cba5b",
+        "testAssemblySha256": {
+          "core": "16af18d321a1ddeffa7443137601bf9dc4e10d89ec406bb59f9a269acfeecc8c",
+          "visual": "25127da0ab1bf6fa80e55c2faac6533fba9ab835834b4c0595304faf87567636",
+          "font": "5680d8f546f853534378029e6c712c20ebfca5cd01fc9b2aceb0225261e8767e"
+        }
+      },
+      "net10.0": {
+        "developmentLibrarySha256": "d5ecaf5b073ac80fd6caf78e743b1d61c7e68e75f7105601d2695c70307b1df5",
+        "testAssemblySha256": {
+          "core": "fc5aeb715fe2cb333294ae13a08dc3b651cd379e59984f9954f23658347bdd30",
+          "visual": "dafbd4f9c097c08d5ed4e8e214f011060f878d05d634bee2ba988097fa087519",
+          "font": "e004146548373093e75395636a9a471f4b8b3961a04f62c5668989f3afc5e13a"
+        }
+      }
+    }
+  },
+  "promotion": {
+    "package": {
+      "sourceCommit": "f8c1049a0a56e40509c5955d17a10e9e6fb5c507",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "622b5c33e361b76e0c676cd5410791d18c97d6bb38f71f945648fb28c570a41b"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "eb7194e01fb125b54fb4ac2bb1bd795182a37a9ed40d0414cf78ecf34aa5cdc1"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "cd1d858f081d7bd29265e33056001c66fbd7bcc2136a64bf807dba0e6edb67ce",
+        "net10.0": "613febb0f98c329ddbf98756180a5ea222517dd8658ddbd8509687087fcb01c6"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 6.97258110018447
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0
+      }
+    ],
+    "published": false
+  },
+  "hostedOriginalReplay": {
+    "sourceCommit": "f8c1049a0a56e40509c5955d17a10e9e6fb5c507",
+    "librarySha256": "cd1d858f081d7bd29265e33056001c66fbd7bcc2136a64bf807dba0e6edb67ce",
+    "originals": 204,
+    "sourceIdentitySha256": "98ecf4d5a1cf3e31dff4873101e6e5521726d264407793e9086d74e8e6b058aa",
+    "outcomeAndPngRecordSha256": "342e9bcc7fd937df15f22d8e1998e5aba06e1aea08a2d08a791b098b11b39a72",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "allSourceHashesAndDiagnosticMetadataUnchanged": true,
+    "suppliedOriginalContexts": {
+      "inputs": 22,
+      "exactPerHost": 22,
+      "identityAndOutputSha256": "c3f3a619d219e4da3430e4669546338e07c17a35a22e7d9dd9c4ed90282b17e0"
+    },
+    "staticDiagnostics": {
+      "inputs": 13,
+      "exactPerHost": 13,
+      "projectedInputAndOutputSha256": "0a5be1bfa6bcd5049ecef84ddb720618afc192664b3aedc9a56f143989f2a96b"
+    },
+    "hostedSvgBodiesFragmentsAndRawAttributesRetained": 0,
+    "scope": "Defaults, supplied programs and projected static diagnostics retain their distinct admission/acceptance meanings."
+  },
+  "ci": {
+    "runId": 41955282758,
+    "sourceCommit": "f8c1049a0a56e40509c5955d17a10e9e6fb5c507",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47648,
+            "total": 47648
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "dd501c8a07bb7babe832fc72b86174f8dac8c82e12babef8887bd4309aa0b9bd"
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47648,
+            "total": 47648
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "total": 73312
+          }
+        ],
+        "logSha256": "008ecdefebba0e9db1ee422c4493828f2c2f00e7a8b70a59c17abb7710cc251a"
+      }
+    },
+    "boundary": "Windows compatibility/tool/package CI steps skip after frozen DejaVu; both local runtimes/hosts and installed consumers are qualified. Preserve reference/assertion pending authority."
+  },
+  "remaining": "Other scene/layer preparation, paint execution, test responsibilities and original-source acceptance remain open. Quiet-VM performance remains unmeasured."
+}

@@ -57,6 +57,9 @@ control, concurrent host/runtime checks and independent healthy captures.
 [Chrome smoke ownership](chrome-smoke-isolation.json) retains all 15 native
 comparisons per host/runtime while isolating temporary cleanup, preserving sibling
 owners, forwarding runtime selection and rejecting an injected owned leftover.
+[Filter query scratch](filter-query-scratch.json) removes temporary metadata tables
+and their internal budget arguments. Nine direct allocation/geometry contracts retain
+empty, single and maximum-size graphs; all numerical and pixel-ownership paths remain.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200
