@@ -1,5 +1,5 @@
 {
-  "status": "Complete hinting/glyph-coverage cohort classified without changing test bodies, cases, inputs or references.669 existing cases retain654 direct mechanisms and15 lifetime/storage contracts. Full CI qualification pending.",
+  "status": "Complete hinting/glyph-coverage cohort classified: 183 methods retain all 669 cases, with 654 direct mechanisms and 15 lifetime/storage contracts. All 13,239 compiled core bodies match on both runtimes. Fast eligibility adds 616 cases without losing earlier members. Linux full/compatibility/tools/packages pass; the independent frozen Windows DejaVu discrepancy remains open.",
   "source": {
     "baseCommit": "c6e7c373e663b982d89d9039f802495cb22a857e",
     "files": [
@@ -203,7 +203,8 @@
       }
     ],
     "only171LayerAssignmentsAcross33ExistingFiles": true,
-    "productionProvidersFixturesReferencesLicensesUnchanged": true
+    "productionProvidersFixturesReferencesLicensesUnchanged": true,
+    "sourceCommit": "b5858e397481dbc93ab7ef6389ac3a7f99749567"
   },
   "groups": [
     {
@@ -519,7 +520,7 @@
       }
     }
   ],
-  "measurementScope": "Functional wall times include discovery, host startup and TRX, exclude build, and use paired Windows/Linux runs for both frameworks. Warm caches and host variation can affect observations. Layer metadata alone establishes no renderer or test-throughput speedup. The full cohort remains669 cases; the newly measured fast profile has a broader scope than the previous19705-case run.",
+  "measurementScope": "Functional wall times include discovery, host startup and TRX, exclude build, and use paired Windows/Linux runs for both frameworks. Warm caches and host variation can affect observations. Layer metadata alone establishes no renderer or test-throughput speedup. The full cohort remains 669 cases; the newly measured fast profile has a broader scope than the previous 19,705-case run.",
   "responsibilities": {
     "mechanisms": "Direct bytecode execution, numerical admission, signed/fixed rounding, vector/grid profiles, interpolation, Latin edge/stem fitting, conic endpoints, winding and native dropout-cell vectors. Exhaustive parameter rows and every profile distinction remain.",
     "contracts": "Actual interpreter/outline/scan-storage refusal, token-preserving cancellation, backward-loop interruption, borrowed row buffers, idempotent disposal and rejected reuse. Mixed alias/depth controls remain intact in their existing contract methods.",
@@ -535,5 +536,94 @@
     },
     "currentOriginalBinding": "../svgweb/originals.json#/currentReview",
     "originalReplay": "Not repeated for metadata-only assignments. Production source and exact qualified library assets remain unchanged."
+  },
+  "links": {
+    "checkedRelativeFileLinks": 343,
+    "allResolved": true
+  },
+  "primaryCi": {
+    "run": 42060528476,
+    "status": "Terminal CLOSED; never repoll or refetch.",
+    "jobs": [
+      {
+        "host": "windows",
+        "job": 127360599193,
+        "conclusion": "failure",
+        "logSha256": "9154c6152e58c03917dc1a5d5d365debf2d604b691049f9512223bc10af9a6d6",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47776,
+            "total": 47776
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73536,
+            "total": 73537
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "job": 127360599825,
+        "conclusion": "success",
+        "logSha256": "c70fbcb23124a84a3f1b005ff70e12bbafe3d71a181c4bcdcaaa23c3ac7ad335",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47776,
+            "total": 47776
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73537,
+            "total": 73537
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ]
+      }
+    ]
   }
 }
