@@ -31,7 +31,7 @@ internal readonly struct SvgAnalyticClipCoverage
 /// <summary>Classifies the admitted rectangle clip within one integer bitmap context.</summary>
 internal static class SvgAnalyticRectangleClip
 {
-    /// <remarks>The caller supplies an immutable mapped rectangle and charges four boundary visits before calling. This constant-size classification allocates nothing, retains no state and is thread safe. It covers the native initially-BW rectangle shortcut and a resulting opaque rectangle after analytic X/Y snapping; it does not construct an AA mask or reproduce successive clip-alpha intersections. Cancellation belongs to the caller's context traversal.</remarks>
+    /// <remarks>The caller supplies an immutable mapped rectangle. This constant-size classification allocates nothing, retains no state and is thread safe. It covers the native initially-BW rectangle shortcut and a resulting opaque rectangle after analytic X/Y snapping; it does not construct an AA mask or reproduce successive clip-alpha intersections. Cancellation belongs to the caller's context traversal.</remarks>
     internal static SvgAnalyticPaintClip Classify(double left, double top, double right, double bottom, SvgAnalyticClipBounds bitmap, SvgClipAntialiasing antialiasing)
     {
         if ((antialiasing & SvgClipAntialiasing.All) == 0) return SvgAnalyticPaintClip.Binary;

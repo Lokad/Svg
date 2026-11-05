@@ -12,9 +12,9 @@ namespace Lokad.Svg.Rendering;
 /// budgeted command arrays through traversal, releasing them on success, refusal or cancellation;
 /// and paints only its owned interior. The caller keeps the clip tape alive throughout replay;
 /// pixel visits include its rounded clip-alpha product. Bounds, context visits, commands, closure
-/// lookahead and coverage consume cancellable work. Wider strokes keep their outline route.
+/// lookahead and coverage observe cancellation. Wider strokes keep their outline route.
 /// Numerical curve scratch is bounded stack storage shared across context visits. AA clip containment
-/// scans mapped controls and complete borrowed bitmap rows, charging every visit before reading.</remarks>
+/// scans mapped controls and complete borrowed bitmap rows with cancellation checks.</remarks>
 internal static class SvgHairlineStroke
 {
     internal static bool TryRasterize(SvgAuthoredPath path, SvgDrawingMap drawingMap, SvgColor color, SvgConstantShaderPaint? constantPaint,

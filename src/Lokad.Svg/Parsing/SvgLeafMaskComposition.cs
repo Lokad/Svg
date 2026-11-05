@@ -133,7 +133,7 @@ internal sealed class SvgLeafMaskMapper : IDisposable
         return this;
     }
 
-    /// <summary>Returns a borrowed mapped chain without recursion, charging visited nodes and cache growth before use.</summary>
+    /// <summary>Returns a borrowed mapped chain without recursion, checking cancellation and admitting cache growth before use.</summary>
     internal SvgLeafMaskBinding? Map(SvgLeafMaskBinding? source)
     {
         if (source is null) return null;

@@ -38,7 +38,7 @@ internal static class SvgTextLayoutBounds
 
     /// <summary>Owns fitted metric reuse during one parser state; fonts remain borrowed.</summary>
     /// <remarks>The parser thread owns access and disposal. Values retain no contour or bitmap;
-    /// construction and entry growth reserve storage before allocation. Fitting charges the
+    /// construction and entry growth reserve storage before allocation. Fitting observes the
     /// caller's cancellation token. Disposal releases all reservations on success or failure.</remarks>
     internal sealed class MetricCache : IDisposable
     {

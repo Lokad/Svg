@@ -52,7 +52,7 @@ internal readonly record struct SvgRectangleCoverage(long Left, long Top, long R
 }
 
 /// <summary>Retains one mapped rectangle and a separate byte paint clip within a finite pixel range.</summary>
-/// <remarks>Preparation charges mapped edges and the admitted pixel range before painting. The value allocates nothing and owns no storage; callers check cancellation per row. Alpha applies the clip to each operation, rather than cropping the original fill.</remarks>
+/// <remarks>Preparation retains mapped edges and the admitted pixel range before painting. The value allocates nothing and owns no storage; callers check cancellation per row. Alpha applies the clip to each operation, rather than cropping the original fill.</remarks>
 internal readonly record struct SvgRectangleRaster(int Left, int Top, int Right, int Bottom, SvgRectangleCoverage Coverage, Lokad.Svg.Parsing.SvgClipBox? Clip)
 {
     internal byte GetAlpha(int x, int y)

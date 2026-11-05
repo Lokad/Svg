@@ -535,6 +535,101 @@
     "noIncremental": true
   },
   "ci": {
-    "status": "Awaiting the committed test-only milestone; qualification will be attached after its terminal safe point."
+    "run": 42013920959,
+    "sourceCommit": "5f1fb05e5e4266fea9eff7b4525451805ec33e9e",
+    "status": "Terminal CLOSED; never repoll/refetch.",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "host": "linux",
+        "job": 127199539978,
+        "conclusion": "success",
+        "logSha256": "d97109175d093620017d571ce1cebf34b4bb8b69858a48048c4bb1c40faf10e7",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47703,
+            "skipped": 0,
+            "total": 47703
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73532,
+            "skipped": 0,
+            "total": 73532
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "skipped": 0,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "skipped": 0,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          }
+        ],
+        "note": "Full primary, compatibility, tool and installed-package gates pass."
+      },
+      {
+        "host": "windows",
+        "job": 127199540428,
+        "conclusion": "failure",
+        "logSha256": "143e56b1f3729d53874345e7df100b2258908edd8f36d32e6a795b7c295c728d",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47703,
+            "skipped": 0,
+            "total": 47703
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73531,
+            "skipped": 0,
+            "total": 73532
+          }
+        ],
+        "note": "Only the existing frozen Windows DejaVu discrepancy."
+      }
+    ]
   }
 }

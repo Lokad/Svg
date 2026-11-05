@@ -8,7 +8,7 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Prepares analytic mask coverage and ordered paint operations for eligible contours.</summary>
 /// <remarks>
 /// <para>Row preparation walks retained analytic edges into winding intervals and trapezoid coverage. Small path bounds select an accumulated mask; larger bounds retain direct paint events separately from pending additive runs. Only pending runs snap coverage at flush. Convex rings use the existing convex walker; eligible non-convex fills also retain live curve state. Multi-contour sets walk kept contours together with their winding votes. Escaping path/control bounds select bounded clipped construction; degenerate, non-finite, out-of-range and contact-gated payloads retain the existing fallback.</para>
-/// <para>Ownership: preparation reserves edge/mask scratch plus the run route's pixel links before allocation. Eligible native rectangles instead retain an immutable float coverage value with no edge/row scratch. Direct operation buffers grow under the same conversion budget with both old/new arrays live during copying; Dispose releases every reservation. PrepareRow charges recording, growth and replay before growing buffers and observes cancellation during setup, row walking, copying and replay. Row contains only pending coverage; direct paints remain separate. All row state is valid until the next PrepareRow call. Instances and their destination consumers are single-threaded.</para>
+/// <para>Ownership: preparation reserves edge/mask scratch plus the run route's pixel links before allocation. Eligible native rectangles instead retain an immutable float coverage value with no edge/row scratch. Direct operation buffers grow under the same conversion budget with both old/new arrays live during copying; Dispose releases every reservation. PrepareRow reserves buffer growth before allocation and observes cancellation during setup, row walking, copying and replay. Row contains only pending coverage; direct paints remain separate. All row state is valid until the next PrepareRow call. Instances and their destination consumers are single-threaded.</para>
 /// </remarks>
 internal ref partial struct SvgAnalyticCoverage
 {
@@ -420,7 +420,7 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Expands direct-paint indexing only when an emitted operation escapes path row storage.</summary>
     /// <remarks>Accumulated coverage remains path-bounded. Direct operations retain the bitmap/SVG clip;
-    /// growth reserves old plus new storage, charges initialization/copying and observes cancellation.
+    /// growth reserves old plus new storage and observes cancellation during initialization/copying.
     /// Unused capacity is reused between rows and does not expand their paint traversal.</remarks>
     private void EnsureDirectLinks(int start, int end)
     {
@@ -455,8 +455,8 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Extends an existing output interval only to direct paints emitted outside path storage.</summary>
-    /// <remarks>The caller intersects this interval with the exclusive CPU interior and charges extra
-    /// destination pixels. Mask/run accumulation, path dispatch and coordinate ownership stay separate.</remarks>
+    /// <remarks>The caller intersects this interval with the exclusive CPU interior and retains
+    /// destination storage through painting. Mask/run accumulation, path dispatch and coordinate ownership stay separate.</remarks>
     internal readonly SvgAnalyticScanWindow GetPaintWindow(SvgAnalyticScanWindow original)
         => new(_directPaintLeft < 0 ? Math.Min(original.Left, _xStart + _directPaintLeft) : original.Left,
             _directPaintRight > _width ? Math.Max(original.Right, _xStart + _directPaintRight) : original.Right);
@@ -1303,14 +1303,14 @@ internal ref partial struct SvgAnalyticCoverage
         => Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, window, null, budget, out eligible, cancellationToken);
 
     /// <summary>Prepares uncut or clip-built edges with owned scratch and cooperative cancellation.</summary>
-    /// <remarks>Clipping uses caller-owned stack scratch and two charged passes, reserving complete emitted-edge storage before allocation. Proper even-odd crossings preserve directed contours, including zero signed-area lobes; other rigid-contact gates and fractional paint clipping remain in force. Returned ownership is single-threaded and must be disposed on every exit. This convenience form also uses the supplied storage bounds for dispatch; callers with distinct complete path bounds must use the preparation overload.</remarks>
+    /// <remarks>Clipping uses caller-owned stack scratch and two cancellable passes, reserving complete emitted-edge storage before allocation. Proper even-odd crossings preserve directed contours, including zero signed-area lobes; other rigid-contact gates and fractional paint clipping remain in force. Returned ownership is single-threaded and must be disposed on every exit. This convenience form also uses the supplied storage bounds for dispatch; callers with distinct complete path bounds must use the preparation overload.</remarks>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
     {
         SvgAnalyticContourPreparation preparation = new(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, new(xStart, yStart, xEnd, yEnd), outputWidth, outputHeight);
         return Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, constructionClip, SvgAnalyticPaintClip.Binary, budget, out eligible, cancellationToken);
     }
 
-    /// <summary>Builds one raster context from borrowed geometry, charging clip-independent classification once.</summary>
+    /// <summary>Builds one raster context from borrowed geometry, caching clip-independent classification once.</summary>
     /// <remarks>The preparation and geometry remain immutable except for cached classifications in this single-threaded scope. Construction clipping and paint-clip dispatch are independent: an AA paint consumer forces run storage even for contained or small paths, and forwards specialized fringe pairs as ordinary runs. This context-local choice is not cached with geometry. Each returned walker independently owns its reserved edges, rows and events; it retains no borrowed spans or reference to the cache. Cancellation applies before and during classification and construction.</remarks>
     internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, SvgAnalyticPaintClip paintClip, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
         => Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, new(0, 0), constructionClip, paintClip, budget, out eligible, cancellationToken);
@@ -1384,7 +1384,7 @@ internal ref partial struct SvgAnalyticCoverage
             }
             // Native clip-wrapper selection uses the whole raw path bounds,
             // including controls even when the curve itself fits the bitmap.
-            // Cache this charged traversal independently of row storage/dispatch.
+            // Cache this traversal independently of row storage/dispatch.
             double leftWithControls = minX;
             double rightWithControls = maxX;
             for (int index = 0; index < quadSpans.Length; index++)

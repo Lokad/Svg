@@ -304,7 +304,7 @@ internal static class SvgTextSyntax
     internal static SvgTextStyle Parse(XmlReader reader)
         => Parse(reader, CancellationToken.None, SvgInheritedTextStyle.Default);
 
-    /// <summary>Parses direct text font syntax while charging inline-property scans to the current conversion.</summary>
+    /// <summary>Parses direct text font syntax with cooperative cancellation during inline-property scans.</summary>
     internal static SvgTextStyle Parse(XmlReader reader, CancellationToken cancellationToken)
         => Parse(reader, cancellationToken, SvgInheritedTextStyle.Default);
 

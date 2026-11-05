@@ -54,7 +54,7 @@ internal sealed class SvgContourBuilder
     }
 
     /// <summary>Creates a builder that grows from small storage toward bounded maxima.</summary>
-    /// <remarks>Growth doubles toward the maxima with identical admission: past-maximum appends fail with the same errors as the fixed builder, and all stored points match. Callers charge per stored point exactly as before.</remarks>
+    /// <remarks>Growth doubles toward the maxima with identical admission: past-maximum appends fail with the same errors as the fixed builder, and all stored points match. Callers admit the complete builder capacity before construction.</remarks>
     internal static SvgContourBuilder CreateGrowing(int maxPointCapacity, int maxContourCapacity)
     {
         if (maxPointCapacity < 1) throw new ArgumentOutOfRangeException(nameof(maxPointCapacity));
@@ -119,8 +119,8 @@ internal sealed class SvgContourBuilder
     }
 
     /// <summary>Appends a rational quadratic with caller-bounded fallback samples and retained controls.</summary>
-    /// <remarks>Samples use the positive rational denominator; callers bound their count, reserve span
-    /// columns and charge every appended point. Cancellation is observed on every sample. Retention
+    /// <remarks>Samples use the positive rational denominator; callers bound their count and admit point/span
+    /// capacity before construction. Cancellation is observed on every sample. Retention
     /// keeps one verb regardless of the fallback density; device conversion belongs to the scanner.</remarks>
     internal void AddConic(SvgDevicePoint control, SvgDevicePoint end, float weight, int segments, CancellationToken token)
     {

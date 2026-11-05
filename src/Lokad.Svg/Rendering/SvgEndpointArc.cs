@@ -5,8 +5,7 @@ namespace Lokad.Svg.Rendering;
 internal readonly record struct SvgEndpointConic(SvgDevicePoint Control, SvgDevicePoint End, float Weight);
 
 /// <summary>Constructs at most three rational quadratics for an authored endpoint arc.</summary>
-/// <remarks>The caller owns the fixed buffer and charges the bounded normalization/verb phase before
-/// entry. Conversion allocates no storage, checks cancellation at each conic and preserves the final
+/// <remarks>The caller owns the fixed buffer through the bounded normalization/verb phase. Conversion allocates no storage, checks cancellation at each conic and preserves the final
 /// float endpoint. A zero count means a line. Nonfinite construction fails with LimitExceeded; calls
 /// are independent. Scene admission and stroke flattening retain their existing normalization.</remarks>
 internal static class SvgEndpointArc

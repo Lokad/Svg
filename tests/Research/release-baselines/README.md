@@ -11,6 +11,10 @@ direct contour/analytic vectors separately from cancellation, allocation and out
 contracts. All cases and assertion bodies remain; focused selection and the source/
 compiled inventory are qualified against the existing renderer packages.
 
+[Current contract comments](current-contract-comments.json) removes obsolete
+work-charge descriptions while retaining actual memory admission and cancellation.
+Every executable token and compiled method body remains unchanged on both runtimes.
+
 [Polygon contour ownership](contour-ownership.md) records the shared paint-binding
 storage contract and its failing-before refusal, transfer and retry witnesses.
 [Filter command views](command-view-qualification.json) remove unchanged subtree

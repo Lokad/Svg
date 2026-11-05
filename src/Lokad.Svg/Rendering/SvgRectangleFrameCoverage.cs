@@ -3,8 +3,8 @@
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Retains a stroked rectangle's separate outer hull, integer frame and inverse inner fringe.</summary>
-/// <remarks>This immutable value allocates nothing and owns no storage. The caller charges preparation,
-/// row lookup and up to four ordered paint operations per visited pixel, and checks cancellation per row.
+/// <remarks>This immutable value allocates nothing and owns no storage. The caller checks cancellation per row;
+/// each visited pixel emits at most four ordered paint operations.
 /// GetOperations borrows a span of at least four bytes only for that call.
 /// Fixed edges saturate outside any admitted bitmap; clipping applies to each paint operation separately.</remarks>
 internal readonly record struct SvgRectangleFrameCoverage(long OuterLeft, long OuterTop, long OuterRight, long OuterBottom, long InnerLeft, long InnerTop, long InnerRight, long InnerBottom)

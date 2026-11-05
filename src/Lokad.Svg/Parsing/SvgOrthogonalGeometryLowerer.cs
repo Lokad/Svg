@@ -2384,7 +2384,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Splits one loop edge at a known vertex value when it lies strictly inside the edge.</summary>
-    /// <remarks>Reuses the touch-edge subdivision so charging and cancellation match the touch path. Reports whether the edge changed.</remarks>
+    /// <remarks>Reuses the touch-edge subdivision so storage admission and cancellation match the touch path. Reports whether the edge changed.</remarks>
     private bool SubdivideLoopEdgeAtValue(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int loop, int edge, SvgDevicePoint value)
     {
         int start = loop == 0 ? 0 : workEnds[loop - 1];
@@ -2890,7 +2890,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Reports whether one arc lies strictly inside another loop, endpoints excluded.</summary>
-    /// <remarks>Endpoints sit on the boundary by construction, so only interior vertices and edge midpoints witness, mirroring the strict-inside rule of the overlap test. Deterministic order; allocates nothing and holds no budget, with callers charging the pair estimate.</remarks>
+    /// <remarks>Endpoints sit on the boundary by construction, so only interior vertices and edge midpoints witness, mirroring the strict-inside rule of the overlap test. Deterministic order; allocates nothing and holds no budget.</remarks>
     private static bool IsArcStrictlyInside(SvgDevicePoint[] points, int start, int count, int begin, int length, int otherStart, int otherCount)
     {
         for (int offset = 1; offset < length; offset++)

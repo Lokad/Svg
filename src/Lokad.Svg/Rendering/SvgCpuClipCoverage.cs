@@ -5,8 +5,8 @@ using Lokad.Svg.Parsing;
 /// <summary>Owns nonzero clip bounds and border coverage in each software bitmap.</summary>
 /// <remarks>Interior coverage remains in the caller's existing canvas tape. Border bytes belong
 /// to their bitmap and may differ from the neighboring bitmap's owned output pixels. Both arrays
-/// reserve before allocation; the caller charges initialization and collection. Intersection
-/// charges each visited pixel before traversal and observes cancellation. Single-threaded replay
+/// reserve before allocation. Intersection observes cancellation during row/pixel
+/// traversal. Single-threaded replay
 /// borrows this owner only within its clip scope; disposal releases the complete reservation.</remarks>
 internal sealed class SvgCpuClipCoverage : IDisposable
 {

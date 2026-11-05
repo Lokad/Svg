@@ -19,8 +19,8 @@ public static partial class SvgConverter
         => Rasterize(root, options, budget, surfaceMode, null, cancellationToken);
 
     /// <summary>Restores one borrowed clip state and owns its replacement coverage until scope exit.
-    /// A default frame marks an equivalent clip and owns nothing. The command walker charges
-    /// metadata growth and visits, checks cancellation, and releases frames without cancellation.</summary>
+    /// A default frame marks an equivalent clip and owns nothing. The command walker admits
+    /// metadata growth, checks cancellation during traversal, and releases frames without cancellation.</summary>
     private readonly record struct ViewportClipFrame(ViewportClipState Previous,
         RenderBudget.BudgetReservation? Reservation, SvgCpuClipCoverage? Coverage)
     {
@@ -4194,7 +4194,7 @@ public static partial class SvgConverter
         }
         // Native interval integral from SkGradientBaseShader.cpp at the pinned revision.
         // Copyright 2016 Google Inc.; see THIRD_PARTY_NOTICES.txt. Inputs are borrowed;
-        // preparation allocates no storage and charges/checks each bounded interval.
+        // preparation allocates no storage and checks cancellation for each bounded interval.
         SvgShaderPaint PrepareGradientFactory(ReadOnlySpan<SvgGradientStop> stops, SvgGradientSpread spread, out SvgColor luminance)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -5167,7 +5167,7 @@ public static partial class SvgConverter
                 }
 
                 // Pinned Skia SkScalerContext.cpp pack4xHToMask; Copyright 2012 Google Inc.
-                // See THIRD_PARTY_NOTICES.txt. The caller charges the bounded 36 filter products.
+                // See THIRD_PARTY_NOTICES.txt. The bounded 36 filter products allocate no storage.
                 static byte FilterStroke(ReadOnlySpan<byte> row, int center)
                 {
                     ReadOnlySpan<byte> red = [3, 11, 28, 51, 64, 57, 36, 16, 5, 1, 0, 0];

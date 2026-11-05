@@ -6,7 +6,7 @@ using Lokad.Svg.Parsing;
 
 /// <summary>Prepares immutable native coefficients from canonical stops for linear and radial replay.</summary>
 /// <remarks>Inline pairs own no storage; other ramps reserve before allocating at most 259 segments. Preparation observes
-/// cancellation. Sampling allocates nothing; callers account for pixels and check rows. Copies borrow the same owner
+/// cancellation. Sampling allocates nothing; callers own destination storage and check cancellation per row. Copies borrow the same owner
 /// and must finish before the preparing scope disposes it. No source storage or retained scene metadata is added.</remarks>
 internal readonly struct SvgGradientRamp : IDisposable
 {

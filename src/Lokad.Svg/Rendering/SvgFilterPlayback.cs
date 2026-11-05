@@ -102,8 +102,8 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 internal static class SvgFilterPlayback
 {
     // Native composition output is the input intersection for source-in and
-    // the union for the supported over/multiply/screen operators. Callers charge
-    // bounded setup work; this immutable helper owns no storage or cancellation.
+    // the union for the supported over/multiply/screen operators. This bounded immutable helper
+    // owns no storage; callers check cancellation during graph traversal.
     private static SvgPaintBounds CompositionBounds(SvgPaintBounds first, SvgPaintBounds second, SvgFilterComposition composition)
         => composition == SvgFilterComposition.In
             ? new(MathF.Max(first.Left, second.Left), MathF.Max(first.Top, second.Top), MathF.Min(first.Right, second.Right), MathF.Min(first.Bottom, second.Bottom))
@@ -134,8 +134,7 @@ internal static class SvgFilterPlayback
     }
 
     /// <summary>Tests origin alignment for a pure nearest-sampled translation on the native four-bit AA grid.</summary>
-    /// <remarks>The caller admits matrix type, image extents and pixel coordinates separately and charges
-    /// bounded setup work. This immutable predicate allocates nothing; nonfinite arithmetic is ineligible.</remarks>
+    /// <remarks>The caller admits matrix type, image extents and pixel coordinates separately. This immutable predicate allocates nothing; nonfinite arithmetic is ineligible.</remarks>
     internal static bool IsNearestSpriteTranslation(float offset)
     {
         float subpixel = offset * 16;
@@ -145,8 +144,8 @@ internal static class SvgFilterPlayback
 
     /// <summary>Prepares a compact shadow's native unpremultiplied color and opacity bytes before premultiplication.</summary>
     /// <remarks>The validated CSS paint is sRGB; color conversion precedes byte admission. The result retains
-    /// float precision for a pending input color filter. Callers choose its eventual packing, charge bounded
-    /// setup work and own cancellation. This immutable operation allocates nothing and permits concurrent calls.</remarks>
+    /// float precision for a pending input color filter. Callers choose its eventual packing
+    /// and check cancellation during graph traversal. This immutable operation allocates nothing and permits concurrent calls.</remarks>
     internal static SvgShaderPaint PrepareShadowShaderTint(SvgSolidPaint paint, SvgFilterColorSpace colorSpace)
     {
         const float byteScale = 1f / 255f;

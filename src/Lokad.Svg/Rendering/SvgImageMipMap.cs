@@ -6,7 +6,7 @@ namespace Lokad.Svg.Rendering;
 
 /// <summary>Reduces immutable premultiplied image views before their existing sampler.</summary>
 /// <remarks>Stateless and thread-safe. Callers own source/destination storage, reserve
-/// scratch before allocation, charge SampleCount per output pixel, and pass cancellation.
+/// scratch before allocation and pass cancellation through reduction and resizing.
 /// A level halves each axis independently, retaining a one-pixel axis.</remarks>
 internal static class SvgImageMipMap
 {

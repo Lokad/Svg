@@ -3,8 +3,8 @@
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Shared bounded native curve geometry for hairline subdivision and stroke reduction.</summary>
-/// <remarks>Uses fixed stack buffers and no heap storage. Callers charge the bounded numerical phase
-/// and check cancellation before entry; calls share no mutable state.</remarks>
+/// <remarks>Uses fixed stack buffers and no heap storage. Callers check cancellation before the bounded
+/// numerical phase; calls share no mutable state.</remarks>
 internal static class SvgCurveGeometry
 {
     internal static int CubicCurvatureRoots(ReadOnlySpan<SvgDevicePoint> p, Span<float> roots)

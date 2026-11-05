@@ -5,8 +5,8 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Borrows one draw's gradient ramp or texture for allocation-free per-pixel paint sampling.</summary>
 /// <remarks>The caller owns and disposes the ramp/texture after every sampler borrower finishes.
 /// Coordinates are mutable draw-local caches; instances must not be shared between threads.
-/// Pixel/geometry work and cancellation belong to the caller; optional texture interpolation
-/// is charged here before texture reads and interpolation. Copies borrow the same owners.</remarks>
+/// The caller checks cancellation during pixel/geometry traversal; filtered texture sampling
+/// also checks cancellation before reading and interpolating. Copies borrow the same owners.</remarks>
 internal struct SvgShaderSampler
 {
     private enum Kind : byte { Linear, Radial, Pattern, Constant }

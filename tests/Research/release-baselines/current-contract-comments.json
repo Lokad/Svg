@@ -1,0 +1,227 @@
+{
+  "status": "Corrected36 stale work-accounting statements in22 production source files. Every executable token, directive and compiled method body remains unchanged; storage admission, cancellation, numerical stages and ownership retain their implementation.",
+  "source": {
+    "baseCommit": "5f1fb05e5e4266fea9eff7b4525451805ec33e9e",
+    "priorCommentClosureCommit": "25752e527",
+    "files": [
+      {
+        "file": "../../../src/Lokad.Svg/SvgConverter.cs",
+        "beforeLfSha256": "285647c4cfc142ac28c867eb777cf53b5c39d39cdc24d1544fdc18ddd998849e",
+        "afterLfSha256": "3de53d9e2ea7c25afce5a99727d47641e536be22ed311b53929885875b95e377",
+        "edits": 3,
+        "tokenCount": 65217,
+        "unchangedTokenSha256": "2d6de1a4007703f43301e6e1f932061abbe96c1f31c812f7771750abac2ba8bf"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgAnalyticPaintClip.cs",
+        "beforeLfSha256": "4714da79e672cdb328ae6c7a52c5c5ff99b8ecd4620d8d9b19cc0eacf102dded",
+        "afterLfSha256": "3fed730c5533e769414dfa1778341b5f42fcae8fae3c475d24855dcba30a1d1d",
+        "edits": 1,
+        "tokenCount": 1019,
+        "unchangedTokenSha256": "48f6f715c40c06d7ebb1b5b0736341d46dbe7d4137f9fda41c5f75c9fe226704"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgHairlineStroke.cs",
+        "beforeLfSha256": "a513938e53832ccf59375e8750340fe5ba18dfa7ee742f12047f87d37979fa07",
+        "afterLfSha256": "83f0de047c1d3ccccc3c91ab034c41fbc3c5ddd2e67d2f9b5e605a2ce4d21ad5",
+        "edits": 2,
+        "tokenCount": 3207,
+        "unchangedTokenSha256": "190e89b94b73256b44bb1f441261e647ea0642078cda06645f4bcf6ce0c7f9d0"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgCurveGeometry.cs",
+        "beforeLfSha256": "6f947e20cc59e74db63e8035f7dab778b528356a822e0d7b439416de17744a55",
+        "afterLfSha256": "968c4dd352ec2cd9010a8118a41e1a50d814c81017706e81b4a9c5a47269e1b1",
+        "edits": 1,
+        "tokenCount": 1012,
+        "unchangedTokenSha256": "ce6344a2a7eec66692d01b7b409e4753f69e1dc573d08a9489b7b5cff1583f70"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgCpuClipCoverage.cs",
+        "beforeLfSha256": "20a9bc8b065faeb916365f5a4a66b032dabb7f396cb217579ab08b51748eb102",
+        "afterLfSha256": "1c028d78abab19f916d50a882483e78a07dc46618b46c386da107e22df2407c5",
+        "edits": 1,
+        "tokenCount": 995,
+        "unchangedTokenSha256": "a514e27e05b591852e8ad8944500638acd2b43a27f01d66dea8b8d50927831bb"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs",
+        "beforeLfSha256": "65c9369595cddf4b192acca7aa38a00a90c045e31000541c414f3201372f2170",
+        "afterLfSha256": "eed58e995fffb82ef15d46fdba46ff99c6083fcc357facee3ac79b65e5f85fcb",
+        "edits": 6,
+        "tokenCount": 26214,
+        "unchangedTokenSha256": "a92c5cb5d7eb0daf0ceff9d065fe9101064c1276f2fe3902eadcde9282311ca1"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+        "beforeLfSha256": "09ceaf3e3515f9a2dd249bc99fea6826e10e154b272e531ecf6ff223fa4f372d",
+        "afterLfSha256": "61d28e3f6013a04b2650903744232823d8c77d4cc651826c976eaab116afc480",
+        "edits": 3,
+        "tokenCount": 20991,
+        "unchangedTokenSha256": "c83e6a3e451d6d76652635e3005370ccfc3ab144b5d3bdefa9b88129431a8b56"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgContourBuilder.cs",
+        "beforeLfSha256": "e11a8c62a6bbeac8f647a868e2da9e801952fae52b89281a59b12eb31f8f9f4c",
+        "afterLfSha256": "5953e2ed1c1ca98f6bfb216fb7a8905c54482c9f1722fc9d094d0d18212ac0ec",
+        "edits": 2,
+        "tokenCount": 3410,
+        "unchangedTokenSha256": "d58444914efd19f8fc1abcd53962ca534f5c080fa74210888bcf692b9f2945c9"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.ClippedPreparation.cs",
+        "beforeLfSha256": "1b727f4fc81ac8c2ff613ae52bbf03049d6d825a2d7a4eb29bd0d375c4ef110d",
+        "afterLfSha256": "e461c428143176b4e8b47cf9deab2e9d04441798601f5a8369e54b73fd8f9ca0",
+        "edits": 1,
+        "tokenCount": 2109,
+        "unchangedTokenSha256": "36c3d441e348f020d1fca2d284275004e83ecc948367c2258f47f0f7ab3c8b63"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgAnalyticContourPreparation.cs",
+        "beforeLfSha256": "32ea5e524c825b7b6255e003c33de550d3df1a09c4a787d385a2f624bf38f3b7",
+        "afterLfSha256": "ba89038f2d979df5cd06a8b2f55a66372d008674b4d7b523fe70da464b2af646",
+        "edits": 1,
+        "tokenCount": 475,
+        "unchangedTokenSha256": "e3b1f1082499a74ff319ff6454702e12fe47607691df2ae66f50753e66e67727"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgRectangleFrameCoverage.cs",
+        "beforeLfSha256": "6d8f241279c981adc6f8235e7cb4b18adc95fbb9dd4aec3c871d22a9649d8065",
+        "afterLfSha256": "b428e59a3ce013ca08bd49dca22d877cf931f6e779cd9796ac0887c1b05e3173",
+        "edits": 1,
+        "tokenCount": 1191,
+        "unchangedTokenSha256": "0ef05311658acca8d4ec210ee0071dace8e25b8a72f73705581af706f0c2c9c8"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgRectangleCoverage.cs",
+        "beforeLfSha256": "75f66ea4c567a7cc1a789b624da73fa8227b0b6bc08506bb7e4dc75d34482b4f",
+        "afterLfSha256": "81b2f037f19a71c316db92185b5dba1f83c2436cbf817b98956f80f8f15178f1",
+        "edits": 1,
+        "tokenCount": 636,
+        "unchangedTokenSha256": "f58cfe0bda3a0795b467d4b3c2d5de48b112b0a5491e7a9aacd36ce281f2e15d"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgEndpointArc.cs",
+        "beforeLfSha256": "5d95db3ac7e9bd5b579fd67f6e83a9935d216c346f27e15da57e8fa97e142941",
+        "afterLfSha256": "fadbe6db47f802e34eae78ffd91831095007f59508315471950a998398c4bb87",
+        "edits": 1,
+        "tokenCount": 1153,
+        "unchangedTokenSha256": "f99075bacc3ecb83a660b5bcdbec6b7351d749d0eed41bf75ab8f3268a4ff39a"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgImageMipMap.cs",
+        "beforeLfSha256": "791025bfeab9eea267f443c61223baaff83189162ddd302d81e175d02f03cb65",
+        "afterLfSha256": "741d0bc060f67f549b82c9e55980c4fe057b54b53f39c56dc8bf4c9b287524b9",
+        "edits": 1,
+        "tokenCount": 1317,
+        "unchangedTokenSha256": "d9da8474db4ecba02ab6f0521a68caccb87e28e4ea0a88c64fdcd76372f9f2c1"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgRawContourConvexity.cs",
+        "beforeLfSha256": "1bb7b87ef779d2ead33a6494e6eea5ecb1e8580da2eac9e3d7fade56b44c186a",
+        "afterLfSha256": "50c27e14eff57b091ca9a13668fc15ca499ce6bac0043a6c8d97ed46fff77ce6",
+        "edits": 3,
+        "tokenCount": 1024,
+        "unchangedTokenSha256": "e0ce0d3f6a5336f4977961a0fb07076a6ab4e47d51d84ee908dab7536e1e7b04"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgStrokeOutline.cs",
+        "beforeLfSha256": "d79a990684246eb2b56be13890028c9f2af3a98c0ee262ddb62c16d5a57232ec",
+        "afterLfSha256": "96d2a85d8166a8214618a6f9a407e4f1eda990b49347cbcae5f460fc5a1928a8",
+        "edits": 1,
+        "tokenCount": 6432,
+        "unchangedTokenSha256": "4f6cc048c6ade02b10f0b8b1b20d86931a9537985c6a37f7a301c96818cb91eb"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgGradientRamp.cs",
+        "beforeLfSha256": "67ce89af45c55e8dc0569cbc1eac910cfde6b6731660884c5bc993dc54224cb4",
+        "afterLfSha256": "b9c7d23aa750c7227f0aa7818a1b8c2f5523ef169e9dca0ae6c4441ab7ddbb8a",
+        "edits": 1,
+        "tokenCount": 1954,
+        "unchangedTokenSha256": "1150f51d980fc6270e103b6d3fc806c131e20e3eaaea41e5931e16b0ee7b4836"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Rendering/SvgShaderSampler.cs",
+        "beforeLfSha256": "9594f3ec4ad55319a0af530b21dfdd617cbb6a9c5270e1bb95721d1c855c2a8d",
+        "afterLfSha256": "a60b7bf25e62e5053f77f27bedc8c386120be5d366dd5004abfb3ee9a99b3e76",
+        "edits": 1,
+        "tokenCount": 1254,
+        "unchangedTokenSha256": "a178e5d8bd3ef844eb4168b4567cba503b7459df85ce93b72814a002145fa21e"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Parsing/SvgLeafMaskComposition.cs",
+        "beforeLfSha256": "f44adae46356899a980366032db3029534a11338aac92407c52bafedc78c9063",
+        "afterLfSha256": "2ffdde8cd630e92363b336a95105877680751f4554e89d95ad4f06ddb39a17bc",
+        "edits": 1,
+        "tokenCount": 4059,
+        "unchangedTokenSha256": "3ba63269fc632063587a4f47df3f53afd0c33ddd38d6a946a64a2f4ef8cc275f"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Parsing/SvgOrthogonalGeometryLowerer.cs",
+        "beforeLfSha256": "dcebe147225693bc560a2faa0b91d1854cce25fd2dfc49a2cd1a9ae37981790d",
+        "afterLfSha256": "7b362191f211856459648421ee9a5ebe203a02e6120cd76786c991ae8ca378e4",
+        "edits": 2,
+        "tokenCount": 36684,
+        "unchangedTokenSha256": "d02e52139b4769dd0270a93c6c3348e9370327213bbff3d3ec9f4ea27d868e9d"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Parsing/SvgTextLayoutBounds.cs",
+        "beforeLfSha256": "0a66c47e4143446474b4abca9ffc209bd42dfa8530db9548129857dcb0d90e87",
+        "afterLfSha256": "dd820dc7ef4376180d35b9b99fc377073313affd7c7a9f725c683e9945f1dd44",
+        "edits": 1,
+        "tokenCount": 3565,
+        "unchangedTokenSha256": "2b893a164fb53f2520355275e599e24f87d2daf7f3c7696018cf6e0a30f49a56"
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Parsing/SvgTextSyntax.cs",
+        "beforeLfSha256": "4f5456793542db1760633c08da51d350f2334976b995b6249e7e0fb6617569a6",
+        "afterLfSha256": "39c97b2bd1ead67ff474c91c5b22d10cccf46a271038d6b772815f0e6cf249be",
+        "edits": 1,
+        "tokenCount": 4937,
+        "unchangedTokenSha256": "dec5620890c8987f09a95d8c857339766844bed8b36c2d508e66ad5d35796404"
+      }
+    ]
+  },
+  "contracts": {
+    "storage": "Reserve retained capacity and temporary/growth overlap before allocation; borrowers finish before refund.",
+    "cancellation": "Bounded numerical helpers and traversal retain their actual caller/entry/row/pixel cancellation checks.",
+    "work": "No per-visit, per-sample, boundary, pair-estimate or filter-product work allowance exists.",
+    "unchanged": [
+      "All public/internal declarations and signatures",
+      "All numerical expressions, rounding and sampling stages",
+      "All preparation caches and context distinctions",
+      "All memory reservations, capacity limits and owners",
+      "All existing test/reference/fixture/source-projection bytes"
+    ]
+  },
+  "validation": {
+    "roslyn": "C# preview syntax trees are equivalent; complete token texts/kinds and directives are identical for each source file.",
+    "compiledBodies": [
+      {
+        "framework": "net11.0",
+        "methods": 12269,
+        "identicalBodies": true,
+        "methodBodyIdentitySha256": "02f4cb6850637d7849a60aac6ceea4b318281f5df806c1d547ac65dedba72ade"
+      },
+      {
+        "framework": "net10.0",
+        "methods": 12269,
+        "identicalBodies": true,
+        "methodBodyIdentitySha256": "02f4cb6850637d7849a60aac6ceea4b318281f5df806c1d547ac65dedba72ade"
+      }
+    ],
+    "builds": {
+      "frameworks": [
+        "net11.0",
+        "net10.0"
+      ],
+      "warnings": 0,
+      "errors": 0
+    },
+    "scope": "Documentation-only follow-up to the geometry test milestone. No new test, package, native-reference or SVGWeb output qualification is implied or needed for unchanged executable code."
+  },
+  "remaining": {
+    "deadHelper": "SvgImageMipMap.SampleCount has no runtime caller and is referenced only by an assertion in the8-case reduction mechanism. Removal is queued in PLAN; retain every weighted output, immutability and cancellation check.",
+    "documentation": "Broader support/units/limits/provenance/migration agreement remains open; this closes the obsolete work-accounting comments."
+  }
+}
