@@ -206,8 +206,9 @@ circle. Outside foci and tangential nonzero focal circles reject. Templates reta
 each center, radius and focal override independently; absent foci follow the
 effective center.
 
-Stops accept bounded `id` metadata. Color/opacity attributes and inline styles
-support property priority/order. Other coordinate length units, stylesheet stop
+Stops accept bounded `id` metadata. Inline [stop styles](../tests/Lokad.Svg.Tests/SvgGradientStopStyleTests.cs)
+read `stop-color` and `stop-opacity`, ignore other declarations and override
+attributes by importance and source order. Other coordinate length units, stylesheet stop
 declarations, resource/stop `currentColor`, gradient-container `color` and linearRGB
 gradient interpolation reject.
 
@@ -319,8 +320,9 @@ exact-equality attribute selectors, lists, element+ID/class, descendants and
 children. Specificity, source order, inline priority, inheritance and `!important`
 apply. Empty/comment-only stylesheets are no-ops. Comments preserve token boundaries
 and quoted text; namespace declarations on style/defs are accepted.
-Active unknown or unsupported property names reject; CSS error recovery remains
-unsupported.
+Active unknown or unsupported property names reject outside the
+[inline stop-style rules](#gradients-and-patterns). General CSS error recovery
+remains unsupported.
 
 `:hover`, `:active`, `:focus`, `:focus-visible` and `:focus-within` are admitted
 as inactive states in image conversion. Such components retain class specificity;
