@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/analytic-probe-context.json",
+    "evidence": "../release-baselines/polygon-map-work.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "e8428611a42c3ef1b429e2aefa3b2ae0b3881254",
+    "sourceBaseline": "3d23deed96603dd2c34a2ecf09a5d10851202769",
     "sourceIdentity": "Clean-commit packaged renderer; source/package hashes and unchanged original/context replay are bound by the qualification.",
-    "librarySha256": "c2a1f6eae003f04307993afe8aa7d245b3631d14cee6e2b32ed5421ad02c7f8d",
+    "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {

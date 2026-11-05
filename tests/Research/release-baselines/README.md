@@ -35,6 +35,10 @@ paths, full rendering, packages and original replay preserve their responsibilit
 with traversal and changes read-only consumers to borrow it. Source/compiled
 contracts, both runtimes, packages, primary CI and original replay retain exactness;
 the current architecture guide is condensed with section anchors preserved.
+[Polygon mapping work](polygon-map-work.json) removes overwritten point mappings
+and enclosure calculations. Finite-input diagnostics, authored/fallback arithmetic,
+complete control bounds, clips and owners remain; existing tests and native targets
+qualify unchanged on both hosts/runtimes and exact package assets.
 [Opacity/clip responsibilities](opacity-clip-responsibilities.json) retain all 58
 cases and every API interaction, assigning 24 unclassified methods without changing
 assertions; fast selection preserves every previous member and adds eight checks.
