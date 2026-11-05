@@ -1,0 +1,360 @@
+{
+  "status": "Five radial-storage methods retain their nine ownership/admission cases. The unchanged group-use PNG comparison moves to the rendered-use class with an accurate name and Rendering trait. All26 affected cases and every prior fast case remain; no runtime, source input, assertion, native reference or tolerance change.",
+  "sourceBaseCommit": "827c36daf0013a0fea6942ee6d3876dbd45720f2",
+  "source": {
+    "originalFilesReconstructedExactly": true,
+    "movedBodyUnchanged": true,
+    "caseMapping": {
+      "before": "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Group_use_snapshot_borrows_source_geometry_until_scene_disposal",
+      "after": "Lokad.Svg.Tests.SvgRenderedUseSourceTests.Group_use_replay_matches_independently_placed_source_geometry"
+    },
+    "files": [
+      {
+        "file": "../../Lokad.Svg.Tests/SvgRadialPaintStorageTests.cs",
+        "beforeLfSha256": "8a06d8b0279f725014a834a609201888a0c9a4a84be1cc6155d427072326239a",
+        "afterLfSha256": "6ae4f1976ed09470e5dbc7a5d9b590539586d02aae29b6fb081e46c19455e669"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgRenderedUseSourceTests.cs",
+        "beforeLfSha256": "0b6c07b886c348a4b7a26d65e020b27619babe279027bb6352b0bab544ce2ffe",
+        "afterLfSha256": "9df8a51c2a61b92731c16bf4549f567c223c1bb017f9ae6bcfcc4e33c1fd04ee"
+      }
+    ]
+  },
+  "roles": {
+    "contractMethods": 5,
+    "contractCases": 9,
+    "renderingMethods": 1,
+    "renderingCases": 1,
+    "sourceClass": "../../Lokad.Svg.Tests/SvgRadialPaintStorageTests.cs",
+    "renderedUseClass": "../../Lokad.Svg.Tests/SvgRenderedUseSourceTests.cs",
+    "reason": "The radial contracts check retained-paint ownership, sibling/caller arrays, partial construction, disposal and memory refusal. The group-use method compares complete PNGs; it never asserted a borrowed lifetime. Existing Standalone_and_borrowed_use_sources_release_at_admission_failures independently retains borrowed storage, cancellation and retry."
+  },
+  "cases": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "cases": 26,
+      "removed": 0,
+      "added": 0,
+      "originalIdentitiesRetainedWithExplicitMapping": true,
+      "normalizedCaseIdentitySha256": "fcdda9b735d20f5092a2171800178db42b6f20cee67b95f692b4fdaa8816acf6"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "cases": 26,
+      "removed": 0,
+      "added": 0,
+      "originalIdentitiesRetainedWithExplicitMapping": true,
+      "normalizedCaseIdentitySha256": "fcdda9b735d20f5092a2171800178db42b6f20cee67b95f692b4fdaa8816acf6"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "cases": 26,
+      "removed": 0,
+      "added": 0,
+      "originalIdentitiesRetainedWithExplicitMapping": true,
+      "normalizedCaseIdentitySha256": "fcdda9b735d20f5092a2171800178db42b6f20cee67b95f692b4fdaa8816acf6"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "cases": 26,
+      "removed": 0,
+      "added": 0,
+      "originalIdentitiesRetainedWithExplicitMapping": true,
+      "normalizedCaseIdentitySha256": "fcdda9b735d20f5092a2171800178db42b6f20cee67b95f692b4fdaa8816acf6"
+    }
+  ],
+  "fastCases": [
+    {
+      "host": "windows",
+      "before": 20069,
+      "after": 20078,
+      "removed": 0,
+      "addedContractCases": 9,
+      "caseIdentitySha256": "d761e75db6e8e6405e5490b255c78ca41f9e925cc41152bfdd82dd9de19c142b",
+      "added": [
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Geometry_builder_releases_paint_when_array_growth_or_detach_is_denied(detach: False)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Geometry_builder_releases_paint_when_array_growth_or_detach_is_denied(detach: True)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Partial_radial_lowering_releases_every_reservation_when_remaining_memory_is_denied(shape: \"<line x1='2' y1='16' x2='30' y2='16' stroke='url(#\"\u00b7\u00b7\u00b7)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Partial_radial_lowering_releases_every_reservation_when_remaining_memory_is_denied(shape: \"<path d='M0 0 H32 V32 H0 Z' fill='url(#g)'/>\")",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Partial_radial_lowering_releases_every_reservation_when_remaining_memory_is_denied(shape: \"<rect x='0' y='0' width='32' height='32' fill='url\"\u00b7\u00b7\u00b7)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Partial_radial_lowering_releases_every_reservation_when_remaining_memory_is_denied(shape: \"<rect x='2' y='2' width='28' height='28' fill='url\"\u00b7\u00b7\u00b7)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Radial_fill_denies_before_retaining_paint_and_transfers_ownership_through_clip_and_mask",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Radial_polygon_releases_partial_paint_reservation_and_keeps_caller_array_ownership_on_denial",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Rejected_stroked_radial_mask_keeps_the_source_reservation_for_cleanup"
+      ]
+    },
+    {
+      "host": "linux",
+      "before": 20069,
+      "after": 20078,
+      "removed": 0,
+      "addedContractCases": 9,
+      "caseIdentitySha256": "9af6622d880a896fd4b08c2f1ba0bb9a4e60cc26d7cbf5efa80cabb9fb1ae606",
+      "added": [
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Geometry_builder_releases_paint_when_array_growth_or_detach_is_denied(detach: False)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Geometry_builder_releases_paint_when_array_growth_or_detach_is_denied(detach: True)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Partial_radial_lowering_releases_every_reservation_when_remaining_memory_is_denied(shape: \"<line x1='2' y1='16' x2='30' y2='16' stroke='url(#\"\u00b7\u00b7\u00b7)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Partial_radial_lowering_releases_every_reservation_when_remaining_memory_is_denied(shape: \"<path d='M0 0 H32 V32 H0 Z' fill='url(#g)'/>\")",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Partial_radial_lowering_releases_every_reservation_when_remaining_memory_is_denied(shape: \"<rect x='0' y='0' width='32' height='32' fill='url\"\u00b7\u00b7\u00b7)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Partial_radial_lowering_releases_every_reservation_when_remaining_memory_is_denied(shape: \"<rect x='2' y='2' width='28' height='28' fill='url\"\u00b7\u00b7\u00b7)",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Radial_fill_denies_before_retaining_paint_and_transfers_ownership_through_clip_and_mask",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Radial_polygon_releases_partial_paint_reservation_and_keeps_caller_array_ownership_on_denial",
+        "Lokad.Svg.Tests.SvgRadialPaintStorageTests.Rejected_stroked_radial_mask_keeps_the_source_reservation_for_cleanup"
+      ]
+    }
+  ],
+  "inventory": {
+    "methods": 5147,
+    "sourceFiles": 739,
+    "coreMethods": 4688,
+    "visualMethods": 459,
+    "layers": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1149,
+        "Mechanism": 1777,
+        "Contract": 700,
+        "Rendering": 1061,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 277,
+        "Contract": 34,
+        "Integrity": 25,
+        "Rendering": 122,
+        "Mechanism": 1
+      }
+    },
+    "all5147PriorMethodsRetained": true,
+    "onlySixReviewedResponsibilitiesChanged": true,
+    "other737TestSourceFilesUnchanged": true,
+    "coreCasesUnchangedFromSourceAndCaseJoin": 47926,
+    "visualCasesUnchanged": 76870,
+    "fontHostCasesUnchanged": 10,
+    "fastCases": 20078
+  },
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "892f262950ad56b64fa8f044eb34952fee1520cb6959583fe04cdba3ede43437",
+        "selection": "FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgRenderedUseSourceTests",
+        "exitCode": 0,
+        "seconds": 10.604970300104469,
+        "counters": {
+          "executed": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "892f262950ad56b64fa8f044eb34952fee1520cb6959583fe04cdba3ede43437",
+        "selection": "FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgRenderedUseSourceTests",
+        "exitCode": 0,
+        "seconds": 14.35872819996439,
+        "counters": {
+          "executed": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "ff9d06897229d0277b19e014b201b00839d263551988602c2ff39f76653230ea",
+        "selection": "FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgRenderedUseSourceTests",
+        "exitCode": 0,
+        "seconds": 9.221314599970356,
+        "counters": {
+          "executed": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "ff9d06897229d0277b19e014b201b00839d263551988602c2ff39f76653230ea",
+        "selection": "FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgRenderedUseSourceTests",
+        "exitCode": 0,
+        "seconds": 10.97030090005137,
+        "counters": {
+          "executed": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "838597457d48afbbe3419f203a2d1466535e9ecd8002d8950dd9495eb2e7a58f",
+        "selection": "FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgRenderedUseSourceTests",
+        "exitCode": 0,
+        "seconds": 10.847881099907681,
+        "counters": {
+          "executed": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "838597457d48afbbe3419f203a2d1466535e9ecd8002d8950dd9495eb2e7a58f",
+        "selection": "FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgRenderedUseSourceTests",
+        "exitCode": 0,
+        "seconds": 16.016840599942952,
+        "counters": {
+          "executed": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "446b04ce09246aded1469d64b0e602d103bff71078ee0223a8e2e4740bfa1447",
+        "selection": "FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgRenderedUseSourceTests",
+        "exitCode": 0,
+        "seconds": 11.412327000172809,
+        "counters": {
+          "executed": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "446b04ce09246aded1469d64b0e602d103bff71078ee0223a8e2e4740bfa1447",
+        "selection": "FullyQualifiedName~SvgRadialPaintStorageTests|FullyQualifiedName~SvgRenderedUseSourceTests",
+        "exitCode": 0,
+        "seconds": 12.952711299993098,
+        "counters": {
+          "executed": "26",
+          "passed": "26",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fast": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "838597457d48afbbe3419f203a2d1466535e9ecd8002d8950dd9495eb2e7a58f",
+        "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 22.436184299876913,
+        "counters": {
+          "executed": "20078",
+          "passed": "20078",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "838597457d48afbbe3419f203a2d1466535e9ecd8002d8950dd9495eb2e7a58f",
+        "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 26.255795700009912,
+        "counters": {
+          "executed": "20078",
+          "passed": "20078",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "measurement": {
+    "scope": "One observed process per host/runtime/phase for the same26 cases; includes discovery/host/TRX and excludes build. This pass improves responsibility selection and naming, not execution work. No speedup or renderer-throughput claim.",
+    "comparison": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforeSeconds": 10.604970300104469,
+        "afterSeconds": 10.847881099907681
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforeSeconds": 14.35872819996439,
+        "afterSeconds": 16.016840599942952
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "beforeSeconds": 9.221314599970356,
+        "afterSeconds": 11.412327000172809
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "beforeSeconds": 10.97030090005137,
+        "afterSeconds": 12.952711299993098
+      }
+    ],
+    "fast": "The unchanged20,069 fast cases remain; nine ownership contracts are added. Current complete fast runs take22.44s Windows/26.26s Linux."
+  },
+  "inheritedQualification": {
+    "rendererSourceCommit": "1740d2c39d1bd93bc21680f4f344e9e8727ecc72",
+    "evidence": "decoration-fragment-order.json",
+    "latestFullCi": "shader-original-acceptance.json",
+    "librarySha256": {
+      "net11.0": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+      "net10.0": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1"
+    },
+    "reason": "Both original test files reconstruct exactly after reversing only the role labels and explicit method move/rename. Local before/after Windows/Linux.NET11/.NET10 checks and complete fast-profile membership pass. Renderer/package/W1/full qualification remains bound to identical library assets; no repeated full/package/native gate or exact-head CI claim for this test-only pass."
+  },
+  "remaining": "Other unclassified methods, W1 admission boundaries, support/provenance and performance work remain in PLAN.",
+  "links": {
+    "relativeLinksChecked": 170,
+    "allResolved": true
+  },
+  "legacyDeclarationAccounting": {
+    "evidence": "../svgweb/admission-boundaries.json",
+    "audit": "Seven unchanged original/source/native contexts rejoin the qualified renderer. All three retained declaration regressions pass per host/runtime in the existing full qualification. No new font support or reference replacement.",
+    "originals": 7,
+    "sourceContextJoinSha256": "514a3b02880077f7f3667be2724f39f1fc073989f1d9f1d2a3cdf2875aa85e5e",
+    "remainingOriginalSemantics": "Historical SVG1.1 intrinsic fonts and ambient-font output remain excluded. Other W1 admission decisions are unchanged."
+  }
+}

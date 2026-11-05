@@ -13,7 +13,7 @@
   "groups": {
     "fontSnapshot": {
       "contract": "../../../docs/SUPPORT_MATRIX.md#text-and-fonts",
-      "disposition": "Conversion requires explicit host-supplied font programs. Every declared supplied-program context is exact; seven transported TrueType contexts do not qualify original SVG-font outlines or ambient fonts.",
+      "disposition": "Conversion requires explicit host-supplied font programs. All22 declared supplied-program contexts are exact. Declaration accounting for the seven legacy font documents is closed under that contract; intrinsic SVG1.1 outlines and ambient fonts remain outside it.",
       "legacyOriginalsStillUnqualified": [
         "DroidSans-Bold.svg",
         "DroidSans.svg",
@@ -156,7 +156,24 @@
           "context": "supplied-original-contexts.json",
           "mode": "suppliedProgram"
         }
-      ]
+      ],
+      "legacyDeclarationAccounting": {
+        "status": "Closed under the existing host-supplied TrueType contract.",
+        "evidence": "legacy-font-declarations.json",
+        "currentRendererQualification": "../release-baselines/decoration-fragment-order.json",
+        "sourceCommit": "1740d2c39d1bd93bc21680f4f344e9e8727ecc72",
+        "librarySha256": {
+          "net11.0": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+          "net10.0": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1"
+        },
+        "originals": 7,
+        "allIntactSourcesAndFrozenNativeContextsRejoined": true,
+        "sourceContextJoinSha256": "514a3b02880077f7f3667be2724f39f1fc073989f1d9f1d2a3cdf2875aa85e5e",
+        "retainedChecksPerHostRuntime": 3,
+        "historicalSvg11FontImplementationClaimed": false,
+        "ambientFontPixelsQualified": false,
+        "meaning": "legacyOriginalsStillUnqualified names the excluded intrinsic SVG1.1 outline semantics; it is not a pending declaration review. Supplied-program original contexts and all three dormant-definition regressions remain qualified. No new source, outline, advance, font program or native reference is substituted."
+      }
     },
     "externalImage": {
       "contract": "../../../docs/SUPPORT_MATRIX.md#embedded-pngs",

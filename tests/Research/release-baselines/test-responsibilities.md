@@ -7,6 +7,9 @@ plural spellings are normalized without changing cases. The [selection qualifica
 keeps Research on the separate category axis and the background native witness in
 the rendering class. Unclassified methods remain; layer-only selection does not
 replace affected/full coverage.
+The [radial-storage/use split](radial-use-responsibilities.json) keeps nine storage
+contracts separate from the unchanged group-use PNG comparison; all 26 affected
+cases remain, with an explicit map for the moved test name.
 The explicit `Category=Research` selection remains independent of the layer.
 The [execution-context contracts](analytic-probe-context.json) keep all twelve
 original probe cases and add four for analytic paint. Nested restoration, awaited

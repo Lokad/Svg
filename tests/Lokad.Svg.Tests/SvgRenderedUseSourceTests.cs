@@ -83,6 +83,16 @@ public sealed class SvgRenderedUseSourceTests
         }
     }
 
+    [Fact]
+    [Trait("Layer", "Rendering")]
+    public void Group_use_replay_matches_independently_placed_source_geometry()
+    {
+        const string path = "<path fill='red' d='M1 1 Q7 1 7 7 L1 7 Z'/>";
+        byte[] shared = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><g id='g'>" + path + "</g><use href='#g' x='8'/></svg>");
+        byte[] independent = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'>" + path + "<g transform='translate(8 0)'>" + path + "</g></svg>");
+        Assert.Equal(SvgConverter.ConvertToPng(independent, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(shared, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
     private static byte[] Document(string content)
         => TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + content + "</svg>");
 }

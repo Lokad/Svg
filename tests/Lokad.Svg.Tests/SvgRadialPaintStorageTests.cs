@@ -4,6 +4,7 @@ using TextEncoding = System.Text.Encoding;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Contract")]
 public sealed class SvgRadialPaintStorageTests
 {
     [Fact]
@@ -121,13 +122,4 @@ public sealed class SvgRadialPaintStorageTests
 
     private static SvgRadialGradient Gradient()
         => new(default, default, .5, .5, .5, .5, .5, 0, 0, 1, false, false, SvgGradientSpread.Pad, Array.Empty<SvgGradientStop>(), 1, 1, false, SvgGradientTransform.Identity, false);
-
-    [Fact]
-    public void Group_use_snapshot_borrows_source_geometry_until_scene_disposal()
-    {
-        const string path = "<path fill='red' d='M1 1 Q7 1 7 7 L1 7 Z'/>";
-        byte[] shared = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><g id='g'>" + path + "</g><use href='#g' x='8'/></svg>");
-        byte[] independent = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'>" + path + "<g transform='translate(8 0)'>" + path + "</g></svg>");
-        Assert.Equal(SvgConverter.ConvertToPng(independent, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(shared, SvgRenderOptions.Default, CancellationToken.None).ToArray());
-    }
 }
