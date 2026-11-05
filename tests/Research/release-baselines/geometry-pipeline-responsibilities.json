@@ -1,5 +1,5 @@
 {
-  "status": "Complete191-method geometry-pipeline cohort classified without changing a body,input,provider or assertion. All238 cases retain128 direct mechanisms,50 API/ownership contracts and60 document rendering cases. Full CI pending.",
+  "status": "Complete 191-method geometry cohort classified into 121 mechanism, 22 contract and 48 document-rendering methods. All 238 cases and 13,263 compiled core bodies remain on both runtimes. Fast selection adds 178 cases and loses none. Linux full/compatibility/tools/packages pass; the independent frozen Windows DejaVu discrepancy remains open.",
   "source": {
     "baseCommit": "7405c17dea579db1121077a61ebbb130dd480a7f",
     "files": [
@@ -59,7 +59,8 @@
       }
     ],
     "only191MethodLayerLabelsChanged": true,
-    "productionProvidersFixturesReferencesLicensesUnchanged": true
+    "productionProvidersFixturesReferencesLicensesUnchanged": true,
+    "sourceCommit": "07b937d98a57f26e15e2989d55810d70d8cbd7ff"
   },
   "groups": [
     {
@@ -498,5 +499,253 @@
       "net10": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0"
     },
     "originalReplay": "Not repeated for label-only changes. Source code, exact qualified production assets and ../svgweb/originals.json#/currentReview remain unchanged."
+  },
+  "links": {
+    "checkedRelativeFileLinks": 349,
+    "allResolved": true
+  },
+  "caseCostSurvey": [
+    {
+      "host": "windows",
+      "scope": "Observed in-host test-case durations, not wall throughput; cases overlap under parallel execution.",
+      "topMethods": [
+        {
+          "method": "Lokad.Svg.Tests.SvgAuthoredPathTests.Bitmap_border_curves_preserve_all_six_outputs",
+          "cases": 4,
+          "aggregateCaseSeconds": 7.097,
+          "slowestCaseSeconds": 4.022
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgGradientCoordinateTests.Separate_radial_local_and_drawing_matrices_preserve_six_output_parity",
+          "cases": 2,
+          "aggregateCaseSeconds": 7.091,
+          "slowestCaseSeconds": 5.687
+        },
+        {
+          "method": "Lokad.Svg.Tests.OpenTypeFontTests.Empty_primitive_pattern_paints_need_no_tile_fonts",
+          "cases": 504,
+          "aggregateCaseSeconds": 6.13,
+          "slowestCaseSeconds": 0.05
+        },
+        {
+          "method": "Lokad.Svg.Tests.OpenTypeFontTests.Inert_template_paints_prepare_with_maps_effects_and_forward_replay",
+          "cases": 600,
+          "aggregateCaseSeconds": 5.865,
+          "slowestCaseSeconds": 0.413
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgPatternFontReachabilityTests.Only_sampled_pattern_sources_acquire_font_programs",
+          "cases": 54,
+          "aggregateCaseSeconds": 5.709,
+          "slowestCaseSeconds": 1.221
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgConversionApiContractTests.Output_forms_preserve_bytes_input_and_destination_ownership",
+          "cases": 96,
+          "aggregateCaseSeconds": 4.971,
+          "slowestCaseSeconds": 0.42
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgCurveOwnershipTests.Admitted_inputs_release_owners_across_memory_boundaries",
+          "cases": 48,
+          "aggregateCaseSeconds": 4.515,
+          "slowestCaseSeconds": 0.52
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgFilterBitmapOwnershipTests.Prepared_bitmap_replay_preserves_input_and_borrowed_destination_after_cancellation",
+          "cases": 13,
+          "aggregateCaseSeconds": 4.318,
+          "slowestCaseSeconds": 0.863
+        },
+        {
+          "method": "Lokad.Svg.Tests.PngImageDecoderTests.Invalid_chunk_structures_fail_before_public_output",
+          "cases": 15,
+          "aggregateCaseSeconds": 4.194,
+          "slowestCaseSeconds": 1.07
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgUseStrokeStyleTests.Stroke_style_reconstruction_and_source_adapters_release_all_owners_on_denial_and_cancellation",
+          "cases": 7,
+          "aggregateCaseSeconds": 4.029,
+          "slowestCaseSeconds": 1.636
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgEmptyContourMappingTests.Curve_mapping_releases_scratch_and_preserves_sources_on_denial_cancellation_and_retry",
+          "cases": 8,
+          "aggregateCaseSeconds": 3.986,
+          "slowestCaseSeconds": 1.19
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgTextNodeMetricsTests.Node_metrics_preserve_platform_pixels_and_prepared_replay",
+          "cases": 24,
+          "aggregateCaseSeconds": 3.391,
+          "slowestCaseSeconds": 1.026
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "scope": "Observed in-host test-case durations, not wall throughput; cases overlap under parallel execution.",
+      "topMethods": [
+        {
+          "method": "Lokad.Svg.Tests.SvgAuthoredPathTests.Bitmap_border_curves_preserve_all_six_outputs",
+          "cases": 4,
+          "aggregateCaseSeconds": 9.24,
+          "slowestCaseSeconds": 4.742
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgConversionApiContractTests.Output_forms_preserve_bytes_input_and_destination_ownership",
+          "cases": 96,
+          "aggregateCaseSeconds": 8.443,
+          "slowestCaseSeconds": 0.854
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgGradientCoordinateTests.Separate_radial_local_and_drawing_matrices_preserve_six_output_parity",
+          "cases": 2,
+          "aggregateCaseSeconds": 8.2,
+          "slowestCaseSeconds": 5.941
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgPatternFontReachabilityTests.Only_sampled_pattern_sources_acquire_font_programs",
+          "cases": 54,
+          "aggregateCaseSeconds": 7.435,
+          "slowestCaseSeconds": 1.199
+        },
+        {
+          "method": "Lokad.Svg.Tests.OpenTypeFontTests.Inert_template_paints_prepare_with_maps_effects_and_forward_replay",
+          "cases": 600,
+          "aggregateCaseSeconds": 7.411,
+          "slowestCaseSeconds": 0.591
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Filter_recording_and_element_bounds_match_independent_native_owner_boxes",
+          "cases": 17,
+          "aggregateCaseSeconds": 5.921,
+          "slowestCaseSeconds": 1.077
+        },
+        {
+          "method": "Lokad.Svg.Tests.OpenTypeFontTests.Empty_primitive_pattern_paints_need_no_tile_fonts",
+          "cases": 504,
+          "aggregateCaseSeconds": 5.533,
+          "slowestCaseSeconds": 0.028
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgCurveOwnershipTests.Admitted_inputs_release_owners_across_memory_boundaries",
+          "cases": 48,
+          "aggregateCaseSeconds": 5.333,
+          "slowestCaseSeconds": 1.08
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgSolidPaintOwnershipTests.Source_paints_and_text_layers_release_storage_after_denial_cancellation_and_retry",
+          "cases": 8,
+          "aggregateCaseSeconds": 5.175,
+          "slowestCaseSeconds": 1.171
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgUseStrokeStyleTests.Stroke_style_reconstruction_and_source_adapters_release_all_owners_on_denial_and_cancellation",
+          "cases": 7,
+          "aggregateCaseSeconds": 4.467,
+          "slowestCaseSeconds": 2.084
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgTextNodeMetricsTests.Node_metadata_releases_owned_storage_after_limits_cancellation_and_retry",
+          "cases": 14,
+          "aggregateCaseSeconds": 4.44,
+          "slowestCaseSeconds": 1.127
+        },
+        {
+          "method": "Lokad.Svg.Tests.SvgRenderedGroupStyleTests.Rendered_group_source_replay_releases_all_owners_on_denial_and_cancellation",
+          "cases": 11,
+          "aggregateCaseSeconds": 4.217,
+          "slowestCaseSeconds": 1.113
+        }
+      ]
+    }
+  ],
+  "nextCostReview": "Measured fast-case aggregates identify the504-case empty-pattern product and600-case inert-template product, plus expensive small authored/radial six-output interactions. Review graph/primitive decision mechanisms separately from representative acquisition/output contracts. Retain distinct consumers, allocation paths, original methods/inputs and known interaction witnesses; equal images alone justify no removal.",
+  "primaryCi": {
+    "run": 42069983277,
+    "status": "Terminal CLOSED; never repoll or refetch.",
+    "jobs": [
+      {
+        "host": "windows",
+        "job": 127394940113,
+        "conclusion": "failure",
+        "logSha256": "c89da93d59a2ef031a93aedc8eda74e8a2795a9bc79403e98335938a4522468a",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47780,
+            "total": 47780
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73536,
+            "total": 73537
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "job": 127394940640,
+        "conclusion": "success",
+        "logSha256": "60176adffd3a7c8431bdd2a21c929ca5449d03f4fcbce9ee21f009747f0f6bac",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47780,
+            "total": 47780
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73537,
+            "total": 73537
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ]
+      }
+    ]
   }
 }
