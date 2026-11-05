@@ -98,7 +98,9 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 /// <remarks>Inputs and resources are borrowed and immutable. Materialized outputs have admitted owners;
 /// empty regions retain bounds and borrow clear pixels only when read. All intermediates are released
 /// on success, failure or cancellation; the final owner transfers to the caller. Cancellation covers
-/// copies, conversions, blur passes and composition. Calls are independent.</remarks>
+/// copies, conversions, blur passes and composition. Only final-result dependencies evaluate pixels;
+/// other nodes retain reference, region and mapped-scalar validation. Region defaults remain independent
+/// of pixel demand. The bounded dependency bitmap uses stack storage. Calls are independent.</remarks>
 internal static class SvgFilterPlayback
 {
     // Native composition output is the input intersection for source-in and
@@ -575,6 +577,8 @@ internal static class SvgFilterPlayback
         Span<int> matrixStages = stackalloc int[count];
         Span<bool> resolvedViews = stackalloc bool[count];
         resolvedViews.Clear();
+        Span<bool> needed = stackalloc bool[count];
+        needed.Clear();
         using RenderBudget.BudgetReservation tableOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgConverter.RasterizedSurface>(count + 2)
             + 3 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count) + ParserCollectionMemory.GetArrayByteCount(count, System.Runtime.CompilerServices.Unsafe.SizeOf<SampledOffset?>()) + ParserCollectionMemory.GetArrayByteCount<bool>(count) + ParserCollectionMemory.GetArrayByteCount<UniformColor>(count), SvgMemoryCategory.Surface);
         SvgConverter.RasterizedSurface[] outputs = new SvgConverter.RasterizedSurface[count + 2];
@@ -609,6 +613,7 @@ internal static class SvgFilterPlayback
                 token.ThrowIfCancellationRequested();
             }
             int finalPaintIndex = count == 0 ? -1 : ResolvePaintSource(new(finalIndex)).Index;
+            MarkNeeded(resource, needed, token);
             for (int index = 0; index < count; index++)
             {
                 token.ThrowIfCancellationRequested();
@@ -616,6 +621,11 @@ internal static class SvgFilterPlayback
                 if (map.Regions is not null && (regions[index].Right <= regions[index].Left || regions[index].Bottom <= regions[index].Top))
                 {
                     imageBounds[index] = regions[index];
+                    continue;
+                }
+                if (!needed[index])
+                {
+                    ValidateUnread(primitive, index, graphic);
                     continue;
                 }
                 bool nearestSampling = false;
@@ -635,21 +645,7 @@ internal static class SvgFilterPlayback
                 {
                     imageBounds[index] = regions[index];
                 }
-                else if (primitive.Region is not null)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Primitive filter regions require a placed coordinate context.");
-                double sigmaX = primitive.SigmaX * Math.Abs(map.ScaleX), sigmaY = primitive.SigmaY * Math.Abs(map.ScaleY);
-                if (double.IsNaN(sigmaX) || double.IsNaN(sigmaY))
-                    throw new SvgException(SvgErrorCode.LimitExceeded, "Filter deviations exceed the finite coordinate range.");
-                // Native Gaussian mapping saturates at 532 device units. Clamp
-                // before narrowing so finite authored values never become an
-                // unclassified infinity in the internal deviation contract.
-                if (primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur)
-                { sigmaX = Math.Min(sigmaX, 532); sigmaY = Math.Min(sigmaY, 532); }
-                else if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow && ((float)sigmaX > 135 || (float)sigmaY > 135))
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Drop-shadow deviations above 135 device pixels per axis are not implemented.");
-                else if (sigmaX > float.MaxValue || sigmaY > float.MaxValue)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "This filter primitive requires unimplemented deviation rescaling.");
-                SvgGaussianDeviation deviation = new((float)sigmaX, (float)sigmaY);
+                SvgGaussianDeviation deviation = PrepareDeviation(primitive);
                 if (primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur)
                 {
                     float sampleRadiusX = MathF.Ceiling(3f * deviation.Horizontal), sampleRadiusY = MathF.Ceiling(3f * deviation.Vertical);
@@ -1325,6 +1321,85 @@ internal static class SvgFilterPlayback
         static SvgShaderPaint FloodPaint(SvgSolidPaint paint)
             => new(paint.Color.Red / 255f * paint.Alpha, paint.Color.Green / 255f * paint.Alpha,
                 paint.Color.Blue / 255f * paint.Alpha, paint.Alpha);
+
+        // Pixel dependencies differ from region defaults and declaration validation.
+        // The bounded stack bitmap owns no surfaces and follows only earlier results.
+        static void MarkNeeded(SvgFilterResource resource, Span<bool> needed, CancellationToken token)
+        {
+            if (needed.IsEmpty) return;
+            needed[^1] = true;
+            for (int index = needed.Length - 1; index >= 0; index--)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!needed[index]) continue;
+                SvgFilterPrimitive primitive = resource.Primitives.Items[index];
+                if (primitive.Kind == SvgFilterPrimitiveKind.Flood) continue;
+                if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
+                {
+                    foreach (SvgFilterInput input in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        Mark(input, index, needed);
+                    }
+                }
+                else
+                {
+                    Mark(primitive.Input, index, needed);
+                    if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
+                        Mark(primitive.SecondInput, index, needed);
+                }
+            }
+
+            // Existing readers retain invalid-reference diagnostics and ordering.
+            static void Mark(SvgFilterInput input, int before, Span<bool> needed)
+            {
+                if ((uint)input.Index < (uint)before) needed[input.Index] = true;
+            }
+        }
+
+        void ValidateUnread(SvgFilterPrimitive primitive, int index, ReadOnlySpan<byte> graphic)
+        {
+            ReadInput(primitive.Input, index, graphic, false);
+            PrepareDeviation(primitive);
+            if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
+                ReadInput(primitive.SecondInput, index, graphic, false);
+            else if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
+                foreach (SvgFilterInput input in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
+                {
+                    token.ThrowIfCancellationRequested();
+                    ReadInput(input, index, graphic, false);
+                }
+            if (primitive.Kind == SvgFilterPrimitiveKind.Offset)
+            {
+                SvgShaderMatrix placed = PrepareOffset(primitive, new(0, 0)).Placement;
+                ValidateOffset(placed.TranslateX, placed.TranslateY);
+            }
+            else if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow)
+                ValidateOffset(primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY);
+            else if (primitive.Kind is not (SvgFilterPrimitiveKind.GaussianBlur or SvgFilterPrimitiveKind.Flood
+                or SvgFilterPrimitiveKind.ColorMatrix or SvgFilterPrimitiveKind.Composite
+                or SvgFilterPrimitiveKind.Blend or SvgFilterPrimitiveKind.Merge))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive is not implemented.");
+        }
+
+        SvgGaussianDeviation PrepareDeviation(SvgFilterPrimitive primitive)
+        {
+            if (map.Regions is null && primitive.Region is not null)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Primitive filter regions require a placed coordinate context.");
+            double sigmaX = primitive.SigmaX * Math.Abs(map.ScaleX), sigmaY = primitive.SigmaY * Math.Abs(map.ScaleY);
+            if (double.IsNaN(sigmaX) || double.IsNaN(sigmaY))
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Filter deviations exceed the finite coordinate range.");
+            // Native Gaussian mapping saturates at 532 device units. Clamp
+            // before narrowing so finite authored values never become an
+            // unclassified infinity in the internal deviation contract.
+            if (primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur)
+            { sigmaX = Math.Min(sigmaX, 532); sigmaY = Math.Min(sigmaY, 532); }
+            else if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow && ((float)sigmaX > 135 || (float)sigmaY > 135))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Drop-shadow deviations above 135 device pixels per axis are not implemented.");
+            else if (sigmaX > float.MaxValue || sigmaY > float.MaxValue)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "This filter primitive requires unimplemented deviation rescaling.");
+            return new((float)sigmaX, (float)sigmaY);
+        }
 
         // Prepare the native drawing operands once per setup visit. This borrowed
         // arithmetic owns no storage; graph visitors retain cancellation and budget.

@@ -1,0 +1,113 @@
+{
+  "status": "Final-result pixel dependencies close ten failing-before allocation controls; affected filter integration passes. Full milestone qualification is in progress.",
+  "source": {
+    "baseCommit": "8032fc85d7f3469751b662a3370d9a15eff9f717",
+    "path": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+    "beforeLfSha256": "61d28e3f6013a04b2650903744232823d8c77d4cc651826c976eaab116afc480",
+    "afterLfSha256": "99b6f6bba2bc2d27067f2d7b6196aa38094046d9a5b2a9d5fcd67d3dae97dfad",
+    "entireBeforeFileReconstructed": true,
+    "numericalKernelsAndExistingMaterialCallsUnchanged": true,
+    "regionAndRequestPlanningUnchanged": true,
+    "ownershipAndFinallyCleanupUnchanged": true,
+    "extraStorage": "Cleared bounded stack bitmap; no retained graph/cache or new heap owner."
+  },
+  "regressions": {
+    "file": "../../Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs",
+    "cases": 18,
+    "contractCases": 10,
+    "mechanismCases": 8,
+    "beforeHost": "windows",
+    "beforeFailed": 10,
+    "beforePassed": 8,
+    "failures": [
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Unread_branches_need_no_pixel_storage(branch: \"flood\")",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Unread_branches_need_no_pixel_storage(branch: \"offset\")",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Unread_branches_need_no_pixel_storage(branch: \"matrix\")",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Unread_branches_need_no_pixel_storage(branch: \"blend\")",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Unread_pixels_keep_region_defaults_for_a_later_alpha_generating_matrix",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Unread_branches_need_no_pixel_storage(branch: \"shadow\")",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Unread_branches_need_no_pixel_storage(branch: \"blur\")",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Unread_branches_need_no_pixel_storage(branch: \"merge\")",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Selected_secondary_and_merge_branches_survive_refusal_cancellation_and_retry(merge: False)",
+      "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Selected_secondary_and_merge_branches_survive_refusal_cancellation_and_retry(merge: True)"
+    ],
+    "retains": [
+      "Seven distinct unused primitive paths",
+      "Selected secondary and merge edges",
+      "Placed region defaults feeding an alpha-generating matrix",
+      "Malformed primary/secondary/merge references",
+      "Mapped offset and shadow deviation limits",
+      "Refusal, caller-token cancellation, cleanup, retry and source immutability"
+    ]
+  },
+  "affectedValidation": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "af969f5b262d0515fc5e3129a95629a07ab6fe8a22ac936bdb211f45474404d4",
+      "testAssemblySha256": "c05f4d12e91bbc11ca7cd3a6dbddde8c2f2c4af7d06c20c54bc937ff3b53c78c",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDropShadowStorageTests|FullyQualifiedName~SvgGaussianBlurTests|FullyQualifiedName~SvgColoredFilterTests|FullyQualifiedName~SvgEmptyFilterStageStorageTests|FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 10.697375299874693,
+      "counters": {
+        "executed": "836",
+        "passed": "836",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "af969f5b262d0515fc5e3129a95629a07ab6fe8a22ac936bdb211f45474404d4",
+      "testAssemblySha256": "c05f4d12e91bbc11ca7cd3a6dbddde8c2f2c4af7d06c20c54bc937ff3b53c78c",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDropShadowStorageTests|FullyQualifiedName~SvgGaussianBlurTests|FullyQualifiedName~SvgColoredFilterTests|FullyQualifiedName~SvgEmptyFilterStageStorageTests|FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 18.727775699924678,
+      "counters": {
+        "executed": "836",
+        "passed": "836",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "af969f5b262d0515fc5e3129a95629a07ab6fe8a22ac936bdb211f45474404d4",
+      "testAssemblySha256": "ca723d0e5038f63aef8e7530dac242bea86af79199639f2e85dc9bb194c276d2",
+      "selection": "(Category!=Research&(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgAffineFilterCaptureReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests))|(FullyQualifiedName~SvgPaintInputReferenceTests&((DisplayName~filter-uniform-precision)|(DisplayName~filter-source-composition)|(DisplayName~gradient-color-alpha)))",
+      "exitCode": 0,
+      "seconds": 145.57612619991414,
+      "counters": {
+        "executed": "21157",
+        "passed": "21157",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "af969f5b262d0515fc5e3129a95629a07ab6fe8a22ac936bdb211f45474404d4",
+      "testAssemblySha256": "ca723d0e5038f63aef8e7530dac242bea86af79199639f2e85dc9bb194c276d2",
+      "selection": "(Category!=Research&(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgAffineFilterCaptureReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests))|(FullyQualifiedName~SvgPaintInputReferenceTests&((DisplayName~filter-uniform-precision)|(DisplayName~filter-source-composition)|(DisplayName~gradient-color-alpha)))",
+      "exitCode": 0,
+      "seconds": 141.75131960003637,
+      "counters": {
+        "executed": "21157",
+        "passed": "21157",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "qualification": {
+    "status": "Pending full .NET10 hosts, primary CI, deterministic packages/installed consumers and204-source RAM-only original/context replay."
+  },
+  "referencesRewritten": 0
+}

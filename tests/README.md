@@ -25,6 +25,15 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+[Filter graph demand](Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs) separates unused
+pixel branches from declaration and region metadata. Ten allocation contracts
+retain selected secondary/merge paths, source immutability, refusal, cancellation
+and retry; eight mechanisms retain malformed-reference and mapped-limit errors.
+The placed alpha-generating matrix protects inherited regions independently of
+pixel demand. Existing native banks supply the rendering integration; the
+[qualification](Research/release-baselines/filter-graph-demand.json) records
+failing-before controls and milestone checks.
+
 Paint-recording and marker validation retains 202 canonical native checks, 40
 routine six-output contracts (including every error boundary) and all 167 remaining
 API matrices as individual Research cases. The explicit selections live beside
