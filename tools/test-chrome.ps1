@@ -50,6 +50,7 @@ function Invoke-ChromeCapture {
     # Local DevTools HTTP/WebSocket traffic must work despite an unusable host proxy.
     foreach ($name in @('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY')) { $start.Environment[$name] = 'http://127.0.0.1:1' }
     $start.Environment['NO_PROXY'] = ''
+    foreach ($name in @('TMPDIR', 'TEMP', 'TMP')) { $start.Environment[$name] = $smokeTempDirectory }
     $start.ArgumentList.Add($chromeTool)
     $start.ArgumentList.Add($executable)
     $start.ArgumentList.Add('2')
@@ -93,15 +94,22 @@ function Invoke-ChromeCapture {
         if ($standardErrorTask.Wait(5000)) { [IO.File]::WriteAllText(($Candidate + '.stderr.txt'), $standardErrorTask.GetAwaiter().GetResult()) }
         throw
     }
-    finally { $process.Dispose() }
+    finally {
+        try {
+            if (-not $process.HasExited) { $process.Kill($true) }
+            if (-not $process.WaitForExit(5000)) { throw 'Chrome smoke child did not terminate.' }
+        }
+        finally { $process.Dispose() }
+    }
 }
 
 $captureId = [Guid]::NewGuid().ToString('N')
 $candidates = [System.Collections.Generic.List[string]]::new()
 $candidateHashes = [System.Collections.Generic.List[string]]::new()
 $captureDiagnostics = [System.Collections.Generic.List[object]]::new()
-$profilesBefore = [Collections.Generic.HashSet[string]]::new([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-chrome-*'), [StringComparer]::Ordinal)
-$captureRootsBefore = [Collections.Generic.HashSet[string]]::new([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-capture-*'), [StringComparer]::Ordinal)
+# Own only this run's temporary namespace; other captures may run concurrently.
+$smokeTempDirectory = [IO.Path]::GetFullPath((Join-Path ([IO.Path]::GetTempPath()) ('svg-s-' + [IO.Path]::GetRandomFileName())))
+New-Item -ItemType Directory -Path $smokeTempDirectory | Out-Null
 for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 {
     $candidate = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId-$attempt.png"
@@ -140,7 +148,7 @@ $viewportReference = Join-Path $PSScriptRoot '../tests/References/original-zero-
 $viewportHashes = [Collections.Generic.List[string]]::new()
 for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++) {
     $candidate = Join-Path $ResultsDirectory "image-viewport-$captureId-$attempt.png"
-    & (Join-Path $PSScriptRoot 'capture-chrome-process.ps1') -ChromeExecutable $executable -InputFile $viewportSource -OutputFile $candidate -Width 16 -Height 16 -Background transparent -CaptureTimeoutMilliseconds $CaptureTimeoutMilliseconds -TargetFramework $TargetFramework -ImageViewportWidth 300 -ImageViewportHeight 150
+    & (Join-Path $PSScriptRoot 'capture-chrome-process.ps1') -ChromeExecutable $executable -InputFile $viewportSource -OutputFile $candidate -Width 16 -Height 16 -Background transparent -CaptureTimeoutMilliseconds $CaptureTimeoutMilliseconds -TargetFramework $TargetFramework -TemporaryParent $smokeTempDirectory -ImageViewportWidth 300 -ImageViewportHeight 150
     & dotnet $diffTool $viewportReference $candidate
     if ($LASTEXITCODE -ne 0) { throw 'Explicit image viewport did not preserve its letterbox and screenshot crop.' }
     $hash = (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -157,7 +165,7 @@ foreach ($control in @(@{ id = 'boundary-0-75'; scale = .75; width = 13; height 
     $densityHashes = [Collections.Generic.List[string]]::new()
     for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++) {
         $candidate = Join-Path $ResultsDirectory ($control.id + '-' + $captureId + '-' + $attempt + '.png')
-        & (Join-Path $PSScriptRoot 'capture-chrome-process.ps1') -ChromeExecutable $executable -InputFile $densitySource -OutputFile $candidate -Width $control.width -Height $control.height -Background transparent -CaptureTimeoutMilliseconds $CaptureTimeoutMilliseconds -TargetFramework $TargetFramework -ImageViewportWidth 17 -ImageViewportHeight 11 -OutputScale $control.scale
+        & (Join-Path $PSScriptRoot 'capture-chrome-process.ps1') -ChromeExecutable $executable -InputFile $densitySource -OutputFile $candidate -Width $control.width -Height $control.height -Background transparent -CaptureTimeoutMilliseconds $CaptureTimeoutMilliseconds -TargetFramework $TargetFramework -TemporaryParent $smokeTempDirectory -ImageViewportWidth 17 -ImageViewportHeight 11 -OutputScale $control.scale
         & dotnet $diffTool $densityReference $candidate
         if ($LASTEXITCODE -ne 0) { throw 'Device density changed CSS layout or image-boundary coverage.' }
         $hash = (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -217,45 +225,61 @@ $fingerprint = [ordered]@{
 }
 $fingerprintPath = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId.json"
 
-# Exercise the interactive wrapper's failure/timeout publication contract as well.
-$wrapperDirectory = Join-Path $ResultsDirectory ('wrapper-' + $captureId)
-New-Item -ItemType Directory -Path $wrapperDirectory | Out-Null
-$wrapperOutput = Join-Path $wrapperDirectory 'preserved.png'
-Copy-Item -LiteralPath $reference -Destination $wrapperOutput
-$preservedHash = (Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash
-$captureScript = Join-Path $PSScriptRoot 'capture-chrome.ps1'
+# Add independent sibling owners after capture starts, so a machine-wide
+# before/after directory snapshot would fail even when our own cleanup succeeds.
+$unrelatedRoots = [Collections.Generic.List[string]]::new()
 try {
-    & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 4096 -Height 2049 -CacheDirectory $CacheDirectory -PinPath $PinPath
-    throw 'Wrapper unexpectedly accepted excessive dimensions.'
-}
-catch { if ($_.Exception.Message -notlike '*8,388,608-pixel transport limit*') { throw } }
-try {
-    & $captureScript -InputPath $densitySource -OutputPath $wrapperOutput -Width 35 -Height 23 -CacheDirectory $CacheDirectory -PinPath $PinPath -ImageViewportWidth 17 -ImageViewportHeight 11 -OutputScale 2
-    throw 'Wrapper unexpectedly accepted an unrepresentable device-density crop.'
-}
-catch { if ($_.Exception.Message -notlike '*cannot represent these physical screenshot dimensions*') { throw } }
-try {
-    & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 2 -Height 2 -CacheDirectory $CacheDirectory -PinPath $PinPath -CaptureTimeoutMilliseconds 1
-    throw 'Wrapper unexpectedly completed inside the forced deadline.'
-}
-catch { if ($_.Exception.Message -notmatch 'deadline|timed out') { throw } }
-if ((Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash -cne $preservedHash) { throw 'Failed capture replaced the existing destination.' }
-if (@(Get-ChildItem -LiteralPath $wrapperDirectory -Filter '*.tmp').Count -ne 0) { throw 'Failed capture left partial publication files.' }
-if (-not $profilesBefore.SetEquals([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-chrome-*'))) { throw 'Chrome smoke or wrapper controls leaked a profile; pre-existing profiles were not modified.' }
-$captureRootsAfter = [string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-capture-*')
-if (-not $captureRootsBefore.SetEquals($captureRootsAfter)) {
-    $addedRoots = @($captureRootsAfter | Where-Object { -not $captureRootsBefore.Contains($_) })
-    $removedRoots = @($captureRootsBefore | Where-Object { $_ -cnotin $captureRootsAfter })
-    $cleanupFailure = [ordered]@{
-        powershell = $PSVersionTable.PSVersion.ToString()
-        temporaryDirectory = [IO.Path]::GetTempPath()
-        addedRoots = $addedRoots
-        removedRoots = $removedRoots
-        addedRootEntries = @($addedRoots | ForEach-Object {
-            [ordered]@{ root = $_; entries = @(Get-ChildItem -LiteralPath $_ -Force | Select-Object -First 64 -ExpandProperty Name) }
-        })
+    foreach ($prefix in @('lokad-svg-chrome-', 'lokad-svg-capture-')) {
+        $sibling = [IO.Path]::GetFullPath((Join-Path ([IO.Path]::GetTempPath()) ($prefix + $captureId)))
+        New-Item -ItemType Directory -Path $sibling | Out-Null
+        $unrelatedRoots.Add($sibling)
+        [IO.File]::WriteAllText((Join-Path $sibling 'keep.txt'), 'independent owner')
     }
-    $cleanupFailure | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $ResultsDirectory 'wrapper-cleanup-failure.json') -Encoding utf8
-    throw ('Chrome wrapper temporary roots changed. Added: ' + ($addedRoots -join ', ') + '; removed: ' + ($removedRoots -join ', ') + '. Pre-existing roots were not modified.')
+
+    # Exercise the interactive wrapper's failure/timeout publication contract as well.
+    $wrapperDirectory = Join-Path $ResultsDirectory ('wrapper-' + $captureId)
+    New-Item -ItemType Directory -Path $wrapperDirectory | Out-Null
+    $wrapperOutput = Join-Path $wrapperDirectory 'preserved.png'
+    Copy-Item -LiteralPath $reference -Destination $wrapperOutput
+    $preservedHash = (Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash
+    $captureScript = Join-Path $PSScriptRoot 'capture-chrome.ps1'
+    try {
+        & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 4096 -Height 2049 -CacheDirectory $CacheDirectory -PinPath $PinPath -TargetFramework $TargetFramework -TemporaryParent $smokeTempDirectory
+        throw 'Wrapper unexpectedly accepted excessive dimensions.'
+    }
+    catch { if ($_.Exception.Message -notlike '*8,388,608-pixel transport limit*') { throw } }
+    try {
+        & $captureScript -InputPath $densitySource -OutputPath $wrapperOutput -Width 35 -Height 23 -CacheDirectory $CacheDirectory -PinPath $PinPath -TargetFramework $TargetFramework -TemporaryParent $smokeTempDirectory -ImageViewportWidth 17 -ImageViewportHeight 11 -OutputScale 2
+        throw 'Wrapper unexpectedly accepted an unrepresentable device-density crop.'
+    }
+    catch { if ($_.Exception.Message -notlike '*cannot represent these physical screenshot dimensions*') { throw } }
+    try {
+        & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 2 -Height 2 -CacheDirectory $CacheDirectory -PinPath $PinPath -TargetFramework $TargetFramework -TemporaryParent $smokeTempDirectory -CaptureTimeoutMilliseconds 1
+        throw 'Wrapper unexpectedly completed inside the forced deadline.'
+    }
+    catch { if ($_.Exception.Message -notmatch 'deadline|timed out') { throw } }
+    if ((Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash -cne $preservedHash) { throw 'Failed capture replaced the existing destination.' }
+    if (@(Get-ChildItem -LiteralPath $wrapperDirectory -Filter '*.tmp').Count -ne 0) { throw 'Failed capture left partial publication files.' }
+    $temporaryEntries = @(Get-ChildItem -LiteralPath $smokeTempDirectory -Force)
+    if ($temporaryEntries.Count -ne 0) {
+        $cleanupFailure = [ordered]@{
+            powershell = $PSVersionTable.PSVersion.ToString()
+            temporaryDirectory = $smokeTempDirectory
+            entries = @($temporaryEntries | Select-Object -First 64 Name, Attributes)
+        }
+        $cleanupFailure | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $ResultsDirectory 'wrapper-cleanup-failure.json') -Encoding utf8
+        throw 'Chrome smoke left entries in its private temporary parent; inspect wrapper-cleanup-failure.json.'
+    }
+    Remove-Item -LiteralPath $smokeTempDirectory
+    foreach ($sibling in $unrelatedRoots) {
+        if ([IO.File]::ReadAllText((Join-Path $sibling 'keep.txt')) -cne 'independent owner') { throw 'Capture changed an independent temporary owner.' }
+    }
+    $fingerprint['unrelatedTemporaryOwnersPreserved'] = $true
+    $fingerprint | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $fingerprintPath -NoNewline -Encoding utf8
 }
-$fingerprint | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $fingerprintPath -NoNewline -Encoding utf8
+finally {
+    foreach ($sibling in $unrelatedRoots) {
+        [IO.File]::Delete((Join-Path $sibling 'keep.txt'))
+        Remove-Item -LiteralPath $sibling
+    }
+}

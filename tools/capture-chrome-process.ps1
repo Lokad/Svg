@@ -10,7 +10,8 @@ param(
     [string] $TargetFramework = 'net11.0',
     [Nullable[double]] $ImageViewportWidth,
     [Nullable[double]] $ImageViewportHeight,
-    [double] $OutputScale = 1
+    [double] $OutputScale = 1,
+    [string] $TemporaryParent = [IO.Path]::GetTempPath()
 )
 # Internal process wrapper. The caller authenticates Chrome through setup-chrome.ps1;
 # one batch can reuse that installation while every capture owns a fresh process/profile.
@@ -47,8 +48,8 @@ if ($null -ne $ImageViewportWidth) {
 }
 # The parent owns this private temporary root even when its child is forcibly
 # terminated before ChromeProcess can run its profile cleanup.
-$captureTempParent = [IO.Path]::TrimEndingDirectorySeparator([IO.Path]::GetFullPath([IO.Path]::GetTempPath()))
-$captureTempDirectory = [IO.Path]::GetFullPath((Join-Path $captureTempParent ('lokad-svg-capture-' + [Guid]::NewGuid().ToString('N'))))
+$captureTempParent = [IO.Path]::TrimEndingDirectorySeparator([IO.Path]::GetFullPath($TemporaryParent))
+$captureTempDirectory = [IO.Path]::GetFullPath((Join-Path $captureTempParent ('svg-c-' + [IO.Path]::GetRandomFileName())))
 if ([IO.Path]::GetDirectoryName($captureTempDirectory) -cne $captureTempParent) { throw 'Capture temporary root escapes the intended temporary directory.' }
 $start.Environment['TMPDIR'] = $captureTempDirectory
 $start.Environment['TEMP'] = $captureTempDirectory

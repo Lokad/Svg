@@ -386,8 +386,13 @@ One additional viewport/crop control reuses an independent transparent reference
 and fails if the explicit image viewport is ignored. Process shutdown observes
 native exit separately from redirected-pipe completion, with bounded termination,
 drain and profile cleanup before accepting any PNG.
-On a temporary-root mismatch, `wrapper-cleanup-failure.json` records added and
-removed roots and bounded immediate entries. Preserve that report before retrying.
+Each smoke run gives its children a private temporary parent and requires it to
+be empty after cleanup. Concurrent captures remain independent. A cleanup failure
+retains that parent and records bounded immediate entries in
+`wrapper-cleanup-failure.json`; preserve the report before retrying. Capture scripts
+accept `-TemporaryParent` to select a borrowed parent, and `-TargetFramework` selects
+the runtime through the outer wrapper and its child. Use a short parent path for
+Chrome's native temporary files and IPC endpoints.
 
 ```powershell
 tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests
