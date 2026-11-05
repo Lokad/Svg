@@ -18,6 +18,7 @@ public sealed class SvgFilterDisplayTests
     [InlineData("line")]
     [InlineData("image")]
     [InlineData("use")]
+    [Trait("Layer", "Rendering")]
     public void Hidden_filtered_targets_and_their_ancestors_do_not_paint(string kind)
     {
         string shape = kind switch
@@ -49,6 +50,7 @@ public sealed class SvgFilterDisplayTests
     [InlineData("<defs><symbol id='s'><use href='#source' display='none' filter='url(#f)'/></symbol></defs><use href='#s'/>")]
     [InlineData("<defs><g id='s'><rect width='8' height='8' filter='url(#f)'/></g></defs><use href='#s' display='none'/>")]
     [InlineData("<defs><symbol id='s'><rect width='8' height='8'/></symbol></defs><use href='#s' display='none' filter='url(#f)'/>")]
+    [Trait("Layer", "Rendering")]
     public void Retained_sources_and_instances_respect_effective_display(string content)
         => Assert.Equal(Render(Sibling), Render(content + Sibling));
 
@@ -56,6 +58,7 @@ public sealed class SvgFilterDisplayTests
     [InlineData("<defs><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='8' height='8' display='none' filter='url(#f)'/></pattern></defs><rect width='32' height='32' fill='url(#p)'/>")]
     [InlineData("<defs><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#source' display='none' filter='url(#f)'/></pattern></defs><rect width='32' height='32' fill='url(#p)'/>")]
     [InlineData("<defs><mask id='m' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#source' display='none' filter='url(#f)'/></mask></defs><rect width='32' height='32' fill='red' mask='url(#m)'/>")]
+    [Trait("Layer", "Rendering")]
     public void Hidden_resource_children_do_not_contribute_filter_output(string content)
         => Assert.Equal(Render(Sibling), Render(content + Sibling));
 
@@ -63,14 +66,17 @@ public sealed class SvgFilterDisplayTests
     [InlineData("fill='none'")]
     [InlineData("fill-opacity='0'")]
     [InlineData("fill='rgba(0,0,0,0)'")]
+    [Trait("Layer", "Rendering")]
     public void Visible_paintless_sources_can_still_generate_filter_output(string paint)
         => Assert.Equal(Render("<rect width='32' height='32' fill='red'/>"), Render("<rect width='8' height='8' " + paint + " filter='url(#f)'/>"));
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Element_opacity_applies_after_the_filter()
         => Assert.Equal(Render(Sibling), Render("<rect width='8' height='8' opacity='0' filter='url(#f)'/>" + Sibling));
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Winning_cascade_controls_filter_activation()
     {
         Assert.Equal(Render("<rect width='32' height='32' fill='red'/>"), Render("<rect id='target' width='8' height='8' display='none' filter='url(#f)'/><style>#target{display:block!important}</style>"));
@@ -78,6 +84,7 @@ public sealed class SvgFilterDisplayTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Display_on_a_filter_resource_ancestor_does_not_disable_the_resource()
     {
         const string filter = "<g display='none'><defs><filter id='other' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='red'/></filter></defs></g>";
@@ -89,6 +96,7 @@ public sealed class SvgFilterDisplayTests
     [InlineData("<rect width='8' height='8' display='none' transform='unknown(1)' filter='url(#f)'/>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<rect width='8' height='8' display='none' filter='blur(1px)'/>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<defs><mask id='m' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><rect width='8' height='8' display='none' filter='url(#f)'/></mask></defs><rect width='32' height='32' fill='red' mask='url(#m)'/>", SvgErrorCode.UnsupportedFeature)]
+    [Trait("Layer", "Mechanism")]
     public void Hidden_targets_keep_geometry_and_filter_syntax_admission(string content, SvgErrorCode code)
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -97,6 +105,7 @@ public sealed class SvgFilterDisplayTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Denial_cancellation_and_retry_release_filter_and_replay_owners()
     {
         const string content = "<use href='#s' display='none' filter='url(#f)'/><defs><rect id='s' width='8' height='8' filter='url(#f)'/></defs>" + Sibling;

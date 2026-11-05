@@ -11,6 +11,7 @@ public sealed class SvgFilterOutputBoundsTests
     [InlineData("path")]
     [InlineData("line")]
     [InlineData("group")]
+    [Trait("Layer", "Rendering")]
     public void Filter_output_bounds_include_floods_independently_of_source_placement(string kind)
     {
         foreach ((int x, int y) in new[] { (0, 0), (64, 0), (-64, 0), (0, 64), (0, -64), (64, 64), (-64, -64) })
@@ -24,6 +25,7 @@ public sealed class SvgFilterOutputBoundsTests
     [Theory]
     [InlineData("<feOffset dx='0'/>")]
     [InlineData("<feFlood flood-color='red'/><feComposite in2='SourceGraphic' operator='in'/>")]
+    [Trait("Layer", "Rendering")]
     public void Source_dependent_results_remain_transparent_for_offscreen_sources(string graph)
     {
         foreach (string kind in new[] { "rect", "circle", "path", "line", "group" })
@@ -34,6 +36,7 @@ public sealed class SvgFilterOutputBoundsTests
     [Theory]
     [InlineData(100_000)]
     [InlineData(-100_000)]
+    [Trait("Layer", "Contract")]
     public void Unused_remote_source_bounds_do_not_enlarge_the_filter_capture(int position)
     {
         SvgRenderLimits limits = new(16_384, 64, 4096, 16_384, 64, 64);
@@ -45,6 +48,7 @@ public sealed class SvgFilterOutputBoundsTests
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
+    [Trait("Layer", "Rendering")]
     public void Offscreen_filter_output_keeps_viewport_transform_clip_and_composition(int scale)
     {
         SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default);
@@ -58,6 +62,7 @@ public sealed class SvgFilterOutputBoundsTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Source_independent_filter_playback_releases_on_memory_refusal_and_retry()
     {
         byte[] input = Input(Filter("<feFlood flood-color='red'/><feOffset dx='1' dy='1'/>") + Shape("rect", 64, 64));

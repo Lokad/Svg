@@ -25,6 +25,11 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+[Mixed filter/mask methods](Research/release-baselines/filter-test-responsibilities.json)
+use individual responsibility traits: direct bounds/admission, storage/lifetimes and
+relational rendering controls remain distinct. All 65 cases and assertions remain;
+layer-only selection still requires affected integration and broader qualification.
+
 Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs)
 while retaining separate names, inputs and allocation paths. Add one representative
 contract for a distinct path; rendering fixtures keep their canonical conversion.
@@ -405,6 +410,8 @@ maps the shared fix to native controls and the complete green-grapes original.
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;
 a layer filter does not replace affected unclassified tests or full qualification.
+For direct mask-bound vectors, use `FullyQualifiedName~SvgMaskPaintRegionTests&Layer=Mechanism`;
+include its contract siblings for storage refusal, cancellation and replay.
 The [supplied-font output map](Research/release-baselines/font-output-responsibilities.md)
 keeps all 37 native rendering inputs, seven routine API matrices and 30 extended
 matrices, with separate layout, acquisition and ownership regressions.

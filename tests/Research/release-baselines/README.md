@@ -34,6 +34,8 @@ shutdown and asynchronous output contracts to source and installed-package evide
 across 28 contracts while retaining all 42 affected cases and distinct allowances.
 [Test selection](test-selection.json) separates Research from responsibility layers
 and preserves the relocated background witness, full cases and .NET 10 selection.
+[Filter/mask responsibilities](filter-test-responsibilities.json) classifies 22 mixed
+methods individually, retaining all 65 cases, assertions and exact fast-selection membership.
 [Bounds/map contracts](bounds-map-contracts.md) trace clip, mask, marker, text and
 filter descriptors to their owners, numerical boundaries and independent witnesses.
 [Invocation ownership](invocation-ownership.json) separates output lifetimes and

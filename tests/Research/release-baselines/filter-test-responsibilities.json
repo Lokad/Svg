@@ -1,0 +1,191 @@
+{
+  "status": "Method-level responsibilities qualified for 22 mixed filter/mask methods; every one of the 65 individual cases, inputs, assertions and original loops remains. This is selection/classification, with no test-count or speedup claim.",
+  "scope": {
+    "testParentCommit": "3852d66441ba36ffe67abc4abdf8691ced989168",
+    "runtimeSourceCommit": "1513c6f3c563120755bf793ef2fd802b6cb1c419",
+    "runtimeQualification": "affine-geometry-ownership.json",
+    "assemblies": {
+      "net11.0": {
+        "beforeTestSha256": "991a42ca94372b15b3739cc7810528addd570c172ebc3b31cda8a4f882e05eae",
+        "afterTestSha256": "e84fbd99991356683f785797f5137178f6645b27a8de512261a5d32f37c30483",
+        "librarySha256": "ca8d3f5fb3f8a01ae516a5a902d3638f848ec5ae79fe8f18181e5d51a3b75ccf"
+      },
+      "net10.0": {
+        "beforeTestSha256": "caed649f72a8c174d6cab97552740bcbb595e4e3c0fc1156930592481ac4bcdf",
+        "afterTestSha256": "51aaf5c956c2adb849184925667f0f41d76f889e8d0ad87405eff35283508a81",
+        "librarySha256": "5669556aa8004988a62ccd3f9c795cee5b789e1308b9f3b60f1920c498372549"
+      }
+    },
+    "source": [
+      {
+        "path": "../../Lokad.Svg.Tests/SvgMaskPaintRegionTests.cs",
+        "beforeLfSha256": "f32c9abe1131a7a5d3a7ef9cd2f9cd2ee10d340d66ebddf2c9f639e380c726cf",
+        "afterLfSha256": "0fb166627d944f2825fec67f5101be16c2e327f765b7757dc8ac38ff0c9eb302",
+        "onlyLayerTraitsAdded": true,
+        "methods": {
+          "Paint_enclosure_uses_separate_object_and_visual_bounds": "Mechanism",
+          "Retained_region_surface_is_accounted_and_memory_refusal_leaves_the_scene_replayable": "Contract",
+          "Retained_region_cancellation_releases_every_owner_before_retry": "Contract"
+        }
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgColoredFilterTests.cs",
+        "beforeLfSha256": "18dbf777bca3a25193bb48462976f13358b6066a03a86fdaf51386ef0317a820",
+        "afterLfSha256": "5309b9b332706bdd1ef08059231cfa395c43ee0ec0c17cdebe631b45f7c80c34",
+        "onlyLayerTraitsAdded": true,
+        "methods": {
+          "Colored_filter_source_capture_releases_owners_after_denial_cancellation_and_retry": "Contract",
+          "Zero_blur_retains_source_image_bounds_before_fractional_displacement": "Rendering",
+          "Binary_graph_inputs_and_color_conversions_preserve_storage_contracts": "Contract",
+          "Unsupported_binary_graphs_publish_no_output_and_release_parser_owners": "Contract",
+          "Linear_shadow_conversion_releases_material_surfaces_on_denial_cancellation_and_retry": "Contract"
+        }
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgFilterDisplayTests.cs",
+        "beforeLfSha256": "30d6b157f0ab09286ce2ec865495ddac32b6168d7c6d42bcecf3037674c9fbe8",
+        "afterLfSha256": "e161f4af8c8fe0f7a4ffcc88a588c94f753900e8143e7efc8781bb8b348731d6",
+        "onlyLayerTraitsAdded": true,
+        "methods": {
+          "Hidden_filtered_targets_and_their_ancestors_do_not_paint": "Rendering",
+          "Retained_sources_and_instances_respect_effective_display": "Rendering",
+          "Hidden_resource_children_do_not_contribute_filter_output": "Rendering",
+          "Visible_paintless_sources_can_still_generate_filter_output": "Rendering",
+          "Element_opacity_applies_after_the_filter": "Rendering",
+          "Winning_cascade_controls_filter_activation": "Rendering",
+          "Display_on_a_filter_resource_ancestor_does_not_disable_the_resource": "Rendering",
+          "Hidden_targets_keep_geometry_and_filter_syntax_admission": "Mechanism",
+          "Denial_cancellation_and_retry_release_filter_and_replay_owners": "Contract"
+        }
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgFilterOutputBoundsTests.cs",
+        "beforeLfSha256": "bf8b3ee52dd89bdb5d9011426858439c1cbcd6a4cfb810b4992d12aeb73bc731",
+        "afterLfSha256": "8a1b3747b075361d4660f67638b2a3fac80fac1759139b6d6ecf4a167dd88fbc",
+        "onlyLayerTraitsAdded": true,
+        "methods": {
+          "Filter_output_bounds_include_floods_independently_of_source_placement": "Rendering",
+          "Source_dependent_results_remain_transparent_for_offscreen_sources": "Rendering",
+          "Unused_remote_source_bounds_do_not_enlarge_the_filter_capture": "Contract",
+          "Offscreen_filter_output_keeps_viewport_transform_clip_and_composition": "Rendering",
+          "Source_independent_filter_playback_releases_on_memory_refusal_and_retry": "Contract"
+        }
+      }
+    ]
+  },
+  "responsibility": {
+    "methods": {
+      "Mechanism": 2,
+      "Contract": 9,
+      "Rendering": 11
+    },
+    "cases": {
+      "Contract": 22,
+      "Rendering": 35,
+      "Mechanism": 8
+    },
+    "mechanisms": "Direct object/visual-bound vectors and geometry/filter syntax admission.",
+    "contracts": "Shared and separate allowances, borrowed input, unsupported graph/no-output admission, finite remote-source storage, refusal/cancellation/cleanup and exact retry. Existing lifecycle setup remains distinct.",
+    "rendering": "Relational SVG controls for visibility/cascade, opacity/resource composition, source placement and zero-blur image identity. Independent browser-backed image banks and known interaction regressions remain separately selectable.",
+    "principalPurpose": "Mixed legacy assertions are retained under their principal responsibility. Do not blanket-tag these classes or infer redundant cases from equal pixels."
+  },
+  "validation": {
+    "cohort": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passedBefore": 65,
+        "passedAfter": 65,
+        "caseIdentitySha256": "c37eaa94d5d6728d1dba616bf7624ac15d62b92a056a8e0a430a440dc0777f5c",
+        "beforeSeconds": 10.24,
+        "afterSeconds": 9.48
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passedBefore": 65,
+        "passedAfter": 65,
+        "caseIdentitySha256": "c37eaa94d5d6728d1dba616bf7624ac15d62b92a056a8e0a430a440dc0777f5c",
+        "beforeSeconds": 8.39,
+        "afterSeconds": 14.79
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passedBefore": 65,
+        "passedAfter": 65,
+        "caseIdentitySha256": "c37eaa94d5d6728d1dba616bf7624ac15d62b92a056a8e0a430a440dc0777f5c",
+        "beforeSeconds": 9.5,
+        "afterSeconds": 11.05
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passedBefore": 65,
+        "passedAfter": 65,
+        "caseIdentitySha256": "c37eaa94d5d6728d1dba616bf7624ac15d62b92a056a8e0a430a440dc0777f5c",
+        "beforeSeconds": 8.85,
+        "afterSeconds": 14.7
+      }
+    ],
+    "fast": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passedBefore": 18959,
+        "passedAfter": 18989,
+        "beforeSeconds": 32.55,
+        "afterSeconds": 30.27
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passedBefore": 18959,
+        "passedAfter": 18989,
+        "beforeSeconds": 28.8,
+        "afterSeconds": 27.78
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passedBefore": 18959,
+        "passedAfter": 18989,
+        "beforeSeconds": 31.83,
+        "afterSeconds": 29.44
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passedBefore": 18959,
+        "passedAfter": 18989,
+        "beforeSeconds": 29.11,
+        "afterSeconds": 27.39
+      }
+    ],
+    "fastSelection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+    "membership": "The fast selection gains exactly the 30 newly classified mechanism/contract cases. All previous members remain; 35 rendering controls stay in the explicit/full selections.",
+    "methodInventory": [
+      {
+        "assembly": "Lokad.Svg.Tests",
+        "methods": 4647,
+        "unclassifiedBefore": 1955,
+        "unclassifiedAfter": 1933
+      },
+      {
+        "assembly": "Lokad.Svg.VisualTests",
+        "methods": 430,
+        "unclassifiedBefore": 288,
+        "unclassifiedAfter": 288
+      }
+    ],
+    "allOtherTraitsAndMethodIdentitiesUnchanged": true,
+    "methodIdentityBeforeSha256": "b0e094211ce56912e6cb4e0b24bf6b77c44ff9f928c8bd3cf2a8af496cb03d04",
+    "timingBoundary": "Single local functional-validation samples include host startup, discovery, execution and TRX; load/cache effects remain. No renderer-performance, reliable speedup or quiet-VM claim.",
+    "fullQualification": "The unchanged runtime, original source assertions and independent rendering inputs retain the linked full Windows/Linux/.NET11/.NET10, package and matching CI evidence. Repeat focused/cohort and changed fast selections after attribute-only edits."
+  },
+  "testsRemoved": 0,
+  "assertionBatchesAdded": 0,
+  "referencesRewritten": 0,
+  "newTestingFrameworks": 0,
+  "remaining": "1933 core and 288 visual Fact/Theory methods remain unclassified. Continue by actual behavior/cost; layer-only filtering does not replace integration/full qualification."
+}

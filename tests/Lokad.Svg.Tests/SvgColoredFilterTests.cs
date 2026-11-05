@@ -13,6 +13,7 @@ public sealed class SvgColoredFilterTests
     [InlineData("colored-signal-diagram")]
     [InlineData("fractional-offset-only")]
     [InlineData("offset-identity-result")]
+    [Trait("Layer", "Contract")]
     public void Colored_filter_source_capture_releases_owners_after_denial_cancellation_and_retry(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "colored-effects-markers", identity + ".svg"));
@@ -48,6 +49,7 @@ public sealed class SvgColoredFilterTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_blur_retains_source_image_bounds_before_fractional_displacement()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "colored-effects-markers", "fractional-offset-only.svg"));
@@ -62,6 +64,7 @@ public sealed class SvgColoredFilterTests
     [Theory]
     [InlineData("sRGB")]
     [InlineData("linearRGB")]
+    [Trait("Layer", "Contract")]
     public void Binary_graph_inputs_and_color_conversions_preserve_storage_contracts(string colorSpace)
     {
         byte[] input = Document("<feFlood flood-color='#c89c35' flood-opacity='.5' result='tint'/>"
@@ -97,6 +100,7 @@ public sealed class SvgColoredFilterTests
     [InlineData("<feComposite in2='later'/><feFlood result='later'/>")]
     [InlineData("<feBlend in2='missing'/>")]
     [InlineData("<feFlood/><feComposite operator='xor'/>")]
+    [Trait("Layer", "Contract")]
     public void Unsupported_binary_graphs_publish_no_output_and_release_parser_owners(string graph)
     {
         byte[] input = Document(graph, "sRGB");
@@ -113,6 +117,7 @@ public sealed class SvgColoredFilterTests
     [Theory]
     [InlineData(".25", ".5", "1.25 .75")]
     [InlineData("0", "0", "0")]
+    [Trait("Layer", "Contract")]
     public void Linear_shadow_conversion_releases_material_surfaces_on_denial_cancellation_and_retry(string dx, string dy, string deviation)
     {
         byte[] input = Document("<feDropShadow dx='" + dx + "' dy='" + dy + "' stdDeviation='" + deviation

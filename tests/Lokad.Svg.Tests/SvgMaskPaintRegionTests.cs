@@ -11,6 +11,7 @@ public sealed class SvgMaskPaintRegionTests
     [InlineData(-.25, 8, -.25, 8, .25, -.75, 9)]
     [InlineData(0, 7, -1, 9, .25, -.75, 9)]
     [InlineData(0, 7, -1, 9, .75, -.25, 9)]
+    [Trait("Layer", "Mechanism")]
     public void Paint_enclosure_uses_separate_object_and_visual_bounds(
         double objectX, double objectWidth, double visualX, double visualWidth, double translation, double expectedX, double expectedWidth)
     {
@@ -29,6 +30,7 @@ public sealed class SvgMaskPaintRegionTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Retained_region_surface_is_accounted_and_memory_refusal_leaves_the_scene_replayable()
     {
         RenderBudget scene = new RenderBudget(new HostMemoryBudget(1_000_000)), measured = new RenderBudget(new HostMemoryBudget(1_000_000)), refused = new RenderBudget(new HostMemoryBudget(512)), retry = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -52,6 +54,7 @@ public sealed class SvgMaskPaintRegionTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Retained_region_cancellation_releases_every_owner_before_retry()
     {
         RenderBudget scene = new RenderBudget(new HostMemoryBudget(1_000_000)), raster = new RenderBudget(new HostMemoryBudget(1_000_000));
