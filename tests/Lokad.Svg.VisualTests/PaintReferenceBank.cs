@@ -7,7 +7,7 @@ using TextEncoding = System.Text.Encoding;
 namespace Lokad.Svg.VisualTests;
 
 /// <summary>
-/// Discovers only case identities and their routine/research partition. Full immutable
+/// Discovers case identities, their routine/research partition and font-presence flags. Full immutable
 /// metadata is loaded once for a bank when one of its rendering cases executes.
 /// No generated index duplicates the authoritative capture manifests.
 /// </summary>
@@ -30,6 +30,9 @@ internal sealed class PaintReferenceBank
     public string Name { get; }
     public IReadOnlyList<string> CaseIds => _selection.Value.Ids;
     public bool IsResearch(string id) => _selection.Value.ResearchIds.Contains(id);
+    /// <summary>Finds selected supplied-font rows using the lightweight index, without loading rendering metadata.</summary>
+    public bool HasFontCases(bool research)
+        => research ? _selection.Value.HasResearchFonts : _selection.Value.HasRoutineFonts;
     public JsonElement GetCase(string id) => _rows.Value[id];
 
     private string Folder => Path.Combine(ResearchCorpus.Root, Name);
@@ -42,7 +45,8 @@ internal sealed class PaintReferenceBank
         List<string> ordered = new();
         HashSet<string> ids = new(StringComparer.Ordinal);
         HashSet<string> research = new(StringComparer.Ordinal);
-        foreach (CaseIdentity? row in data.Cases ?? throw new InvalidDataException("Missing native cases."))
+        CaseIdentity?[] cases = data.Cases ?? throw new InvalidDataException("Missing native cases.");
+        foreach (CaseIdentity? row in cases)
             AddId(row?.Id ?? throw new InvalidDataException("Missing native case id."));
 
         if (Name is "filter-uniform-precision" or "gradient-color-alpha")
@@ -87,7 +91,17 @@ internal sealed class PaintReferenceBank
             if (routine.Count != 0) throw new InvalidDataException("Routine selection names an unknown native case.");
         }
 
-        return new Selection(ordered.ToArray(), ids.ToFrozenSet(StringComparer.Ordinal), research.ToFrozenSet(StringComparer.Ordinal));
+        bool routineFonts = false, researchFonts = false;
+        foreach (CaseIdentity? row in cases) IncludeFont(row);
+        foreach (CaseIdentity? row in data.KnownDifferences ?? []) IncludeFont(row);
+        return new Selection(ordered.ToArray(), ids.ToFrozenSet(StringComparer.Ordinal), research.ToFrozenSet(StringComparer.Ordinal), routineFonts, researchFonts);
+
+        void IncludeFont(CaseIdentity? row)
+        {
+            if (row is not { Font: true, Id: {} id } || !ids.Contains(id)) return;
+            if (research.Contains(id)) researchFonts = true;
+            else routineFonts = true;
+        }
 
         void AddId(string id)
         {
@@ -117,13 +131,22 @@ internal sealed class PaintReferenceBank
             }
         if (rows.Count != selection.Ids.Length || rows.Keys.Any(id => !selection.AllIds.Contains(id)))
             throw new InvalidDataException("Native capture changed after case discovery.");
+        bool routineFonts = false, researchFonts = false;
+        foreach ((string id, JsonElement row) in rows)
+        {
+            if (!row.TryGetProperty("font", out JsonElement font) || !font.GetBoolean()) continue;
+            if (selection.ResearchIds.Contains(id)) researchFonts = true;
+            else routineFonts = true;
+        }
+        if (routineFonts != selection.HasRoutineFonts || researchFonts != selection.HasResearchFonts)
+            throw new InvalidDataException("Native font selection changed after case discovery.");
         return rows.ToFrozenDictionary(StringComparer.Ordinal);
     }
 
     private static string RequiredId(JsonElement row)
         => row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing native case id.");
 
-    private sealed record Selection(string[] Ids, FrozenSet<string> AllIds, FrozenSet<string> ResearchIds);
+    private sealed record Selection(string[] Ids, FrozenSet<string> AllIds, FrozenSet<string> ResearchIds, bool HasRoutineFonts, bool HasResearchFonts);
 
     // All other capture fields are deliberately skipped during discovery, rather
     // than materializing rendering/provenance JSON for every unselected case.
@@ -131,5 +154,7 @@ internal sealed class PaintReferenceBank
         [property: JsonPropertyName("cases")] CaseIdentity?[]? Cases,
         [property: JsonPropertyName("knownDifferences")] CaseIdentity?[]? KnownDifferences);
 
-    private sealed record CaseIdentity([property: JsonPropertyName("id")] string? Id);
+    private sealed record CaseIdentity(
+        [property: JsonPropertyName("id")] string? Id,
+        [property: JsonPropertyName("font")] bool Font);
 }

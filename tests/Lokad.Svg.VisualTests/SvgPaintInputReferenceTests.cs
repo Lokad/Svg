@@ -41,6 +41,8 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
         (string, string)[] all = Cases().Concat(ResearchCases()).Select(row => ((string)row[0], (string)row[1])).ToArray();
         Assert.Equal(Banks.Sum(bank => bank.CaseIds.Count), all.Length);
         Assert.Equal(all.Length, all.Distinct().Count());
+        HashSet<string> routineFonts = FontBankCases().Select(row => (string)row[0]).ToHashSet(StringComparer.Ordinal);
+        HashSet<string> researchFonts = ResearchFontBankCases().Select(row => (string)row[0]).ToHashSet(StringComparer.Ordinal);
         foreach (PaintReferenceBank bank in Banks)
         {
             string folder = Folder(bank.Name);
@@ -58,6 +60,14 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
             Assert.Equal(expected.Count, bank.CaseIds.Count);
             Assert.True(expected.SetEquals(bank.CaseIds));
             Assert.Equal(expected.Count, all.Count(key => key.Item1 == bank.Name));
+            IEnumerable<JsonElement> rows = capture.RootElement.GetProperty("cases").EnumerateArray();
+            if (capture.RootElement.TryGetProperty("knownDifferences", out JsonElement historical))
+                rows = rows.Concat(historical.EnumerateArray());
+            string[] fonts = rows.Where(row => row.TryGetProperty("font", out JsonElement font) && font.GetBoolean())
+                .Select(row => row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing font case ID."))
+                .Where(expected.Contains).ToArray();
+            Assert.Equal(fonts.Any(id => !bank.IsResearch(id)), routineFonts.Contains(bank.Name));
+            Assert.Equal(fonts.Any(bank.IsResearch), researchFonts.Contains(bank.Name));
         }
     }
 
@@ -89,16 +99,24 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
     public void Representative_complete_png_paths_retain_their_native_images(string folder, string id)
         => AssertNativeImage(folder, id, true);
 
-    public static IEnumerable<object[]> BankCases() => Banks.Select(bank => new object[] { bank.Name });
+    public static IEnumerable<object[]> FontBankCases() => SelectedFontBanks(false);
+
+    public static IEnumerable<object[]> ResearchFontBankCases() => SelectedFontBanks(true);
+
+    private static IEnumerable<object[]> SelectedFontBanks(bool research)
+    {
+        foreach (PaintReferenceBank bank in Banks)
+            if (bank.HasFontCases(research)) yield return [bank.Name];
+    }
 
     [Theory]
-    [MemberData(nameof(BankCases))]
+    [MemberData(nameof(FontBankCases))]
     [Trait("Layer", "Integrity")]
     public void Paint_font_capture_recipes_match_provenance(string folder)
         => AssertFontProvenance(folder, false);
 
     [Theory]
-    [MemberData(nameof(BankCases))]
+    [MemberData(nameof(ResearchFontBankCases))]
     [Trait("Layer", "Integrity")]
     [Trait("Category", "Research")]
     public void Extended_paint_font_capture_recipes_match_provenance(string folder)
