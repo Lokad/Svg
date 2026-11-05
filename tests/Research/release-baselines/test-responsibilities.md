@@ -12,6 +12,11 @@ The [instance/replay](instance-replay-responsibilities.json) and
 PNG comparison. Every original case remains, including the 12,000-use graph,
 memory sweeps and explicitly mapped test names.
 The explicit `Category=Research` selection remains independent of the layer.
+The [comparison/decoder split](comparison-decoder-responsibilities.json) retains
+26 direct mechanism cases and moves 41 intact SVG pixel checks to their rendering
+class. Exact alpha/PNG boundaries and the native full-canvas rounding regression
+remain. Discovery still scans the visual assembly; the measured split provides
+clearer selection without an established speedup.
 The [execution-context contracts](analytic-probe-context.json) keep all twelve
 original probe cases and add four for analytic paint. Nested restoration, awaited
 isolation, inherited child lifetime and suppressed flow run directly; rendering

@@ -1,0 +1,371 @@
+{
+  "status": "All67 original cases retained:26 comparison/codec mechanisms and41 rendering checks. Only responsibilities, class location and one unchanged fixture-constructor expression change. No speedup established.",
+  "sourceBaseCommit": "26e20121259435f4d4e49f42832697f028bf01c8",
+  "runtimeQualification": "decoration-fragment-order.json",
+  "source": {
+    "originalFile": "../../Lokad.Svg.VisualTests/PixelComparerTests.cs",
+    "originalLfSha256": "8ce68e973431718600e84a37eb90b40cd1e95d1c76cbab4893d0a3fef82c7735",
+    "originalSourceReconstructedExactly": true,
+    "files": [
+      {
+        "file": "../../Lokad.Svg.VisualTests/PixelComparerTests.cs",
+        "lfSha256": "f33386840a956fcb59884d1639cceb3f41c659ac03d8bed2562de7bb810b2632"
+      },
+      {
+        "file": "../../Lokad.Svg.VisualTests/SvgBasicRenderingTests.cs",
+        "lfSha256": "47cb71497bf7ebc16d4bf229cb609d32df732d7085f7cc77a7a37a6976846fcd"
+      }
+    ],
+    "mechanismMethods": [
+      "One_channel_difference_is_an_exact_failure",
+      "Invisible_rgb_is_canonicalized_but_alpha_is_not",
+      "Alpha_differences_are_reported_separately_with_mismatch_bounds",
+      "Dimension_difference_fails_without_intersection_comparison",
+      "Independent_decoder_reads_a_known_rgba_png",
+      "Independent_decoder_rejects_a_corrupted_chunk",
+      "Independent_decoder_enforces_its_pixel_limit",
+      "Independent_decoder_reads_rgb_with_optional_palette_and_ancillary_chunks",
+      "Independent_decoder_rejects_transparency_instead_of_comparing_it_as_opaque",
+      "Independent_decoder_rejects_invalid_header_methods",
+      "Independent_decoder_rejects_unknown_critical_chunks",
+      "Independent_decoder_rejects_oversized_chunk_lengths_without_overflow",
+      "Independent_decoder_rejects_invalid_dimensions_without_overflow",
+      "Independent_decoder_bounds_pixel_and_scanline_storage",
+      "Independent_decoder_rejects_missing_or_out_of_order_chunks",
+      "Independent_decoder_reads_production_encoder_output",
+      "Production_encoder_canonicalizes_invisible_rgb"
+    ],
+    "explicitClassMappings": [
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Single_integer_rectangle_renders_to_expected_rgba_pixels",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Single_integer_rectangle_renders_to_expected_rgba_pixels"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Explicit_background_colors_the_transparent_empty_surface",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Explicit_background_colors_the_transparent_empty_surface"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Opaque_rectangles_follow_document_order",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Opaque_rectangles_follow_document_order"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Attribute_free_groups_preserve_rectangle_document_order",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Attribute_free_groups_preserve_rectangle_document_order"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Group_fill_and_fill_opacity_are_inherited_by_rectangles",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Group_fill_and_fill_opacity_are_inherited_by_rectangles"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Root_fill_and_fill_opacity_are_inherited_by_rectangles",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Root_fill_and_fill_opacity_are_inherited_by_rectangles"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Display_none_on_a_group_hides_its_descendants",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Display_none_on_a_group_hides_its_descendants"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Visibility_visible_on_a_child_restores_an_ancestor_hidden_group",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Visibility_visible_on_a_child_restores_an_ancestor_hidden_group"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Rectangle_opacity_multiplies_fill_opacity",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Rectangle_opacity_multiplies_fill_opacity"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Hex_colors_with_alpha_are_supported",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Hex_colors_with_alpha_are_supported"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Rectangles_with_omitted_dimensions_are_non_painting",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Rectangles_with_omitted_dimensions_are_non_painting"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Extreme_off_canvas_rectangle_coordinates_do_not_overflow_or_paint",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Extreme_off_canvas_rectangle_coordinates_do_not_overflow_or_paint"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Extreme_orthogonal_path_coordinates_preserve_visible_coverage",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Extreme_orthogonal_path_coordinates_preserve_visible_coverage"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Comma_form_rgb_and_rgba_colors_are_supported",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Comma_form_rgb_and_rgba_colors_are_supported"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Output_scale_scales_integer_rectangle_geometry",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Output_scale_scales_integer_rectangle_geometry"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Absolute_root_length_units_use_the_96_css_pixel_conversion",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Absolute_root_length_units_use_the_96_css_pixel_conversion"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Unreferenced_defs_are_non_painting",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Unreferenced_defs_are_non_painting"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Inert_id_attributes_do_not_change_supported_rendering",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Inert_id_attributes_do_not_change_supported_rendering"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Link_containers_preserve_static_rectangle_rendering",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Link_containers_preserve_static_rectangle_rendering"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Css_color_tokens_are_case_insensitive",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Css_color_tokens_are_case_insensitive"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Rgb_percentage_channels_are_supported",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Rgb_percentage_channels_are_supported"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Integer_rectangle_geometry_accepts_px_units",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Integer_rectangle_geometry_accepts_px_units"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Classic_hsl_colors_are_supported",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Classic_hsl_colors_are_supported"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Functional_color_alpha_accepts_percentages",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Functional_color_alpha_accepts_percentages"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Current_color_inherits_through_groups",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Current_color_inherits_through_groups"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Rectangle_fill_rules_are_accepted",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Rectangle_fill_rules_are_accepted"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Non_painting_rectangle_strokes_are_accepted",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Non_painting_rectangle_strokes_are_accepted"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Css_keyword_values_are_case_insensitive",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Css_keyword_values_are_case_insensitive"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Non_painting_strokes_are_accepted_on_containers",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Non_painting_strokes_are_accepted_on_containers"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Explicit_zero_rectangle_corner_radii_are_accepted",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Explicit_zero_rectangle_corner_radii_are_accepted"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Named_lime_rectangle_fill_is_supported",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Named_lime_rectangle_fill_is_supported"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Integer_fill_opacity_composites_on_transparent_surface",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Integer_fill_opacity_composites_on_transparent_surface"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Full_canvas_rectangles_preserve_source_opacity_until_solid_color_quantization",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Full_canvas_rectangles_preserve_source_opacity_until_solid_color_quantization"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Integer_fill_opacity_composites_source_over_an_opaque_background",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Integer_fill_opacity_composites_source_over_an_opaque_background"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Short_hex_rectangle_fill_expands_each_color_nibble",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Short_hex_rectangle_fill_expands_each_color_nibble"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Integral_decimal_rectangle_coordinates_are_accepted",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Integral_decimal_rectangle_coordinates_are_accepted"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.None_fill_leaves_the_surface_unpainted",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.None_fill_leaves_the_surface_unpainted"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Named_red_rectangle_fill_is_supported",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Named_red_rectangle_fill_is_supported"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Rectangle_without_fill_uses_the_svg_black_default",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Rectangle_without_fill_uses_the_svg_black_default"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Named_blue_rectangle_fill_is_supported",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Named_blue_rectangle_fill_is_supported"
+      },
+      {
+        "before": "Lokad.Svg.VisualTests.PixelComparerTests.Transparent_fill_leaves_the_surface_unpainted",
+        "after": "Lokad.Svg.VisualTests.SvgBasicRenderingTests.Transparent_fill_leaves_the_surface_unpainted"
+      }
+    ],
+    "fixtureSetup": "Inline the sole CreateOnePixelRgbaPng caller with the exact same CreatePng/Header/Compress expression. All helpers with shared callers remain."
+  },
+  "retainedBehaviors": {
+    "mechanisms": [
+      "Exact changed-channel and alpha mismatch bounds; transparent RGB canonicalization; dimension rejection without intersection comparison",
+      "Independent PNG known-byte decode; RGB/ancillary/split IDAT; CRC; header methods; unknown critical and unsupported transparency chunks",
+      "Unsigned chunk-length/dimension overflow, pixel/scanline storage limits and all eight original invalid chunk-order inputs",
+      "Production encoder round-trip and invisible RGB canonicalization from explicit RGBA bytes"
+    ],
+    "rendering": [
+      "All41 original literal-pixel SVG sources/options/expected arrays, comments and assertion bodies moved intact",
+      "Root/group paint inheritance, document order, visibility, colors, units, scale, non-painting definitions and extreme geometry",
+      "Native full-canvas opacity191 remains distinct from existing inset/path and encoded-alpha192 controls; no equal-image deduplication"
+    ]
+  },
+  "caseIdentityJoins": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "cases": 67,
+      "removed": 0,
+      "added": 0,
+      "caseIdentitySha256": "5c143a48ea096a94ccb73022f4ccaf06ebf2507a67ee127c91caf90a0e9bec45"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "cases": 67,
+      "removed": 0,
+      "added": 0,
+      "caseIdentitySha256": "5c143a48ea096a94ccb73022f4ccaf06ebf2507a67ee127c91caf90a0e9bec45"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "cases": 67,
+      "removed": 0,
+      "added": 0,
+      "caseIdentitySha256": "5c143a48ea096a94ccb73022f4ccaf06ebf2507a67ee127c91caf90a0e9bec45"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "cases": 67,
+      "removed": 0,
+      "added": 0,
+      "caseIdentitySha256": "5c143a48ea096a94ccb73022f4ccaf06ebf2507a67ee127c91caf90a0e9bec45"
+    }
+  ],
+  "inventory": {
+    "methods": 5147,
+    "sourceFiles": 740,
+    "coreMethods": 4688,
+    "visualMethods": 459,
+    "layers": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1138,
+        "Mechanism": 1778,
+        "Contract": 706,
+        "Rendering": 1065,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 219,
+        "Contract": 34,
+        "Integrity": 25,
+        "Mechanism": 18,
+        "Rendering": 163
+      }
+    },
+    "all5147PriorMethodsRetained": true,
+    "fullCoreCasesUnchanged": 47926,
+    "fullVisualCasesUnchanged": 76870,
+    "fontHostCasesUnchanged": 10,
+    "coreFastCasesUnchanged": 20096
+  },
+  "validation": {
+    "builds": "Release no-incremental, warnings-as-errors, existing project references; zero warnings/errors on both target frameworks",
+    "selection": "FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests",
+    "allFourHostRuntimeResults": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "cases": 67,
+        "beforeSeconds": 12.491115899989381,
+        "afterSeconds": 15.001911100000143,
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "beforeTestAssemblySha256": "a92fb686fbd70317a92a56767c5bd02e5769d1c5553abb5b964ecc63f1fbec4d",
+        "afterTestAssemblySha256": "2fb8ea752f1abe20f52c80356bd3e5a8a0834fbf7c8af507e1a819de912924e6",
+        "beforeTrxSha256": "cc0245d69df0bb5f3056f0e146f4d035c012f3b0432c7a0d237d1aa067bd0304",
+        "afterTrxSha256": "5391abdf930c3ec11451c4c4663aa9ce2c8a3d39ee02c8671f718f90d8ca2e93"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "cases": 67,
+        "beforeSeconds": 17.32071470003575,
+        "afterSeconds": 17.35542959999293,
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "beforeTestAssemblySha256": "a92fb686fbd70317a92a56767c5bd02e5769d1c5553abb5b964ecc63f1fbec4d",
+        "afterTestAssemblySha256": "2fb8ea752f1abe20f52c80356bd3e5a8a0834fbf7c8af507e1a819de912924e6",
+        "beforeTrxSha256": "832e1fb5cd1dec13495dea14989bc26888c9c04ee154e27ed3233447acc6d97b",
+        "afterTrxSha256": "a52054a0abbc6ef13a885addfa553307da9dca1bdb19e42bebc96e9f852122ff"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "cases": 67,
+        "beforeSeconds": 12.894711500033736,
+        "afterSeconds": 13.832829699851573,
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "beforeTestAssemblySha256": "67f3f01934833c301fff02e7937bd3c998517f6652189c2fc77e442ec6988aa7",
+        "afterTestAssemblySha256": "d12436acaf2767f13a7a958549c9180c25dfa2c60d459b6122236592d5e2f0b5",
+        "beforeTrxSha256": "0c0ab4a8a41b78e240e5bc99328b38b6254738675e537b1273e4fe066829b52f",
+        "afterTrxSha256": "6f8786bd73cf65018fe2524f6ddd23fdeb635d28d2e3069fc4b494a7ca08d11c"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "cases": 67,
+        "beforeSeconds": 14.22540759993717,
+        "afterSeconds": 14.785446600057185,
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "beforeTestAssemblySha256": "67f3f01934833c301fff02e7937bd3c998517f6652189c2fc77e442ec6988aa7",
+        "afterTestAssemblySha256": "d12436acaf2767f13a7a958549c9180c25dfa2c60d459b6122236592d5e2f0b5",
+        "beforeTrxSha256": "b02e5a1c9d7d079fe90ecf1203932297e682ed4cda5b69c821c8489ffc18c633",
+        "afterTrxSha256": "1ab29965a092965bfeb89cfebb49814f03324e59f486a9ade0ff1a6593016e6d"
+      }
+    ],
+    "mechanismSelection": {
+      "filter": "FullyQualifiedName~PixelComparerTests&Layer=Mechanism",
+      "host": "windows",
+      "framework": "net11.0",
+      "cases": 26,
+      "passed": 26,
+      "seconds": 9.802355500170961,
+      "exactlyThe26OriginalMechanismCases": true
+    },
+    "diagnosticProfile": {
+      "host": "windows",
+      "framework": "net11.0",
+      "method": "One before/after invocation with vstest /Diag tracelevel=verbose. Adapter Discovery/Execution intervals use testhost Information Discovering/Discovered/Starting/Finished timestamps. Per-case sums may overlap and are separate from elapsed intervals.",
+      "observations": {
+        "before": {
+          "wallSeconds": 9.718780499882996,
+          "adapterDiscoverySeconds": 8.633,
+          "adapterExecutionSeconds": 0.345,
+          "sumReportedCaseSeconds": 0.30984269999999997,
+          "cases": 67,
+          "passed": 67,
+          "testAssemblySha256": "a92fb686fbd70317a92a56767c5bd02e5769d1c5553abb5b964ecc63f1fbec4d"
+        },
+        "after": {
+          "wallSeconds": 11.385717199882492,
+          "adapterDiscoverySeconds": 10.155,
+          "adapterExecutionSeconds": 0.282,
+          "sumReportedCaseSeconds": 0.2815004,
+          "cases": 67,
+          "passed": 67,
+          "testAssemblySha256": "2fb8ea752f1abe20f52c80356bd3e5a8a0834fbf7c8af507e1a819de912924e6"
+        }
+      },
+      "interpretation": "Whole-assembly discovery dominates this filtered run. The class split does not bypass discovery or reduce its data enumeration. Single noisy functional observations establish no speedup or renderer throughput; no repeated benchmark or discovery batching."
+    },
+    "qualificationScope": "Test-only restructuring with exact original source and case-identity reconstruction. Production libraries match the existing qualified package assets; no new full-suite/package CI claim. Full milestone results and the unchanged frozen Windows DejaVu discrepancy remain in decoration-fragment-order.json. No reference, fixture, tolerance, runtime, public API, package or CI policy changes."
+  },
+  "nextAction": "Keep filtered class checks for iteration and both mechanism/rendering siblings for comparison or codec changes. Any future discovery optimization must first identify an expensive provider, preserve individually discovered identities and native/source checks, and justify project isolation by measured benefit."
+}

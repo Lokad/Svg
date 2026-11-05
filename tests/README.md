@@ -25,6 +25,13 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+[Comparison/PNG mechanisms](Lokad.Svg.VisualTests/PixelComparerTests.cs) retain
+26 exact channel, alpha, dimension, chunk and storage-boundary cases. The separate
+[basic rendering class](Lokad.Svg.VisualTests/SvgBasicRenderingTests.cs) retains
+all 41 SVG pixel checks, including full-canvas alpha rounding. Their
+[qualification](Research/release-baselines/comparison-decoder-responsibilities.json)
+maps every moved name; filtered runs still discover the complete visual assembly.
+
 The [original anchor screen](Research/text-paint-bounds/anchor-screening.json)
 retains 744 pairs as 1,488 independent native comparisons plus one integrity case.
 Select `FullyQualifiedName~Original_anchor_screen_` for this optional Research bank.
@@ -642,6 +649,7 @@ dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedN
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgAlphaBoundaryMechanismTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgInertPaintTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter '(Layer=Mechanism|Layer=Contract)&Category!=Research'
+dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter 'FullyQualifiedName~PixelComparerTests&Layer=Mechanism'
 dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter 'FullyQualifiedName~SvgPaintInputReferenceTests&Layer=Rendering&Category!=Research'
 ```
 
