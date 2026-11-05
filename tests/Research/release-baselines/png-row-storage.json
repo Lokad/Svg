@@ -1,0 +1,293 @@
+{
+  "status": "PNG scanlines reconstruct in their existing admitted byte plane, removing two row arrays and one copy per row. Twenty fixed predictor/stride cases remain exact; one storage case fails before and passes after on all four host/runtime combinations. Committed-source package and primary CI milestone qualification remains pending.",
+  "sourceBaseCommit": "7fe670c5c7f6f57ce282b5e6f0323f0c34cbc9a6",
+  "previousRuntimeQualification": "png-color-admission.json",
+  "source": {
+    "file": "../../../src/Lokad.Svg/Encoding/PngImageDecoder.cs",
+    "beforeLfSha256": "459977184420d0d8a8083d7c0ac7679b176eb14cb0ce3aa40019d96339027810",
+    "afterLfSha256": "057b42d923b5d4a78d73943ba36e446a47584a496c05c6a9244102927784f1ba",
+    "change": "Current and previous rows borrow disjoint spans of the private decompressed buffer. The first row has an empty previous span interpreted as zero. The two one-caller helpers become static local functions; no closure allocation.",
+    "invariants": [
+      "All zlib decompression/truncation/trailing-byte validation completes before scanning, with the exact original code. Chunk/CRC/format/color-admission validation and pixel-storage limits remain.",
+      "The complete per-pixel decode, transparency/palette, uniform detection, raster allocation/backfill, premultiplication and store loop remains byte-for-byte unchanged. Input PNG memory is never reconstructed in place.",
+      "Owned nonuniform RGBA storage and uniform-color output retain their owners, cancellation polls and refund paths. Only the two removed row arrays leave the temporary reservation."
+    ],
+    "tests": "../../Lokad.Svg.Tests/PngImageDecoderTests.cs",
+    "allPriorTestSourceReconstructedExactlyExceptDeclaredPeakUpdate": true,
+    "peakAssertionUpdate": "Remove the lower bound that required two obsolete scratch rows. Retain the doubled-IDAT/decoded-plane coexistence bound and add the explicit old/new compressed-growth overlap bound. All existing cases, refusal thresholds, inputs, expected pixels and assertions otherwise remain."
+  },
+  "mechanisms": {
+    "specification": "https://www.w3.org/TR/2025/REC-png-3-20250624/#9Filters",
+    "cases": 20,
+    "construction": "Literal two-row encoded bytes cover five filters and actual byte strides1/2/3/4 (gray/gray-alpha/RGB/RGBA). Four fixed expected RGBA pixels remain literal; no predictor implementation runs in the tests.",
+    "boundaries": [
+      "First row and first pixel missing neighbors",
+      "Modulo256 reconstruction and nine-bit Average sum/floor",
+      "Paeth left-versus-upper-left and above-versus-upper-left ties, plus upper-left selection"
+    ],
+    "independentVerification": {
+      "decoder": "Pillow11.1.0",
+      "cases": 20,
+      "exact": 20,
+      "filteredAndExpectedVectorSha256": "ba17b6c8a4ee87dd7690c35a32c5c3edb6adbeb3d1f72a99d9fa9829e563bac9",
+      "scope": "Authored PNG headers and literal filtered bytes independently decode to the same fixed expected RGBA. Python/.NET compression wrappers may differ; the pixel vectors are identical. No references or hosted SVG inputs are generated."
+    },
+    "caseIdentityJoins": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "cases": 21,
+        "caseIdentitySha256": "877156bbbc017634cfcf6ae33dbe16d07760ea7d5e4a5c385105e55732b1a1ab"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "cases": 21,
+        "caseIdentitySha256": "877156bbbc017634cfcf6ae33dbe16d07760ea7d5e4a5c385105e55732b1a1ab"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "cases": 21,
+        "caseIdentitySha256": "877156bbbc017634cfcf6ae33dbe16d07760ea7d5e4a5c385105e55732b1a1ab"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "cases": 21,
+        "caseIdentitySha256": "877156bbbc017634cfcf6ae33dbe16d07760ea7d5e4a5c385105e55732b1a1ab"
+      }
+    ]
+  },
+  "storage": {
+    "newCases": 1,
+    "contract": "A uniform128x16 RGBA image accepts the complete scanline plane plus512 bytes of compressed allowance, without two extra512-byte rows. Decoder ownership returns to zero and input PNG bytes remain unchanged.",
+    "measurement": {
+      "host": "windows",
+      "framework": ".NET 11.0.0-rc.3.26522.148",
+      "beforeLibrarySha256": "68db361f4bba885b82dae42266e41c58ab74cc8cb7185594e2125e43c84988ae",
+      "afterLibrarySha256": "6bf1bcc0af2aa0dc9f62dcd7a27990d7e081125ffc965814116e5cda0f78ebe1",
+      "observations": [
+        {
+          "width": 128,
+          "height": 16,
+          "pngSha256": "33f8db349f495d1d9fcef45f03f9538f72f949ec8e922d21d3ca1306712ec83a",
+          "beforePeakBytes": 9520,
+          "afterPeakBytes": 8496,
+          "removedBytes": 1024,
+          "finalCurrentBytes": 0
+        },
+        {
+          "width": 64,
+          "height": 256,
+          "pngSha256": "ff94b52a9b001788a9a6536a41a8cf1bb93a6166c5cff1a4fda44754dda0a1ce",
+          "beforePeakBytes": 66592,
+          "afterPeakBytes": 66080,
+          "removedBytes": 512,
+          "finalCurrentBytes": 0
+        },
+        {
+          "width": 16384,
+          "height": 1,
+          "pngSha256": "3e786c10d84018efab13c1776ac8a7489d07bd7074bf9dbf665d7ec72c06a6f1",
+          "beforePeakBytes": 196897,
+          "afterPeakBytes": 65825,
+          "removedBytes": 131072,
+          "finalCurrentBytes": 0
+        }
+      ],
+      "scope": "Deterministic RenderBudget tracked storage peaks for three authored uniform RGBA PNGs. No process/native peak, allocation/GC benchmark, quiet-VM timing or renderer throughput claim. Each reduction equals exactly two rows of source-channel bytes."
+    }
+  },
+  "validation": {
+    "beforeFocused": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "68db361f4bba885b82dae42266e41c58ab74cc8cb7185594e2125e43c84988ae",
+        "testAssemblySha256": "cdb69c5745f0c3ea1d6c68c33d9d3213bcde87ff85ac85eb503835768afb9811",
+        "selection": "FullyQualifiedName~Png_row_filters_|FullyQualifiedName~Scanline_reconstruction_",
+        "exitCode": 1,
+        "seconds": 8.515153300017118,
+        "counters": {
+          "executed": "21",
+          "passed": "20",
+          "failed": "1"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "68db361f4bba885b82dae42266e41c58ab74cc8cb7185594e2125e43c84988ae",
+        "testAssemblySha256": "cdb69c5745f0c3ea1d6c68c33d9d3213bcde87ff85ac85eb503835768afb9811",
+        "selection": "FullyQualifiedName~Png_row_filters_|FullyQualifiedName~Scanline_reconstruction_",
+        "exitCode": 1,
+        "seconds": 12.282892199931666,
+        "counters": {
+          "executed": "21",
+          "passed": "20",
+          "failed": "1"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e0843c64aee79b6867acc68763f84cadf730832f5713a930f2d80160b79b3f13",
+        "testAssemblySha256": "302c4f0b8ef23a3fa5b3f4e656eb20507f27d74f7f31ec9ab1ba4a8a0fb8c5e2",
+        "selection": "FullyQualifiedName~Png_row_filters_|FullyQualifiedName~Scanline_reconstruction_",
+        "exitCode": 1,
+        "seconds": 8.09789519989863,
+        "counters": {
+          "executed": "21",
+          "passed": "20",
+          "failed": "1"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e0843c64aee79b6867acc68763f84cadf730832f5713a930f2d80160b79b3f13",
+        "testAssemblySha256": "302c4f0b8ef23a3fa5b3f4e656eb20507f27d74f7f31ec9ab1ba4a8a0fb8c5e2",
+        "selection": "FullyQualifiedName~Png_row_filters_|FullyQualifiedName~Scanline_reconstruction_",
+        "exitCode": 1,
+        "seconds": 9.082874899962917,
+        "counters": {
+          "executed": "21",
+          "passed": "20",
+          "failed": "1"
+        }
+      }
+    ],
+    "afterAffected": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "6bf1bcc0af2aa0dc9f62dcd7a27990d7e081125ffc965814116e5cda0f78ebe1",
+        "testAssemblySha256": "14237438557bfa60b81d92314332a38b7fcc6161b5d5018da420bceb2a7137d2",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 14.29516559978947,
+        "counters": {
+          "executed": "823",
+          "passed": "823",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "6bf1bcc0af2aa0dc9f62dcd7a27990d7e081125ffc965814116e5cda0f78ebe1",
+        "testAssemblySha256": "14237438557bfa60b81d92314332a38b7fcc6161b5d5018da420bceb2a7137d2",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 18.31950810016133,
+        "counters": {
+          "executed": "823",
+          "passed": "823",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "6bf1bcc0af2aa0dc9f62dcd7a27990d7e081125ffc965814116e5cda0f78ebe1",
+        "testAssemblySha256": "1336905dd6f434b50e4e3167cf74de0e2fd19dc3efe49e8bc8ea119ae50324b5",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 49.54239659989253,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "6bf1bcc0af2aa0dc9f62dcd7a27990d7e081125ffc965814116e5cda0f78ebe1",
+        "testAssemblySha256": "1336905dd6f434b50e4e3167cf74de0e2fd19dc3efe49e8bc8ea119ae50324b5",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 45.49583180015907,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "7f2417101e1c168a0ce5310632d56072c37875f481307030fbccfd181293e49f",
+        "testAssemblySha256": "6490f39e3a32c94b7496ff82d618e498120448574bb21a908066d108483c879b",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 13.865771600045264,
+        "counters": {
+          "executed": "823",
+          "passed": "823",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "7f2417101e1c168a0ce5310632d56072c37875f481307030fbccfd181293e49f",
+        "testAssemblySha256": "6490f39e3a32c94b7496ff82d618e498120448574bb21a908066d108483c879b",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 16.226318300003186,
+        "counters": {
+          "executed": "823",
+          "passed": "823",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "7f2417101e1c168a0ce5310632d56072c37875f481307030fbccfd181293e49f",
+        "testAssemblySha256": "80508b44601a20a0656f8173f797280f367ca8b5594377bf1c6398466a3fdd82",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 32.26647810009308,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "7f2417101e1c168a0ce5310632d56072c37875f481307030fbccfd181293e49f",
+        "testAssemblySha256": "80508b44601a20a0656f8173f797280f367ca8b5594377bf1c6398466a3fdd82",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 31.392034800024703,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        }
+      }
+    ],
+    "costScope": "Before runs select only the21 new cases (20 pass,1 expected storage refusal). After runs select823 affected core and303 visual cases per host/runtime. Wall times have different selection scopes and do not establish a speedup.",
+    "builds": "Both Release target builds pass with warnings-as-errors and zero warnings/errors."
+  },
+  "milestone": {
+    "status": "Pending clean committed-source package assets, complete original/context replay and full primary CI. Prior qualification remains immutable."
+  }
+}

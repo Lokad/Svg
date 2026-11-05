@@ -34,10 +34,78 @@ public sealed class PngImageDecoderTests
 
         RenderBudget roomy = new RenderBudget(new HostMemoryBudget(8L * compressed.Length));
         Assert.Equal(SvgColor.Transparent, Decode(split, roomy, CancellationToken.None));
-        // The retained doubled compressed buffer coexists with unfiltered pixels.
-        Assert.True(roomy.Snapshot().PeakBytes >= 2L * (compressed.Length - 1) + pixels.Length + 2 * rowBytes);
+        // Growth holds both compressed arrays; the retained doubled buffer then
+        // coexists with the decoded scanlines, which are reconstructed in place.
+        Assert.True(roomy.Snapshot().PeakBytes >= 3L * (compressed.Length - 1));
+        Assert.True(roomy.Snapshot().PeakBytes >= 2L * (compressed.Length - 1) + pixels.Length);
         Assert.Equal(0, roomy.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, split);
+    }
+
+    [Trait("Layer", "Mechanism")]
+    [Theory]
+    [InlineData(0, 0, "004664000AFA")]
+    [InlineData(0, 1, "01461E010AF0")]
+    [InlineData(0, 2, "02466402C496")]
+    [InlineData(0, 3, "03464103E7C3")]
+    [InlineData(0, 4, "04461E04C4F0")]
+    [InlineData(4, 0, "0046FF64FF000AFFFAFF")]
+    [InlineData(4, 1, "0146FF1E00010AFFF000")]
+    [InlineData(4, 2, "0246FF64FF02C4009600")]
+    [InlineData(4, 3, "0346FF418003E780C300")]
+    [InlineData(4, 4, "0446FF1E0004C400F000")]
+    [InlineData(2, 0, "004646F5640AFA000A64F0FA0500")]
+    [InlineData(2, 1, "014646F51EC405010A64F0F0A110")]
+    [InlineData(2, 2, "024646F5640AFA02C41EFB96FB06")]
+    [InlineData(2, 3, "034646F541E78003E74176C3CE0B")]
+    [InlineData(2, 4, "044646F51EC40504C41EFBF0FB0B")]
+    [InlineData(6, 0, "004646F5FF640AFAFF000A64F0FFFA0500FF")]
+    [InlineData(6, 1, "014646F5FF1EC40500010A64F0FFF0A11000")]
+    [InlineData(6, 2, "024646F5FF640AFAFF02C41EFB0096FB0600")]
+    [InlineData(6, 3, "034646F5FF41E7808003E7417680C3CE0B00")]
+    [InlineData(6, 4, "044646F5FF1EC4050004C41EFB00F0FB0B00")]
+    public void Png_row_filters_preserve_first_rows_channel_strides_and_predictor_boundaries(byte colorType, byte filter, string filteredHex)
+    {
+        // Fixed PNG 3 section 9 vectors: byte wrapping, nine-bit Average sums,
+        // and Paeth left/upper-left and above/upper-left ties in the RGB channels.
+        byte[] filtered = Convert.FromHexString(filteredHex);
+        int channels = colorType switch { 0 => 1, 4 => 2, 2 => 3, 6 => 4, _ => throw new ArgumentOutOfRangeException(nameof(colorType)) };
+        Assert.Equal(filter, filtered[0]); Assert.Equal(filter, filtered[2 * channels + 1]);
+        byte[] png = BuildPng([new("IHDR", TestIhdr(2, 2, colorType)), new("IDAT", ZlibCompress(filtered)), new("IEND", [])]);
+        byte[] unchanged = png.ToArray();
+        byte[] expected = colorType is 0 or 4
+            ? [70, 70, 70, 255, 100, 100, 100, 255, 10, 10, 10, 255, 250, 250, 250, 255]
+            : [70, 70, 245, 255, 100, 10, 250, 255, 10, 100, 240, 255, 250, 5, 0, 255];
+        RenderBudget budget = new(new HostMemoryBudget(100_000));
+
+        DecodedPngImage image = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, CancellationToken.None);
+
+        using (DecodedPngRaster raster = Assert.IsType<DecodedPngRaster>(image.Raster))
+        {
+            Assert.Equal(2, image.Width); Assert.Equal(2, image.Height);
+            Assert.Equal(expected, raster.Pixels);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, png);
+    }
+
+    [Trait("Layer", "Contract")]
+    [Fact]
+    public void Scanline_reconstruction_reuses_the_admitted_pixel_buffer()
+    {
+        const int width = 128, height = 16;
+        byte[] scanlines = new byte[height * (1 + width * 4)];
+        byte[] png = BuildPng([new("IHDR", TestIhdr(width, height, 6)), new("IDAT", ZlibCompress(scanlines)), new("IEND", [])]);
+        byte[] unchanged = png.ToArray();
+        // Allow the full decompressed plane plus bounded compressed storage,
+        // without another pair of 512-byte row buffers.
+        RenderBudget budget = new(new HostMemoryBudget(scanlines.Length + 512));
+
+        Assert.Equal(SvgColor.Transparent, Decode(png, budget, CancellationToken.None));
+
+        Assert.True(budget.Snapshot().PeakBytes >= scanlines.Length);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, png);
     }
 
     public static IEnumerable<object[]> InvalidChunkStructures()

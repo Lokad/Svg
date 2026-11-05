@@ -183,7 +183,7 @@ internal static class PngImageDecoder
         long rowBytes = (long)width * channels;
         long pixelBytes = checked((rowBytes + 1) * height);
         if (pixelBytes > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG pixel storage exceeds the configured accounting limit.");
-        using RenderBudget.BudgetReservation reservation = budget.Reserve(checked(pixelBytes + 2 * rowBytes), SvgMemoryCategory.Parser);
+        using RenderBudget.BudgetReservation reservation = budget.Reserve(pixelBytes, SvgMemoryCategory.Parser);
         byte[] pixels = new byte[(int)pixelBytes];
         compressed.Position = 0;
         try
@@ -212,8 +212,7 @@ internal static class PngImageDecoder
     {
         if (isPaletteType && palette is null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data is missing its palette chunk.");
         if (isPaletteType && transparent is not null && transparent.Length > 256) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed transparency chunk.");
-        byte[] previous = new byte[rowBytes];
-        byte[] current = new byte[rowBytes];
+        ReadOnlySpan<byte> previous = [];
         int red = -1;
         int green = -1;
         int blue = -1;
@@ -227,7 +226,8 @@ internal static class PngImageDecoder
                 cancellationToken.ThrowIfCancellationRequested();
                 int filter = pixels[position];
                 if (filter > 4) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported row filter.");
-                Buffer.BlockCopy(pixels, position + 1, current, 0, current.Length);
+                // Both rows borrow disjoint portions of the already-admitted scanline buffer.
+                Span<byte> current = pixels.AsSpan(position + 1, rowBytes);
                 UnfilterRow(filter, current, previous, channels, cancellationToken);
                 for (int x = 0; x < width; x++)
                 {
@@ -277,7 +277,7 @@ internal static class PngImageDecoder
                     }
                     if (raster is not null) Store(raster.Pixels, (y * width + x) * 4, pixelRed, pixelGreen, pixelBlue, pixelAlpha);
                 }
-                (previous, current) = (current, previous);
+                previous = current;
                 position += current.Length + 1;
             }
             return new(new SvgColor((byte)red, (byte)green, (byte)blue, (byte)alpha), width, height, raster);
@@ -290,6 +290,58 @@ internal static class PngImageDecoder
             destination[offset + 1] = (byte)((green * alpha + 127) / 255);
             destination[offset + 2] = (byte)((blue * alpha + 127) / 255);
             destination[offset + 3] = (byte)alpha;
+        }
+
+        static void UnfilterRow(int filter, Span<byte> current, ReadOnlySpan<byte> previous, int channels, CancellationToken cancellationToken)
+        {
+            switch (filter)
+            {
+                case 0:
+                    return;
+                case 1:
+                    for (int index = channels; index < current.Length; index++)
+                    {
+                        if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        current[index] += current[index - channels];
+                    }
+                    return;
+                case 2:
+                    for (int index = 0; index < current.Length; index++)
+                    {
+                        if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        current[index] += previous.IsEmpty ? (byte)0 : previous[index];
+                    }
+                    return;
+                case 3:
+                    for (int index = 0; index < current.Length; index++)
+                    {
+                        if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        int left = index >= channels ? current[index - channels] : 0;
+                        int above = previous.IsEmpty ? 0 : previous[index];
+                        current[index] += (byte)((left + above) / 2);
+                    }
+                    return;
+                default:
+                    for (int index = 0; index < current.Length; index++)
+                    {
+                        if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        int left = index >= channels ? current[index - channels] : 0;
+                        int above = previous.IsEmpty ? 0 : previous[index];
+                        int upperLeft = !previous.IsEmpty && index >= channels ? previous[index - channels] : 0;
+                        current[index] += (byte)PaethPredictor(left, above, upperLeft);
+                    }
+                    return;
+            }
+        }
+
+        static int PaethPredictor(int left, int above, int upperLeft)
+        {
+            int estimate = left + above - upperLeft;
+            int leftError = Math.Abs(estimate - left);
+            int aboveError = Math.Abs(estimate - above);
+            int upperLeftError = Math.Abs(estimate - upperLeft);
+            if (leftError <= aboveError && leftError <= upperLeftError) return left;
+            return aboveError <= upperLeftError ? above : upperLeft;
         }
     }
 
@@ -310,57 +362,6 @@ internal static class PngImageDecoder
             return red == transparentRed && green == transparentGreen && blue == transparentBlue ? 0 : alpha;
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries transparency for an alpha channel.");
-    }
-
-    private static void UnfilterRow(int filter, byte[] current, byte[] previous, int channels, CancellationToken cancellationToken)
-    {
-        switch (filter)
-        {
-            case 0:
-                return;
-            case 1:
-                for (int index = channels; index < current.Length; index++)
-                {
-                    if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    current[index] += current[index - channels];
-                }
-                return;
-            case 2:
-                for (int index = 0; index < current.Length; index++)
-                {
-                    if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    current[index] += previous[index];
-                }
-                return;
-            case 3:
-                for (int index = 0; index < current.Length; index++)
-                {
-                    if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    int left = index >= channels ? current[index - channels] : 0;
-                    current[index] += (byte)((left + previous[index]) / 2);
-                }
-                return;
-            default:
-                for (int index = 0; index < current.Length; index++)
-                {
-                    if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    int left = index >= channels ? current[index - channels] : 0;
-                    int above = previous[index];
-                    int upperLeft = index >= channels ? previous[index - channels] : 0;
-                    current[index] += (byte)PaethPredictor(left, above, upperLeft);
-                }
-                return;
-        }
-    }
-
-    private static int PaethPredictor(int left, int above, int upperLeft)
-    {
-        int estimate = left + above - upperLeft;
-        int leftError = Math.Abs(estimate - left);
-        int aboveError = Math.Abs(estimate - above);
-        int upperLeftError = Math.Abs(estimate - upperLeft);
-        if (leftError <= aboveError && leftError <= upperLeftError) return left;
-        return aboveError <= upperLeftError ? above : upperLeft;
     }
 
     /// <summary>Owns the budgeted IDAT, palette and transparency copies retained while one PNG decodes.</summary>

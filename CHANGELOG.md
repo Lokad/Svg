@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reconstruct embedded PNG scanlines in their admitted buffer, removing two
+  scratch rows and the per-row copy while preserving pixel and ownership behavior.
 - Reject embedded PNG `cICP` color-space declarations through the existing
   unsupported color-management boundary instead of ignoring their sample encoding.
 - Paint text decorations with their own source fragments, preserving mixed-font

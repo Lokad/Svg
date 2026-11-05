@@ -27,6 +27,11 @@ copies reserve receiving storage first. Authored paths keep their own owner.
 Resources borrow immutable child scenes retained by the parent. Pattern graph
 validation checks cycles/depth before rasterization; aliases share content.
 
+Embedded PNG decoding validates decompression before reconstructing scanlines in
+their admitted byte buffer. Current and previous rows borrow disjoint spans;
+uniform images retain only their color, while varied pixels transfer to the scene's
+independent premultiplied raster owner.
+
 Filter capture borrows immutable command ranges and geometry indices from the
 retained scene. Rewritten command envelopes remain separately owned. Matching
 capture/playback grids can borrow pixels with a transparent guard; expanded or
