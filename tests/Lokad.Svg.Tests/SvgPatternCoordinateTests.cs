@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPatternCoordinateTests
 {
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<rect x='8' y='8' width='40' height='24' fill='url(#p)'/>")]
     [InlineData("<ellipse cx='28' cy='20' rx='20' ry='12' fill='url(#p)'/>")]
     [InlineData("<path d='M8 8H48V32H8Z' fill='url(#p)'/>")]
@@ -20,6 +21,7 @@ public sealed class SvgPatternCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Reused_patterns_bind_each_original_box_before_clipping_and_stroking()
     {
         const string content = "<rect x='1' y='2' width='3' height='4' fill='#337ca6'/>";
@@ -33,6 +35,7 @@ public sealed class SvgPatternCoordinateTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<rect x='8' y='8' width='0' height='24' fill='url(#p)'/>")]
     [InlineData("<line x1='8' y1='8' x2='48' y2='8' stroke='url(#p)' stroke-width='4'/>")]
     public void Empty_object_boxes_do_not_paint_pattern_textures(string shape)
@@ -42,6 +45,7 @@ public sealed class SvgPatternCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Skewed_oval_patterns_bind_original_object_units_before_native_source_replay()
     {
         const string input = "<defs><pattern id='p' width='.25' height='.5' patternUnits='objectBoundingBox'><rect width='4' height='4' fill='red'/></pattern></defs><ellipse cx='28' cy='20' rx='20' ry='12' transform='matrix(1 .15 .2 1 4 3)' fill='url(#p)'/>";
@@ -51,6 +55,7 @@ public sealed class SvgPatternCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Object_relative_texture_dimensions_remain_bounded()
     {
         const string input = "<defs><pattern id='p' width='.5' height='.5' patternUnits='objectBoundingBox'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='1000000' height='60' fill='url(#p)'/>";
@@ -60,6 +65,7 @@ public sealed class SvgPatternCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_radius_oval_patterns_do_not_paint()
     {
         const string pattern = "<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs>";

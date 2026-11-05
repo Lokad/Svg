@@ -9,6 +9,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGradientCoordinateTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(14, 14, 279, 104)]
     [InlineData(1, 1, 279, 117)]
     public void Captured_gradient_coordinates_and_dither_share_the_source_bitmap_origin(int left, int top, int right, int bottom)
@@ -33,6 +34,7 @@ public sealed class SvgGradientCoordinateTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("skewX(45)", 5, 2)]
     [InlineData("skewY(45)", 3, 5)]
     public void Gradient_skew_spelling_preserves_the_shared_affine_map(string transform, double x, double y)
@@ -46,6 +48,7 @@ public sealed class SvgGradientCoordinateTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("skewX()")]
     [InlineData("skewY(1 2)")]
     public void Gradient_skew_requires_one_finite_angle(string transform)
@@ -57,6 +60,7 @@ public sealed class SvgGradientCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Gradient_transform_numbers_match_browser_dom_bits()
     {
         const string transform = "matrix(1.17 .23 -.31 .89 301.7 149.3)";
@@ -77,6 +81,7 @@ public sealed class SvgGradientCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Gradient_stop_offsets_match_frozen_browser_decimal_percentage_and_exponent_lanes()
     {
         using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/gradient-stop-browser.json")));
@@ -99,6 +104,7 @@ public sealed class SvgGradientCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Gradient_transform_numeric_reading_observes_cancellation()
     {
         using StringReader input = new("<radialGradient gradientTransform='scale(1.17)'/>");
@@ -111,6 +117,7 @@ public sealed class SvgGradientCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Coordinate_and_normalized_material_stages_match_compiled_native_float_lanes_and_pixels()
     {
         string[] rows = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "TestData/gradient-coordinates-native.csv"));
@@ -170,6 +177,7 @@ public sealed class SvgGradientCoordinateTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Bitmap_local_radial_matrix_order_matches_native_positions_material_lanes_and_pixels()
     {
         string[] rows = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "TestData/radial-local-matrix-native.csv"));
@@ -206,6 +214,7 @@ public sealed class SvgGradientCoordinateTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("translated-rectangle")]
     [InlineData("reflected-path")]
     public async Task Separate_radial_local_and_drawing_matrices_preserve_six_output_parity(string name)

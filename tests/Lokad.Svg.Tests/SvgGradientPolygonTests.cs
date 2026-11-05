@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGradientPolygonTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Gradient_polygon_retains_contours_paint_and_box()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
@@ -26,6 +27,7 @@ public sealed class SvgGradientPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Similarity_covers_rotation_reflection_and_uniform_scales()
     {
         double cosine = Math.Cos(Math.PI / 4);
@@ -38,6 +40,7 @@ public sealed class SvgGradientPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Similarity_rejects_skew_and_rotation_with_nonuniform_scale()
     {
         double cosine = Math.Cos(Math.PI / 4);
@@ -49,6 +52,7 @@ public sealed class SvgGradientPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Radial_polygon_retains_contours_circle_and_box()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000));
@@ -67,6 +71,7 @@ public sealed class SvgGradientPolygonTests
         Assert.True(geometry.RadialPolygon.HasFill);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Gradient_transform_compose_applies_inner_first()
     {
         SvgGradientTransform outer = new(2, 0, 0, 3, 5, 7);
@@ -82,6 +87,7 @@ public sealed class SvgGradientPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Gradient_transform_try_invert_round_trips_general_matrix()
     {
         SvgGradientTransform forward = new(-4.228, -8.251, 14.01, -7.18, 5688, 455.1);
@@ -95,6 +101,7 @@ public sealed class SvgGradientPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Gradient_transform_try_invert_rejects_singular_matrix()
     {
         SvgGradientTransform singular = new(1, 2, 2, 4, 0, 0);
@@ -103,6 +110,7 @@ public sealed class SvgGradientPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Shift_general_radial_composes_translation_exactly()
     {
         SvgRadialGradient circle = GeneralCircle(new SvgGradientTransform(0.5, 0, 0, 0.25, 0, 0));
@@ -113,6 +121,7 @@ public sealed class SvgGradientPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Scale_general_radial_composes_axis_map_exactly()
     {
         SvgRadialGradient circle = GeneralCircle(new SvgGradientTransform(0.5, 0, 0, 0.25, 0, 0));
@@ -123,6 +132,7 @@ public sealed class SvgGradientPolygonTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0, 1)]
     [InlineData(1, 0)]
     [InlineData(0, 0)]
@@ -143,6 +153,7 @@ public sealed class SvgGradientPolygonTests
         return new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 4, 4, 4, 4, 4, 0, 0, 1, false, true, SvgGradientSpread.Pad, stops, 1, 1, false, inverse, true);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Map_user_space_radial_general_composes_element_and_frame()
     {
         SvgRadialGradient circle = GeneralCircle(new SvgGradientTransform(0.5, 0, 0, 0.25, 0, 0));

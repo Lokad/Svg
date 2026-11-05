@@ -20,6 +20,7 @@ public sealed class SvgPatternRecordingTransformTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(NativePixels))]
     public void Pattern_sampling_retains_native_recording_boundaries(string host, string effect, byte[] pixel)
     {
@@ -58,6 +59,7 @@ public sealed class SvgPatternRecordingTransformTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Authored_viewports_and_external_output_scale_preserve_their_distinct_native_picture_matrices()
     {
         foreach (bool authoredViewport in new[] { false, true })
@@ -74,6 +76,7 @@ public sealed class SvgPatternRecordingTransformTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false)]
     [InlineData(true)]
     public void Deep_recording_chains_release_storage_on_denial_cancellation_and_retry(bool forward)
@@ -127,6 +130,7 @@ public sealed class SvgPatternRecordingTransformTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Shared_recording_nodes_keep_output_matrices_local_to_each_draw()
     {
         RenderBudget parser = new RenderBudget(new HostMemoryBudget(8_000_000));

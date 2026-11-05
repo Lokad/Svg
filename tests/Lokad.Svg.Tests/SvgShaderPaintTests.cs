@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgShaderPaintTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Float_material_stages_match_compiled_native_pixels()
     {
         string[] rows = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "TestData/shader-paint-native.csv"));
@@ -36,6 +37,7 @@ public sealed class SvgShaderPaintTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("linear")]
     [InlineData("radial")]
     [InlineData("pattern")]
@@ -58,6 +60,7 @@ public sealed class SvgShaderPaintTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("linear")]
     [InlineData("radial")]
     [InlineData("pattern")]
@@ -71,6 +74,7 @@ public sealed class SvgShaderPaintTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("linear")]
     [InlineData("radial")]
     [InlineData("pattern")]

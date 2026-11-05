@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgAffineRadialPaintTests
 {
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Tiled_curved_clip_releases_border_owners_after_late_denial_and_partial_replay_cancellation()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='620' height='620' viewBox='0 0 100 100'><defs><clipPath id='c'><path d='M10 75 A40 40 0 0 1 90 75'/></clipPath></defs><g transform='rotate(20 90 75)' clip-path='url(#c)'><circle cx='50%' cy='75%' r='40%' fill='#eee'/></g></svg>"u8.ToArray();
@@ -57,6 +58,7 @@ public sealed class SvgAffineRadialPaintTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<radialGradient id='p' fx='31%' fy='42%'><stop stop-color='#eee'/><stop offset='1' stop-color='#aaa'/></radialGradient>", "<circle cx='16' cy='16' r='11' fill='url(#p)' transform='rotate(23 16 16)'/>")]
     [InlineData("<radialGradient id='p' gradientTransform='matrix(1 .12 .18 .9 .02 -.04)'><stop stop-color='#eee'/><stop offset='1' stop-color='#aaa'/></radialGradient>", "<path d='M4 24 C4 4 28 4 28 24Z' fill='url(#p)' transform='matrix(.8 .2 -.1 .9 4 2)'/>")]
     [InlineData("<radialGradient id='p' fx='31%' fy='42%'><stop stop-color='#eee'/><stop offset='1' stop-color='#aaa'/></radialGradient><clipPath id='c'><path d='M5 24 A11 11 0 0 1 27 24'/></clipPath>", "<g transform='rotate(12 16 16)' clip-path='url(#c)'><circle cx='16' cy='24' r='11' fill='url(#p)'/></g>")]
@@ -113,6 +115,7 @@ public sealed class SvgAffineRadialPaintTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<circle cx='16' cy='16' r='0' fill='url(#p)' transform='rotate(23 16 16)'/>")]
     [InlineData("<g clip-path='url(#c)' transform='rotate(12 16 16)'><circle cx='100' cy='100' r='11' fill='url(#p)'/></g>")]
     public void Empty_affine_paint_and_disjoint_curved_clip_remain_transparent(string shape)

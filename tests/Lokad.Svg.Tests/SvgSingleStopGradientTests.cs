@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgSingleStopGradientTests
 {
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(false, false, false)]
     [InlineData(false, true, false)]
     [InlineData(true, false, false)]
@@ -34,6 +35,7 @@ public sealed class SvgSingleStopGradientTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]

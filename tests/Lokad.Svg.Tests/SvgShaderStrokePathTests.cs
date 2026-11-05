@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgShaderStrokePathTests
 {
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("linearGradient", "x2='1'")]
     [InlineData("radialGradient", "")]
     public void Unpainted_curved_fill_preserves_the_source_box_for_gradient_stroke(string element, string attributes)
@@ -19,6 +20,7 @@ public sealed class SvgShaderStrokePathTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("linear")]
     [InlineData("radial")]
     [InlineData("pattern")]
@@ -64,6 +66,7 @@ public sealed class SvgShaderStrokePathTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("stroke-dasharray='-1 2'")]
     [InlineData("stroke-width='NaN'")]
     public void Shader_stroke_admission_preserves_invalid_style_errors_without_output(string attributes)
