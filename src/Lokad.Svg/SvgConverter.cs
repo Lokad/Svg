@@ -3912,7 +3912,8 @@ public static partial class SvgConverter
                     SvgDevicePoint[] mapped = new SvgDevicePoint[points.Length];
                     SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, pointScaleX, pointOffsetX, pointScaleY, pointOffsetY, outputWidth, outputHeight, mapping is SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges or SvgPolygonMapping.FlattenedCurves, out bool canvasContainsQuads, authored is null ? null : authoredMap, cancellationToken);
                     SvgCubicSpan[] mappedCubics = MapCubicSpanControls(cubicSpans, pointScaleX, pointOffsetX, pointScaleY, pointOffsetY, outputWidth, outputHeight, out bool canvasContainsCubics, authored is null ? null : authoredMap, cancellationToken);
-                    bool nativeConics = Array.Exists(quadSpans, static span => span.ConicWeight != 1f);
+                    bool nativePoints = authored is null && (Array.Exists(quadSpans, static span => span.ConicWeight != 1f)
+                        || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges or SvgPolygonMapping.FlattenedCurves);
                     double left = double.PositiveInfinity;
                     double top = double.PositiveInfinity;
                     double right = double.NegativeInfinity;
@@ -3920,12 +3921,20 @@ public static partial class SvgConverter
                     for (int index = 0; index < points.Length; index++)
                     {
                         if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                        double edgeX = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges or SvgPolygonMapping.FlattenedCurves ? MapNativePolygonEdge(points[index].X, pointScaleX, pointOffsetX) : MapEdge(points[index].X, pointScaleX, pointOffsetX);
-                        double edgeY = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges or SvgPolygonMapping.FlattenedCurves ? MapNativePolygonEdge(points[index].Y, pointScaleY, pointOffsetY) : MapEdge(points[index].Y, pointScaleY, pointOffsetY);
+                        double edgeX, edgeY;
                         if (authored is not null)
                         {
+                            // Source admission matches the former identity map; only
+                            // the authored draw supplies the coordinates used below.
+                            if (!double.IsFinite(points[index].X) || !double.IsFinite(points[index].Y))
+                                throw new SvgException(SvgErrorCode.LimitExceeded, "Output scaling and viewBox mapping exceed the admitted numeric range.");
                             SvgDevicePoint native = SvgAuthoredPath.MapPoint(authoredMap, points[index], new(0, 0));
                             edgeX = native.X; edgeY = native.Y;
+                        }
+                        else
+                        {
+                            edgeX = nativePoints ? MapNativePolygonEdge(points[index].X, pointScaleX, pointOffsetX) : MapEdge(points[index].X, pointScaleX, pointOffsetX);
+                            edgeY = nativePoints ? MapNativePolygonEdge(points[index].Y, pointScaleY, pointOffsetY) : MapEdge(points[index].Y, pointScaleY, pointOffsetY);
                         }
                         mapped[index] = new SvgDevicePoint(edgeX, edgeY);
                         if (edgeX < left) left = edgeX;
@@ -3933,14 +3942,6 @@ public static partial class SvgConverter
                         if (edgeX > right) right = edgeX;
                         if (edgeY > bottom) bottom = edgeY;
                     }
-                    int startY = ClampFloor(top, outputHeight);
-                    int endY = ClampCeiling(bottom, outputHeight);
-                    int startX = ClampFloor(left, outputWidth);
-                    int endX = ClampCeiling(right, outputWidth);
-                    int pathStartX = startX;
-                    int pathStartY = startY;
-                    int pathEndX = endX;
-                    int pathEndY = endY;
                     double completeLeft = left;
                     double completeTop = top;
                     double completeRight = right;
@@ -3959,10 +3960,10 @@ public static partial class SvgConverter
                     SvgDeviceBounds completeBounds = new(completeLeft, completeTop, completeRight, completeBottom);
                     // Native path bounds include raw controls. Flattened samples
                     // can miss an extremum in an adjacent boundary pixel.
-                    startX = pathStartX = ClampFloor(completeLeft, outputWidth);
-                    startY = pathStartY = ClampFloor(completeTop, outputHeight);
-                    endX = pathEndX = ClampCeiling(completeRight, outputWidth);
-                    endY = pathEndY = ClampCeiling(completeBottom, outputHeight);
+                    int startX = ClampFloor(completeLeft, outputWidth), pathStartX = startX;
+                    int startY = ClampFloor(completeTop, outputHeight), pathStartY = startY;
+                    int endX = ClampCeiling(completeRight, outputWidth), pathEndX = endX;
+                    int endY = ClampCeiling(completeBottom, outputHeight), pathEndY = endY;
                     (double Left, double Top, double Right, double Bottom)? mappedClip = null;
                     bool clipContainsPath = left >= 0 && top >= 0 && right <= outputWidth && bottom <= outputHeight && canvasContainsQuads && canvasContainsCubics;
                     if (clip is SvgClipBox clipBox)

@@ -58,6 +58,8 @@ and direct fringe events survive storage trimming. Triangle/trapezoid alpha
 narrows before additive saturation.
 
 Polygon painting owns mapped/authored storage until traversal finishes.
+Point placement chooses its authored or fallback map once; bounds include curve
+controls before storage clamping. Source-coordinate admission remains separate.
 `PolygonRaster` and fallback pixel coverage borrow its descriptor by readonly
 reference. Traversal shares coverage preparation and scratch across paint kinds;
 linear/radial/pattern polygons share ordered shader painting. Material setup,
