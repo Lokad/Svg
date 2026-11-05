@@ -23,6 +23,11 @@ matrices. All five error/message/output boundaries stay routine. The original
 validation bodies and references remain; two integrity checks preserve complete
 provider identities and accept LF/CRLF JSON metadata without normalizing SVG/PNG bytes.
 
+Seven smaller reference groups also separate 73 canonical inputs from 28 routine
+and 45 Research output matrices. Every original matrix and its comparison body
+remain; three mask backgrounds and six direct blur mechanisms stay intact.
+The explicit research identities live in each class; new inputs remain routine.
+
 ## Paint-bank discovery and loading
 
 [The typed loader](../../Lokad.Svg.VisualTests/PaintReferenceBank.cs) discovers

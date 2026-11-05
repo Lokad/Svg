@@ -12,9 +12,32 @@ public sealed class SvgInertTypographyReferenceTests
         foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray()) yield return new object[] { Required(item, "id") };
     }
 
+    public static IEnumerable<object[]> OutputCases() => Cases().Where(static row => !IsExtendedOutput((string)row[0]));
+    public static IEnumerable<object[]> ExtendedOutputCases() => Cases().Where(static row => IsExtendedOutput((string)row[0]));
+
+    // New inputs remain routine; only these reviewed API repetitions are Research.
+    private static bool IsExtendedOutput(string identity)
+        => identity is "inline-outlined-path"
+            or "presentation-outlined-path"
+            or "all-geometric-leaves";
+
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Inert_geometry_typography_matches_frozen_browser_controls_through_six_outputs(string identity)
+    [Trait("Layer", "Rendering")]
+    public Task Inert_geometry_typography_matches_frozen_browser_controls(string identity) => VerifyCase(identity, false);
+
+    [Theory]
+    [MemberData(nameof(OutputCases))]
+    [Trait("Layer", "Contract")]
+    public Task Inert_geometry_typography_matches_frozen_browser_controls_through_six_outputs(string identity) => VerifyCase(identity, true);
+
+    [Theory]
+    [MemberData(nameof(ExtendedOutputCases))]
+    [Trait("Layer", "Contract")]
+    [Trait("Category", "Research")]
+    public Task Extended_Inert_geometry_typography_matches_frozen_browser_controls(string identity) => VerifyCase(identity, true);
+
+    private static async Task VerifyCase(string identity, bool allOutputs)
     {
         string directory = Path.Combine(ResearchCorpus.Root, "inert-typography");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -34,6 +57,7 @@ public sealed class SvgInertTypographyReferenceTests
         byte[] actual = SvgConverter.ConvertToPng(source, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, pixels), PngRgbaDecoder.Decode(actual, pixels));
         Assert.True(comparison.IsExact, identity + ": " + comparison);
+        if (!allOutputs) return;
         byte[] target = new byte[actual.Length];
         Assert.Equal(actual.Length, SvgConverter.ConvertToPng(source, target, SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(actual, target);

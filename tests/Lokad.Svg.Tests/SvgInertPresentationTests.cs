@@ -10,36 +10,79 @@ public sealed class SvgInertPresentationTests
     private const string Shape = "<path fill='red' d='M4 4 C4 1 28 1 28 4 L28 24 C28 29 4 29 4 24 Z'/>";
     private const string Declarations = "marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate";
 
+    public static IEnumerable<object[]> Cases()
+    {
+        yield return ["inline"];
+        yield return ["root"];
+        yield return ["group"];
+        yield return ["stylesheet"];
+        yield return ["use"];
+        yield return ["attributes"];
+        yield return ["important"];
+        yield return ["duplicate"];
+        yield return ["visible-inline"];
+        yield return ["visible-group"];
+        yield return ["visible-stylesheet"];
+        yield return ["visible-attributes"];
+        yield return ["background-root-attribute"];
+        yield return ["background-root-inline"];
+        yield return ["background-group-attribute"];
+        yield return ["background-group-inline"];
+        yield return ["background-stylesheet"];
+        yield return ["background-use"];
+        yield return ["background-leaf"];
+        yield return ["background-viewport"];
+        yield return ["background-partial-one"];
+        yield return ["background-partial-two"];
+        yield return ["background-partial-three"];
+    }
+
+    public static IEnumerable<object[]> OutputCases() => Cases().Where(static row => !IsExtendedOutput((string)row[0]));
+    public static IEnumerable<object[]> ExtendedOutputCases() => Cases().Where(static row => IsExtendedOutput((string)row[0]));
+
+    // New inputs remain routine; only these reviewed API repetitions are Research.
+    private static bool IsExtendedOutput(string identity)
+        => identity is "root"
+            or "group"
+            or "attributes"
+            or "duplicate"
+            or "visible-inline"
+            or "visible-stylesheet"
+            or "visible-attributes"
+            or "background-root-attribute"
+            or "background-root-inline"
+            or "background-group-attribute"
+            or "background-group-inline"
+            or "background-stylesheet"
+            or "background-use"
+            or "background-leaf"
+            or "background-partial-one"
+            or "background-partial-two"
+            or "background-partial-three";
+
     [Theory]
-    [InlineData("inline")]
-    [InlineData("root")]
-    [InlineData("group")]
-    [InlineData("stylesheet")]
-    [InlineData("use")]
-    [InlineData("attributes")]
-    [InlineData("important")]
-    [InlineData("duplicate")]
-    [InlineData("visible-inline")]
-    [InlineData("visible-group")]
-    [InlineData("visible-stylesheet")]
-    [InlineData("visible-attributes")]
-    [InlineData("background-root-attribute")]
-    [InlineData("background-root-inline")]
-    [InlineData("background-group-attribute")]
-    [InlineData("background-group-inline")]
-    [InlineData("background-stylesheet")]
-    [InlineData("background-use")]
-    [InlineData("background-leaf")]
-    [InlineData("background-viewport")]
-    [InlineData("background-partial-one")]
-    [InlineData("background-partial-two")]
-    [InlineData("background-partial-three")]
-    public async Task Inactive_presentation_preserves_pixels_through_six_public_outputs(string context)
+    [MemberData(nameof(Cases))]
+    [Trait("Layer", "Rendering")]
+    public Task Inactive_presentation_preserves_pixels(string context) => VerifyCase(context, false);
+
+    [Theory]
+    [MemberData(nameof(OutputCases))]
+    [Trait("Layer", "Contract")]
+    public Task Inactive_presentation_preserves_pixels_through_six_public_outputs(string context) => VerifyCase(context, true);
+
+    [Theory]
+    [MemberData(nameof(ExtendedOutputCases))]
+    [Trait("Layer", "Contract")]
+    [Trait("Category", "Research")]
+    public Task Extended_Inactive_presentation_preserves_pixels(string context) => VerifyCase(context, true);
+
+    private static async Task VerifyCase(string context, bool allOutputs)
     {
         byte[] input = Input(context);
         SvgRenderOptions options = SvgRenderOptions.Default;
         byte[] expected = SvgConverter.ConvertToPng(Wrap(Shape), options, CancellationToken.None).ToArray();
         Assert.Equal(expected, SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        if (!allOutputs) return;
         byte[] destination = new byte[expected.Length];
         Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
         Assert.Equal(expected, destination);

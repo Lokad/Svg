@@ -34,6 +34,13 @@ routine; integrity checks preserve the full partition and boundary coverage.
 The [qualification](Research/release-baselines/recording-marker-responsibilities.json)
 records the source/compiled inventory, preserved matrices and before/after timings.
 
+The smaller symbol, mask, rounded-rectangle, blur, inert-style and single-stop
+gradient groups retain 73 canonical inputs, 28 routine six-output contracts and
+45 individual Research matrices. All original matrices remain; mask cases keep
+all three backgrounds and six direct blur-kernel controls stay separate. New
+inputs remain routine. Prepared mask-text inheritance retains its full matrix
+because font selection through preparation is part of that interaction.
+
 Parser characterization uses a [test-owned rectangle projection](Lokad.Svg.Tests/SvgRectangleCharacterization.cs)
 of root or retained-scene geometry. It preserves the assertion view's stroke bands
 and clipped bounds; rendering regressions retain their independent native images.
