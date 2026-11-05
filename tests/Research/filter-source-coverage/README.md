@@ -28,7 +28,7 @@ axis boundary separately from rendering contexts. The `.02` and `2e-2` spellings
 illustrate distinct native float-place-value rounding at the materialization
 threshold. Numerical vectors do not repeat across API destinations.
 
-Two alias contracts check work refusal, memory refusal, cancellation, cleanup
+Two alias contracts check memory refusal, cancellation, cleanup
 and retry, covering source paint and the separately owned linear sample buffer.
 The representative API matrix remains responsible for destination and
 prepared-document forms. The [canonical rendering test](../../Lokad.Svg.VisualTests/SvgFilterSourceCoverageReferenceTests.cs)

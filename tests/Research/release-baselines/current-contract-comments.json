@@ -221,7 +221,84 @@
     "scope": "Documentation-only follow-up to the geometry test milestone. No new test, package, native-reference or SVGWeb output qualification is implied or needed for unchanged executable code."
   },
   "remaining": {
-    "deadHelper": "SvgImageMipMap.SampleCount has no runtime caller and is referenced only by an assertion in the8-case reduction mechanism. Removal is queued in PLAN; retain every weighted output, immutability and cancellation check.",
+    "deadHelper": "Retired in384f4181e; all8 exact weighted-output/source-immutability and2 borrowed-output cancellation cases remain.",
     "documentation": "Broader support/units/limits/provenance/migration agreement remains open; this closes the obsolete work-accounting comments."
+  },
+  "followUp": {
+    "mipCountRetirement": {
+      "commit": "384f4181ef695278e523e8fadad7b9094038a5fc",
+      "removedProductionMethod": "SvgImageMipMap.SampleCount",
+      "runtimeConsumers": 0,
+      "onlyRemovedAssertion": "Self-count assertion; no rendering assertion removed.",
+      "affected": {
+        "coreCases": 482,
+        "nativeCases": 129,
+        "identitiesUnchanged": true,
+        "hosts": [
+          "windows",
+          "linux"
+        ],
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ]
+      },
+      "ci": {
+        "run": 42016326643,
+        "status": "Terminal CLOSED; never repoll/refetch.",
+        "jobs": [
+          {
+            "host": "linux",
+            "job": 127207654961,
+            "conclusion": "success",
+            "logSha256": "d7819358d8cba6912891c6a1dcb54894f47fe478ee0e9182b6ec3bc870af6b8d",
+            "note": "Full .NET11, representative .NET10, tools and installed-package gates pass."
+          },
+          {
+            "host": "windows",
+            "job": 127207655489,
+            "conclusion": "failure",
+            "logSha256": "b1deae0a10376a5d3ec5a37b9e38c6d2c3784d21ab3bcd218bda944f4348b295",
+            "note": "Sole unchanged frozen DejaVu discrepancy."
+          }
+        ]
+      }
+    },
+    "guideStatus": {
+      "files": [
+        "../filter-group-opacity/README.md",
+        "../filter-source-coverage/README.md",
+        "../glyph-conic-centers/README.md",
+        "../nested-filter-placement/README.md",
+        "../point-list-source-maps/README.md",
+        "../rendered-use-sources/README.md",
+        "../root-css-box/README.md",
+        "../solid-paint-alpha/README.md",
+        "../svgweb/README.md",
+        "../text-shared-anchor/README.md",
+        "../upstream-static-documents/README.md"
+      ],
+      "relativeTargetsChecked": 245,
+      "currentClaims": [
+        "Root padding and solid-border layout are qualified by their own native controls.",
+        "Default juanmontoya_lingerie is exact; rendered-use/group-opacity/nested-filter guides point to recording/device closure.",
+        "helloworld is exact within its supplied-program context; font-free default remains unsupported.",
+        "Direct text clips and declared casing contexts have separate completed qualification.",
+        "Color-matrix support is independent of the frozen26-document membership.",
+        "Work refusal descriptions are replaced by actual memory/cancellation duties."
+      ],
+      "evidence": [
+        "../svgweb/default-outcomes.csv",
+        "../svgweb/filter-recording-devices.json",
+        "../svgweb/admission-boundaries.json",
+        "../svgweb/supplied-original-contexts.json",
+        "../root-box-layout/README.md",
+        "../root-border/README.md",
+        "../text-clip/qualification.json",
+        "../text-case-mapping/README.md",
+        "../filter-color-matrix/README.md"
+      ],
+      "preserved": "Original native/reference/source hashes, capture-time observations, unrelated open scopes and every qualification measurement remain unchanged."
+    }
   }
 }

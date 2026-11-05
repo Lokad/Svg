@@ -16,5 +16,7 @@ Existing anchor staging, prepared replay and path measurement contracts remain
 representative ownership coverage; no fixture/API matrix is added.
 
 [Closure evidence](../svgweb/text-shared-anchor.json) records failing-before
-pixels, focused checks and affected integration. [Uppercase projection](../text-case-mapping/README.md)
-has separate qualification; other case operations remain open.
+pixels, focused checks and affected integration.
+[Case projection](../text-case-mapping/README.md) separately qualifies uppercase,
+lowercase and capitalization, including its declared language contexts.
+Other language tailoring retains the [text support boundary](../../../docs/SUPPORT_MATRIX.md#text-and-fonts).

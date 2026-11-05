@@ -34,6 +34,6 @@ source endpoint rounding, viewBox concatenation and the existing transform limit
 directly, including finite intermediates outside the complete map's admitted range.
 Existing numerical/parser banks retain exhaustive admission boundaries.
 Two selected [ownership cases](../../Lokad.Svg.Tests/SvgPointListPaintOwnershipTests.cs)
-cover source-paint and retained-viewport allocations, memory/work refusal,
+cover source-paint and retained-viewport allocations, memory refusal,
 cancellation, cleanup and retry. General destination and prepared-document
 contracts remain in the representative API matrix.

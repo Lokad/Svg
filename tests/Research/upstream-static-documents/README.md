@@ -24,8 +24,9 @@ Selection reviewed these pinned inventories:
   feature tests are outside this static profile. Duplicate reference documents
   are not fixtures. Inspected `line-dasharray.svg` overlaps the selected curved
   dash document and retained `SvgRootParserTests`/`SvgStrokeFillTests` pathLength
-  controls; pathLength remains admitted. `clip-path-filter-order.svg` requires
-  excluded feColorMatrix and is not selected.
+  controls; pathLength remains admitted. `clip-path-filter-order.svg` is outside
+  this frozen selection. Current color-matrix admission and clip/crop interactions
+  have separate [native controls](../filter-color-matrix/README.md).
 - [Accepted W3C SVG 1.1 F2 index](https://dev.w3.org/SVG/profiles/1.1F2/test/harness/htmlObjectApproved/index.html),
   retained 2026-10-17 with SHA256
   `365f7d07615f2053ac0da65ba2f97d8281b01077b785dad87584d49ebe81d8af`.

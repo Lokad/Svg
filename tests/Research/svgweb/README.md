@@ -160,13 +160,13 @@ current inventory above governs overall status.
 | Nested filter placement | [Earlier source/layer review](nested-filter-placement.json). Isolation bounds and replay share the placed child binding. The subsequent prepared-drawing model replaces the ideal-linear helper while preserving source layout and capture bounds. |
 | Rendered use sources | [Shared identity and replay](rendered-use-sources.json), [native controls](../rendered-use-sources/README.md). Root/group aliases share retained use nodes and document ownership; group opacity and filters reuse existing replay. Canonical controls and the affected default original are exact. |
 | Descriptive link titles | [URI-aware attribute admission](metadata-attributes.json), [canonical control](../metadata-attributes/README.md). One predicate serves ordinary elements and defs; six direct boundary cases and one independent native image retain reference/namespace contracts. Both unmodified metadata originals are exact on both hosts. |
-| Inert event attributes | [Static admission](inert-events.json), [canonical control](../metadata-attributes/inert-events.svg). One predicate serves element, defs, stylesheet, filter and span/path validators. Ten direct cases, one prepared-font contract and one native image separate responsibilities. The default rectangles original is exact; deeper static gaps continue under script, font, attribute and CSS review. |
-| Non-executing script content | [Shared traversal](inert-scripts.json), [canonical control](../metadata-attributes/inert-scripts.svg). Preparation, selection and lowering share a bounded consumer. Retained empty markers preserve text nodes and lexical counts without copying bodies. Direct limits/namespace/XML cases, representative text contracts and one native image protect distinct roles. The default videos original is exact; three newly reached font gates remain open. |
+| Inert event attributes | [Static admission](inert-events.json), [canonical control](../metadata-attributes/inert-events.svg). One predicate serves element, defs, stylesheet, filter and span/path validators. Ten direct cases, one prepared-font contract and one native image separate responsibilities. The default rectangles original is exact; other defaults retain their [explicit admission boundaries](admission-boundaries.json). |
+| Non-executing script content | [Shared traversal](inert-scripts.json), [canonical control](../metadata-attributes/inert-scripts.svg). Preparation, selection and lowering share a bounded consumer. Retained empty markers preserve text nodes and lexical counts without copying bodies. Direct limits/namespace/XML cases, representative text contracts and one native image protect distinct roles. The default videos original is exact; font-dependent originals retain their [declared supplied-program contexts](admission-boundaries.json). |
 | Static CSS state and source | [Shared admission and source boundaries](static-css.json), [canonical control](../metadata-attributes/static-css-state.svg). Inactive interaction rules retain no selector/value storage or ancestor branch; float does not affect image flow. Mechanisms, representative font acquisition and one native image separate responsibilities. Default faux-art/mail are exact. Root box layout has separate border/padding evidence. |
 | Fixed geometry and rotation centres | [Shared lengths and stages](geometry-fixed-lengths.json), [canonical control](../geometry-fixed-lengths/README.md). Consumer-specific ranges and percentage stages remain distinct. Native rotation-centre sequencing fixes fractional pattern sampling without a shader adjustment. Default circles1 is exact; all 159 previous PNGs remain unchanged. |
 | Root canvas and generation | [Canvas boundaries](root-canvas-background.json), [native controls](../root-css-box/README.md) and [box review](root-box-native-review.csv). Canvas color stays outside element opacity/visibility and child filter sources. Root image generation preserves computed display for explicit inheritance. Default photos is exact; solid border/content layout and CSS anchoring are closed in their linked follow-ups. |
 | Root box/content layout | [Shared padding and canvas coverage](root-css-padding-layout.json), [padding controls](../root-padding/README.md) and [canvas edge controls](../root-canvas-density/README.md) separate CSS layout, snapped box projection, content clipping and solid paint coverage. [Border composition](root-css-border-layout.json) admits the fourteen frozen [border contexts](../root-box-layout/README.md) plus four edge interactions; solid borders and padding share layout stages. References stay fixed. |
-| Text anchors and chunks | [Shared CSS inheritance and point precision](text-anchor-layout.json), [four canonical controls](../text-anchor/README.md). Cascade, span compaction and absolute chunk positioning retain current-scope anchors without splitting shaping. Initial Windows X points share strike precision across simple/composite loaders. Helloworld reaches the supplied-font gate; its complete rendering remains open. |
+| Text anchors and chunks | [Shared CSS inheritance and point precision](text-anchor-layout.json), [four canonical controls](../text-anchor/README.md). Cascade, span compaction and absolute chunk positioning retain current-scope anchors without splitting shaping. Initial Windows X points share strike precision across simple/composite loaders. The complete helloworld supplied-program context is exact; default conversion still requires an explicit font snapshot. |
 | Windows glyph origins | [Shared point/metric handoffs](windows-phantom-origins.json), [native readouts and masks](../windows-font-unit-scaling/phantom-origins.json). Keep current/original coordinates in the aligned frame, advance rounding separate from absolute coordinates, and parent-program phantoms separate from the inherited child paint origin. |
 | Structural traversal | [Shared metadata and pattern locations](shared-traversal.json). Keep recognized foreign descriptions inert through preparation/lowering, preserve the first rejection context, and align rendered-group pattern registration with content selection. Mechanisms, one prepared-font contract and independent root/group/metadata fixtures protect distinct roles. |
 | Root image layout and placement | [Root model](root-image-model.json), [projection stages](root-image-projection.json), [image boundary](root-image-boundary.json). Logical sizing, subpixel layout, recorded scene and destination coefficients stay distinct. Direct matrices and large viewBox controls protect stages that small images cannot distinguish. |
@@ -222,24 +222,25 @@ subset controls are exact, including the native-positive branch omitted by
 selecting paints from managed coverage alone. No hosted paths are retained;
 the three small regression fixtures use independently authored geometry.
 
-Fixed stroke lengths remove three `0pt` gates; the lingerie original reaches a
-separate local-reference gate. The [length record](fixed-stroke-lengths.json)
-retains those outcomes. The shared [opacity-source correction](opacity-source-scope.json)
+The [length record](fixed-stroke-lengths.json) retains the three original `0pt`
+failures. Rendered-use admission and [recording/device qualification](filter-recording-devices.json)
+close the complete default lingerie original. The shared [opacity-source correction](opacity-source-scope.json)
 closes the complete camera against three fresh healthy captures per host and all
 82 paint isolations. Shared [radial primitive binding](radial-primitive-binding.json)
 also closes radialgradient1 and its rounded-rectangle isolation against fresh native
 evidence. All 149 other rendered PNGs remain byte-identical after that correction.
 
 Shared [traversal](shared-traversal.json) removes foreign-description gates from five
-static originals and aligns group-declared patterns. Those originals now need explicit
-font snapshots; their full acceptance remains open. Dynamic samples keep their scope
-rejections, with the recorded originating context preserved. All 150 rendered PNGs
-remain byte-identical. Original bodies and fragments are never retained.
+static originals and aligns group-declared patterns. Font-dependent originals use
+explicit programs in the [current context partition](originals.json); transported
+TrueType programs do not qualify historical SVG-font outlines. Dynamic samples
+retain their scope rejections. Original bodies and fragments are never retained.
 
 Mapped crop/flood-offset/shadow, supported root CSS box paint and root/filter cases
-are closed for their declared static contexts. Remaining work includes style and
-attribute applicability, the supplied-font cases above, child traversal and
-host-bound raster resources. Follow actual parent/traversal state
-before attributing a rejection to its reported child. Keep malformed, unsupported
-and font/resource-dependent cases individually classified; removing one blocker
-can expose another.
+are closed for their declared static contexts. [Attribute applicability](attribute-applicability.json)
+and the supplied-program contexts retain their own qualification. Current boundaries
+remain explicit for fonts, external images, animation/media, unknown CSS and duplicate
+IDs in the [admission map](admission-boundaries.json). The
+[static diagnostics](remaining-static-gates.json) do not qualify absent original
+resources or dynamic behavior. Follow actual parent/traversal state beyond the first
+rejection; whole-corpus acceptance remains open.

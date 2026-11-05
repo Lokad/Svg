@@ -18,4 +18,6 @@ are asserted individually. A global alpha change still breaks the downscale case
 [Four compiled native mechanisms](../../Lokad.Svg.Tests/SvgFilterSourceMapTests.cs)
 protect exact device-axis products. [Stage evidence](../svgweb/group-opacity-stages.json)
 records failing-before results and host/runtime qualification. Each image uses one
-conversion path with its unchanged reference. The complete hosted original remains open.
+conversion path with its unchanged reference. The later
+[recording/device qualification](../svgweb/filter-recording-devices.json) closes
+the complete default `juanmontoya_lingerie.svg` on both hosts.

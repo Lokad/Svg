@@ -31,6 +31,7 @@ The fractional case uses a 128.3×96.2 logical image viewport and a 128×96 scre
 [Placement evidence](../svgweb/nested-filter-placement.json) and
 [source-scope evidence](../svgweb/filter-source-scope.json) retain earlier bounds
 observations; [prepared drawing evidence](../svgweb/prepared-source-drawing.json)
-records the drawing-stage fix. [Source-opacity evidence](../svgweb/filter-source-opacity.json)
-governs current counters and qualification limits; the complete hosted original
-and exploratory integer-viewport source variants remain open.
+records the drawing-stage fix. The [recording/device qualification](../svgweb/filter-recording-devices.json)
+closes the complete default `juanmontoya_lingerie.svg` on both hosts.
+[Source-opacity evidence](../svgweb/filter-source-opacity.json) retains the earlier
+measurements; exploratory integer-viewport variants need their own qualification.

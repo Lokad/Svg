@@ -2,7 +2,8 @@
 
 The outer root's `background-color` paints the SVG image canvas independently of
 element opacity and visibility. Borders are element paint and also move the content
-origin. Their layout work remains open; a background rectangle cannot model both.
+origin. [Padding](../root-padding/README.md) and [solid borders](../root-border/README.md)
+share content layout and clipping; canvas paint keeps its separate backdrop role.
 
 The original CC0 [controls](capture.json) retain three agreeing healthy native
 captures per host. Admission and root-generation captures precede their corrections;
@@ -31,11 +32,11 @@ borrowed image coverage and the output-only reservation, refusal and retry.
 A separate [one-pixel rendering check](../../Lokad.Svg.Tests/PublicContractTests.cs)
 protects the full-canvas solid-paint shortcut against dropping the earlier canvas
 color; its RGBA reference has six independent healthy native captures.
-[Original outcomes and box review](../svgweb/root-canvas-background.json) keep the
-remaining border/layout work separate from closed canvas behavior.
-The [layout controls](../root-box-layout/README.md) freeze those open behaviors
-independently, with explicit output density and image/content boundaries.
-The [padding slice](../root-padding/README.md) now shares box/content maps and
-clipping. [Fractional canvas controls](../root-canvas-density/README.md) separately
+[Original outcomes and box review](../svgweb/root-canvas-background.json) retain
+the canvas model and failing-before observations. The
+[layout controls](../root-box-layout/README.md) qualify border/padding behavior
+with explicit output density and image/content boundaries.
+[Fractional canvas controls](../root-canvas-density/README.md) separately
 protect background rectangle coverage before the image boundary and solid store;
-the ownership test checks their native RGBA edges. Border painting remains open.
+the ownership test checks their native RGBA edges. Other border styles and rounded
+borders retain the [support restrictions](../../../docs/SUPPORT_MATRIX.md#document-sizing-and-inspection).

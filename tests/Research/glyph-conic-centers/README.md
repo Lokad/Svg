@@ -7,7 +7,7 @@ positioning and preblend; references retain their captured bytes.
 
 The [mechanism cases](native-centers.json) isolate a near-linear quadratic, its
 chord, nearby controls, translations, reflections, reversal, exchanged axes and
-scale. Twenty-one individually selected tests compare an explicit 8Ã—8 native
+scale. Twenty-one individually selected tests compare an explicit 8×8 native
 alpha window through direct and prepared row scans. The em-32 instruction-free
 face selects simple dropout control. Three cases fail before the fix; the other
 eighteen protect nearby behavior. The complete native sheet remains available for
@@ -26,9 +26,11 @@ SVG controls are CC0-1.0. The [font producer](../../../tools/build-conic-center-
 rebuilds the committed numerical font byte-for-byte with FontTools 4.66.1.
 No hosted SVG bodies are retained and ordinary tests require no browser or Python.
 
-This is preparation for direct text clipping. The pinned browser paints text
+These sampling mechanisms also support [direct text clipping](../text-clip/README.md).
+The pinned browser paints text
 clips through a black mask; that coverage differs from ordinary colored glyph
-paint. Font/resource selection and clip replay remain open. The browser's
+paint. The text-clip collection qualifies font/resource selection and ordered clip
+replay separately from these glyph controls. The browser's
 [clip strategy](https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_resource_clipper.cc)
 and independently captured controls support that distinction.
 

@@ -20,6 +20,7 @@ one document-owned collection; group aliases borrow their existing source range.
 Both seal before graph validation. Referenced group opacity and filters reuse
 existing retained replay, without separate composition or sampling code.
 
-[Evidence and remaining original differences](../svgweb/rendered-use-sources.json)
-keep admission distinct from complete SVGWeb acceptance. The affected original
-now renders but still differs from independent native captures; it remains open.
+[Admission evidence](../svgweb/rendered-use-sources.json) preserves the initial
+original differences. The [shared recording/device correction](../svgweb/filter-recording-devices.json)
+closes the complete default `juanmontoya_lingerie.svg` on both hosts; the
+[current outcome ledger](../svgweb/default-outcomes.csv) retains its source identity.

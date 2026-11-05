@@ -11,6 +11,7 @@ the composed glyph, stroke and decoration drawing.
 
 [Image tests](../../Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs) verify
 source, reference and reconstructed font-input hashes. [Ownership tests](../../Lokad.Svg.Tests/SvgSolidPaintOwnershipTests.cs)
-cover memory/work denial, cancellation, cleanup and retry.
-`knownDifferences` records remaining rendering differences and existing rejected
-use-to-use aliases and span-opacity declarations separately for each host.
+cover memory denial, cancellation, cleanup and retry.
+`knownDifferences` preserves the capture's deferred rendering and admission
+observations per host, separately from this bank's qualified cases. Those
+historical outcomes do not define current alias or span-opacity support.
