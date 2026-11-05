@@ -1,5 +1,5 @@
 {
-  "status": "Empty-group rendering/API responsibilities separated and all original96 conversions retained for full qualification. Sixty original mixed methods are classified by principal responsibility; no numerical/reference changes.",
+  "status": "Empty-group rendering/API partition and method responsibilities qualified. All original sources/forms, meaningful interactions and numerical boundaries remain; matching CI retains solely unchanged Windows DejaVu.",
   "scope": {
     "testParentCommit": "b3c38b86dd1650c17d23634cdda0334becd2c11c",
     "runtimeSourceCommit": "1513c6f3c563120755bf793ef2fd802b6cb1c419",
@@ -121,7 +121,8 @@
         },
         "nonTraitChange": null
       }
-    ]
+    ],
+    "testSourceCommit": "d57bb198816384218fc0c90e5c874ff9280b68d5"
   },
   "partition": {
     "historicalRegressionCommit": "f66eb0b14",
@@ -339,15 +340,144 @@
         "unclassifiedAfter": 288
       }
     ],
-    "fullQualification": "Current runtime retains the linked complete qualification. New core suite and matching CI are recorded at the coherent test milestone."
+    "fullQualification": "Current runtime retains the linked complete qualification. New core suite and matching CI are recorded at the coherent test milestone.",
+    "fullLocalCore": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 47639,
+        "testAssemblySha256": "a7b6a999d28a0ff92e2248e63547b56df1fbfc700937d8ef30f9c9f999e01734"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 47639,
+        "testAssemblySha256": "a7b6a999d28a0ff92e2248e63547b56df1fbfc700937d8ef30f9c9f999e01734"
+      }
+    ],
+    "fastSelection": {
+      "filter": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "checks": [
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "passed": 19063,
+          "addedMechanismAndContractCases": 74,
+          "allPreviousMembersRetained": true
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "passed": 19063,
+          "addedMechanismAndContractCases": 74,
+          "allPreviousMembersRetained": true
+        },
+        {
+          "host": "windows",
+          "framework": "net10.0",
+          "passed": 19063,
+          "addedMechanismAndContractCases": 74,
+          "allPreviousMembersRetained": true
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "passed": 19063,
+          "addedMechanismAndContractCases": 74,
+          "allPreviousMembersRetained": true
+        }
+      ],
+      "scope": "Exactly74 newly classified routine mechanism/contract cases join all18,989 previous members. Rendering and extended Research remain separate."
+    }
   },
   "fullOriginalApiConversionsRemoved": 0,
   "failingInputFamiliesRemoved": 0,
   "nativeReferencesRewritten": 0,
   "newTestingFrameworks": 0,
   "ci": {
-    "status": "pending",
-    "sourceCommit": null
+    "runId": 41943200191,
+    "sourceCommit": "d57bb198816384218fc0c90e5c874ff9280b68d5",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47639,
+            "total": 47639
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12875,
+            "total": 12875
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "683b3330b25b546f4e8b83a26cc58dfb07938f888a10e23a6eb4441fe7bd9065"
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47639,
+            "total": 47639
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "total": 73312
+          }
+        ],
+        "logSha256": "e9cb1b266c81359caf0bc9b00060409b59f9cb23f846a5cc00aeeb52608f3ddd"
+      }
+    },
+    "boundary": "Windows compatibility/package CI steps skip after unchanged DejaVu; affected local checks cover both hosts/runtimes against the exact qualified runtime package. Preserve frozen target/assertion pending authority."
   },
   "remaining": "Other subsystem classification, rendering products, asset consumers and scene/layer model review remain open; no complete-plan closure is claimed."
 }
