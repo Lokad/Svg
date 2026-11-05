@@ -3,14 +3,16 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Contract")]
 public sealed class SvgProbeExecutionContextTests
 {
-    public enum ProbeKind { GlyphCoverage, PolygonFan, GlyphOutline }
+    public enum ProbeKind { GlyphCoverage, PolygonFan, GlyphOutline, AnalyticPaint }
 
     [Theory]
     [InlineData(ProbeKind.GlyphCoverage)]
     [InlineData(ProbeKind.PolygonFan)]
     [InlineData(ProbeKind.GlyphOutline)]
+    [InlineData(ProbeKind.AnalyticPaint)]
     public void Nested_scopes_restore_callbacks_and_keep_one_shot_behavior(ProbeKind kind)
     {
         int outer = 0, inner = 0;
@@ -18,11 +20,11 @@ public sealed class SvgProbeExecutionContextTests
         {
             IDisposable nested = Arm(kind, () => inner++);
             Trigger(kind); Trigger(kind);
-            Assert.Equal(kind == ProbeKind.PolygonFan ? 2 : 1, inner);
+            Assert.Equal(kind is ProbeKind.PolygonFan or ProbeKind.AnalyticPaint ? 2 : 1, inner);
             Assert.Equal(0, outer);
             nested.Dispose(); nested.Dispose();
             Trigger(kind); Trigger(kind);
-            Assert.Equal(kind == ProbeKind.PolygonFan ? 2 : 1, outer);
+            Assert.Equal(kind is ProbeKind.PolygonFan or ProbeKind.AnalyticPaint ? 2 : 1, outer);
         }
         int completed = outer;
         Trigger(kind);
@@ -33,6 +35,7 @@ public sealed class SvgProbeExecutionContextTests
     [InlineData(ProbeKind.GlyphCoverage)]
     [InlineData(ProbeKind.PolygonFan)]
     [InlineData(ProbeKind.GlyphOutline)]
+    [InlineData(ProbeKind.AnalyticPaint)]
     public async Task Concurrent_scopes_remain_isolated_across_awaits(ProbeKind kind)
     {
         int[] calls = new int[2];
@@ -47,7 +50,7 @@ public sealed class SvgProbeExecutionContextTests
             await Task.Yield();
             Trigger(kind);
         })));
-        int expected = kind == ProbeKind.PolygonFan ? 2 : 1;
+        int expected = kind is ProbeKind.PolygonFan or ProbeKind.AnalyticPaint ? 2 : 1;
         Assert.Equal(new[] { expected, expected }, calls);
     }
 
@@ -55,6 +58,7 @@ public sealed class SvgProbeExecutionContextTests
     [InlineData(ProbeKind.GlyphCoverage)]
     [InlineData(ProbeKind.PolygonFan)]
     [InlineData(ProbeKind.GlyphOutline)]
+    [InlineData(ProbeKind.AnalyticPaint)]
     public async Task Inherited_child_callback_survives_parent_scope_disposal(ProbeKind kind)
     {
         int calls = 0;
@@ -84,6 +88,7 @@ public sealed class SvgProbeExecutionContextTests
     [InlineData(ProbeKind.GlyphCoverage)]
     [InlineData(ProbeKind.PolygonFan)]
     [InlineData(ProbeKind.GlyphOutline)]
+    [InlineData(ProbeKind.AnalyticPaint)]
     public async Task Suppressed_flow_does_not_take_the_parent_callback(ProbeKind kind)
     {
         int calls = 0;
@@ -101,6 +106,7 @@ public sealed class SvgProbeExecutionContextTests
         ProbeKind.GlyphCoverage => GlyphCoverageProbe.Arm(callback),
         ProbeKind.PolygonFan => SvgPolygonCoverageProbe.Arm(callback),
         ProbeKind.GlyphOutline => GlyphOutlineProbe.Arm(callback),
+        ProbeKind.AnalyticPaint => SvgAnalyticPaintProbe.Arm((_, _) => callback()),
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };
 
@@ -111,6 +117,7 @@ public sealed class SvgProbeExecutionContextTests
             case ProbeKind.GlyphCoverage: GlyphCoverageProbe.Started(); break;
             case ProbeKind.PolygonFan: SvgPolygonCoverageProbe.FanEvaluated(); break;
             case ProbeKind.GlyphOutline: GlyphOutlineProbe.SegmentTransformed(); break;
+            case ProbeKind.AnalyticPaint: SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeReplay, 17); break;
             default: throw new ArgumentOutOfRangeException(nameof(kind));
         }
     }
