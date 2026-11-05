@@ -305,8 +305,11 @@ Images accept base64 data-URI, non-interlaced, 8-bit RGB/RGBA/grayscale/gray-alp
 indexed PNGs, including valid tRNS and full-eight-bit sBIT. Chunk names/order,
 palette/transparency relationships, CRCs and bounded decompression are validated.
 IDAT chunks must be consecutive; transparency precedes image data and follows
-any palette. Other formats, interlacing, 16-bit/reduced-significance data,
-color-management/orientation conversion and external fetching reject.
+any palette. Color-space declarations (`gAMA`, `cHRM`, `sRGB`, `iCCP`, `cICP`)
+reject as `UnsupportedFeature`; no color conversion is performed. Other formats,
+interlacing, 16-bit/reduced-significance data, orientation conversion and external
+fetching reject. [Decoder tests](../tests/Lokad.Svg.Tests/PngImageDecoderTests.cs)
+keep format boundaries separate from image placement.
 
 Placement accepts finite viewport-relative percentages, affine maps, meet/slice
 and `preserveAspectRatio=none`. Missing/empty href paints nothing; omitted

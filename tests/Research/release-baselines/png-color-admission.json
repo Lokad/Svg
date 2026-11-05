@@ -1,0 +1,280 @@
+{
+  "status": "The shared PNG color-management boundary now rejects cICP instead of interpreting its samples without their declared color space/transfer. All three failing-before cases and affected coverage pass on both hosts/runtimes. Committed-asset, package and full CI milestone qualification follows separately.",
+  "sourceBaseCommit": "88efd53c4ba4ad1aaea6d8c0af7aa3a35ae3b438",
+  "basis": {
+    "specification": "https://www.w3.org/TR/2025/REC-png-3-20250624/#11cICP",
+    "section": "11.3.2.6, example1: full-range BT.2100 PQ cICP bytes09 10 00 01.",
+    "contract": "../../../docs/SUPPORT_MATRIX.md#embedded-pngs",
+    "decision": "Use the existing finite unsupported color-management contract; do not silently drop a recognized sample color-space declaration or introduce color conversion. Informative mDCV/cLLI metadata does not itself establish sample encoding; their existing ancillary behavior is unchanged."
+  },
+  "change": {
+    "file": "../../../src/Lokad.Svg/Encoding/PngImageDecoder.cs",
+    "beforeLfSha256": "808d9ee6b769a189ae13dd59c1d28348d374fe69ab32c696e4c46f0a3bafbf56",
+    "afterLfSha256": "459977184420d0d8a8083d7c0ac7679b176eb14cb0ce3aa40019d96339027810",
+    "onlyProductionChange": "One additional cICP comparison in the existing IsColorManaged predicate. The complete previous production file reconstructs exactly by removing it.",
+    "originalTestFileReconstructedExactly": true,
+    "tests": "../../Lokad.Svg.Tests/PngImageDecoderTests.cs",
+    "newMechanismCases": 1,
+    "newContractCases": 2,
+    "existingCasesRemoved": 0
+  },
+  "regression": {
+    "mechanism": "A valid RGB PNG with CRC-correct cICP before IDAT rejects as UnsupportedFeature, preserves input bytes and refunds its decoder allowance.",
+    "contracts": "Two individually discovered cases exercise asynchronous caller-memory and synchronous stream destinations. The shared existing helper checks the entire A5 memory guard and zero stream length on the SvgException path.",
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "eee18ec6dc4ac403131ce09ae515fdc6512534974b37e662451e2a72d3ca7d33",
+        "selection": "FullyQualifiedName~Cicp",
+        "exitCode": 1,
+        "seconds": 9.259988599922508,
+        "counters": {
+          "executed": "3",
+          "passed": "0",
+          "failed": "3"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "eee18ec6dc4ac403131ce09ae515fdc6512534974b37e662451e2a72d3ca7d33",
+        "selection": "FullyQualifiedName~Cicp",
+        "exitCode": 1,
+        "seconds": 12.766605400014669,
+        "counters": {
+          "executed": "3",
+          "passed": "0",
+          "failed": "3"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "f68be6d0515883c0294a95957fb9814fcc00279b4d2d31d5ec35e0eef1f102b5",
+        "selection": "FullyQualifiedName~Cicp",
+        "exitCode": 1,
+        "seconds": 9.484996299957857,
+        "counters": {
+          "executed": "3",
+          "passed": "0",
+          "failed": "3"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "f68be6d0515883c0294a95957fb9814fcc00279b4d2d31d5ec35e0eef1f102b5",
+        "selection": "FullyQualifiedName~Cicp",
+        "exitCode": 1,
+        "seconds": 12.209570799954236,
+        "counters": {
+          "executed": "3",
+          "passed": "0",
+          "failed": "3"
+        }
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "76b18a2251930655a1d2411190b2faec19edaa595f4368ae51657359d313c628",
+        "testAssemblySha256": "66e6a1d5971510c271241e58b3ebeab4cb7bb5e34e2a98e05f5e5a345c003c3f",
+        "selection": "FullyQualifiedName~Cicp",
+        "exitCode": 0,
+        "seconds": 8.86123069981113,
+        "counters": {
+          "executed": "3",
+          "passed": "3",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "76b18a2251930655a1d2411190b2faec19edaa595f4368ae51657359d313c628",
+        "testAssemblySha256": "66e6a1d5971510c271241e58b3ebeab4cb7bb5e34e2a98e05f5e5a345c003c3f",
+        "selection": "FullyQualifiedName~Cicp",
+        "exitCode": 0,
+        "seconds": 12.35417539998889,
+        "counters": {
+          "executed": "3",
+          "passed": "3",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "0f383138591bb198fe58b12d2250c37108b97d5a336ce900c59a5b06f1a7f418",
+        "testAssemblySha256": "9e394e468df313a3b30ac3fe4f0716194d4987bbc424c40b0f86a6bfdbcb6d2e",
+        "selection": "FullyQualifiedName~Cicp",
+        "exitCode": 0,
+        "seconds": 8.900380600010976,
+        "counters": {
+          "executed": "3",
+          "passed": "3",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "0f383138591bb198fe58b12d2250c37108b97d5a336ce900c59a5b06f1a7f418",
+        "testAssemblySha256": "9e394e468df313a3b30ac3fe4f0716194d4987bbc424c40b0f86a6bfdbcb6d2e",
+        "selection": "FullyQualifiedName~Cicp",
+        "exitCode": 0,
+        "seconds": 9.74252610001713,
+        "counters": {
+          "executed": "3",
+          "passed": "3",
+          "failed": "0"
+        }
+      }
+    ]
+  },
+  "retainedCoverage": {
+    "affected": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "76b18a2251930655a1d2411190b2faec19edaa595f4368ae51657359d313c628",
+        "testAssemblySha256": "66e6a1d5971510c271241e58b3ebeab4cb7bb5e34e2a98e05f5e5a345c003c3f",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 9.12686419999227,
+        "counters": {
+          "executed": "802",
+          "passed": "802",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "76b18a2251930655a1d2411190b2faec19edaa595f4368ae51657359d313c628",
+        "testAssemblySha256": "66e6a1d5971510c271241e58b3ebeab4cb7bb5e34e2a98e05f5e5a345c003c3f",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 12.567432399839163,
+        "counters": {
+          "executed": "802",
+          "passed": "802",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "76b18a2251930655a1d2411190b2faec19edaa595f4368ae51657359d313c628",
+        "testAssemblySha256": "2fb8ea752f1abe20f52c80356bd3e5a8a0834fbf7c8af507e1a819de912924e6",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 40.15389379998669,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "76b18a2251930655a1d2411190b2faec19edaa595f4368ae51657359d313c628",
+        "testAssemblySha256": "2fb8ea752f1abe20f52c80356bd3e5a8a0834fbf7c8af507e1a819de912924e6",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 36.6877661999315,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "0f383138591bb198fe58b12d2250c37108b97d5a336ce900c59a5b06f1a7f418",
+        "testAssemblySha256": "9e394e468df313a3b30ac3fe4f0716194d4987bbc424c40b0f86a6bfdbcb6d2e",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 8.520620800089091,
+        "counters": {
+          "executed": "802",
+          "passed": "802",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "0f383138591bb198fe58b12d2250c37108b97d5a336ce900c59a5b06f1a7f418",
+        "testAssemblySha256": "9e394e468df313a3b30ac3fe4f0716194d4987bbc424c40b0f86a6bfdbcb6d2e",
+        "selection": "FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgImage|FullyQualifiedName~SvgAffineImage|FullyQualifiedName~SvgUniformImage|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgStaticCssImage|FullyQualifiedName~SvgFilterImage|FullyQualifiedName~SvgFilterStoredImage|FullyQualifiedName~Image_presentation_|FullyQualifiedName~Images_ignore_shape_paint|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 11.881506799953058,
+        "counters": {
+          "executed": "802",
+          "passed": "802",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "0f383138591bb198fe58b12d2250c37108b97d5a336ce900c59a5b06f1a7f418",
+        "testAssemblySha256": "d12436acaf2767f13a7a958549c9180c25dfa2c60d459b6122236592d5e2f0b5",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 29.28006729995832,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "0f383138591bb198fe58b12d2250c37108b97d5a336ce900c59a5b06f1a7f418",
+        "testAssemblySha256": "d12436acaf2767f13a7a958549c9180c25dfa2c60d459b6122236592d5e2f0b5",
+        "selection": "FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~PixelComparerTests|FullyQualifiedName~SvgBasicRenderingTests|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~image-source-views|DisplayName~filter-merge-image-draw|DisplayName~pattern-source-selection))",
+        "exitCode": 0,
+        "seconds": 29.40120489988476,
+        "counters": {
+          "executed": "303",
+          "passed": "303",
+          "failed": "0"
+        }
+      }
+    ],
+    "core": "All decoder formats, chunk/CRC/transparency/significance boundaries, contiguous and fragmented storage, uniform/retained pixels, cancellation/refusal/retry, image root/affine/filter/CSS ownership, and representative API contracts.",
+    "rendering": "303 affected independent native and exact pixel checks per host/runtime: fit/sampling, root image density/boundaries, image-source views, image/filter merge, pattern source selection, comparison mechanisms/basic SVG pixels and fixture integrity.",
+    "scope": "No existing source, test body, numeric boundary, native image, tolerance, layout, shaping, public signature, dependency or publication change. This is admission of recognized unsupported metadata, not a new pixel-matching implementation."
+  },
+  "milestone": {
+    "status": "Pending committed-source package assets and full CI. Existing immutable qualification remains authoritative until the new replay joins close.",
+    "previous": "decoration-fragment-order.json"
+  }
+}

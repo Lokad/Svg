@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject embedded PNG `cICP` color-space declarations through the existing
+  unsupported color-management boundary instead of ignoring their sample encoding.
 - Paint text decorations with their own source fragments, preserving mixed-font
   and mixed-color glyph overlap through the shared direct/path painter.
 - Resolve fixed CSS stroke widths before optimized axis-line lowering, including

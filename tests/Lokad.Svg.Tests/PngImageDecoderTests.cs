@@ -412,6 +412,34 @@ public sealed class PngImageDecoderTests
 
     [Trait("Layer", "Mechanism")]
     [Fact]
+    public void Cicp_color_space_metadata_is_an_explicit_format_boundary()
+    {
+        byte[] png = CicpPng(), unchanged = png.ToArray();
+        RenderBudget budget = new(new HostMemoryBudget(100_000));
+
+        SvgException error = Assert.Throws<SvgException>(() => Decode(png, budget, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, png);
+    }
+
+    [Trait("Layer", "Contract")]
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Cicp_images_reject_before_public_destination_writes(bool useAsyncMemory)
+    {
+        byte[] svg = ImageSvg(Convert.ToBase64String(CicpPng()));
+        OutputForm form = useAsyncMemory ? OutputForm.MemoryAsync : OutputForm.Stream;
+
+        SvgException error = await Assert.ThrowsAsync<SvgException>(() => ConvertPublicPng(svg, form));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+    }
+
+    [Trait("Layer", "Mechanism")]
+    [Fact]
     public void Rejects_a_broken_integrity_check()
     {
         SvgException exception = Assert.Throws<SvgException>(() => Decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkKfgg=="));
@@ -736,6 +764,14 @@ public sealed class PngImageDecoderTests
             new TestChunk("IDAT", ZlibCompress([0, 255, 0, 0])),
             new TestChunk("IEND", []),
         ]);
+    }
+
+    private static byte[] CicpPng()
+    {
+        List<TestChunk> chunks = ParseChunks(BuiltRgb());
+        // PNG 3, section 11.3.2.6, example 1: BT.2100 PQ, full range.
+        chunks.Insert(1, new("cICP", [9, 16, 0, 1]));
+        return BuildPng(chunks);
     }
 
     private static byte[] BuiltPalette()

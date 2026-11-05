@@ -428,7 +428,8 @@ internal static class PngImageDecoder
     private static bool IsCritical(ReadOnlySpan<byte> type) => (type[0] & 0x20) == 0;
 
     private static bool IsColorManaged(ReadOnlySpan<byte> type)
-        => type.SequenceEqual("gAMA"u8) || type.SequenceEqual("cHRM"u8) || type.SequenceEqual("sRGB"u8) || type.SequenceEqual("iCCP"u8);
+        => type.SequenceEqual("gAMA"u8) || type.SequenceEqual("cHRM"u8) || type.SequenceEqual("sRGB"u8)
+            || type.SequenceEqual("iCCP"u8) || type.SequenceEqual("cICP"u8);
 
     private static uint ComputeCrc(ReadOnlySpan<byte> type, ReadOnlySpan<byte> data)
     {
