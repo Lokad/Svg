@@ -54,6 +54,10 @@ across 28 contracts while retaining all 42 affected cases and distinct allowance
 at 21 construction sites while preserving each message, synchronous failure and
 cancellation policy. All 246 original affected cases remain; two direct guards
 protect the helper's two policies independently of rendering fixtures.
+[Text-paint output assets](text-paint-output-assets.json) keeps thirteen core
+mechanism/contract JSON dependencies and leaves twelve rendering/research reports
+in the corpus. Fresh outputs retain byte-identical test assemblies and all 47,699
+core cases on both hosts/runtimes; no reference or test was removed.
 [Test selection](test-selection.json) separates Research from responsibility layers
 and preserves the relocated background witness, full cases and .NET 10 selection.
 [Filter/mask responsibilities](filter-test-responsibilities.json) classifies 22 mixed

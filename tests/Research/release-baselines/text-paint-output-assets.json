@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "status": "Core text-paint output copies follow mechanism/contract consumers; rendering/replay/research reports remain in the committed corpus. No test, reference, input, numerical boundary or API path was removed or changed.",
+  "baseCommit": "859a9e5d62fb2a220cb9c6aa44fdb093d2b11eb4",
+  "project": "tests/Lokad.Svg.Tests/Lokad.Svg.Tests.csproj",
+  "projectLfSha256": "43e468eb21cfb1dacdf5bda7feb156eb2025f3eefc2dc99c2acc98b0e2067604",
+  "implementationProof": "Replacing the thirteen explicit bank items and their comment with the original wildcard reconstructs the complete prior project. Both target test DLLs and compiled renderer DLLs are byte-identical before/after. All other TestData files have identical paths, bytes and hashes in fresh outputs.",
+  "productionSourceCommit": "8f50e149946af76ff69ba42dfdd983d78abeee9b",
+  "productionSourceTree": "1502125a6872bf25d776071ccf066b6a6b9ee3b5",
+  "rendererQualification": "filter-input-demand.json",
+  "copiedBankJson": {
+    "before": 25,
+    "after": 13,
+    "removed": 12,
+    "removedBytesPerFramework": 1388956,
+    "measurement": "Observed checkout bytes. The separately linked CoreMath path vectors and both font programs remain; all twelve reports remain committed and available to visual/research consumers."
+  },
+  "retainedBankJson": [
+    "capture.json",
+    "filter-source-capture.json",
+    "filter-source-vectors.json",
+    "font-pack.json",
+    "inline-capture.json",
+    "inline-vectors.json",
+    "native-vectors.json",
+    "path-capture.json",
+    "path-vectors.json",
+    "shared-path-capture.json",
+    "shared-path-vectors.json",
+    "spaced-path-capture.json",
+    "spaced-path-vectors.json"
+  ],
+  "reportsOmittedFromCoreOutput": [
+    {
+      "path": "tests/Research/text-paint-bounds/decoration-ink-images.json",
+      "bytes": 17708,
+      "checkoutSha256": "c56814699bf4e51f6f9fae732aae3a004595d3cccd4fb04ec3d7e6cc41231717"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/filter-source-images.json",
+      "bytes": 130286,
+      "checkoutSha256": "2b74654d81f43a65281559c5d069a09055ad2f3ccaaf3643de4e0f4162cb1379"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/fragment-stages.json",
+      "bytes": 9571,
+      "checkoutSha256": "e2e6c0d82431c060ec82bdc37ecf8945bfba600a4427cea359c991a9734583dd"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/image-capture.json",
+      "bytes": 193305,
+      "checkoutSha256": "b9565bf7addf396e95b09341d843541854be1b8df45d1b354994286744c9eeb9"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/paint-stage-images.json",
+      "bytes": 27222,
+      "checkoutSha256": "35e7239290cf16c354097d16a326e30b7dfc54bae25864263ac41e04b9a96042"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/precision-pattern-images.json",
+      "bytes": 57590,
+      "checkoutSha256": "79874c04292773e17e1e0d828504874eaf0743f56936d9f6d5161dd7d261760f"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/precision-residuals.json",
+      "bytes": 64376,
+      "checkoutSha256": "1c4424bad5da24f68f998f7910c60356c307bbc5a1374908350fea85fc3458fc"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/precision-screening.json",
+      "bytes": 724757,
+      "checkoutSha256": "5cbac7d4c80cbc8fbe719d6ff6a1e5fe6f10132d602043126ab064005498b905"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/precision-source-images.json",
+      "bytes": 8199,
+      "checkoutSha256": "bef5be1ccecfd03298d9d08aeee8be116befdc9f6575d4ddbb3c48c7429397ad"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/precision-stroke-images.json",
+      "bytes": 8241,
+      "checkoutSha256": "a162a0fedeb410223c12e05b1b8c1a04be66f270f5ef3c91a89da17426c42cbc"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/prepared-replay.json",
+      "bytes": 5406,
+      "checkoutSha256": "ec6eb31c0d91c548d8b63a36bf2f662a0a6da74a9f468be70bce55ceb4f1ac86"
+    },
+    {
+      "path": "tests/Research/text-paint-bounds/shared-layout-images.json",
+      "bytes": 142295,
+      "checkoutSha256": "983401116e98bdcd4c70eaaffa37da0f4c71f29e440cde3f03e819d7a01a300f"
+    }
+  ],
+  "freshOutput": [
+    {
+      "framework": "net11.0",
+      "beforeAssets": 884,
+      "afterAssets": 872,
+      "beforeBytes": 18298553,
+      "afterBytes": 16909597,
+      "removedBytes": 1388956,
+      "sameTestAssembly": true,
+      "testAssemblySha256": "0f88dab42590da9c1000879e1dcb099d1afbf49022563910d3360289a72edce4"
+    },
+    {
+      "framework": "net10.0",
+      "beforeAssets": 884,
+      "afterAssets": 872,
+      "beforeBytes": 18298553,
+      "afterBytes": 16909597,
+      "removedBytes": 1388956,
+      "sameTestAssembly": true,
+      "testAssemblySha256": "1c4b187ba33a3e6af323bdcbeecc79fcdec2e1c7158e748ce52521b82445f0fe"
+    }
+  ],
+  "focusedValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "passed": 92,
+      "sameNamesAndMultiplicity": true,
+      "beforeSeconds": 10.653337100055069,
+      "afterSeconds": 12.357577900169417,
+      "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "passed": 92,
+      "sameNamesAndMultiplicity": true,
+      "beforeSeconds": 14.677555699832737,
+      "afterSeconds": 13.273626599926502,
+      "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "passed": 92,
+      "sameNamesAndMultiplicity": true,
+      "beforeSeconds": 9.922353000147268,
+      "afterSeconds": 11.908835999900475,
+      "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "passed": 92,
+      "sameNamesAndMultiplicity": true,
+      "beforeSeconds": 14.4965226999484,
+      "afterSeconds": 13.435461099958047,
+      "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d"
+    }
+  ],
+  "fullCoreValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "passed": 47699,
+      "failed": 0,
+      "seconds": 82.25936169992201,
+      "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "passed": 47699,
+      "failed": 0,
+      "seconds": 64.08023640001193,
+      "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "passed": 47699,
+      "failed": 0,
+      "seconds": 79.56538909999654,
+      "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "passed": 47699,
+      "failed": 0,
+      "seconds": 64.9682265999727,
+      "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d"
+    }
+  ],
+  "timingBoundary": "Focused values are single fresh-process wall observations with the same Windows/Linux pair executing concurrently, after builds finished. Results are mixed and establish no execution or renderer speedup. Build wall observations include cache/compilation effects and do not isolate copy cost.",
+  "validationRecipe": "Build Release core tests with --no-restore --no-incremental and an explicit new OutDir for each phase/runtime. Inventory and hash every TestData file. Use the exact qualified package renderer DLL/XML in both outputs. Run VSTest for SvgTextPaintBoundsTests|SvgTextPaintMatrixTests, compare all names/multiplicities, then run the unfiltered core assembly from each trimmed output on Windows/Linux. Ordinary incremental directories were not used for this audit.",
+  "unchanged": "All C# test bodies/providers, production code, original and authored SVGs, native PNGs, provenance, licenses and tolerances remain unchanged. This test-copy change does not qualify new renderer packages or alter originals.currentReview.",
+  "remaining": "Broader output-asset consumer review, ownership setup, responsibility classification, shared scene/layer correctness and complete original-source admission remain open in PLAN.md."
+}

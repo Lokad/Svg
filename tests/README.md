@@ -585,6 +585,10 @@ Visual tests read the committed `Research/` corpus in place instead of copying i
 into each framework's output. `LOKAD_SVG_RESEARCH_ROOT` can select another corpus
 containing `manifest.json`; invalid explicit roots fail. Tests only read it.
 Small core `TestData` subsets and explicit fixture/reference links remain separate.
+Core text-paint tests copy only their box vectors, capture metadata and font manifest;
+rendering/replay reports stay in the committed corpus. The
+[output audit](Research/release-baselines/text-paint-output-assets.json) compares fresh
+directories, so obsolete incremental-output copies cannot hide missing dependencies.
 
 Use the [visual-suite export](../tools/README.md#export-the-visual-suite) for a
 standalone offline directory containing binaries, references, font licenses and
