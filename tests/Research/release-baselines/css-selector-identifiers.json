@@ -1,5 +1,5 @@
 {
-  "status": "Shared selector-name validation now distinguishes CSS identifier starts from quoted attribute literals. Eighteen failing-before admissions close; eight mechanism controls and three native controls retain valid names and numeric SVG IDs. Full qualification follows at this milestone.",
+  "status": "Shared selector-name grammar and quoted attribute literals are qualified separately. Eighteen failing-before admission cases close; valid mechanism/native controls, full runtime/package gates and all204 hosted outcomes remain. Only the independent frozen Windows DejaVu discrepancy remains.",
   "source": {
     "baseCommit": "1ce966ed6231b06468d16b397188272561aedb9a",
     "path": "../../../src/Lokad.Svg/Parsing/SvgCssSelectorSyntax.cs",
@@ -8,7 +8,8 @@
     "entireBeforeFileReconstructed": true,
     "onlyIdentifierStartValidationAndQuotedLiteralRoutingChange": true,
     "noNewTypesCachesOrOwners": true,
-    "retainedCharacterLengthCaseAndCancellationRules": true
+    "retainedCharacterLengthCaseAndCancellationRules": true,
+    "sourceCommit": "8c7b3d83e0222249bfcdc1e520423cf1dfc82d95"
   },
   "regressions": {
     "core": "../../Lokad.Svg.Tests/SvgCssSelectorIdentifierTests.cs",
@@ -634,5 +635,340 @@
     }
   ],
   "specification": "https://www.w3.org/TR/css-syntax-3/#would-start-an-identifier",
-  "compatibility": "Invalid CSS selectors reject under the existing bounded syntax contract; general CSS error recovery remains unsupported. SVG ID/class values keep their existing admission. No renderer arithmetic or resource ownership change."
+  "compatibility": "Invalid CSS selectors reject under the existing bounded syntax contract; general CSS error recovery remains unsupported. SVG ID/class values keep their existing admission. No renderer arithmetic or resource ownership change.",
+  "qualification": {
+    "fullNet10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e249498f75b3186f7da36c52d451572a2b5bc5e3a50534f71c3ea8fefcc407ac",
+        "testAssemblySha256": "7386ad43bd02d81ad91ac78b36bbad876686dbb0ea7d0a42f6a2965bc4ad1211",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 86.4198594999034,
+        "counters": {
+          "executed": "47752",
+          "passed": "47752",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e249498f75b3186f7da36c52d451572a2b5bc5e3a50534f71c3ea8fefcc407ac",
+        "testAssemblySha256": "7386ad43bd02d81ad91ac78b36bbad876686dbb0ea7d0a42f6a2965bc4ad1211",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 93.51858429983258,
+        "counters": {
+          "executed": "47752",
+          "passed": "47752",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e249498f75b3186f7da36c52d451572a2b5bc5e3a50534f71c3ea8fefcc407ac",
+        "testAssemblySha256": "078ab44237ab77ac03e0b03f00c8ead665ef68dd8076ec646faa76d8a6696e3d",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 361.8613756999839,
+        "counters": {
+          "executed": "73537",
+          "passed": "73536",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e249498f75b3186f7da36c52d451572a2b5bc5e3a50534f71c3ea8fefcc407ac",
+        "testAssemblySha256": "078ab44237ab77ac03e0b03f00c8ead665ef68dd8076ec646faa76d8a6696e3d",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 356.5330153000541,
+        "counters": {
+          "executed": "73537",
+          "passed": "73537",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "e249498f75b3186f7da36c52d451572a2b5bc5e3a50534f71c3ea8fefcc407ac",
+        "testAssemblySha256": "bc2e237eaa8ab70b158c720760375752c15ad6ee6d7cf9200555fce94d834dcf",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 2.6290903999470174,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "e249498f75b3186f7da36c52d451572a2b5bc5e3a50534f71c3ea8fefcc407ac",
+        "testAssemblySha256": "bc2e237eaa8ab70b158c720760375752c15ad6ee6d7cf9200555fce94d834dcf",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 5.392077500000596,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "primaryCi": {
+      "run": 42033350130,
+      "status": "Terminal CLOSED; never repoll/refetch.",
+      "jobs": [
+        {
+          "host": "windows",
+          "job": 127265076867,
+          "conclusion": "failure",
+          "logSha256": "fbad4b7cf08100629033121697cb4939e909cbfe8604493f566e2c801a12877e",
+          "tests": [
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 10,
+              "total": 10
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 47752,
+              "total": 47752
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net11.0",
+              "failed": 1,
+              "passed": 73536,
+              "total": 73537
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "job": 127265077292,
+          "conclusion": "success",
+          "logSha256": "6c5d90092eb0fcbf7fb9cd64c0d73ed9ab2639886ef0774fcc84756207cb58a0",
+          "tests": [
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 10,
+              "total": 10
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 47752,
+              "total": 47752
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 73537,
+              "total": 73537
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 12884,
+              "total": 12884
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 1150,
+              "total": 1150
+            },
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 10,
+              "total": 10
+            }
+          ]
+        }
+      ]
+    },
+    "packages": {
+      "sourceCommit": "8c7b3d83e0222249bfcdc1e520423cf1dfc82d95",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "a4cecac9808746ff5cd7dcbf525cebe57c88640beaede0e629033548bc71a65a",
+          "bytes": 2437855
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "48c2df42f8c4b3e34809aaa88c9682e18476376895a42a756091d1335f875c3a",
+          "bytes": 726527
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "6e2139c83513988526625c9a6414ffad408d43ed45bc64e9ec898a92b5df323a",
+        "net10.0": "e249498f75b3186f7da36c52d451572a2b5bc5e3a50534f71c3ea8fefcc407ac"
+      },
+      "byteIdenticalRepeats": true,
+      "noRuntimeDependencies": true,
+      "noSvgOrRuntimeSpecificAssets": true
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 8.927013700129464
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 110.9257189000491
+      }
+    ],
+    "svgweb": {
+      "defaultReplay": {
+        "sourceSvgFilesRetained": 0,
+        "files": 204,
+        "seconds": 175.13984059984796,
+        "librarySha256": "6e2139c83513988526625c9a6414ffad408d43ed45bc64e9ec898a92b5df323a",
+        "hosts": {
+          "windows": {
+            "outcomes": {
+              "UnsupportedFeature": 35,
+              "rendered": 168,
+              "MalformedInput": 1
+            },
+            "byteIdenticalPreviouslyRenderedPngs": 168,
+            "changedOriginals": []
+          },
+          "linux": {
+            "outcomes": {
+              "UnsupportedFeature": 35,
+              "rendered": 168,
+              "MalformedInput": 1
+            },
+            "byteIdenticalPreviouslyRenderedPngs": 168,
+            "changedOriginals": []
+          }
+        }
+      },
+      "suppliedContexts": 22,
+      "staticDiagnostics": 13,
+      "allContextsExactAndQualifiedPngsUnchanged": true,
+      "sourceBodiesOrFragmentsRetained": 0,
+      "rawAttributeValuesRetained": 0,
+      "index": {
+        "checkedUtc": "2026-11-05T13:13:56.570209+00:00",
+        "httpStatus": 200,
+        "indexBytes": 42976,
+        "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+        "files": 204,
+        "sameMembership": true,
+        "indexBodyRetained": false
+      },
+      "bindingOwner": "../svgweb/originals.json#/currentReview"
+    },
+    "inventory": {
+      "declaredMethods": 5121,
+      "sourceFiles": 729,
+      "layers": {
+        "Lokad.Svg.Tests": {
+          "Unclassified": 1606,
+          "Mechanism": 1429,
+          "Contract": 626,
+          "Rendering": 1009,
+          "Integrity": 1
+        },
+        "Lokad.Svg.VisualTests": {
+          "Unclassified": 277,
+          "Contract": 34,
+          "Integrity": 21,
+          "Rendering": 117,
+          "Mechanism": 1
+        }
+      },
+      "priorMethodsAndTraitsRetained": 5117,
+      "added": [
+        {
+          "project": "Lokad.Svg.Tests",
+          "type": "Lokad.Svg.Tests.SvgCssSelectorIdentifierTests",
+          "name": "Invalid_identifier_starts_do_not_become_selector_tokens",
+          "layers": [
+            "Mechanism"
+          ]
+        },
+        {
+          "project": "Lokad.Svg.Tests",
+          "type": "Lokad.Svg.Tests.SvgCssSelectorIdentifierTests",
+          "name": "Identifier_tokens_and_quoted_attribute_strings_keep_their_distinct_starts",
+          "layers": [
+            "Mechanism"
+          ]
+        },
+        {
+          "project": "Lokad.Svg.Tests",
+          "type": "Lokad.Svg.Tests.SvgCssSelectorIdentifierTests",
+          "name": "Admission_validates_active_inactive_and_list_names_before_publishing_output",
+          "layers": [
+            "Contract"
+          ]
+        },
+        {
+          "project": "Lokad.Svg.VisualTests",
+          "type": "Lokad.Svg.VisualTests.SvgCssSelectorIdentifierReferenceTests",
+          "name": "Numeric_attribute_strings_and_valid_hyphen_names_keep_native_paint",
+          "layers": [
+            "Rendering"
+          ]
+        }
+      ],
+      "join": "Previous source/compiled join retained; only these two test classes and four declared methods are added.",
+      "fastEligibility": {
+        "previous": 19705,
+        "current": 19731,
+        "newCases": 26,
+        "removed": 0,
+        "rerun": false
+      }
+    },
+    "links": {
+      "checkedRelativeLinks": 286,
+      "allResolved": true
+    },
+    "knownRemaining": "The independent frozen Windows DejaVu discrepancy and broader PLAN work remain open. Functional wall times include concurrent qualification and are not renderer performance."
+  }
 }
