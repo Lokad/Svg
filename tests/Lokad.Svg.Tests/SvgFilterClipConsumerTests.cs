@@ -10,6 +10,7 @@ public sealed class SvgFilterClipConsumerTests
     [InlineData("rectangle-offset", 191)]
     [InlineData("painted-rectangle", 192)]
     [InlineData("painted-path", 191)]
+    [Trait("Layer", "Rendering")]
     public void Filter_capture_retains_clip_and_authored_paint_coverage_as_distinct_consumers(string identity, int nativeAlpha)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-instance-composition", identity + ".svg"));

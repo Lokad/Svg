@@ -1,0 +1,353 @@
+{
+  "status": "Empty-group rendering/API responsibilities separated and all original96 conversions retained for full qualification. Sixty original mixed methods are classified by principal responsibility; no numerical/reference changes.",
+  "scope": {
+    "testParentCommit": "b3c38b86dd1650c17d23634cdda0334becd2c11c",
+    "runtimeSourceCommit": "1513c6f3c563120755bf793ef2fd802b6cb1c419",
+    "runtimeQualification": "affine-geometry-ownership.json",
+    "productionSourceUnchanged": true,
+    "qualifiedLibrarySha256": {
+      "net11.0": "ca8d3f5fb3f8a01ae516a5a902d3638f848ec5ae79fe8f18181e5d51a3b75ccf",
+      "net10.0": "5669556aa8004988a62ccd3f9c795cee5b789e1308b9f3b60f1920c498372549"
+    },
+    "source": [
+      {
+        "path": "../../Lokad.Svg.Tests/SvgFilterPlaybackTests.cs",
+        "beforeLfSha256": "2e5db781ade7dce34eaa8e71b2e771e3305c5f0311f935c2e043bba37eda14d3",
+        "afterLfSha256": "bf8797cb858bf084ab21b7bd097852eb9bd52c724df5764db8275a66f2a30547",
+        "methods": {
+          "Filtered_use_and_target_coordinates_follow_instance_translation": "Rendering",
+          "Repeated_filtered_targets_own_their_placed_bindings_and_terminate_before_siblings": "Rendering",
+          "Retained_effect_reference_errors_release_partial_scenes_without_publishing": "Contract",
+          "Stored_merge_inputs_preserve_native_packed_image_composition": "Mechanism",
+          "Source_layer_bounds_match_the_native_two_blur_hint_and_release_temporary_owners": "Mechanism",
+          "Primitive_color_spaces_inherit_independently_and_keep_their_declared_override": "Mechanism",
+          "Required_source_bounds_preserve_both_branches_and_the_displaced_blur_halo": "Mechanism",
+          "Rescaled_blur_keeps_offscreen_intermediate_pixels_needed_by_a_later_offset": "Mechanism",
+          "Extreme_finite_gaussian_deviations_use_the_bounded_native_device_cap": "Contract",
+          "Group_sources_compose_overlapping_children_before_filter_and_outer_opacity": "Rendering",
+          "Hidden_groups_do_not_activate_dormant_filter_failures": "Rendering",
+          "Pending_filter_group_combinations_reject_without_output_and_release_parser_owners": "Contract",
+          "Missing_filtered_source_references_reject_without_output_and_release_owners": "Contract",
+          "Filtered_nested_viewport_preserves_the_original_input_and_releases_owners": "Contract",
+          "Affine_nested_filter_sources_preserve_the_original_input_and_release_owners": "Contract",
+          "Filter_source_object_bounds_exclude_marker_content": "Mechanism",
+          "Deferred_affine_source_and_crop_release_owners_on_denial_cancellation_and_retry": "Contract",
+          "Filtered_tiles_borrow_forward_definitions_and_release_owners_on_denial_cancellation_and_retry": "Contract",
+          "Affine_object_box_primitive_offsets_keep_their_placed_distances": "Rendering",
+          "Zero_width_filtered_source_with_object_box_output_clip_is_nonpainting": "Rendering",
+          "Nested_filter_groups_keep_unfiltered_object_bounds_and_release_source_owners": "Mechanism",
+          "Outer_integer_offset_preserves_the_child_blur_outside_its_geometry_bounds": "Rendering",
+          "Local_forward_binding_and_named_results_apply_element_opacity_after_filter": "Rendering",
+          "Dormant_filter_errors_do_not_change_unfiltered_drawing": "Rendering",
+          "Referenced_graph_errors_release_partial_parser_owners": "Contract",
+          "Graph_limits_release_intermediates_preserve_source_and_allow_exact_retry": "Contract",
+          "Shadow_deviations_observe_mapped_axis_bounds_and_release_storage": "Contract",
+          "Primitive_pixel_admissions_preserve_output_and_explicit_boundaries": "Contract",
+          "Translucent_colored_linear_shadow_renders_and_releases_source_owners": "Contract",
+          "Merge_nodes_preserve_authored_source_over_order": "Mechanism",
+          "Missing_merge_input_borrows_the_result_before_merge": "Mechanism",
+          "Empty_merge_produces_transparent_pixels": "Mechanism",
+          "Single_merge_input_preserves_its_srgb_bytes_without_a_color_round_trip": "Mechanism",
+          "Invalid_merge_graphs_remain_dormant_until_used_and_release_owners": "Contract",
+          "Merge_input_growth_has_a_bounded_limit_and_releases_partial_storage": "Contract",
+          "Offset_source_cancellation_releases_the_partial_bitmap_and_allows_retry": "Contract"
+        },
+        "nonTraitChange": null
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgEmptyFilterGroupTests.cs",
+        "beforeLfSha256": "3f35ba846fb77a1f84ae2beafc9f7fffebe16df56b856f7bda003559e3ca5a06",
+        "afterLfSha256": "d430eb3006061888269d9efabeccfcfdb7e0ab454387c6c3ee9bf02bc951b416",
+        "methods": {
+          "Retained_empty_filter_scopes_do_not_enlarge_ancestor_object_bounds": "Rendering",
+          "Empty_filtered_groups_generate_output": "Rendering",
+          "Representative_empty_groups_preserve_twelve_output_forms": "Contract",
+          "Extended_empty_groups_preserve_twelve_output_forms": "Contract",
+          "Empty_group_effects_follow_cascade_and_outer_composition": "Rendering",
+          "Empty_group_filters_survive_enclosing_scopes": "Rendering",
+          "Empty_group_filter_output_is_clipped_and_masked": "Rendering",
+          "Empty_sources_keep_identity_and_zero_object_box_filters_transparent": "Rendering",
+          "Empty_group_filters_generate_resource_content": "Rendering",
+          "Active_empty_groups_require_defined_filter_references": "Contract",
+          "Empty_filtered_pattern_overrides_do_not_acquire_inherited_template_fonts": "Contract",
+          "Empty_filtered_group_owners_release_on_denial_cancellation_and_retry": "Contract"
+        },
+        "nonTraitChange": "empty-group partition/setup and same-input self-comparisons",
+        "allTwelveApiCallSignaturesAndArgumentsPreserved": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgFilterClipBindingTests.cs",
+        "beforeLfSha256": "fd540c2291e7e5abd3d90301c18b6234e5c0a86febc524e11e496c03bf829761",
+        "afterLfSha256": "535a79e38f446a76e3499d88455b43407f24fe146cf448978f34484e03157915",
+        "methods": {
+          "Separate_filtered_object_clips_release_parser_storage": "Contract",
+          "Ten_thousand_filtered_object_clips_match_user_space_clips_under_default_limits": "Rendering",
+          "Nested_filters_and_tile_scenes_keep_native_object_bounds_and_composition": "Rendering",
+          "Markers_do_not_expand_filtered_object_clip_bounds": "Rendering",
+          "Clip_binding_releases_scratch_on_memory_denial_and_cancellation": "Contract"
+        },
+        "nonTraitChange": "rename unsupported linear-work claim"
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgLineFilterBoundsTests.cs",
+        "beforeLfSha256": "4ca0fc4fd56b78902a719f8279e24789764d0ce857680b425676c79c1841e7e4",
+        "afterLfSha256": "9667a5f0a44dc02d8b6900574c1a5fef6fbf809425a93c89d8cc2202110a4502",
+        "methods": {
+          "Identity_filters_preserve_placed_line_strokes": "Rendering",
+          "Instances_preserve_painted_line_bounds_in_both_source_orders": "Rendering",
+          "Filtered_lines_match_equivalent_paths": "Rendering",
+          "Filter_bounds_preserve_marker_endpoints_and_element_opacity": "Rendering",
+          "Placed_filter_bounds_release_owners_after_denial_cancellation_and_retry": "Contract"
+        },
+        "nonTraitChange": null
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgDeferredFilterSourceTests.cs",
+        "beforeLfSha256": "3aed8e04e6cb67d5461ac0df40e40c460ca45e6bd5bccf6fad7faea228b888ec",
+        "afterLfSha256": "e92ca65e352c4e5daaa359dfa6c536631ef27dceb9139229a40b0421f78dfc0d",
+        "methods": {
+          "Paintless_sources_extend_filter_object_bounds_without_extending_painted_bounds": "Mechanism",
+          "Deferred_filter_effect_anchors_accept_affine_marker_instances": "Rendering",
+          "Enclosing_filters_keep_shape_source_bounds_across_forward_instance_replay": "Rendering"
+        },
+        "nonTraitChange": null
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgFilterClipConsumerTests.cs",
+        "beforeLfSha256": "b0274d0b9312702a034f9a4802bffb770990baf46f356738e06a92af2531d25a",
+        "afterLfSha256": "fdc2a58e5675614a592d699395f78a088e42310808b5b8ced59bdf02e2ae8368",
+        "methods": {
+          "Filter_capture_retains_clip_and_authored_paint_coverage_as_distinct_consumers": "Rendering"
+        },
+        "nonTraitChange": null
+      }
+    ]
+  },
+  "partition": {
+    "historicalRegressionCommit": "f66eb0b14",
+    "inputs": [
+      {
+        "ending": "/>",
+        "forward": false,
+        "sourceSha256": "f8fc89aa2c39ab82eca53afe01c9f21f72c90f36c60d031b5ecb5d405ad94b94"
+      },
+      {
+        "ending": "/>",
+        "forward": true,
+        "sourceSha256": "b44e69be504055540cee87cc5c993583667b18c414da4b8f3b618a9f5fa74bc5"
+      },
+      {
+        "ending": "></g>",
+        "forward": false,
+        "sourceSha256": "dac7e5ae753fb5c0e32062a62246f0acaf118ac6f4caf031d40f700d44159d0d"
+      },
+      {
+        "ending": "></g>",
+        "forward": true,
+        "sourceSha256": "4212dcab0e7a9a6f52614ae30123bf8d9c1d5f87164feb744dbf68c03a5bb037"
+      },
+      {
+        "ending": "><g/></g>",
+        "forward": false,
+        "sourceSha256": "a2b8a332ca1f2f7690bba685eeec542a6030b9d99ec3d7035a8d7d453a9269ed"
+      },
+      {
+        "ending": "><g/></g>",
+        "forward": true,
+        "sourceSha256": "97c6e3b1c35f41883caf1ee2b66f1e7b6ca97515ab5de4249e86959cbec7d1e3"
+      },
+      {
+        "ending": "><desc>description</desc></g>",
+        "forward": false,
+        "sourceSha256": "a8527e38e2529e273f31ffcf213428a0bc144a1ab0cde4d93c383daf5823907c"
+      },
+      {
+        "ending": "><desc>description</desc></g>",
+        "forward": true,
+        "sourceSha256": "51397d7dbf26af18f18ffce72f9ee569ee83f4afa14f3e4f96f7b9d2e771d137"
+      }
+    ],
+    "canonicalRoutineInputs": 8,
+    "representative": {
+      "ending": "/>",
+      "forward": true,
+      "reason": "Forward declaration resolution with generated output and font-free preparation, through all12 output forms. Syntax/scope/declaration-order controls remain routine canonical tests."
+    },
+    "routineApiConversions": 12,
+    "extendedApiInputs": 7,
+    "extendedApiConversions": 84,
+    "fullOriginalApiConversions": 96,
+    "sourceOptionsAndFormIdentitySha256": "414db99c00fce08da9be09f4efa0e81a248a0cac9fc54a05591ffcc3db617303",
+    "options": "SvgRenderOptions.Default; no fonts/resources; same immutable unfiltered red PNG control.",
+    "outputForms": [
+      "Owned",
+      "Memory",
+      "Stream",
+      "AsyncOwned",
+      "AsyncMemory",
+      "AsyncStream"
+    ],
+    "formNaming": "Owned/AsyncOwned are the existing returned-memory enum labels; separate SvgPngResult ownership contracts remain unchanged.",
+    "existing96CaseApiMatrixPreserved": true,
+    "preparedLifetime": "Each prepared form keeps its own document; raw forms create no unused prepared document."
+  },
+  "preparationObservations": {
+    "before": {
+      "Workspace": 148,
+      "StyleSheets": 148,
+      "FontIndex": 0,
+      "PaintIndex": 144,
+      "Scene": 148
+    },
+    "routine": {
+      "Workspace": 29,
+      "StyleSheets": 29,
+      "FontIndex": 0,
+      "PaintIndex": 20,
+      "Scene": 29
+    },
+    "full": {
+      "Workspace": 120,
+      "StyleSheets": 120,
+      "FontIndex": 0,
+      "PaintIndex": 104,
+      "Scene": 120
+    }
+  },
+  "responsibilities": {
+    "originalMethods": 60,
+    "currentMethods": 62,
+    "methods": {
+      "Mechanism": 12,
+      "Contract": 24,
+      "Rendering": 26
+    },
+    "fullCases": {
+      "Contract": 63,
+      "Rendering": 91,
+      "Mechanism": 18
+    },
+    "routineCases": {
+      "Mechanism": 18,
+      "Contract": 56,
+      "Rendering": 91
+    },
+    "unchanged": "Five classes preserve all non-trait source bytes, except the one explicit stale-name correction. Empty-group scope/control and lifetime checks remain; no existing cancellation/refusal branch is consolidated.",
+    "renamed": {
+      "before": "SvgFilterClipBindingTests.Separate_filtered_object_clips_keep_linear_parser_work",
+      "after": "SvgFilterClipBindingTests.Separate_filtered_object_clips_release_parser_storage",
+      "reason": "The test measures parser admission/cleanup at128/512/2048 inputs; it has no operation-count or complexity assertion."
+    },
+    "removedSelfComparisons": {
+      "count": 4,
+      "scope": "Filter/mask ancestor branches previously rendered and compared the identical input/options twice. Direct-to-instance checks remain. Clip branches retain both meaningful comparisons by transitivity."
+    }
+  },
+  "validation": {
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforePassed": 160,
+        "fullPassed": 172,
+        "routinePassed": 165,
+        "apiAndOwnershipPassed": 143,
+        "independentVisualPassed": 295
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforePassed": 160,
+        "fullPassed": 172,
+        "routinePassed": 165,
+        "apiAndOwnershipPassed": 143,
+        "independentVisualPassed": 295
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "beforePassed": 160,
+        "fullPassed": 172,
+        "routinePassed": 165,
+        "apiAndOwnershipPassed": 143,
+        "independentVisualPassed": 295
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "beforePassed": 160,
+        "fullPassed": 172,
+        "routinePassed": 165,
+        "apiAndOwnershipPassed": 143,
+        "independentVisualPassed": 295
+      }
+    ],
+    "caseIdentity": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "preservedOtherCaseIdentitySha256": "7ce171f156b77a61b8b2cb43ba03c96bf3675dc8fcbb98ce2620ef36718776a8"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "preservedOtherCaseIdentitySha256": "7ce171f156b77a61b8b2cb43ba03c96bf3675dc8fcbb98ce2620ef36718776a8"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "preservedOtherCaseIdentitySha256": "7ce171f156b77a61b8b2cb43ba03c96bf3675dc8fcbb98ce2620ef36718776a8"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "preservedOtherCaseIdentitySha256": "7ce171f156b77a61b8b2cb43ba03c96bf3675dc8fcbb98ce2620ef36718776a8"
+      }
+    ],
+    "matchedTiming": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforePassed": 160,
+        "afterRoutinePassed": 165,
+        "beforeSeconds": 11.25,
+        "afterSeconds": 11.17
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforePassed": 160,
+        "afterRoutinePassed": 165,
+        "beforeSeconds": 13.97,
+        "afterSeconds": 10.21
+      }
+    ],
+    "timingBoundary": "Matched functional samples run only two host processes per phase, with the same exact packaged runtime. Startup/discovery/TRX and cache/load effects remain. No reliable speedup or renderer-performance/quiet-VM claim.",
+    "methodInventory": [
+      {
+        "assembly": "Lokad.Svg.Tests",
+        "methodsBefore": 4647,
+        "methodsAfter": 4649,
+        "unclassifiedBefore": 1933,
+        "unclassifiedAfter": 1873
+      },
+      {
+        "assembly": "Lokad.Svg.VisualTests",
+        "methodsBefore": 430,
+        "methodsAfter": 430,
+        "unclassifiedBefore": 288,
+        "unclassifiedAfter": 288
+      }
+    ],
+    "fullQualification": "Current runtime retains the linked complete qualification. New core suite and matching CI are recorded at the coherent test milestone."
+  },
+  "fullOriginalApiConversionsRemoved": 0,
+  "failingInputFamiliesRemoved": 0,
+  "nativeReferencesRewritten": 0,
+  "newTestingFrameworks": 0,
+  "ci": {
+    "status": "pending",
+    "sourceCommit": null
+  },
+  "remaining": "Other subsystem classification, rendering products, asset consumers and scene/layer model review remain open; no complete-plan closure is claimed."
+}

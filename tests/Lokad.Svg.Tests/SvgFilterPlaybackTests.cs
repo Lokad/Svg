@@ -9,6 +9,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Rendering")]
     public void Filtered_use_and_target_coordinates_follow_instance_translation(bool filterOnTarget)
     {
         string effect = " filter='url(#f)'";
@@ -28,6 +29,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Repeated_filtered_targets_own_their_placed_bindings_and_terminate_before_siblings()
     {
         string body = "<path d='M3 4H19V17H3Z' fill='#244a77' fill-opacity='.75'/>";
@@ -48,6 +50,7 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("<defs><path id='s' d='M1 1H8V8H1Z'/><pattern id='p' patternUnits='userSpaceOnUse' width='12' height='12'><use href='#s' clip-path='url(#missing)'/></pattern></defs><rect width='16' height='16' fill='url(#p)'/>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<defs><path id='s' d='M1 1H8V8H1Z'/><pattern id='p' patternUnits='userSpaceOnUse' width='12' height='12'><use href='#s' mask='url(#missing)'/></pattern></defs><rect width='16' height='16' fill='url(#p)'/>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<defs><filter id='f'><feOffset/></filter><g id='s' filter='url(#f)'><use href='#s'/></g></defs><use href='#s'/>", SvgErrorCode.MalformedInput)]
+    [Trait("Layer", "Contract")]
     public void Retained_effect_reference_errors_release_partial_scenes_without_publishing(string content, SvgErrorCode expected)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + content + "</svg>");
@@ -66,6 +69,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Stored_merge_inputs_preserve_native_packed_image_composition()
     {
         byte[] source = [47, 86, 115, 159];
@@ -74,6 +78,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Source_layer_bounds_match_the_native_two_blur_hint_and_release_temporary_owners()
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1.125'/><feGaussianBlur stdDeviation='1.125'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
@@ -99,6 +104,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Primitive_color_spaces_inherit_independently_and_keep_their_declared_override()
     {
         byte[] input = Document("<defs><filter id='f' color-interpolation-filters='sRGB'><feGaussianBlur stdDeviation='1' color-interpolation-filters='linearRGB'/><feOffset/><feMerge color-interpolation-filters='linearRGB'><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
@@ -115,6 +121,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Required_source_bounds_preserve_both_branches_and_the_displaced_blur_halo()
     {
         byte[] input = Document("<defs><filter id='f' filterUnits='userSpaceOnUse' x='-100' y='-100' width='200' height='200'>"
@@ -142,6 +149,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rescaled_blur_keeps_offscreen_intermediate_pixels_needed_by_a_later_offset()
     {
         const int width = 128, height = 96;
@@ -168,6 +176,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Extreme_finite_gaussian_deviations_use_the_bounded_native_device_cap()
     {
         byte[] capped = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='532'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
@@ -180,6 +189,7 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("filter='url(#f)'", "")]
     [InlineData("class='filtered'", "<style>.filtered { filter:url(#f); }</style>")]
     [InlineData("style='filter:url(#f) !important;filter:none'", "")]
+    [Trait("Layer", "Rendering")]
     public void Group_sources_compose_overlapping_children_before_filter_and_outer_opacity(string attributes, string css)
     {
         byte[] input = Document(css + "<g " + attributes + " opacity='.5'><rect width='4' height='4' fill='red'/><rect width='4' height='4' fill='blue'/></g><defs><filter id='f'><feGaussianBlur stdDeviation='0'/></filter></defs>");
@@ -193,6 +203,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Hidden_groups_do_not_activate_dormant_filter_failures()
     {
         byte[] plain = Document("<rect width='4' height='4' fill='blue'/>");
@@ -204,6 +215,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData("<g filter='url(#f)' clip-path='url(#c)'><rect width='4' height='4'/></g>")]
     [InlineData("<g filter='url(#f)' mask='url(#m)'><rect width='4' height='4'/></g>")]
+    [Trait("Layer", "Contract")]
     public void Pending_filter_group_combinations_reject_without_output_and_release_parser_owners(string content)
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='3'/></filter></defs>" + content);
@@ -218,6 +230,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData("<rect width='4' height='4' mask='url(#missing)'/>")]
     [InlineData("<path d='M1 1L4 4' marker-start='url(#missing)'/>")]
+    [Trait("Layer", "Contract")]
     public void Missing_filtered_source_references_reject_without_output_and_release_owners(string source)
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs><g filter='url(#f)'>" + source + "</g>");
@@ -230,6 +243,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Filtered_nested_viewport_preserves_the_original_input_and_releases_owners()
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs><g filter='url(#f)'>"
@@ -242,6 +256,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Affine_nested_filter_sources_preserve_the_original_input_and_release_owners()
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter></defs>"
@@ -257,6 +272,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Filter_source_object_bounds_exclude_marker_content()
     {
         byte[] input = Document("<defs><filter id='f'><feOffset/></filter>"
@@ -273,6 +289,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Deferred_affine_source_and_crop_release_owners_on_denial_cancellation_and_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='112' height='108'>"
@@ -309,6 +326,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Filtered_tiles_borrow_forward_definitions_and_release_owners_on_denial_cancellation_and_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='160' height='128'><defs>"
@@ -347,6 +365,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Affine_object_box_primitive_offsets_keep_their_placed_distances()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='80'>"
@@ -363,6 +382,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_width_filtered_source_with_object_box_output_clip_is_nonpainting()
     {
         byte[] input = Document("<defs><filter id='f'><feOffset/></filter><clipPath id='c' clipPathUnits='objectBoundingBox'><rect width='1' height='1'/></clipPath></defs>"
@@ -375,6 +395,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nested_filter_groups_keep_unfiltered_object_bounds_and_release_source_owners()
     {
         // Retains the original nested-source rejection input as positive acceptance.
@@ -395,6 +416,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Outer_integer_offset_preserves_the_child_blur_outside_its_geometry_bounds()
     {
         const string shape = "<rect x='20.25' y='24.5' width='34.75' height='29.25' fill='#428365' fill-opacity='.7' filter='url(#inner)'/>";
@@ -412,6 +434,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Rendering")]
     public void Local_forward_binding_and_named_results_apply_element_opacity_after_filter(bool important)
     {
         string style = important ? "style='filter:url(#f) !important;filter:none;opacity:.5'" : "filter='url(#f)' opacity='.5'";
@@ -429,6 +452,7 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("<feMorphology radius='5'/>")]
     [InlineData("<feGaussianBlur stdDeviation='bad'/>")]
     [InlineData("<feGaussianBlur in='later'/><feOffset result='later'/>")]
+    [Trait("Layer", "Rendering")]
     public void Dormant_filter_errors_do_not_change_unfiltered_drawing(string primitives)
     {
         byte[] plain = Document("<rect width='4' height='4'/>");
@@ -445,6 +469,7 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("<filter id='f'/><filter id='f'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<filter id='f' color-interpolation-filters='invalid'><feOffset/></filter>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<filter id='f'><feFlood color-interpolation-filters='invalid'/></filter>", SvgErrorCode.UnsupportedFeature)]
+    [Trait("Layer", "Contract")]
     public void Referenced_graph_errors_release_partial_parser_owners(string definition, SvgErrorCode code)
     {
         byte[] input = Document("<rect width='4' height='4' filter='url(#f)'/><defs>" + definition + "</defs>");
@@ -456,6 +481,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Contract")]
     public void Graph_limits_release_intermediates_preserve_source_and_allow_exact_retry(bool merge)
     {
         RenderBudget parserBudget = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -501,6 +527,7 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("270.001 0", .5, "", false)]
     [InlineData("135.000001 0", 1, "", true)]
     [InlineData("135.00001 0", 1, "", false)]
+    [Trait("Layer", "Contract")]
     public void Shadow_deviations_observe_mapped_axis_bounds_and_release_storage(string deviation, double outputScale, string transform, bool accepted)
     {
         string placement = transform.Length == 0 ? "" : " transform='" + transform + "'";
@@ -540,6 +567,7 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("<feOffset dx='.5'/>")]
     [InlineData("<feGaussianBlur stdDeviation='.5'/>")]
     [InlineData("<feDropShadow stdDeviation='1e300'/>")]
+    [Trait("Layer", "Contract")]
     public void Primitive_pixel_admissions_preserve_output_and_explicit_boundaries(string primitive)
     {
         byte[] input = Document("<defs><filter id='f'>" + primitive + "</filter></defs><rect width='4' height='4' fill='red' filter='url(#f)'/>");
@@ -558,6 +586,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Translucent_colored_linear_shadow_renders_and_releases_source_owners()
     {
         byte[] input = Document("<defs><filter id='f'><feDropShadow stdDeviation='3'/></filter></defs><rect width='4' height='4' fill='red' fill-opacity='.5' filter='url(#f)'/>");
@@ -578,6 +607,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Mechanism")]
     public void Merge_nodes_preserve_authored_source_over_order(bool reverse)
     {
         string nodes = reverse ? "<feMergeNode in='SourceGraphic'/><feMergeNode in='a'/>" : "<feMergeNode in='a'/><feMergeNode in='SourceGraphic'/>";
@@ -590,6 +620,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData("")]
     [InlineData("in='a'")]
+    [Trait("Layer", "Mechanism")]
     public void Missing_merge_input_borrows_the_result_before_merge(string input)
     {
         byte[] pixels = Apply("<feOffset in='SourceAlpha' result='a'/><feMerge><feMergeNode in='SourceGraphic'/><feMergeNode " + input + "/></feMerge>", [0, 0, 128, 128], 1);
@@ -599,10 +630,12 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData("<feMerge/>")]
     [InlineData("<feMerge></feMerge>")]
+    [Trait("Layer", "Mechanism")]
     public void Empty_merge_produces_transparent_pixels(string primitive)
         => Assert.Equal(new byte[4], Apply(primitive, [100, 40, 20, 128], 1));
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Single_merge_input_preserves_its_srgb_bytes_without_a_color_round_trip()
     {
         byte[] source = [20, 41, 63, 128];
@@ -614,6 +647,7 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("<feMerge result='self'><feMergeNode in='self'/></feMerge>")]
     [InlineData("<feMerge><feMergeNode in='BackgroundImage'/></feMerge>")]
     [InlineData("<feMerge><g><feMergeNode/></g></feMerge>")]
+    [Trait("Layer", "Contract")]
     public void Invalid_merge_graphs_remain_dormant_until_used_and_release_owners(string graph)
     {
         byte[] plain = Document("<rect width='4' height='4'/>");
@@ -629,6 +663,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Merge_input_growth_has_a_bounded_limit_and_releases_partial_storage()
     {
         string nodes = string.Concat(Enumerable.Repeat("<feMergeNode in='SourceGraphic'/>", 257));
@@ -639,6 +674,7 @@ public sealed class SvgFilterPlaybackTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Offset_source_cancellation_releases_the_partial_bitmap_and_allows_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='800' height='700'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='800' height='700'><feOffset dx='315' dy='450' result='a'/><feMerge><feMergeNode in='SourceGraphic'/><feMergeNode in='a'/></feMerge></filter></defs><g filter='url(#f)' transform='translate(0 0)'><ellipse cx='48' cy='48' rx='45' ry='28' fill='none' stroke='blue' stroke-width='2'/></g></svg>");

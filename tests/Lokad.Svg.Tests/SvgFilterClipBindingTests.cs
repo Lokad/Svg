@@ -10,7 +10,8 @@ public sealed class SvgFilterClipBindingTests
     [InlineData(128)]
     [InlineData(512)]
     [InlineData(2048)]
-    public void Separate_filtered_object_clips_keep_linear_parser_work(int count)
+    [Trait("Layer", "Contract")]
+    public void Separate_filtered_object_clips_release_parser_storage(int count)
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(40_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
@@ -18,16 +19,19 @@ public sealed class SvgFilterClipBindingTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Ten_thousand_filtered_object_clips_match_user_space_clips_under_default_limits()
         => Assert.Equal(Render(Repeated(10_000, false)), Render(Repeated(10_000, true)));
 
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Rendering")]
     public void Nested_filters_and_tile_scenes_keep_native_object_bounds_and_composition(bool polygon)
         => Assert.Equal(Render(Mixed(false, polygon)), Render(Mixed(true, polygon)));
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Markers_do_not_expand_filtered_object_clip_bounds()
     {
         const string marker = "<marker id='dot' markerUnits='userSpaceOnUse' markerWidth='20' markerHeight='20' overflow='visible'><rect x='-10' y='-10' width='20' height='20' fill='blue'/></marker>";
@@ -36,6 +40,7 @@ public sealed class SvgFilterClipBindingTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Clip_binding_releases_scratch_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true, true);

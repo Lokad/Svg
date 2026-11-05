@@ -1,6 +1,7 @@
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
+using OutputForm = Lokad.Svg.Tests.SvgConversionApiContractTests.OutputForm;
 
 namespace Lokad.Svg.Tests;
 
@@ -13,61 +14,95 @@ public sealed class SvgEmptyFilterGroupTests
     [InlineData("filter='url(#outer)'")]
     [InlineData("clip-path='url(#box)'")]
     [InlineData("mask='url(#boxmask)'")]
+    [Trait("Layer", "Rendering")]
     public void Retained_empty_filter_scopes_do_not_enlarge_ancestor_object_bounds(string attributes)
     {
         const string effects = "<defs><filter id='outer'><feOffset dx='0'/></filter><clipPath id='box' clipPathUnits='objectBoundingBox'><rect width='1' height='1'/></clipPath><mask id='boxmask' mask-type='alpha' maskUnits='objectBoundingBox' x='0' y='0' width='1' height='1' maskContentUnits='objectBoundingBox'><rect width='1' height='1' fill='white'/></mask></defs>";
         foreach (string ending in new[] { "/>", "></g>" })
         {
             string content = "<g filter='url(#f)'" + ending + "<rect x='8' y='8' width='8' height='8' fill='blue'/>";
-            byte[] expected = attributes.StartsWith("clip-path", StringComparison.Ordinal)
-                ? Render("<rect x='8' y='8' width='8' height='8' fill='blue'/>")
-                : Render(Filter + effects + "<g " + attributes + ">" + content + "</g>");
-            Assert.Equal(expected, Render(Filter + effects + "<g " + attributes + ">" + content + "</g>"));
+            byte[] expected = Render(Filter + effects + "<g " + attributes + ">" + content + "</g>");
+            if (attributes.StartsWith("clip-path", StringComparison.Ordinal))
+                Assert.Equal(Render("<rect x='8' y='8' width='8' height='8' fill='blue'/>"), expected);
             Assert.Equal(expected,
                 Render(Filter + effects + "<defs><g id='s'>" + content + "</g></defs><g " + attributes + "><use href='#s'/></g>"));
         }
     }
 
+    public static IEnumerable<object[]> EmptyGroupCases()
+    {
+        foreach (string ending in new[] { "/>", "></g>", "><g/></g>", "><desc>description</desc></g>" })
+        foreach (bool forward in new[] { false, true }) yield return [ending, forward];
+    }
+
+    public static IEnumerable<object[]> RepresentativeApiCases() => ApiCases(true);
+    public static IEnumerable<object[]> ExtendedApiCases() => ApiCases(false);
+
+    private static IEnumerable<object[]> ApiCases(bool representative)
+    {
+        foreach (object[] row in EmptyGroupCases())
+            if ((row[0] is "/>" && row[1] is true) == representative) yield return row;
+    }
+
     [Theory]
-    [InlineData("/>")]
-    [InlineData("></g>")]
-    [InlineData("><g/></g>")]
-    [InlineData("><desc>description</desc></g>")]
-    public async Task Empty_filtered_groups_generate_output_through_raw_and_prepared_apis(string ending)
+    [MemberData(nameof(EmptyGroupCases))]
+    [Trait("Layer", "Rendering")]
+    public void Empty_filtered_groups_generate_output(string ending, bool forward)
+        => Assert.Equal(Render(Red), SvgConverter.ConvertToPng(EmptyGroupInput(ending, forward), SvgRenderOptions.Default, CancellationToken.None).ToArray());
+
+    [Theory]
+    [MemberData(nameof(RepresentativeApiCases))]
+    [Trait("Layer", "Contract")]
+    public Task Representative_empty_groups_preserve_twelve_output_forms(string ending, bool forward)
+        => AssertOutputForms(ending, forward);
+
+    [Theory]
+    [MemberData(nameof(ExtendedApiCases))]
+    [Trait("Category", "Research")]
+    [Trait("Layer", "Contract")]
+    public Task Extended_empty_groups_preserve_twelve_output_forms(string ending, bool forward)
+        => AssertOutputForms(ending, forward);
+
+    private static async Task AssertOutputForms(string ending, bool forward)
     {
         byte[] expected = Render(Red);
-        foreach (bool forward in new[] { false, true })
+        byte[] input = EmptyGroupInput(ending, forward);
+        SvgFontPackCatalog catalog = UnusedCatalog();
+        foreach (bool prepared in new[] { false, true })
+        foreach (OutputForm form in Enum.GetValues<OutputForm>())
         {
-            string group = "<g filter='url(#f)'" + ending;
-            byte[] input = Input(forward ? group + Filter : Filter + group);
-            SvgFontPackCatalog catalog = UnusedCatalog();
-            foreach (bool prepared in new[] { false, true })
-            foreach (string api in new[] { "owned", "memory", "stream", "owned-async", "memory-async", "stream-async" })
+            // Each prepared form owns its preparation; raw calls run directly.
+            using SvgPreparedDocument? document = prepared
+                ? await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), SvgRenderOptions.Default, CancellationToken.None) : null;
+            byte[] destination = new byte[expected.Length];
+            using MemoryStream stream = new();
+            byte[] actual;
+            switch (form)
             {
-                using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, new NoFonts(), SvgRenderOptions.Default, CancellationToken.None);
-                byte[] destination = new byte[expected.Length];
-                using MemoryStream stream = new();
-                byte[] actual;
-                switch (api)
-                {
-                    case "owned": actual = (prepared ? document.ConvertToPng(CancellationToken.None) : SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray(); break;
-                    case "owned-async": actual = (prepared ? await document.ConvertToPngAsync(CancellationToken.None) : await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray(); break;
-                    case "memory":
-                        Assert.Equal(expected.Length, prepared ? document.ConvertToPng(destination, CancellationToken.None) : SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));
-                        actual = destination; break;
-                    case "memory-async":
-                        Assert.Equal(expected.Length, prepared ? await document.ConvertToPngAsync(destination, CancellationToken.None) : await SvgConverter.ConvertToPngAsync(input, destination, SvgRenderOptions.Default, CancellationToken.None));
-                        actual = destination; break;
-                    case "stream":
-                        Assert.Equal(expected.Length, prepared ? document.ConvertToPng(stream, CancellationToken.None) : SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None));
-                        actual = stream.ToArray(); break;
-                    default:
-                        Assert.Equal(expected.Length, prepared ? await document.ConvertToPngAsync(stream, CancellationToken.None) : await SvgConverter.ConvertToPngAsync(input, stream, SvgRenderOptions.Default, CancellationToken.None));
-                        actual = stream.ToArray(); break;
-                }
-                Assert.Equal(expected, actual);
+                case OutputForm.Owned: actual = (document is not null ? document.ConvertToPng(CancellationToken.None) : SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray(); break;
+                case OutputForm.AsyncOwned: actual = (document is not null ? await document.ConvertToPngAsync(CancellationToken.None) : await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray(); break;
+                case OutputForm.Memory:
+                    Assert.Equal(expected.Length, document is not null ? document.ConvertToPng(destination, CancellationToken.None) : SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+                    actual = destination; break;
+                case OutputForm.AsyncMemory:
+                    Assert.Equal(expected.Length, document is not null ? await document.ConvertToPngAsync(destination, CancellationToken.None) : await SvgConverter.ConvertToPngAsync(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+                    actual = destination; break;
+                case OutputForm.Stream:
+                    Assert.Equal(expected.Length, document is not null ? document.ConvertToPng(stream, CancellationToken.None) : SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None));
+                    actual = stream.ToArray(); break;
+                case OutputForm.AsyncStream:
+                    Assert.Equal(expected.Length, document is not null ? await document.ConvertToPngAsync(stream, CancellationToken.None) : await SvgConverter.ConvertToPngAsync(input, stream, SvgRenderOptions.Default, CancellationToken.None));
+                    actual = stream.ToArray(); break;
+                default: throw new ArgumentOutOfRangeException(nameof(form));
             }
+            Assert.Equal(expected, actual);
         }
+    }
+
+    private static byte[] EmptyGroupInput(string ending, bool forward)
+    {
+        string group = "<g filter='url(#f)'" + ending;
+        return Input(forward ? group + Filter : Filter + group);
     }
 
     [Theory]
@@ -77,6 +112,7 @@ public sealed class SvgEmptyFilterGroupTests
     [InlineData("opacity='.5'", "opacity='.5'")]
     [InlineData("style='filter:url(#f)'", "")]
     [InlineData("class='effect'", "")]
+    [Trait("Layer", "Rendering")]
     public void Empty_group_effects_follow_cascade_and_outer_composition(string attributes, string opacity)
     {
         string expected = attributes.StartsWith("display", StringComparison.Ordinal) ? "" : "<rect width='32' height='32' fill='red' " + opacity + "/>";
@@ -89,6 +125,7 @@ public sealed class SvgEmptyFilterGroupTests
     [InlineData("<svg width='16' height='16'>", "</svg>")]
     [InlineData("<g transform='translate(2 3)'>", "</g>")]
     [InlineData("<g clip-path='url(#c)'>", "</g>")]
+    [Trait("Layer", "Rendering")]
     public void Empty_group_filters_survive_enclosing_scopes(string before, string after)
     {
         const string clip = "<defs><clipPath id='c'><rect width='16' height='16'/></clipPath></defs>";
@@ -100,6 +137,7 @@ public sealed class SvgEmptyFilterGroupTests
     [InlineData("clip-path='url(#c)'")]
     [InlineData("mask='url(#m)'")]
     [InlineData("clip-path='url(#c)' mask='url(#m)' opacity='.5'")]
+    [Trait("Layer", "Rendering")]
     public void Empty_group_filter_output_is_clipped_and_masked(string attributes)
     {
         const string resources = "<defs><clipPath id='c'><rect width='16' height='32'/></clipPath><mask id='m' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><rect width='32' height='32' fill='white' opacity='.5'/></mask></defs>";
@@ -110,6 +148,7 @@ public sealed class SvgEmptyFilterGroupTests
     [Theory]
     [InlineData("<feOffset dx='0'/>", "filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'")]
     [InlineData("<feFlood flood-color='red'/>", "")]
+    [Trait("Layer", "Rendering")]
     public void Empty_sources_keep_identity_and_zero_object_box_filters_transparent(string primitive, string region)
     {
         string filter = "<defs><filter id='f' " + region + ">" + primitive + "</filter></defs>";
@@ -119,6 +158,7 @@ public sealed class SvgEmptyFilterGroupTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Rendering")]
     public void Empty_group_filters_generate_resource_content(bool pattern)
     {
         foreach (string ending in new[] { "/>", "></g>" })
@@ -133,6 +173,7 @@ public sealed class SvgEmptyFilterGroupTests
     [Theory]
     [InlineData("/>")]
     [InlineData("></g>")]
+    [Trait("Layer", "Contract")]
     public void Active_empty_groups_require_defined_filter_references(string ending)
     {
         using MemoryStream output = new();
@@ -141,6 +182,7 @@ public sealed class SvgEmptyFilterGroupTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Empty_filtered_pattern_overrides_do_not_acquire_inherited_template_fonts()
     {
         SvgFontPackCatalog catalog = UnusedCatalog();
@@ -153,6 +195,7 @@ public sealed class SvgEmptyFilterGroupTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Empty_filtered_group_owners_release_on_denial_cancellation_and_retry()
     {
         byte[] input = Input(Filter + "<g filter='url(#f)'/>");

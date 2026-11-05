@@ -15,6 +15,7 @@ public sealed class SvgLineFilterBoundsTests
     [InlineData("butt", true)]
     [InlineData("round", true)]
     [InlineData("square", true)]
+    [Trait("Layer", "Rendering")]
     public void Identity_filters_preserve_placed_line_strokes(string cap, bool groupFilter)
     {
         foreach ((string geometry, string path) in new[] { ("x1='4' y1='8' x2='12' y2='8'", "M4 8H12"), ("x1='8' y1='4' x2='8' y2='12'", "M8 4V12"), ("x1='4' y1='4' x2='12' y2='12'", "M4 4L12 12") })
@@ -41,6 +42,7 @@ public sealed class SvgLineFilterBoundsTests
     [InlineData("red")]
     [InlineData("url(#g)")]
     [InlineData("url(#p)")]
+    [Trait("Layer", "Rendering")]
     public void Instances_preserve_painted_line_bounds_in_both_source_orders(string paint)
     {
         foreach (string cap in new[] { "butt", "round", "square" })
@@ -64,6 +66,7 @@ public sealed class SvgLineFilterBoundsTests
     [InlineData("butt", "<feGaussianBlur stdDeviation='1'/>")]
     [InlineData("round", "<feGaussianBlur stdDeviation='1'/>")]
     [InlineData("square", "<feGaussianBlur stdDeviation='1'/>")]
+    [Trait("Layer", "Rendering")]
     public void Filtered_lines_match_equivalent_paths(string cap, string primitive)
     {
         string filter = Filter.Replace("<feOffset/>", primitive, StringComparison.Ordinal);
@@ -77,6 +80,7 @@ public sealed class SvgLineFilterBoundsTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Filter_bounds_preserve_marker_endpoints_and_element_opacity()
     {
         const string marker = "<defs><marker id='m' markerUnits='userSpaceOnUse' markerWidth='2' markerHeight='2' refY='1'><rect width='2' height='2' fill='blue'/></marker></defs>";
@@ -85,6 +89,7 @@ public sealed class SvgLineFilterBoundsTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Placed_filter_bounds_release_owners_after_denial_cancellation_and_retry()
     {
         const string line = "<line x1='4' y1='8' x2='12' y2='8' transform='translate(8 8)' stroke='red' stroke-width='4' stroke-linecap='square'";

@@ -29,6 +29,11 @@ qualification; former failing interactions remain routine.
 use individual responsibility traits: direct bounds/admission, storage/lifetimes and
 relational rendering controls remain distinct. All 65 cases and assertions remain;
 layer-only selection still requires affected integration and broader qualification.
+The [empty-group replay partition](Research/release-baselines/filter-replay-responsibilities.json)
+keeps eight canonical sources, one routine twelve-form contract and seven extended
+Research matrices. Full qualification retains all 96 original API conversions;
+raw checks construct no unused prepared document. Known ownership and interaction
+regressions remain separate.
 
 Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs)
 while retaining separate names, inputs and allocation paths. Add one representative

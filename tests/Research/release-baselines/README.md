@@ -36,6 +36,9 @@ across 28 contracts while retaining all 42 affected cases and distinct allowance
 and preserves the relocated background witness, full cases and .NET 10 selection.
 [Filter/mask responsibilities](filter-test-responsibilities.json) classifies 22 mixed
 methods individually, retaining all 65 cases, assertions and exact fast-selection membership.
+[Filter replay responsibilities](filter-replay-responsibilities.json) partitions the
+empty-group API product, retains its eight original sources and classifies the remaining
+mixed playback, clip and deferred-source methods without weakening their boundaries.
 [Bounds/map contracts](bounds-map-contracts.md) trace clip, mask, marker, text and
 filter descriptors to their owners, numerical boundaries and independent witnesses.
 [Invocation ownership](invocation-ownership.json) separates output lifetimes and

@@ -10,6 +10,7 @@ public sealed class SvgDeferredFilterSourceTests
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
+    [Trait("Layer", "Mechanism")]
     public void Paintless_sources_extend_filter_object_bounds_without_extending_painted_bounds(bool instance, bool mapped)
     {
         byte[] input = Build(true);
@@ -45,6 +46,7 @@ public sealed class SvgDeferredFilterSourceTests
 
     [Theory]
     [MemberData(nameof(DeferredFilterMarkerCases))]
+    [Trait("Layer", "Rendering")]
     public void Deferred_filter_effect_anchors_accept_affine_marker_instances(string shape, string role)
     {
         byte[] expected = SvgConverter.ConvertToPng(Build(false), SvgRenderOptions.Default, CancellationToken.None).ToArray();
@@ -71,6 +73,7 @@ public sealed class SvgDeferredFilterSourceTests
 
     [Theory]
     [MemberData(nameof(DeferredFilterShapeCases))]
+    [Trait("Layer", "Rendering")]
     public void Enclosing_filters_keep_shape_source_bounds_across_forward_instance_replay(string shape, bool symbol, double scale)
     {
         SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default);
