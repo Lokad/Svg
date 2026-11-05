@@ -1,0 +1,237 @@
+{
+  "status": "All three separate source-review diagnostics match their frozen native targets on Windows/Linux.NET11/.NET10 under the already-qualified package assets. Their complete source/projection/font/native hashes and inherited healthy triples remain unchanged. This is declared-context qualification, not unchanged-original admission.",
+  "renderer": "originals.json#currentReview",
+  "rows": [
+    {
+      "name": "ny1.svg",
+      "evidence": "ny1-static-review.json",
+      "frameworks": [
+        {
+          "framework": "net11.0",
+          "hosts": [
+            {
+              "host": "windows",
+              "seconds": 2.2529131998308003,
+              "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+              "libraryPngSha256": "68375e64d687b615d8b6c595ed63b3a52ecf0be00c27c247de5827d0fe1e0a60",
+              "nativePngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1",
+              "rgbaSha256": "feb7c63b2f604c7439fba0759a3d0df33f66d792b4c347a9367d22a8d3b733d6",
+              "width": 600,
+              "height": 388,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "seconds": 5.769795299973339,
+              "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+              "libraryPngSha256": "894d41161c338e74e514efbb75d8a1ee039b0d58adfdf7a128769e0974069d0d",
+              "nativePngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a",
+              "rgbaSha256": "6cf4835c9ea5fac9058191e851cd855135d1368aa91004725b481460b8ba3f19",
+              "width": 600,
+              "height": 388,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ]
+        },
+        {
+          "framework": "net10.0",
+          "hosts": [
+            {
+              "host": "windows",
+              "runtime": "10.0.14",
+              "seconds": 2.3812072998844087,
+              "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+              "libraryPngSha256": "68375e64d687b615d8b6c595ed63b3a52ecf0be00c27c247de5827d0fe1e0a60",
+              "nativePngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1",
+              "rgbaSha256": "feb7c63b2f604c7439fba0759a3d0df33f66d792b4c347a9367d22a8d3b733d6",
+              "width": 600,
+              "height": 388,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "runtime": "10.0.14",
+              "seconds": 6.243894799845293,
+              "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+              "libraryPngSha256": "894d41161c338e74e514efbb75d8a1ee039b0d58adfdf7a128769e0974069d0d",
+              "nativePngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a",
+              "rgbaSha256": "6cf4835c9ea5fac9058191e851cd855135d1368aa91004725b481460b8ba3f19",
+              "width": 600,
+              "height": 388,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ]
+        }
+      ],
+      "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+      "diagnosticInputSha256": "85bce8c43bf349c9accb3a34ef2b349fe46e47131c3f481167f451ea5c944988",
+      "nativeInputSha256": "6836c9b27080fbdd21921aa912abc64edb2fc8395afcd8fc095697ebaba43695",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "name": "displayWebStats.svg",
+      "evidence": "display-web-stats-static.json",
+      "frameworks": [
+        {
+          "framework": "net11.0",
+          "hosts": [
+            {
+              "host": "windows",
+              "seconds": 1.7645093000028282,
+              "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+              "libraryPngSha256": "a5d57028415487baa68574cf7708b2ef279260863c815d923028b729dfdc1deb",
+              "nativePngSha256": "8fc5f8e01b41bbc17a42565b4f42202211db2b06f1f06f837fd02aaaa5b763f4",
+              "rgbaSha256": "6f21efb966af4c0821c0de89a4e8e1fdc3558a70794dfb6956ff6ea3cdbb4171",
+              "width": 300,
+              "height": 150,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "seconds": 2.4980270999949425,
+              "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+              "libraryPngSha256": "7aa04163714793daeefc751b7498782d385a942016cfafb20e63bc094b242e8d",
+              "nativePngSha256": "5c460f80227e66b72fdbb66bee2b763c20033a6545db015bea8d3a5e3bda7ff9",
+              "rgbaSha256": "63e283ffc915fd08c043bd185daaa91ab177f0e10c40349cd5d4fa04736bf12c",
+              "width": 300,
+              "height": 150,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ]
+        },
+        {
+          "framework": "net10.0",
+          "hosts": [
+            {
+              "host": "windows",
+              "runtime": "10.0.14",
+              "seconds": 1.875291100004688,
+              "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+              "libraryPngSha256": "a5d57028415487baa68574cf7708b2ef279260863c815d923028b729dfdc1deb",
+              "nativePngSha256": "8fc5f8e01b41bbc17a42565b4f42202211db2b06f1f06f837fd02aaaa5b763f4",
+              "rgbaSha256": "6f21efb966af4c0821c0de89a4e8e1fdc3558a70794dfb6956ff6ea3cdbb4171",
+              "width": 300,
+              "height": 150,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "runtime": "10.0.14",
+              "seconds": 2.604001000057906,
+              "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+              "libraryPngSha256": "7aa04163714793daeefc751b7498782d385a942016cfafb20e63bc094b242e8d",
+              "nativePngSha256": "5c460f80227e66b72fdbb66bee2b763c20033a6545db015bea8d3a5e3bda7ff9",
+              "rgbaSha256": "63e283ffc915fd08c043bd185daaa91ab177f0e10c40349cd5d4fa04736bf12c",
+              "width": 300,
+              "height": 150,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ]
+        }
+      ],
+      "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
+      "diagnosticInputSha256": "eee3a71669f060293f50a2ad5e18df3a1bd4c0a61bcdded4ffb01609829d7668",
+      "nativeInputSha256": "5097794849ca64f51701af6684abbee2ca1a4da302a76658202f420e1e7d3765",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "name": "svg2009.svg",
+      "evidence": "svg2009-static-review.json",
+      "frameworks": [
+        {
+          "framework": "net11.0",
+          "hosts": [
+            {
+              "host": "windows",
+              "seconds": 2.1026045999024063,
+              "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+              "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+              "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+              "rgbaSha256": "fe4b03be37596a5941b414d7d4065466490c3d035d8f2f73cf295d14e5e88844",
+              "width": 850,
+              "height": 200,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "seconds": 2.3351447999011725,
+              "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+              "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+              "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+              "rgbaSha256": "fe6829ca6177705e69a39b15d31972002f73127e35c5bfb0451a65d1dab355c6",
+              "width": 850,
+              "height": 200,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ]
+        },
+        {
+          "framework": "net10.0",
+          "hosts": [
+            {
+              "host": "windows",
+              "runtime": "10.0.14",
+              "seconds": 2.106647500069812,
+              "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+              "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+              "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+              "rgbaSha256": "fe4b03be37596a5941b414d7d4065466490c3d035d8f2f73cf295d14e5e88844",
+              "width": 850,
+              "height": 200,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            },
+            {
+              "host": "linux",
+              "runtime": "10.0.14",
+              "seconds": 2.525189299834892,
+              "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+              "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+              "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+              "rgbaSha256": "fe6829ca6177705e69a39b15d31972002f73127e35c5bfb0451a65d1dab355c6",
+              "width": 850,
+              "height": 200,
+              "changedPixels": 0,
+              "unchangedQualifiedLibraryPng": true
+            }
+          ]
+        }
+      ],
+      "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+      "diagnosticInputSha256": "35ac8215e277b1ec6adfa3b0cc63502996b85b36be3f9d44123e9981bb022b1e",
+      "nativeInputSha256": "4a028a1495eadb04e26f259c829be9bd16ec42a8419ce4817d9c8266809031a7",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    }
+  ],
+  "scope": {
+    "originals": 3,
+    "hostRuntimeChecks": 12,
+    "sourceBodiesRetained": 0,
+    "rawAttributeValuesRetained": 0,
+    "nativeReferencesChanged": 0,
+    "productionChanges": 0,
+    "unchangedOriginalAdmissionClaimed": false
+  },
+  "method": "Fetch/hash originals in bounded RAM; reconstruct only the previously declared CSS/ID/animation repairs; require exact frozen diagnostic and font-bound native-input hashes. Replay with identical qualified renderer assets and explicit Noto policy, compare exact RGBA against the preserved native PNG bytes, and retain no SVG bodies. The svg2009 minidom projection preserves every text/CDATA/comment/PI boundary. Existing authored text-position, dash-image-width, text-clip and filter controls remain the routine regressions.",
+  "referencePolicy": "Existing three healthy, profile-cleaned, terminal-exit-zero captures per host are hash-verified, never rewritten or recaptured to fit implementation output.",
+  "directoryAudit": {
+    "checkedUtc": "2026-11-05T21:34:54.330418+00:00",
+    "httpStatus": 200,
+    "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+    "directSvgFiles": 204,
+    "sameMembership": true,
+    "newOrMissingOriginalNames": [],
+    "indexBodyRetained": false,
+    "sourceSvgBodiesRetained": 0
+  }
+}

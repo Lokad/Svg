@@ -7,11 +7,12 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgForwardUseExpansionTests
 {
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(128)]
     [InlineData(256)]
     [InlineData(512)]
     [InlineData(1024)]
-    public void Clipped_forward_uses_stay_within_linear_work(int count)
+    public void Clipped_forward_uses_release_parsing_storage(int count)
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(50_000_000));
         using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
@@ -19,14 +20,17 @@ public sealed class SvgForwardUseExpansionTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Twelve_thousand_clipped_forward_uses_match_backward_definitions()
         => Assert.Equal(Render(Repeated(12_000, false)), Render(Repeated(12_000, true)));
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Mixed_empty_single_and_multiple_geometry_uses_keep_paint_and_effect_order()
         => Assert.Equal(Render(Mixed(false)), Render(Mixed(true)));
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Expansion_remaps_command_boundaries_only_for_the_owning_scene()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
@@ -66,6 +70,7 @@ public sealed class SvgForwardUseExpansionTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Batch_expansion_releases_storage_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true);

@@ -40,6 +40,7 @@ public sealed class SvgResourceUseReplayTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<mask id='m'><use href='#missing'/></mask>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<clipPath id='c'><use href='#missing'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<clipPath id='c'><path d='M0 0H4V4H0Z'/><use href='#s'/><use href='#missing'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
@@ -57,6 +58,7 @@ public sealed class SvgResourceUseReplayTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Anonymous_resource_references_remain_unused_and_release_retained_attributes()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><defs><path id='s' d='M2 3L20 1 22 20 3 22Z'/><mask><use href='#s'/></mask><clipPath><use href='#s'/></clipPath></defs><rect width='24' height='24'/></svg>"u8.ToArray();
@@ -66,6 +68,7 @@ public sealed class SvgResourceUseReplayTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<rect width='24' height='24' fill='none' stroke='url(#p)' stroke-width='2'/>", "source-bound fill geometry")]
     [InlineData("<defs><path id='s' d='M2 3L20 1 22 20 3 22Z' fill='url(#p)'/></defs><use href='#s' x='1'/>", "placed geometry references")]
     public void General_linear_paint_combinations_preserve_admission_and_cleanup(string target, string message)

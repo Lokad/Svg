@@ -1,0 +1,443 @@
+{
+  "status": "Instance/replay tests retain all original bodies, inputs, assertions and28 cases. Eleven methods now declare their actual mechanism, ownership/admission or rendering role. Two obsolete work/complexity claims are renamed; no execution or coverage is removed.",
+  "sourceBaseCommit": "17cc84c1114387f45631874e8b1a7f8f257582ee",
+  "source": {
+    "files": [
+      {
+        "file": "../../Lokad.Svg.Tests/SvgGroupUseClipTests.cs",
+        "beforeLfSha256": "508bdbf55f39e4608f5825b5f91477e2d5f203e1a5a23907037d71c9333dbba7",
+        "afterLfSha256": "84d7e05a9aa1700ef1366b37e8c24576e13d1ada626020a3ee532df78500a7e3",
+        "originalFileReconstructedExactly": true,
+        "roles": {
+          "Rendered_group_instances_do_not_disable_other_polygon_clips": "Rendering",
+          "Polygon_clips_on_rendered_group_instances_match_direct_shapes": "Rendering",
+          "Group_use_and_polygon_clip_release_storage_at_work_and_memory_boundaries": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgForwardUseExpansionTests.cs",
+        "beforeLfSha256": "7fe9ebe2f7f745abc675c699942b660b2300f758c75cb2f67f84032a400d4a1e",
+        "afterLfSha256": "f7f0ae5007548413fccee51fcebfbbf112dafef680e5a573087b97a4159a8f99",
+        "originalFileReconstructedExactly": true,
+        "roles": {
+          "Clipped_forward_uses_stay_within_linear_work": "Contract",
+          "Twelve_thousand_clipped_forward_uses_match_backward_definitions": "Rendering",
+          "Mixed_empty_single_and_multiple_geometry_uses_keep_paint_and_effect_order": "Rendering",
+          "Expansion_remaps_command_boundaries_only_for_the_owning_scene": "Mechanism",
+          "Batch_expansion_releases_storage_on_memory_denial_and_cancellation": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgResourceUseReplayTests.cs",
+        "beforeLfSha256": "820bf3965d7c1d27ae376318de7402c64bea7d1a243953c78fbcdcd5bc04c694",
+        "afterLfSha256": "798619c0c7e1a5ee21228e1b9af0b83acba87cd63cb1de7c38665e429c91303d",
+        "originalFileReconstructedExactly": true,
+        "roles": {
+          "Rejected_resource_references_release_partial_owners": "Contract",
+          "Anonymous_resource_references_remain_unused_and_release_retained_attributes": "Contract",
+          "General_linear_paint_combinations_preserve_admission_and_cleanup": "Contract"
+        }
+      }
+    ],
+    "aliases": [
+      {
+        "before": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_at_work_and_memory_boundaries",
+        "after": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_on_memory_refusal"
+      },
+      {
+        "before": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_stay_within_linear_work",
+        "after": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage"
+      }
+    ]
+  },
+  "roles": {
+    "newMechanismMethods": 1,
+    "newMechanismCases": 1,
+    "newContractMethods": 6,
+    "newContractCases": 17,
+    "newRenderingMethods": 4,
+    "newRenderingCases": 7,
+    "retainedPreviouslyClassifiedMechanismCases": 3
+  },
+  "retained": [
+    "Every original forward/backward, use-first, placement and mixed-resource graph.",
+    "The12000-use rendering comparison and all128/256/512/1024 cleanup inputs.",
+    "Exact owning-scene remapping indices while foreign-scene indices remain unchanged.",
+    "Complete memory-refusal sweeps, peak-minus-one controls, cancellation identity, partial-owner cleanup and successful/unsupported reference paths."
+  ],
+  "caseIdentities": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "cases": 28,
+      "removed": 0,
+      "added": 0,
+      "explicitNameMappings": [
+        {
+          "before": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_at_work_and_memory_boundaries",
+          "after": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_on_memory_refusal"
+        },
+        {
+          "before": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_stay_within_linear_work",
+          "after": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage"
+        }
+      ],
+      "caseIdentitySha256": "79ea98dbc46f177b67ebcad4bf4e29bad91c166cf22b0696f9770e9358e854e6"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "cases": 28,
+      "removed": 0,
+      "added": 0,
+      "explicitNameMappings": [
+        {
+          "before": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_at_work_and_memory_boundaries",
+          "after": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_on_memory_refusal"
+        },
+        {
+          "before": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_stay_within_linear_work",
+          "after": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage"
+        }
+      ],
+      "caseIdentitySha256": "79ea98dbc46f177b67ebcad4bf4e29bad91c166cf22b0696f9770e9358e854e6"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "cases": 28,
+      "removed": 0,
+      "added": 0,
+      "explicitNameMappings": [
+        {
+          "before": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_at_work_and_memory_boundaries",
+          "after": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_on_memory_refusal"
+        },
+        {
+          "before": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_stay_within_linear_work",
+          "after": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage"
+        }
+      ],
+      "caseIdentitySha256": "79ea98dbc46f177b67ebcad4bf4e29bad91c166cf22b0696f9770e9358e854e6"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "cases": 28,
+      "removed": 0,
+      "added": 0,
+      "explicitNameMappings": [
+        {
+          "before": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_at_work_and_memory_boundaries",
+          "after": "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_on_memory_refusal"
+        },
+        {
+          "before": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_stay_within_linear_work",
+          "after": "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage"
+        }
+      ],
+      "caseIdentitySha256": "79ea98dbc46f177b67ebcad4bf4e29bad91c166cf22b0696f9770e9358e854e6"
+    }
+  ],
+  "fastCaseIdentities": [
+    {
+      "host": "windows",
+      "before": 20078,
+      "after": 20096,
+      "removed": 0,
+      "added": [
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Batch_expansion_releases_storage_on_memory_denial_and_cancellation",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage(count: 1024)",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage(count: 128)",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage(count: 256)",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage(count: 512)",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Expansion_remaps_command_boundaries_only_for_the_owning_scene",
+        "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_on_memory_refusal",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Anonymous_resource_references_remain_unused_and_release_retained_attributes",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.General_linear_paint_combinations_preserve_admission_and_cleanup(target: \"<defs><path id='s' d='M2 3L20 1 22 20 3 22Z' fill=\"\u00b7\u00b7\u00b7, message: \"placed geometry references\")",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.General_linear_paint_combinations_preserve_admission_and_cleanup(target: \"<rect width='24' height='24' fill='none' stroke='u\"\u00b7\u00b7\u00b7, message: \"source-bound fill geometry\")",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<clipPath id='c'><path d='M0 0H4V4H0Z'/><use href=\"\u00b7\u00b7\u00b7, code: UnsupportedFeature)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<clipPath id='c'><use href='#missing'/></clipPath>\", code: UnsupportedFeature)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<clipPath id='c'><use href='#s'/></clipPath><clipP\"\u00b7\u00b7\u00b7, code: MalformedInput)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<clipPath id='c'><use href='#s'/><path d='M0 0H4V4\"\u00b7\u00b7\u00b7, code: MalformedInput)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<mask id='m'><use href='#missing'/></mask>\", code: UnsupportedFeature)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<mask id='m'><use href='#s' mask='url(#m)'/></mask\"\u00b7\u00b7\u00b7, code: UnsupportedFeature)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<mask id='m'><use href='#s'/></mask><mask id='m'/>\", code: MalformedInput)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<mask id='m'><use href='#s'/><use href='#missing'/\"\u00b7\u00b7\u00b7, code: UnsupportedFeature)"
+      ],
+      "caseIdentitySha256": "d35ace6e8d29b59cb89ef552a3963db39265a53bcd0a15eb9059718f8be1ac80"
+    },
+    {
+      "host": "linux",
+      "before": 20078,
+      "after": 20096,
+      "removed": 0,
+      "added": [
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Batch_expansion_releases_storage_on_memory_denial_and_cancellation",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage(count: 1024)",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage(count: 128)",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage(count: 256)",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Clipped_forward_uses_release_parsing_storage(count: 512)",
+        "Lokad.Svg.Tests.SvgForwardUseExpansionTests.Expansion_remaps_command_boundaries_only_for_the_owning_scene",
+        "Lokad.Svg.Tests.SvgGroupUseClipTests.Group_use_and_polygon_clip_release_storage_on_memory_refusal",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Anonymous_resource_references_remain_unused_and_release_retained_attributes",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.General_linear_paint_combinations_preserve_admission_and_cleanup(target: \"<defs><path id='s' d='M2 3L20 1 22 20 3 22Z' fill=\"\u00b7\u00b7\u00b7, message: \"placed geometry references\")",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.General_linear_paint_combinations_preserve_admission_and_cleanup(target: \"<rect width='24' height='24' fill='none' stroke='u\"\u00b7\u00b7\u00b7, message: \"source-bound fill geometry\")",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<clipPath id='c'><path d='M0 0H4V4H0Z'/><use href=\"\u00b7\u00b7\u00b7, code: UnsupportedFeature)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<clipPath id='c'><use href='#missing'/></clipPath>\", code: UnsupportedFeature)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<clipPath id='c'><use href='#s'/></clipPath><clipP\"\u00b7\u00b7\u00b7, code: MalformedInput)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<clipPath id='c'><use href='#s'/><path d='M0 0H4V4\"\u00b7\u00b7\u00b7, code: MalformedInput)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<mask id='m'><use href='#missing'/></mask>\", code: UnsupportedFeature)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<mask id='m'><use href='#s' mask='url(#m)'/></mask\"\u00b7\u00b7\u00b7, code: UnsupportedFeature)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<mask id='m'><use href='#s'/></mask><mask id='m'/>\", code: MalformedInput)",
+        "Lokad.Svg.Tests.SvgResourceUseReplayTests.Rejected_resource_references_release_partial_owners(resource: \"<mask id='m'><use href='#s'/><use href='#missing'/\"\u00b7\u00b7\u00b7, code: UnsupportedFeature)"
+      ],
+      "caseIdentitySha256": "740623c656b4fdb70c7141189099ac07b380fbf57aa156bbd70c99655e89d3c3"
+    }
+  ],
+  "inventory": {
+    "methods": 5147,
+    "sourceFiles": 739,
+    "coreMethods": 4688,
+    "visualMethods": 459,
+    "layers": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1138,
+        "Mechanism": 1778,
+        "Contract": 706,
+        "Rendering": 1065,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 277,
+        "Contract": 34,
+        "Integrity": 25,
+        "Rendering": 122,
+        "Mechanism": 1
+      }
+    },
+    "all5147PriorMethodsRetained": true,
+    "only11UnclassifiedMethodsAssigned": true,
+    "other736TestSourceFilesUnchanged": true,
+    "fullCoreCasesUnchanged": 47926,
+    "fullVisualCasesUnchanged": 76870,
+    "fontHostCasesUnchanged": 10,
+    "fastCases": 20096
+  },
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "838597457d48afbbe3419f203a2d1466535e9ecd8002d8950dd9495eb2e7a58f",
+        "selection": "FullyQualifiedName~SvgGroupUseClipTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests",
+        "exitCode": 0,
+        "seconds": 9.025527300080284,
+        "counters": {
+          "executed": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "838597457d48afbbe3419f203a2d1466535e9ecd8002d8950dd9495eb2e7a58f",
+        "selection": "FullyQualifiedName~SvgGroupUseClipTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests",
+        "exitCode": 0,
+        "seconds": 14.249406900024042,
+        "counters": {
+          "executed": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "446b04ce09246aded1469d64b0e602d103bff71078ee0223a8e2e4740bfa1447",
+        "selection": "FullyQualifiedName~SvgGroupUseClipTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests",
+        "exitCode": 0,
+        "seconds": 8.315014200052246,
+        "counters": {
+          "executed": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "446b04ce09246aded1469d64b0e602d103bff71078ee0223a8e2e4740bfa1447",
+        "selection": "FullyQualifiedName~SvgGroupUseClipTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests",
+        "exitCode": 0,
+        "seconds": 11.602880799910054,
+        "counters": {
+          "executed": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "e8066e261e759a08949d5b0fa1039f7c5070334a0626c5d777a5f8c6450a6a3c",
+        "selection": "FullyQualifiedName~SvgGroupUseClipTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests",
+        "exitCode": 0,
+        "seconds": 11.888539700070396,
+        "counters": {
+          "executed": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "e8066e261e759a08949d5b0fa1039f7c5070334a0626c5d777a5f8c6450a6a3c",
+        "selection": "FullyQualifiedName~SvgGroupUseClipTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests",
+        "exitCode": 0,
+        "seconds": 15.120207600062713,
+        "counters": {
+          "executed": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "7edbd88273a0334851b965ca7e304232e7faab6f34b0d7068846c5a3e168db69",
+        "selection": "FullyQualifiedName~SvgGroupUseClipTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests",
+        "exitCode": 0,
+        "seconds": 11.759622200159356,
+        "counters": {
+          "executed": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1",
+        "testAssemblySha256": "7edbd88273a0334851b965ca7e304232e7faab6f34b0d7068846c5a3e168db69",
+        "selection": "FullyQualifiedName~SvgGroupUseClipTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests",
+        "exitCode": 0,
+        "seconds": 12.12192209996283,
+        "counters": {
+          "executed": "28",
+          "passed": "28",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fast": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "e8066e261e759a08949d5b0fa1039f7c5070334a0626c5d777a5f8c6450a6a3c",
+        "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 22.316057399846613,
+        "counters": {
+          "executed": "20096",
+          "passed": "20096",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+        "testAssemblySha256": "e8066e261e759a08949d5b0fa1039f7c5070334a0626c5d777a5f8c6450a6a3c",
+        "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 26.183196799829602,
+        "counters": {
+          "executed": "20096",
+          "passed": "20096",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "measurement": {
+    "scope": "Single observed process per host/runtime/phase for the same28 cases; includes discovery/host/TRX and excludes build. Sources reconstruct exactly, so no execution-work reduction or speedup is claimed.",
+    "beforeAfter": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforeSeconds": 9.025527300080284,
+        "afterSeconds": 11.888539700070396
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforeSeconds": 14.249406900024042,
+        "afterSeconds": 15.120207600062713
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "beforeSeconds": 8.315014200052246,
+        "afterSeconds": 11.759622200159356
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "beforeSeconds": 11.602880799910054,
+        "afterSeconds": 12.12192209996283
+      }
+    ],
+    "fast": "All20078 prior fast case identities remain;17 contracts and one mechanism add18 cases. Current complete fast runs take22.32s Windows/26.18s Linux."
+  },
+  "inheritedQualification": {
+    "rendererSourceCommit": "1740d2c39d1bd93bc21680f4f344e9e8727ecc72",
+    "evidence": "decoration-fragment-order.json",
+    "latestFullCi": "shader-original-acceptance.json",
+    "librarySha256": {
+      "net11.0": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+      "net10.0": "a93d82eae2d0ec4516df218dfa8e5321fceef3d466c90d7ad4946b93521c77c1"
+    },
+    "reason": "Only responsibility attributes and two accurately mapped test names change. Every source file reconstructs exactly; before/after affected checks pass on both hosts/runtimes and the complete fast selection retains every prior case. Renderer, assertions, fixtures, native references and tolerances remain unchanged; full/package qualification is inherited without a new exact-head CI claim."
+  },
+  "remaining": "Other unclassified methods, wider unchanged-original W1 admission and source-provenance/performance work remain in PLAN.",
+  "links": {
+    "relativeLinksChecked": 328,
+    "allResolved": true,
+    "sourceBindingsChanged": false,
+    "onlyCurrentSpecialReplayLinkAdded": true,
+    "hostedBodiesRetained": 0
+  }
+}

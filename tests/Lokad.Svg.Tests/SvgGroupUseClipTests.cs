@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGroupUseClipTests
 {
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(0)]
     [InlineData(2)]
     [InlineData(100)]
@@ -26,6 +27,7 @@ public sealed class SvgGroupUseClipTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(false)]
     [InlineData(true)]
     public void Polygon_clips_on_rendered_group_instances_match_direct_shapes(bool forward)
@@ -37,7 +39,8 @@ public sealed class SvgGroupUseClipTests
     }
 
     [Fact]
-    public void Group_use_and_polygon_clip_release_storage_at_work_and_memory_boundaries()
+    [Trait("Layer", "Contract")]
+    public void Group_use_and_polygon_clip_release_storage_on_memory_refusal()
     {
         byte[] input = Input("<g id='g'><rect width='2' height='2' fill='blue'/></g><use href='#g' x='100'/><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/>");
         RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));

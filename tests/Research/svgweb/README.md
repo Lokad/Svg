@@ -16,6 +16,8 @@ Its `currentReview.contextPartition` joins all 204 source identities and hashes:
 168 default exact, 22 supplied-program contexts, 11 other static diagnostics and
 three separate source reviews. This partition records the declared context for
 each original; projected diagnostics retain their original admission limitations.
+The [special static replay](special-static-replay.json) checks all three separate
+diagnostics against their frozen targets on both hosts under .NET 11 and .NET 10.
 The default observations use transparent output without supplied fonts/resources.
 Exact default output does not qualify other font, resource or static-state contexts;
 whole-corpus acceptance remains open.

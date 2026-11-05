@@ -21,9 +21,10 @@ All 112 cases remain; the inline-only font case now asserts its resolved values.
 retain every raw/prepared rendering input and move repeated destination APIs to
 four representative storage/source paths. Admission, cleanup and native images remain.
 
-[Radial storage and rendered uses](radial-use-responsibilities.json) separate real
-ownership assertions from PNG comparison. Every original case, input and assertion
-remains; the fast profile gains the nine storage contracts.
+[Instance/replay](instance-replay-responsibilities.json) and
+[radial/use](radial-use-responsibilities.json) responsibilities separate direct
+remapping, ownership and PNG comparison. Original inputs, assertions and case
+identities remain; obsolete work/lifetime claims have explicit name mappings.
 
 [CSS test responsibilities](css-test-responsibilities.json) separates direct syntax
 and alpha checks, admission/storage/lifetime contracts and rendered cascade controls.

@@ -10400,7 +10400,8 @@
           "display-web-stats-static.json",
           "ny1-static-review.json",
           "svg2009-static-review.json"
-        ]
+        ],
+        "currentReplay": "special-static-replay.json"
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0
