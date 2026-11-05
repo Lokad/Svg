@@ -1,0 +1,380 @@
+{
+  "status": "Linear, radial and pattern polygon fills share one ordered coverage/paint loop. Material setup and live ramp/tile ownership remain in their existing callers. Numerical statements, hairline branches, solid/font arithmetic and all tests/references remain unchanged.",
+  "source": {
+    "baseCommit": "f8b97762311e330287ed3fb7975224c6f248a89c",
+    "originalLoops": [
+      "RasterizeGradientPolygon",
+      "RasterizeRadialPolygon",
+      "RasterizePatternPolygon"
+    ],
+    "originalLoopsByteIdentical": true,
+    "sharedLoop": "RasterizeShaderPolygon",
+    "onlySubstitution": "outline.IsEvenOdd -> isEvenOdd",
+    "entireFileRestoredByExpandingCalls": true,
+    "statementOrderAndNumericalOperationsPreserved": true,
+    "materialPreparationAndHairlineBranchesUnchanged": true,
+    "callerOwnersBorrowedSynchronously": true,
+    "newCachesOwnersDelegatesOrPublicApis": 0,
+    "sourceLfSha256": "33d0581cf3cdf42024f112c75cfdf83c7a35b560cb55deb4fdd8352c1c4373c9",
+    "productionLinesBefore": 5707,
+    "productionLinesAfter": 5649,
+    "sourceCommit": "e1057647517a0c0ce2c996061dde576ac1a59b55",
+    "unchangedTestAndReferenceTree": "f7a72db6acfb8449642737da23f2c0e372647c0d",
+    "compilerClosureShape": {
+      "typeCount": 19,
+      "typeKindsAndCapturedFieldNamesUnchanged": true,
+      "shapeSha256": "a1a6f854ad8f1934406de81d76505e3726e43311b6cd0f19d05f58d8cc0055f7"
+    }
+  },
+  "responsibility": {
+    "shared": "Mapped contour preparation, CPU-tile traversal, row/window coverage, shader sampling and ordered analytic/fallback painting.",
+    "retained": "Each material retains admission, coordinate construction, opacity/factory selection, ramp/tile preparation and its hairline branch. Caller owners enclose the synchronous borrowed loop.",
+    "excluded": "Rectangle shader consumers have distinct focal, sampling, opacity and admission branches. Solid/font blending and text layout are unchanged.",
+    "frameworksCachesOwnersDelegatesOrPublicApisAdded": 0
+  },
+  "coverage": {
+    "mechanisms": "Existing analytic paint, curve, fill-rule and contour tests protect numerical coverage and ordered blend arithmetic directly.",
+    "contracts": [
+      {
+        "source": "../../Lokad.Svg.Tests/SvgShaderStrokePathTests.cs",
+        "purpose": "Linear/radial/pattern strokes cancel after painting starts, retaining shared-allowance cleanup, borrowed source and exact retry. This remains distinct from pre-cancelled raster calls."
+      },
+      {
+        "source": "../../Lokad.Svg.Tests/SvgShaderHairlineOwnershipTests.cs",
+        "purpose": "Clip/mask/filter/viewport hairlines retain separate parser/raster refusal, cancellation and retry."
+      },
+      {
+        "source": "../../Lokad.Svg.Tests/SvgPolygonContourOwnershipTests.cs",
+        "purpose": "Repainted contour/control storage retains transfer, bounded allowance and source lifetime."
+      },
+      {
+        "source": "../../Lokad.Svg.Tests/SvgNestedPatternOwnershipTests.cs",
+        "purpose": "Nested preparation refuses while a sibling reservation remains live, then reuses that allowance."
+      }
+    ],
+    "rendering": "The 104 focused routine cases retain independent native images for hairlines, constant gradients, repeated/recorded/nested patterns, shader contexts and filter capture. Full visual qualification retains every Research and platform case."
+  },
+  "validation": {
+    "focusedPassedPerHostFramework": {
+      "core": 1103,
+      "visual": 104
+    },
+    "focusedSelections": {
+      "core": "FullyQualifiedName~SvgAnalytic|FullyQualifiedName~SvgGradientPolygonTests|FullyQualifiedName~SvgShaderStrokePathTests|FullyQualifiedName~SvgShaderHairline|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests|FullyQualifiedName~SvgPolygonContourOwnershipTests|FullyQualifiedName~SvgNestedPatternOwnershipTests|FullyQualifiedName~SvgInheritedContourOwnershipTests|FullyQualifiedName~SvgInstanceContourOwnershipTests|FullyQualifiedName~SvgPointListCoverageTests|FullyQualifiedName~SvgCurveFillTests|FullyQualifiedName~SvgEvenOddCrossingTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~SvgPolygonOutputParityTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "visual": "Category!=Research&(FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests|FullyQualifiedName~SvgPatternRepeatReferenceTests|FullyQualifiedName~SvgPatternRecordingReferenceTests|FullyQualifiedName~SvgNestedPatternReferenceTests|FullyQualifiedName~SvgFilterGradientSamplingReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgShaderContextReferenceTests)"
+    },
+    "focused": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "seconds": {
+          "core": 12.18,
+          "visual": 12.92
+        },
+        "librarySha256": "2fd2827d60d72632a05fee9c9a88717d2104777b5d063b536cb952df7a9ac20f",
+        "beforeSeconds": {
+          "core": 10.35,
+          "visual": 11.2
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "seconds": {
+          "core": 13.39,
+          "visual": 9.69
+        },
+        "librarySha256": "2fd2827d60d72632a05fee9c9a88717d2104777b5d063b536cb952df7a9ac20f",
+        "beforeSeconds": {
+          "core": 15.81,
+          "visual": 11.65
+        }
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "seconds": {
+          "core": 11.62,
+          "visual": 12.24
+        },
+        "librarySha256": "1380331bf460f7e002a8341aa731da8b5b0343f04bd0fdf47a09ba03e3b53c68"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "seconds": {
+          "core": 13.99,
+          "visual": 9.89
+        },
+        "librarySha256": "1380331bf460f7e002a8341aa731da8b5b0343f04bd0fdf47a09ba03e3b53c68"
+      }
+    ],
+    "fullLocal": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "seconds": {
+          "core": 112.48,
+          "visual": 309.3,
+          "font": 2.41
+        },
+        "corePassed": 47648,
+        "visualPassed": 73311,
+        "visualFailed": 1,
+        "fontPassed": 10
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "seconds": {
+          "core": 91.77,
+          "visual": 306.45,
+          "font": 1.28
+        },
+        "corePassed": 47648,
+        "visualPassed": 73312,
+        "visualFailed": 0,
+        "fontPassed": 10
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "seconds": {
+          "core": 106.06,
+          "visual": 308.48,
+          "font": 2.5
+        },
+        "corePassed": 47648,
+        "visualPassed": 73311,
+        "visualFailed": 1,
+        "fontPassed": 10
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "seconds": {
+          "core": 92.61,
+          "visual": 312.88,
+          "font": 1.26
+        },
+        "corePassed": 47648,
+        "visualPassed": 73312,
+        "visualFailed": 0,
+        "fontPassed": 10
+      }
+    ],
+    "assemblies": {
+      "net11.0/core": {
+        "testAssemblySha256": "884fbe2b84bc0888547e444d5309ea3bab09f97c7751e8fb41340260f1dd8ec7",
+        "librarySha256": "49d06c4b96de576ae66ca733087257ffbdeee08645b022d6d854f6a5b6e082f2"
+      },
+      "net11.0/visual": {
+        "testAssemblySha256": "6dc05e6a2e2b88299868d4d8284a013c5f005345ad4b65f2941934387dd64d8e",
+        "librarySha256": "49d06c4b96de576ae66ca733087257ffbdeee08645b022d6d854f6a5b6e082f2"
+      },
+      "net11.0/font": {
+        "testAssemblySha256": "90098c5504a786f8b498c26f78ed2ef686187dc7d1da9ca354e25a8562e04bb5",
+        "librarySha256": "2fd2827d60d72632a05fee9c9a88717d2104777b5d063b536cb952df7a9ac20f"
+      },
+      "net10.0/core": {
+        "testAssemblySha256": "32a440d78f93384da3324aab91ac7b3e9c95cd5baefda5e02a4af7926bc19034",
+        "librarySha256": "cf29c85459e05480aa4aa2fd05ca49a05dd0a401e12cf4b35598bfc0bbff4033"
+      },
+      "net10.0/visual": {
+        "testAssemblySha256": "fe9a66ea3e709141e8185146529152685da47fdc3cfbc5ccd067a10a87452838",
+        "librarySha256": "cf29c85459e05480aa4aa2fd05ca49a05dd0a401e12cf4b35598bfc0bbff4033"
+      },
+      "net10.0/font": {
+        "testAssemblySha256": "f2443e9a4bccd311958aa06780aed96200d26347c449773709b71710a5b0cb98",
+        "librarySha256": "1380331bf460f7e002a8341aa731da8b5b0343f04bd0fdf47a09ba03e3b53c68"
+      }
+    },
+    "fullLibraryScope": "Core/visual consumers use exact package assets; font-host tests use the same source-code development assembly, identified separately.",
+    "testCasesRemoved": 0,
+    "testsOrReferencesRewritten": 0,
+    "timingScope": "Fresh-process functional checks under different concurrent qualification. These are not paired renderer benchmarks or quiet-VM performance measurements.",
+    "baseline": {
+      "evidence": "filter-query-scratch.json",
+      "framework": "net11.0",
+      "librarySha256": "cd1d858f081d7bd29265e33056001c66fbd7bcc2136a64bf807dba0e6edb67ce",
+      "testAssemblySha256": {
+        "core": "16af18d321a1ddeffa7443137601bf9dc4e10d89ec406bb59f9a269acfeecc8c",
+        "visual": "25127da0ab1bf6fa80e55c2faac6533fba9ab835834b4c0595304faf87567636"
+      },
+      "sameSelectionAndPassingCounts": true
+    }
+  },
+  "promotion": {
+    "package": {
+      "sourceCommit": "e1057647517a0c0ce2c996061dde576ac1a59b55",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "94cd504953201e3ca8fb4bebc60485523b180f2b1987726e729ce0cd27b541ae"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "79bdbdb276651dbcc2f548686a29b4cf1cf7e4420df7f1ef33172bd4f0c05c48"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "49d06c4b96de576ae66ca733087257ffbdeee08645b022d6d854f6a5b6e082f2",
+        "net10.0": "cf29c85459e05480aa4aa2fd05ca49a05dd0a401e12cf4b35598bfc0bbff4033"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 6.48640780011192
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0
+      }
+    ],
+    "published": false
+  },
+  "hostedOriginalReplay": {
+    "sourceCommit": "e1057647517a0c0ce2c996061dde576ac1a59b55",
+    "librarySha256": "49d06c4b96de576ae66ca733087257ffbdeee08645b022d6d854f6a5b6e082f2",
+    "originals": 204,
+    "sourceIdentitySha256": "98ecf4d5a1cf3e31dff4873101e6e5521726d264407793e9086d74e8e6b058aa",
+    "outcomeAndPngRecordSha256": "342e9bcc7fd937df15f22d8e1998e5aba06e1aea08a2d08a791b098b11b39a72",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "allSourceHashesAndDiagnosticMetadataUnchanged": true,
+    "suppliedOriginalContexts": {
+      "inputs": 22,
+      "exactPerHost": 22,
+      "identityAndOutputSha256": "c3f3a619d219e4da3430e4669546338e07c17a35a22e7d9dd9c4ed90282b17e0"
+    },
+    "staticDiagnostics": {
+      "inputs": 13,
+      "exactPerHost": 13,
+      "projectedInputAndOutputSha256": "0a5be1bfa6bcd5049ecef84ddb720618afc192664b3aedc9a56f143989f2a96b"
+    },
+    "hostedSvgBodiesFragmentsAndRawAttributesRetained": 0,
+    "scope": "Default originals, supplied-program contexts and projected diagnostics retain distinct admission/acceptance meanings.",
+    "provenance": "../svgweb/originals.json"
+  },
+  "ci": {
+    "runId": 41957911525,
+    "sourceCommit": "e1057647517a0c0ce2c996061dde576ac1a59b55",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47648,
+            "total": 47648
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "2d7b4855a86172c7282dcaeb6790b3487d19846e64824c1f006c14953582072a"
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47648,
+            "total": 47648
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "total": 73312
+          }
+        ],
+        "logSha256": "32473466661d002af701f91e70db981848b8ac771fce211be0096c27a0930097"
+      }
+    },
+    "boundary": "Windows compatibility/tool/package steps skip after the unchanged frozen DejaVu discrepancy. Keep its assertion/reference pending authority; both local runtimes/hosts and installed consumers remain separately qualified."
+  },
+  "remaining": "Scene/layer preparation, distinct shader paths, test responsibility classification and complete original-source acceptance remain open. Quiet-VM performance is unmeasured."
+}

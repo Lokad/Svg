@@ -74,6 +74,11 @@ existing direct numerical and independent rendering checks. Private observations
 six authored inputs verify fewer repeated fill scans without adding tests that
 mirror the implementation; separate stroke scans and exact pixels remain unchanged.
 
+[Shared shader polygon painting](Research/release-baselines/shader-polygon-paint.json)
+retains existing analytic mechanisms, material ownership and native-reference cases.
+Mid-paint cancellation under a shared allowance remains distinct from pre-cancelled
+calls with separate budgets. The extraction changes no tests or frozen targets.
+
 [Scene-admission contracts](Research/release-baselines/invocation-ownership.json)
 cover raw, catalog-prepared and HTTP-prepared rejection after lowering. They retain
 the source diagnostic, one preparation, borrowed owners, released charges and

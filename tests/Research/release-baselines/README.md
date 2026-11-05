@@ -60,6 +60,10 @@ owners, forwarding runtime selection and rejecting an injected owned leftover.
 [Filter query scratch](filter-query-scratch.json) removes temporary metadata tables
 and their internal budget arguments. Nine direct allocation/geometry contracts retain
 empty, single and maximum-size graphs; all numerical and pixel-ownership paths remain.
+[Shader polygon painting](shader-polygon-paint.json) shares the identical linear,
+radial and pattern coverage loop while preserving material coordinates and owners.
+Source expansion, existing mechanisms/contracts, native images and packaged replay
+qualify the extraction; solid/font and distinct rectangle arithmetic remain separate.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200
