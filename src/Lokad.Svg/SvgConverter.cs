@@ -4329,40 +4329,7 @@ public static partial class SvgConverter
                 : SvgShaderSampler.Linear(definition, box, ramp, nativeCoordinates, ShaderSamplingContext(), ShaderAlpha(outline.Opacity));
             if (RasterizeShaderHairline(authoredPath, outline.Clip, ref shader, destination)) return;
 
-            ReadOnlySpan<int> contourEnds = raster.ContourEnds;
-            ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
-            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
-            preparation.RectangleFrame = PrepareRectangleFrame(authoredPath);
-            preparation.RectangleFill = PrepareRectangleFill(authoredPath, raster.AuthoredMap);
-            foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                SvgCpuRasterContext context = LayerRasterContext(cpuTile);
-                if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
-                SvgAnalyticClipBounds paintArea = context.Interior;
-                using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
-                    PolygonPaintClip(raster, context), paintArea, budget,
-                    cancellationToken);
-                bool useAnalytic = traversal.IsAnalytic;
-                int startY = traversal.StartY, endY = traversal.EndY;
-                for (int y = startY; y < endY; y++)
-                {
-                traversal.PrepareRow(y, cancellationToken);
-                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow();
-                int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
-                for (int x = rowStartX; x < rowEndX; x++)
-                {
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
-                    int offset = (y * outputWidth + x) * 4;
-                    SvgAnalyticPaint sample = shader.Sample(x, y, cancellationToken);
-                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
-                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
-                }
-                }
-                // Structural fallback belongs to the original fill and runs once.
-                if (!useAnalytic) break;
-            }
+            RasterizeShaderPolygon(in raster, outline.IsEvenOdd, authoredPath, ref shader, destination);
         }
         void RasterizeRadialPolygon(SvgRadialPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
@@ -4390,40 +4357,7 @@ public static partial class SvgConverter
                 : SvgShaderSampler.Radial(definition, box, ramp, nativeCoordinates, ShaderSamplingContext(), ShaderAlpha(outline.Opacity));
             if (RasterizeShaderHairline(authoredPath, outline.Clip, ref shader, destination)) return;
 
-            ReadOnlySpan<int> contourEnds = raster.ContourEnds;
-            ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
-            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
-            preparation.RectangleFrame = PrepareRectangleFrame(authoredPath);
-            preparation.RectangleFill = PrepareRectangleFill(authoredPath, raster.AuthoredMap);
-            foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                SvgCpuRasterContext context = LayerRasterContext(cpuTile);
-                if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
-                SvgAnalyticClipBounds paintArea = context.Interior;
-                using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
-                    PolygonPaintClip(raster, context), paintArea, budget,
-                    cancellationToken);
-                bool useAnalytic = traversal.IsAnalytic;
-                int startY = traversal.StartY, endY = traversal.EndY;
-                for (int y = startY; y < endY; y++)
-                {
-                traversal.PrepareRow(y, cancellationToken);
-                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow();
-                int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
-                for (int x = rowStartX; x < rowEndX; x++)
-                {
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
-                    int offset = (y * outputWidth + x) * 4;
-                    SvgAnalyticPaint sample = shader.Sample(x, y, cancellationToken);
-                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
-                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
-                }
-                }
-                // Structural fallback belongs to the original fill and runs once.
-                if (!useAnalytic) break;
-            }
+            RasterizeShaderPolygon(in raster, outline.IsEvenOdd, authoredPath, ref shader, destination);
         }
 
         void RasterizePatternPolygon(SvgPatternPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
@@ -4441,9 +4375,17 @@ public static partial class SvgConverter
             SvgShaderCoordinates imageCoordinates = tile.NativeImageMap is {} imageMap ? SvgShaderCoordinates.CreateImage(imageMap, tile.NativeImageLocal ?? throw new InvalidOperationException("Image sampling requires its local matrix.")) : default;
             SvgShaderSampler shader = SvgShaderSampler.Pattern(tile, blitted, imageCoordinates, ShaderSamplingContext(), ShaderAlpha(tile.Opacity));
             if (RasterizeShaderHairline(authoredPath, outline.Clip, ref shader, destination)) return;
+            RasterizeShaderPolygon(in raster, outline.IsEvenOdd, authoredPath, ref shader, destination);
+        }
+
+        // Borrows mapped contours and the caller's live ramp/tile through ordered coverage replay.
+        // Material preparation and hairlines stay with each caller; solid/font blending stays separate.
+        void RasterizeShaderPolygon(in MappedPolygon raster, bool isEvenOdd, SvgAuthoredPath? authoredPath,
+            ref SvgShaderSampler shader, byte[] destination)
+        {
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
-            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
+            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, isEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
             preparation.RectangleFrame = PrepareRectangleFrame(authoredPath);
             preparation.RectangleFill = PrepareRectangleFill(authoredPath, raster.AuthoredMap);
             foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
@@ -4459,18 +4401,18 @@ public static partial class SvgConverter
                 int startY = traversal.StartY, endY = traversal.EndY;
                 for (int y = startY; y < endY; y++)
                 {
-                traversal.PrepareRow(y, cancellationToken);
-                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow();
-                int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
-                for (int x = rowStartX; x < rowEndX; x++)
-                {
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
-                    int offset = (y * outputWidth + x) * 4;
-                    SvgAnalyticPaint sample = shader.Sample(x, y, cancellationToken);
-                    if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
-                    else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
-                }
+                    traversal.PrepareRow(y, cancellationToken);
+                    SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow();
+                    int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
+                    for (int x = rowStartX; x < rowEndX; x++)
+                    {
+                        if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, isEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
+                        int offset = (y * outputWidth + x) * 4;
+                        SvgAnalyticPaint sample = shader.Sample(x, y, cancellationToken);
+                        if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
+                        else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
+                    }
                 }
                 // Structural fallback belongs to the original fill and runs once.
                 if (!useAnalytic) break;

@@ -273,6 +273,10 @@ range gate. Convexity uses authored controls after float placement. Flattened
 samples cannot veto that classification. [Polygon traversal](../src/Lokad.Svg/SvgConverter.PolygonRaster.cs)
 shares preparation, row work and scratch across paint kinds without merging their
 sampling/blend semantics.
+Linear, radial and pattern polygon fills also share one ordered shader-paint loop.
+Each material prepares its own coordinates, keeps its ramp or tile alive through
+that loop, and retains its hairline path. Solid and font paint retain their distinct
+blend arithmetic.
 
 Global containment does not prove bitmap-local containment: subtracting the bitmap
 origin before source mapping can move a touching operand just outside the clip.
