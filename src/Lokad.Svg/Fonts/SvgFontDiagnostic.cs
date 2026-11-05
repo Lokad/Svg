@@ -23,7 +23,7 @@ public enum SvgFontFailureStage
 
 /// <summary>
 /// Provides bounded font-selection context for an SVG failure. It never includes
-/// font bytes or source text. Empty values mean that the corresponding context was
+/// font-program bytes or the layout string. Empty values mean that the corresponding context was
 /// unavailable at the reporting boundary.
 /// </summary>
 public sealed class SvgFontDiagnostic

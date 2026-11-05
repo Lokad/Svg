@@ -1,0 +1,164 @@
+{
+  "status": "Corrected 14 resource/error documentation blocks in nine source files and aligned the two public guides. Snapshot byte lifetime, retained source ownership, per-resource retry policy, allowance admission and actual limit/cancellation responsibilities now agree. Every executable token/directive and all 12,270 compiled methods remain unchanged on both targets.",
+  "source": {
+    "baseCommit": "303e4e8813bb8c10643b4eee828744ecdbc4480b",
+    "files": [
+      {
+        "file": "../../../src/Lokad.Svg/SvgErrorCode.cs",
+        "edits": 1,
+        "beforeLfSha256": "5de7d7e4eb7ad87071f9a33e25fca74870fac06cf4dd0d11455793e9a4198221",
+        "afterLfSha256": "460f5b1b71a9a4f513a8155db0f5ba02d195c64a42ab8c288e86dce3bcbe430b",
+        "tokenCount": 20,
+        "unchangedTokenSha256": "269e74d3ae8d1912a30e2a77f66ed6e3d7e31ea709ac1886782ac3b1467c50e1",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Memory/IMemoryBudget.cs",
+        "edits": 1,
+        "beforeLfSha256": "62c91b35b39dfb5c8bd5991f46bfcee0bad1310f54f5827f934a803d8775b8fb",
+        "afterLfSha256": "1c6a380f6da559a8f48533d1bfef3133970069977d7f45a6c8e8864342d023f0",
+        "tokenCount": 70,
+        "unchangedTokenSha256": "a7e85fd0620a08b5007f356c01dca2331d609d6e3643b41d17237d05a3f2ebc8",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Fonts/SvgFontProgramSource.cs",
+        "edits": 3,
+        "beforeLfSha256": "3a740f5a1091ea24d8d5dc63ce3f1f304c0401ea33db84a6cdec22d7aeb0c760",
+        "afterLfSha256": "7f578296e9125b39b74ec86e62118cae168cf761addb8623441bce675e14f1f4",
+        "tokenCount": 864,
+        "unchangedTokenSha256": "30fd69a75a1f071532c809172ec215823676c12864b8940b1f9e37a80b6612e3",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Fonts/SvgHttpFontAcquisitionOptions.cs",
+        "edits": 2,
+        "beforeLfSha256": "191b027769258557134b9a7c865f35ddbfabed981ed7df905ec06970bb386293",
+        "afterLfSha256": "9dc01bcd482c9bbb2ff9d13051da506123a4a41abb06e7b909ac96babf631cec",
+        "tokenCount": 237,
+        "unchangedTokenSha256": "3fae8f31f58f6aefe62258831bcc11bb1af82a77a1cd8ddda1d89a12578f205c",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Fonts/SvgFontDiagnostic.cs",
+        "edits": 1,
+        "beforeLfSha256": "da28bc788c1413abe7c79a21e07b93d47bd74cf9fbc3e8644b6cc345257ee814",
+        "afterLfSha256": "a8651cc68650b3108f4bcd2adbda345794c23af6d99fa3d55aee8b59bddce58e",
+        "tokenCount": 345,
+        "unchangedTokenSha256": "915fec601e73bdeaace025ffb63fbdc7f1825092d62d9fde25ded8b4ca69d2b1",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs",
+        "edits": 3,
+        "beforeLfSha256": "f19d1a561e662ebed478bc38cf12dd79bcd5d8b4db37a8b0e01ff6660a922f4e",
+        "afterLfSha256": "82c9ce06b39db5de6fc6fec26af782a2a377bb6c8ee03264c791c4a6b246d622",
+        "tokenCount": 3569,
+        "unchangedTokenSha256": "f1803ef4227b8cc343ab1bb7f689e851d4bf1d15ba012363faa88e81e5c5d67a",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Fonts/OpenTypeFont.Layout.cs",
+        "edits": 1,
+        "beforeLfSha256": "d8ab3018189b9a28bb3eab6fc5251390cfaecce5e6304b444016c22606edd78d",
+        "afterLfSha256": "48aad048197a8a1ee461035e08b9d7730cf3c4471aa0e0e3969a9018cd1fbbc8",
+        "tokenCount": 714,
+        "unchangedTokenSha256": "3b50fa3a319fc89ad9aedb79f94bd9c410ee998b09670e8e1ab0a88a176d3175",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Fonts/OpenTypeFont.UnhintedDevice.cs",
+        "edits": 1,
+        "beforeLfSha256": "ae8cdd53f7e8489f0e19b9d5b6e2cdaac335fbfa76b3c5d37280e8eca44dbe87",
+        "afterLfSha256": "72aa260b9e7dff42956a9588dc359773c93573e20b01fa4de1460f3530115cc4",
+        "tokenCount": 820,
+        "unchangedTokenSha256": "6634063ff393266d9ee1a5fb1503cf9c25419ed2b1ab3597fa01a12420595c59",
+        "allNonCommentLinesIdentical": true
+      },
+      {
+        "file": "../../../src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs",
+        "edits": 1,
+        "beforeLfSha256": "10c1e1834aecae61865e07283b02571cbaef44956ebb339c9734cba1086f2422",
+        "afterLfSha256": "dd9cdeab46dea895a772e4cf1d49bef805d00e23e87204e2c1d8303bf7366072",
+        "tokenCount": 7537,
+        "unchangedTokenSha256": "1eac4345e374b1b53f474136b04d5a3dcd0c5230fbc10389c2923aba2fbe3b77",
+        "allNonCommentLinesIdentical": true
+      }
+    ]
+  },
+  "contracts": [
+    {
+      "area": "Borrowed font-program lifetime",
+      "implementation": "../../../src/Lokad.Svg/Fonts/SvgFontSnapshot.cs",
+      "witness": "../../Lokad.Svg.Tests/SvgFontProgramSourceTests.cs",
+      "correction": "Returned memory stays valid and immutable for every consumer. Snapshots borrow it until disposal after readers finish. Source owners remain responsible for program storage; snapshot charges cover their own metadata."
+    },
+    {
+      "area": "Acquisition-result reachability and ownership",
+      "implementation": "../../../src/Lokad.Svg/Fonts/SvgFontProgramSource.cs",
+      "witness": "../../Lokad.Svg.Tests/SvgFontProgramSourceTests.cs",
+      "correction": "A resolution retains the source reference without owning its storage/cache. Acquisition and later snapshot creation both verify bytes; borrowed snapshots require immutable input."
+    },
+    {
+      "area": "Shared resource retries",
+      "implementation": "../../../src/Lokad.Svg/Fonts/SvgHttpFontPackResolver.cs",
+      "witness": "../../Lokad.Svg.Tests/OpenTypeFontTests.HttpResolver.cs",
+      "correction": "The configured deadline and attempts apply to one shared resource load. Transient transport errors and selected HTTP responses can retry. Canceling one waiter leaves shared acquisition running; shared cancellation, invalid data and admission refusal do not start a retry."
+    },
+    {
+      "area": "Allowance admission",
+      "implementation": "../../../src/Lokad.Svg/Memory/IMemoryBudget.cs",
+      "witness": "../../Lokad.Svg.Tests/RenderBudgetTests.cs",
+      "correction": "Thread-safe admission does not wait/retry for allowance or allocate the storage being admitted. This does not prohibit reservation metadata or ordinary synchronization."
+    },
+    {
+      "area": "Limits and font traversal",
+      "implementation": "../../../src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs",
+      "witness": "../../Lokad.Svg.Tests/SvgFontPackCatalogTests.cs",
+      "correction": "LimitExceeded describes structural, numerical, size and memory bounds. Provenance/selection traversals check cancellation; ignored nodes still count against structural limits. No work quota is introduced."
+    },
+    {
+      "area": "Diagnostic payload",
+      "implementation": "../../../src/Lokad.Svg/Fonts/SvgFontDiagnostic.cs",
+      "witness": "../../Lokad.Svg.Tests/PublicContractTests.cs",
+      "correction": "Bounded family/face/source identifiers and missing-scalar context are distinct from font-program bytes and the layout string."
+    }
+  ],
+  "validation": {
+    "roslyn": "Equivalent C# syntax trees, identical token kinds/text and directives in all nine files; every non-comment line is also identical.",
+    "compiledBodies": [
+      {
+        "framework": "net11.0",
+        "methods": 12270,
+        "identicalBodies": true,
+        "methodBodyIdentitySha256": "f2aa289623f9010370911f1ea445099cfdb596f240373b631a9b62a06046817f"
+      },
+      {
+        "framework": "net10.0",
+        "methods": 12270,
+        "identicalBodies": true,
+        "methodBodyIdentitySha256": "f2aa289623f9010370911f1ea445099cfdb596f240373b631a9b62a06046817f"
+      }
+    ],
+    "builds": {
+      "frameworks": [
+        "net11.0",
+        "net10.0"
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "isolatedOutputs": true
+    },
+    "scope": "Documentation-only correction. Existing witnesses are linked for the described behavior; they were not rerun. Unchanged executable code reuses the existing renderer/package/native/SVGWeb qualification."
+  },
+  "renderer": {
+    "qualification": "unit-domain-contracts.json",
+    "sourceCommit": "1f194273b9dd3edd3282905f52c720caad79bdc8",
+    "librarySha256": {
+      "net11.0": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "net10.0": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90"
+    },
+    "originalReplay": "../svgweb/originals.json#/currentReview"
+  },
+  "remaining": "Current supported-feature claims and complete published-API migration/provenance agreement remain in PLAN.md."
+}

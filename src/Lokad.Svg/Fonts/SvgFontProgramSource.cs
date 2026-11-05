@@ -5,8 +5,10 @@ using Lokad.Svg.Parsing;
 
 /// <summary>
 /// Supplies one immutable font program. The caller owns source lifetime, storage,
-/// caching and thread safety; returned bytes must remain unchanged and valid until
-/// the awaiting conversion releases them. Implementations must observe cancellation.
+/// caching and thread safety. Returned memory is borrowed and must remain valid and
+/// unchanged for every consumer; snapshots retain it until disposal, after their
+/// readers finish. Snapshot accounting covers its own metadata; the source owner
+/// remains responsible for program storage. Implementations must observe cancellation.
 /// </summary>
 public interface ISvgFontProgramSource
 {
@@ -73,8 +75,10 @@ public sealed class SvgFontProgramResolution
 
 internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFace face, ISvgFontProgramSource source) : ISvgFontProgramSource
 {
+    /// <inheritdoc />
     public string StableId => "lokad-svg-font-pack:" + packId + ":" + face.File.Sha256 + ":" + face.FaceIndex;
 
+    /// <inheritdoc />
     public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
         => GetBytesAsync(false, cancellationToken);
 

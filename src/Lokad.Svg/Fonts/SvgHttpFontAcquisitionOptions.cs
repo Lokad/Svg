@@ -6,8 +6,10 @@ public sealed class SvgHttpFontAcquisitionOptions
     /// <summary>Initializes bounded acquisition policy; these limits do not create a memory allowance.</summary>
     /// <remarks>
     /// The deadline covers all response headers, body reads and attempts of one
-    /// shared acquisition. Attempts retry transient transport failures only;
-    /// caller cancellation, admission refusal and invalid data are never retried.
+    /// shared resource acquisition. Attempts retry transient transport errors and
+    /// retryable HTTP responses. Invalid data, admission refusal and cancellation
+    /// of shared acquisition do not start another attempt. Canceling one waiter
+    /// does not cancel shared acquisition.
     /// Cache capacity is independent of the host's shared memory admission.
     /// </remarks>
     public SvgHttpFontAcquisitionOptions(TimeSpan acquisitionTimeout, int maximumAttempts, TimeSpan retryDelay,
@@ -33,7 +35,7 @@ public sealed class SvgHttpFontAcquisitionOptions
 
     /// <summary>Gets a finite deadline for the entire shared acquisition, including retry delays.</summary>
     public TimeSpan AcquisitionTimeout { get; }
-    /// <summary>Gets the total maximum number of transient transport attempts.</summary>
+    /// <summary>Gets the maximum resolver attempts for one shared resource acquisition.</summary>
     public int MaximumAttempts { get; }
     /// <summary>Gets the delay between configured transient attempts.</summary>
     public TimeSpan RetryDelay { get; }

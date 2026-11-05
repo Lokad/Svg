@@ -32,7 +32,7 @@ internal static partial class OpenTypeFont
     /// <summary>Selects one feature through the default Latin language system, falling back to DFLT.</summary>
     /// <remarks>Feature tags can repeat across scripts. Only the selected language's feature indices
     /// select behavior; other language-specific features remain unused. Borrows validated table bytes,
-    /// allocates no storage and meters every bounded traversal against cancellation.</remarks>
+    /// allocates no storage and observes cancellation during bounded traversal.</remarks>
     private static int SelectLatinFeature(ReadOnlySpan<byte> data, OpenTypeTableRange table, int scripts, int features,
         uint featureTag, string tableName, CancellationToken token)
     {

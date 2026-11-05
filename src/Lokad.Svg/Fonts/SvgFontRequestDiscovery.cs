@@ -145,7 +145,7 @@ internal static class SvgFontRequestDiscovery
                         }
                         else if (!reader.IsEmptyElement) descriptionDepth = reader.Depth;
                         // Preserve the enclosing candidate, whitespace and font
-                        // coverage chunk while still metering every ignored node.
+                        // coverage chunk while still counting every ignored node against structural limits.
                         continue;
                     }
                     if (isSvgElement && reader.LocalName is ("linearGradient" or "radialGradient" or "pattern") && reader.GetAttribute("id") is {} paintId)

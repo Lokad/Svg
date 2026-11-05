@@ -54,7 +54,7 @@ internal readonly record struct OpenTypeUnhintedDeviceScale(int Factor)
 internal static partial class OpenTypeFont
 {
     /// <summary>Returns owned unhinted device contours, scaling children before component placement and implied-point construction.</summary>
-    /// <remarks>Borrows the unchanged face. Existing recursion, point/contour bounds, work and cancellation checks apply; every temporary and returned array keeps its exclusive reservation until disposal. Metric inheritance determines the final horizontal origin. No programs, native services or host fonts are acquired.</remarks>
+    /// <remarks>Borrows the unchanged face. Existing recursion and point/contour bounds apply; traversal observes cancellation and every temporary and returned array keeps its exclusive reservation until disposal. Metric inheritance determines the final horizontal origin. No programs, native services or host fonts are acquired.</remarks>
     internal static OpenTypeGlyphContourStorage GetUnhintedDeviceContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, RenderBudget budget, CancellationToken token)
         => GetUnhintedDeviceContours(bytes, glyphIndex, metrics, OpenTypeUnhintedDeviceScale.Create(deviceSize, metrics.UnitsPerEm), OpenTypeCompositeOffsetMath.FontationsLength, TrueTypeImpliedPointRounding.TowardZero, null, budget, token);
 

@@ -575,8 +575,8 @@ encoding. Intermediate surfaces also consume limits. Caller streams stay open;
 the host owns transactional output. PNG encoding checks encoded size and memory
 admission, with cancellation during scanlines, CRC and writes. Parsing, rendering
 and encoding have no synthetic work quotas; cooperative cancellation remains
-available throughout. Supplied font/source bytes remain immutable
-and valid for their documented borrowed lifetimes. A prepared document permits
+available throughout. Supplied program bytes remain immutable through snapshot
+disposal, after active readers finish. A prepared document permits
 one conversion; independently owned PNG outputs outlive the operation.
 
 Memory accounting estimates dominant retained capacity and temporary peaks.

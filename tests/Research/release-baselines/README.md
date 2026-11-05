@@ -28,6 +28,8 @@ valid mechanisms and canonical rendering retain their separate responsibilities.
 [Current contract comments](current-contract-comments.json) removes obsolete
 work-charge descriptions while retaining actual memory admission and cancellation.
 Every executable token and compiled method body remains unchanged on both runtimes.
+The [public resource contract audit](public-resource-contracts.json) aligns snapshot
+byte lifetimes, retained source ownership, resource-level retries and error descriptions.
 
 [Analytic preparation contracts](analytic-preparation-contracts.json) correct stale
 edge-copy, clipped/contained dispatch and row-order descriptions. Geometry and walker

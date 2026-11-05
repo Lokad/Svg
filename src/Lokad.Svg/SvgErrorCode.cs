@@ -9,7 +9,7 @@ public enum SvgErrorCode
     UnsupportedFeature,
     /// <summary>A required resource or font could not be resolved.</summary>
     UnresolvedResource,
-    /// <summary>A configured structural, work, dimension, or memory limit was exceeded.</summary>
+    /// <summary>A structural, numerical, size, or memory limit was exceeded.</summary>
     LimitExceeded,
     /// <summary>The caller-provided PNG destination is too small.</summary>
     InsufficientDestination

@@ -147,7 +147,7 @@ public sealed class SvgFontPackCatalog
         return Bind(resolution, source, CancellationToken.None);
     }
 
-    /// <summary>Binds a catalog resolution while metering the provenance scan against the calling preparation operation.</summary>
+    /// <summary>Binds a catalog resolution after a cancellable provenance scan.</summary>
     internal SvgFontProgramResolution Bind(SvgFontPackResolution resolution, ISvgFontProgramSource source, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(resolution);
@@ -158,10 +158,9 @@ public sealed class SvgFontPackCatalog
 
     /// <summary>
     /// Selectively locates and integrity-verifies the program selected by this
-    /// catalog. No other manifest file is requested. The provider retains source
-    /// ownership and cache policy; the result retains neither bytes nor a cache.
-    /// Verification applies at acquisition: snapshot creation verifies size and hash again
-    /// before use, so callers must not assume caller-owned bytes stay unchanged in between.
+    /// catalog. No other manifest file is requested. The result retains the source;
+    /// its storage and cache stay caller-owned. Snapshot creation verifies the bytes
+    /// again before use. Keep them unchanged while any snapshot borrows them.
     /// </summary>
     public ValueTask<SvgFontProgramResolution> AcquireAsync(SvgFontPackResolution resolution, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
     {
@@ -280,7 +279,7 @@ public sealed class SvgFontPackCatalog
         return fallbacks.ToArray();
     }
 
-    /// <summary>Proves face provenance with a bounded reference-identity scan, metering each candidate like the selection scans.</summary>
+    /// <summary>Proves face provenance with a bounded reference-identity scan that checks cancellation for each candidate.</summary>
     private bool ContainsFace(SvgFontPackFace face, CancellationToken cancellationToken)
     {
         foreach (SvgFontPackFace candidate in _faces)

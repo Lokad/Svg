@@ -50,8 +50,8 @@ resolver or wait for another document's acquisition. Text preparation retains it
 styles and dependency indices through acquisition and lowers the scene once.
 
 Concurrent callers share catalog/program acquisition. Canceling a waiter ends
-its wait; shared work keeps its own finite deadline covering headers, body and
-retry delays. Successful catalogs remain for the resolver lifetime. Failed
+its wait; each shared resource load retains its deadline across headers, body reads
+and retry delays. Successful catalogs remain for the resolver lifetime. Failed
 attempts can recover on later calls; size/SHA-256 verification precedes successful
 program admission. Responses and temporary storage are disposed on every exit.
 

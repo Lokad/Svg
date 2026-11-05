@@ -6,8 +6,8 @@ namespace Lokad.Svg;
 /// <remarks>
 /// The library borrows this budget and never disposes it. Implementations share one
 /// root allowance across all scopes; they must not copy a remaining balance into a
-/// private limit. Admission is thread-safe and immediate, without waiting, retries
-/// or storage allocation. Estimates cover retained capacity and temporary peaks;
+/// private limit. Admission is thread-safe and never waits or retries for allowance.
+/// It does not allocate the storage being admitted. Estimates cover retained capacity and temporary peaks;
 /// releasing an owner makes its allowance reusable without waiting for collection.
 /// Scope disposal must be serialized with every operation using its subtree.
 /// </remarks>
