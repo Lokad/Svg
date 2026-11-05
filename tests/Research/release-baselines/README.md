@@ -15,6 +15,11 @@ compiled inventory are qualified against the existing renderer packages.
 work-charge descriptions while retaining actual memory admission and cancellation.
 Every executable token and compiled method body remains unchanged on both runtimes.
 
+[Filter graph demand](filter-graph-demand.json) separates final-result pixel
+dependencies from declaration validation and region defaults. Ten failing-before
+allocation contracts retain unread branches without private pixel planes;
+selected readers, eight validation guards and existing native images remain.
+
 [Polygon contour ownership](contour-ownership.md) records the shared paint-binding
 storage contract and its failing-before refusal, transfer and retry witnesses.
 [Filter command views](command-view-qualification.json) remove unchanged subtree

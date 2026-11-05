@@ -145,6 +145,12 @@ qualification still runs every routine and Research case; these edit loops have
 different scopes and do not replace it. The audit records the exact filters and
 both-host/runtime results.
 
+For graph dependency work, select `FullyQualifiedName~SvgFilterGraphDemandTests`.
+The [cohort](filter-graph-demand.json) adds ten allocation contracts and eight direct
+validation checks. Seven unread primitive paths, selected secondary/merge inputs
+and inherited region defaults keep distinct roles; existing native banks retain
+the image integration. No API matrix or new native reference is added.
+
 ## Local setup-cost check
 
 Three fresh .NET 11 Windows processes enumerated `Cases()` and `ResearchCases()`
