@@ -696,14 +696,14 @@ internal static class SvgLeafParser
         if (fractionalEndpoints || context.RetainInstanceStrokePath || NeedsSourceBounds() || element.Transform != SvgAffineTransform.Identity || frame is {} scaled && scaled.IsScaled || syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2 || syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2 || lineWidth % 2 != 0 || element.Presentation.StrokeColor is null)
             return LowerNativeLine();
         SvgColor? strokeColor = element.Presentation.StrokeColor;
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
+        // Shared length validation and the even-width gate already admit this integer.
+        int strokeWidth = checked((int)lineWidth);
         if (strokeWidth == 0)
         {
             using BudgetedParserList<SvgGeometry> none = new(state.Budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             return new SvgParsedGeometry(none.Detach(), 0);
         }
 
-        if (strokeWidth < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive line stroke widths are implemented.");
         SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
         double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor.Value, element.Presentation.Opacity);

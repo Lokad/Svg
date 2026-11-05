@@ -153,7 +153,7 @@ internal static class SvgGeometrySyntax
             / Math.ScaleB(divisor, -divisorExponent));
         return Math.ScaleB(fraction, lengthExponent + factorExponent - divisorExponent);
     }
-    /// <summary>Parses one finite direct-text coordinate without the rectangle fast path's quarter-pixel restriction.</summary>
+    /// <summary>Parses a finite bare-number/px scalar for text sizes, spacing and text/path lengths.</summary>
     internal static double ParseTextCoordinate(string value)
     {
         ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
@@ -164,7 +164,7 @@ internal static class SvgGeometrySyntax
         return result;
     }
 
-    /// <summary>Resolves an absolute font size in CSS pixels without admitting physical units for text positions.</summary>
+    /// <summary>Resolves an absolute font size in CSS pixels; position lists use their declaration-length basis.</summary>
     internal static double ParseFontSize(string value)
     {
         ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value.AsSpan());
@@ -172,18 +172,6 @@ internal static class SvgGeometrySyntax
         // Keep the existing finite bare/px validation and its unsupported-size outcomes.
         if (token.Length == 0 || token.EndsWith("px", StringComparison.OrdinalIgnoreCase) || !char.IsLetter(token[^1]) && token[^1] != '%') return ParseTextCoordinate(value);
         return ParseLength(value) ?? throw new InvalidOperationException("Font size parsing returned no value.");
-    }
-
-    internal static int ParseInteger(string value) => ParseInteger(value.AsSpan());
-
-    internal static int ParseInteger(ReadOnlySpan<char> value)
-    {
-        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
-        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Integer coordinate values exceed the configured syntax limit.");
-        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px integer rectangle coordinates are implemented.");
-        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result != Math.Truncate(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
-        return checked((int)result);
     }
 
     internal static SvgRootLength? ParseRootLength(string? value)

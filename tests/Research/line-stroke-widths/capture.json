@@ -1,0 +1,65 @@
+{
+  "width": 96,
+  "height": 80,
+  "cases": [
+    {
+      "id": "resolved-even-widths",
+      "input": "resolved-even-widths.svg",
+      "inputSha256": "389631fb70e58a6a34ca2a019bc248473b0c2810edf35ff4c3b510023d6d5ca3",
+      "sourceBaseline": "402840ca32c934cc9ab2b65ea6238a42d62293ed",
+      "context": "Original CC0 axis-aligned lines with even fixed-unit widths, butt/square/round caps, dashes and zero suppression. Three healthy native captures per host frozen before the width-lowering correction.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "c2940d8471580dc054235d036f698b672d22f4d13bfaedadc5282eb89a0c9a55",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c2940d8471580dc054235d036f698b672d22f4d13bfaedadc5282eb89a0c9a55",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c2940d8471580dc054235d036f698b672d22f4d13bfaedadc5282eb89a0c9a55",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ],
+          "reference": "references/resolved-even-widths.png",
+          "referenceSha256": "c2940d8471580dc054235d036f698b672d22f4d13bfaedadc5282eb89a0c9a55"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "c2940d8471580dc054235d036f698b672d22f4d13bfaedadc5282eb89a0c9a55",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c2940d8471580dc054235d036f698b672d22f4d13bfaedadc5282eb89a0c9a55",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c2940d8471580dc054235d036f698b672d22f4d13bfaedadc5282eb89a0c9a55",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ],
+          "reference": "references/resolved-even-widths.png",
+          "referenceSha256": "c2940d8471580dc054235d036f698b672d22f4d13bfaedadc5282eb89a0c9a55"
+        }
+      }
+    }
+  ]
+}

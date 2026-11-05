@@ -1,0 +1,374 @@
+{
+  "status": "Resolved fixed-unit widths reach optimized axis-line lowering without reparsing syntax, and text-path percentages reject a second length suffix. Seventeen failing-before mechanism cases and one independently captured rendering regression close; full milestone qualification follows.",
+  "source": {
+    "baseCommit": "402840ca32c934cc9ab2b65ea6238a42d62293ed",
+    "files": [
+      {
+        "path": "../../../src/Lokad.Svg/Parsing/SvgLeafParser.cs",
+        "beforeLfSha256": "b968fb38bf5aa1b4bece835c045711d79da3f0071b33155e5761e5e46240ac3e",
+        "afterLfSha256": "89d0a8cba818ba573ad46da5ebc8f9be5c6e59011e5977c2453b3976d89ab18b",
+        "entireBeforeFileReconstructed": true
+      },
+      {
+        "path": "../../../src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+        "beforeLfSha256": "6d44c4c3549e4457629086cd19bfbb719ee088c346d3fe93d16ace3688a91b3a",
+        "afterLfSha256": "d81ce9e3b762fbe24a945ea0afccf8b2f9f857062978fbc8e75b33e9a6e6b669",
+        "entireBeforeFileReconstructed": true
+      },
+      {
+        "path": "../../../src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs",
+        "beforeLfSha256": "4a2888ef95b209d04dcd7f372b04bbf1ce3e72e7f9072b8791bd776819082f3d",
+        "afterLfSha256": "1ecf25d06936796de8b9e7dfd2883c32a658c3ab66c60ffbd5b63dd843eb9ffa",
+        "entireBeforeFileReconstructed": true
+      },
+      {
+        "path": "../../../src/Lokad.Svg/Parsing/SvgTextPathSyntax.cs",
+        "beforeLfSha256": "56a26f2d84076cf2b9cbcb45cfc8d1b52690482e478371d41cf1b547f216d9ba",
+        "afterLfSha256": "1a1d5ea9c9665b46d6940538aa100747340fa8c7e524caf41832194578777930",
+        "entireBeforeFileReconstructed": true
+      }
+    ],
+    "onlyResolvedWidthConsumptionAndPercentageOffsetAdmissionChangeBehavior": true,
+    "integerPathValidationBodyMovedExactlyToItsOnlyCaller": true,
+    "removedUnreachableNegativeCheckAndUnusedStringWrapper": true,
+    "allRemainingNumericalStyleOwnershipAndCancellationCodeUnchanged": true
+  },
+  "regressions": {
+    "core": [
+      "../../Lokad.Svg.Tests/SvgLineStrokeLengthTests.cs",
+      "../../Lokad.Svg.Tests/SvgTextPathOffsetSyntaxTests.cs"
+    ],
+    "rendering": "../../Lokad.Svg.VisualTests/SvgLineStrokeLengthReferenceTests.cs",
+    "nativeBank": "../line-stroke-widths/capture.json",
+    "mechanismCases": 33,
+    "renderingCases": 1,
+    "failedBeforePerHost": {
+      "lineMechanisms": 13,
+      "percentageMechanisms": 4,
+      "rendering": 1
+    },
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+        "testAssemblySha256": "b113496dc0d31a55b4c8d391cb7102c0dc0ab3ce1f5d2843b54241863437a86a",
+        "selection": "FullyQualifiedName~SvgLineStrokeLengthTests",
+        "exitCode": 1,
+        "seconds": 9.66939860000275,
+        "counters": {
+          "executed": "22",
+          "passed": "9",
+          "failed": "13"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"101.6q\", expected: 96)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Width_resolution_precedes_optimized_vertical_line_dispatch(declaration: \"inherited\")",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \".5pc\", expected: 8)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Width_resolution_precedes_optimized_vertical_line_dispatch(declaration: \"stylesheet\")",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Width_resolution_precedes_optimized_vertical_line_dispatch(declaration: \"attribute\")",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"-0q\", expected: 0)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"0pt\", expected: 0)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"2.54cm\", expected: 96)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"+0mm\", expected: 0)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Width_resolution_precedes_optimized_vertical_line_dispatch(declaration: \"inline\")",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"25.4mm\", expected: 96)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"1in\", expected: 96)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"6pt\", expected: 8)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+        "testAssemblySha256": "b113496dc0d31a55b4c8d391cb7102c0dc0ab3ce1f5d2843b54241863437a86a",
+        "selection": "FullyQualifiedName~SvgLineStrokeLengthTests",
+        "exitCode": 1,
+        "seconds": 12.158013499807566,
+        "counters": {
+          "executed": "22",
+          "passed": "9",
+          "failed": "13"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"+0mm\", expected: 0)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"-0q\", expected: 0)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"101.6q\", expected: 96)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \".5pc\", expected: 8)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Width_resolution_precedes_optimized_vertical_line_dispatch(declaration: \"stylesheet\")",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"25.4mm\", expected: 96)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Width_resolution_precedes_optimized_vertical_line_dispatch(declaration: \"attribute\")",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Width_resolution_precedes_optimized_vertical_line_dispatch(declaration: \"inline\")",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Width_resolution_precedes_optimized_vertical_line_dispatch(declaration: \"inherited\")",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"6pt\", expected: 8)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"1in\", expected: 96)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"2.54cm\", expected: 96)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgLineStrokeLengthTests.Axis_line_lowering_consumes_the_resolved_even_width(width: \"0pt\", expected: 0)",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          }
+        ]
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+        "testAssemblySha256": "c63740afccaa83d92c096a0155d73212cf99e1808d485094d44339a7d09ff0d6",
+        "selection": "FullyQualifiedName~SvgLineStrokeLengthReferenceTests",
+        "exitCode": 1,
+        "seconds": 11.608789399964735,
+        "counters": {
+          "executed": "1",
+          "passed": "0",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgLineStrokeLengthReferenceTests.Fixed_widths_keep_axis_line_caps_dashes_and_zero_suppression",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+        "testAssemblySha256": "c63740afccaa83d92c096a0155d73212cf99e1808d485094d44339a7d09ff0d6",
+        "selection": "FullyQualifiedName~SvgLineStrokeLengthReferenceTests",
+        "exitCode": 1,
+        "seconds": 11.65631329989992,
+        "counters": {
+          "executed": "1",
+          "passed": "0",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgLineStrokeLengthReferenceTests.Fixed_widths_keep_axis_line_caps_dashes_and_zero_suppression",
+            "message": "Lokad.Svg.SvgException : Only bare-number and px integer rectangle coordinates are implemented."
+          }
+        ]
+      }
+    ],
+    "percentageBefore": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+        "testAssemblySha256": "e567dd641e212c56d7d78ef6e34a89c16b7dd4fd3e2d6c015c88b03d8ca9dc73",
+        "selection": "FullyQualifiedName~SvgTextPathOffsetSyntaxTests",
+        "exitCode": 1,
+        "seconds": 10.364075199933723,
+        "counters": {
+          "executed": "11",
+          "passed": "7",
+          "failed": "4"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathOffsetSyntaxTests.Percentage_offsets_do_not_accept_a_second_length_unit(offset: \"1PX%\")",
+            "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathOffsetSyntaxTests.Percentage_offsets_do_not_accept_a_second_length_unit(offset: \"1e2px%\")",
+            "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathOffsetSyntaxTests.Percentage_offsets_do_not_accept_a_second_length_unit(offset: \"1px%\")",
+            "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathOffsetSyntaxTests.Percentage_offsets_do_not_accept_a_second_length_unit(offset: \"-2.5px%\")",
+            "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+        "testAssemblySha256": "e567dd641e212c56d7d78ef6e34a89c16b7dd4fd3e2d6c015c88b03d8ca9dc73",
+        "selection": "FullyQualifiedName~SvgTextPathOffsetSyntaxTests",
+        "exitCode": 1,
+        "seconds": 16.345750899985433,
+        "counters": {
+          "executed": "11",
+          "passed": "7",
+          "failed": "4"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathOffsetSyntaxTests.Percentage_offsets_do_not_accept_a_second_length_unit(offset: \"1e2px%\")",
+            "message": "Assert.Throws() Failure: No exception was thrown\nExpected: typeof(Lokad.Svg.SvgException)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathOffsetSyntaxTests.Percentage_offsets_do_not_accept_a_second_length_unit(offset: \"1PX%\")",
+            "message": "Assert.Throws() Failure: No exception was thrown\nExpected: typeof(Lokad.Svg.SvgException)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathOffsetSyntaxTests.Percentage_offsets_do_not_accept_a_second_length_unit(offset: \"1px%\")",
+            "message": "Assert.Throws() Failure: No exception was thrown\nExpected: typeof(Lokad.Svg.SvgException)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathOffsetSyntaxTests.Percentage_offsets_do_not_accept_a_second_length_unit(offset: \"-2.5px%\")",
+            "message": "Assert.Throws() Failure: No exception was thrown\nExpected: typeof(Lokad.Svg.SvgException)"
+          }
+        ]
+      }
+    ],
+    "affectedAfter": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "25e71acd13dfa2136229f8760b653762c36e23f51f3cefc024caa064847c2bc9",
+        "testAssemblySha256": "e567dd641e212c56d7d78ef6e34a89c16b7dd4fd3e2d6c015c88b03d8ca9dc73",
+        "selection": "FullyQualifiedName~SvgTextPath|FullyQualifiedName~SvgLine|FullyQualifiedName~SvgFixedStrokeLengthTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgGeometryLengthTests|FullyQualifiedName~SvgUseStroke|FullyQualifiedName~SvgNativeStroke|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgOrthogonal|FullyQualifiedName~SvgPathParser|FullyQualifiedName~SvgPathSyntax|FullyQualifiedName~SvgPoint|FullyQualifiedName~SvgAttributeGrammar",
+        "exitCode": 0,
+        "seconds": 11.112040200037882,
+        "counters": {
+          "executed": "2446",
+          "passed": "2446",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "25e71acd13dfa2136229f8760b653762c36e23f51f3cefc024caa064847c2bc9",
+        "testAssemblySha256": "e567dd641e212c56d7d78ef6e34a89c16b7dd4fd3e2d6c015c88b03d8ca9dc73",
+        "selection": "FullyQualifiedName~SvgTextPath|FullyQualifiedName~SvgLine|FullyQualifiedName~SvgFixedStrokeLengthTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgGeometryLengthTests|FullyQualifiedName~SvgUseStroke|FullyQualifiedName~SvgNativeStroke|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgOrthogonal|FullyQualifiedName~SvgPathParser|FullyQualifiedName~SvgPathSyntax|FullyQualifiedName~SvgPoint|FullyQualifiedName~SvgAttributeGrammar",
+        "exitCode": 0,
+        "seconds": 14.734021999873221,
+        "counters": {
+          "executed": "2446",
+          "passed": "2446",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "25e71acd13dfa2136229f8760b653762c36e23f51f3cefc024caa064847c2bc9",
+        "testAssemblySha256": "fd5e64ac3646e9931411bea0d0ed9d8aa7e7de1c25da89e2f5c4a3939080e566",
+        "selection": "FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~SvgGeometryLengthReferenceTests|FullyQualifiedName~SvgUseStrokeSourceReferenceTests|FullyQualifiedName~SvgUseStrokeStyleReferenceTests|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgAffineRectangleStrokeReferenceTests|FullyQualifiedName~SvgAffineOvalStrokeReferenceTests|FullyQualifiedName~SvgPrimitiveStrokeReferenceTests",
+        "exitCode": 0,
+        "seconds": 10.228562500094995,
+        "counters": {
+          "executed": "13",
+          "passed": "13",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "25e71acd13dfa2136229f8760b653762c36e23f51f3cefc024caa064847c2bc9",
+        "testAssemblySha256": "fd5e64ac3646e9931411bea0d0ed9d8aa7e7de1c25da89e2f5c4a3939080e566",
+        "selection": "FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~SvgGeometryLengthReferenceTests|FullyQualifiedName~SvgUseStrokeSourceReferenceTests|FullyQualifiedName~SvgUseStrokeStyleReferenceTests|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgAffineRectangleStrokeReferenceTests|FullyQualifiedName~SvgAffineOvalStrokeReferenceTests|FullyQualifiedName~SvgPrimitiveStrokeReferenceTests",
+        "exitCode": 0,
+        "seconds": 10.952130599878728,
+        "counters": {
+          "executed": "13",
+          "passed": "13",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "model": {
+    "cause": "The shared stroke parser proved a finite nonnegative resolved width; the even-width fast gate proved integrality. A second integer syntax parse rejected physical suffixes. Separately, percentage offsets reused a number/px parser after stripping%, accepting px% as a number.",
+    "change": "Convert the admitted width to the existing integer domain. Parse percentage offsets directly as finite doubles without a temporary substring; ordinary number/px offsets retain their helper. Integer path validation moves byte-exactly into its sole caller. No new cache, owner, raster numerical route or API.",
+    "coverage": "Twelve width spellings cover all fixed units and signed/physical zero; four declaration paths cover attribute, inline, inherited and stylesheet widths. Two outline routes and four source errors remain. Four invalid percentage spellings and seven exact finite/domain controls protect the offset change. One native fixture adds caps/dashes/zero through canonical conversion; the general API matrix is unchanged."
+  },
+  "documentation": "Support guidance distinguishes stroke fixed lengths, filter-region number/px/percentage values and unitless offsets/deviations, plus text position, text/path length and font-size domains. This corrects omissions without widening unrelated admissions.",
+  "unchanged": "All existing tests, fixtures, native references, tolerances, licenses and text-layout implementation remain. New references were frozen before the fix; hosted SVG payloads are not retained."
+}

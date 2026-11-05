@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve fixed CSS stroke widths before optimized axis-line lowering, including
+  physical-unit zero widths. Reject extra length suffixes in text-path percentages.
 - Reject invalid unescaped CSS selector names while retaining quoted numeric
   attribute values and numeric SVG ID references.
 - Evaluate filter pixels only along final-result dependencies, avoiding unused

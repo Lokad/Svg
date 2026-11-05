@@ -116,8 +116,10 @@ bounds, and excessive intermediate surfaces, fail explicitly.
 
 Fills support nonzero/even-odd winding. Strokes support butt/round/square caps,
 miter/round/bevel joins, miter limits, finite dash arrays/offsets, `pathLength`,
-independent paints and ordinary/non-scaling widths. Dashed non-scaling line,
-circle and curved-path strokes reject rotation/shear; dashed gradient line
+independent paints and ordinary/non-scaling widths. Stroke widths, dash arrays
+and dash offsets accept bare numbers and fixed CSS length units; percentages
+and font-relative units remain unsupported. Dashed non-scaling line, circle
+and curved-path strokes reject rotation/shear; dashed gradient line
 strokes require uniform scaling. CSS/inherited vector effects are unsupported.
 Local uses retain rectangle source strokes independently of fill/stroke material.
 Affine uses also retain rectangle fills and hidden path/point-list source commands;
@@ -385,6 +387,8 @@ Filters accept `feGaussianBlur`, `feOffset`, `feFlood`, `feColorMatrix`, `feComp
 `feMerge`, `feBlend` normal/multiply/screen and `feDropShadow`. Inputs are
 SourceGraphic, SourceAlpha or earlier exact result names. Both unit systems,
 primitive/filter regions, local CSS references and sRGB/linearRGB spaces work.
+Region lengths accept numbers, px and percentages; offsets and blur deviations
+are unitless numbers.
 Color matrices support matrix/saturate/hueRotate/luminanceToAlpha, with finite
 single-precision coefficients and the declared type's exact value count. Omitted
 values use identity; luminanceToAlpha ignores values. Matrix evaluation uses straight
@@ -442,13 +446,17 @@ keep this boundary separate from supplied-program rendering.
 | Characters | Horizontal LTR ASCII, covered Latin combining sequences and supplementary scalars; no bidi, joining or general complex-script shaping. |
 | Layout | Ordered text/CDATA/whitespace, nested spans, inherited/per-span styles, scalar/list x/y/dx/dy/rotate, anchors, spacing, explicit lines, textLength spacing/spacingAndGlyphs and alphabetic/middle/hanging baselines. |
 | Painting | Affine solid/gradient/pattern fills and strokes, dashes/non-scaling widths/paint order and solid-color underline/overline/line-through. |
-| Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, length/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
+| Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, bare-number/px/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
 | Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and 2–8 components in font order. |
 
 Text x/y/dx/dy accept finite numbers, fixed CSS length units and `em` from the
 declaring element's computed font size. Lists retain that basis across descendant
 font changes and instance replay. Rotation is unitless; percentages and `ex` text
 positions remain unsupported.
+`textLength` and letter/word spacing accept bare numbers and px. Their length
+domain is separate from position lists and font sizes.
+Text-path percentage offsets contain a finite number followed by `%`; a second
+length suffix such as `px%` is unsupported.
 
 Validated CSS `text-align` declarations are inert on supported preformatted text
 and containers. Explicit positions and `text-anchor` retain their meaning;
@@ -519,7 +527,7 @@ Kerning/ligatures stay within selected faces.
 CSS requests admit 256 families, 1,024 UTF-16 units per decoded name and 4,096 units
 for both authored/canonical lists. SVG weights accept integers 1–1000, normal/bold;
 public request objects retain their positive-weight contract. Font sizes must be
-positive. Presentation attributes and SVG inline styles accept unitless sizes;
+positive fixed CSS lengths. Presentation attributes and SVG inline styles accept unitless sizes;
 stylesheet rules require units for nonzero sizes. The
 [source-context regression](../tests/Research/svgweb/font-contexts.json) preserves
 this distinction through inheritance and preparation. Family inherit/initial/unset work; those keywords reject for weight,

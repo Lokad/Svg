@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Xml;
 using Lokad.Svg.Fonts;
 
@@ -41,7 +42,11 @@ internal static class SvgTextPathSyntax
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path offset exceeds the configured syntax limit.");
         bool percentage = value.EndsWith("%", StringComparison.Ordinal);
         if (percentage && value.Length > 1 && SvgCssWhitespace.Is(value[^2])) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text-path percentage units must follow their number without a gap.");
-        double distance = SvgGeometrySyntax.ParseTextCoordinate(percentage ? value[..^1].ToString() : offset);
+        double distance;
+        if (!percentage) distance = SvgGeometrySyntax.ParseTextCoordinate(offset);
+        else if (!double.TryParse(value[..^1], SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out distance)
+            || !double.IsFinite(distance))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text coordinates must be finite numbers.");
         return new(SvgLocalUrl.ParseFragment(href.AsSpan(1)), distance, percentage, null);
 
         static string? ReadBounded(XmlReader reader, string name)

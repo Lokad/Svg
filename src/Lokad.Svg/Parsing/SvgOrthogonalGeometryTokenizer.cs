@@ -382,7 +382,17 @@ internal static class SvgOrthogonalGeometryTokenizer
         {
             ReadOnlySpan<char> value = ReadValue();
             if (!IsPathInteger(value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
-            return SvgGeometrySyntax.ParseInteger(value);
+            return ParseInteger(value);
+
+            static int ParseInteger(ReadOnlySpan<char> value)
+            {
+                ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
+                if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Integer coordinate values exceed the configured syntax limit.");
+                if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
+                else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px integer rectangle coordinates are implemented.");
+                if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result != Math.Truncate(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
+                return checked((int)result);
+            }
         }
 
         internal bool PeekIsValueStart()

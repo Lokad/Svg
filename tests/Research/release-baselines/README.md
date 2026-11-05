@@ -29,6 +29,10 @@ Every executable token and compiled method body remains unchanged on both runtim
 edge-copy, clipped/contained dispatch and row-order descriptions. Geometry and walker
 ownership remain distinct; all executable tokens and 12,271 compiled methods are unchanged.
 
+[Unit-domain contracts](unit-domain-contracts.json) resolve fixed stroke widths
+before optimized line lowering and keep text-path percentages in their numeric
+domain. Direct failing-before controls and one frozen native fixture protect both changes.
+
 [Filter graph demand](filter-graph-demand.json) separates final-result pixel
 dependencies from declaration validation and region defaults. Ten failing-before
 allocation contracts retain unread branches without private pixel planes;
