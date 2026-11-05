@@ -74,6 +74,9 @@ owners, forwarding runtime selection and rejecting an injected owned leftover.
 [Filter query scratch](filter-query-scratch.json) removes temporary metadata tables
 and their internal budget arguments. Nine direct allocation/geometry contracts retain
 empty, single and maximum-size graphs; all numerical and pixel-ownership paths remain.
+[Empty filter-stage storage](empty-filter-stage-storage.json) retains graph bounds
+without per-stage clear pixel planes. Failing-before allowance cases, empty-result
+ownership, alpha bias, cleanup/retry and native regression coverage remain distinct.
 [Shader polygon painting](shader-polygon-paint.json) shares the identical linear,
 radial and pattern coverage loop while preserving material coordinates and owners.
 Source expansion, existing mechanisms/contracts, native images and packaged replay

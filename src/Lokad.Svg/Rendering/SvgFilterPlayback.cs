@@ -95,9 +95,10 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
 }
 
 /// <summary>Evaluates an ordered graph on one bounded premultiplied grid.</summary>
-/// <remarks>Inputs and resources are borrowed and immutable. Each output has an admitted surface owner;
-/// all intermediates are released on success, failure or cancellation. The final owner transfers to
-/// the caller. Work includes every copy, conversion, blur pass and composition. Calls are independent.</remarks>
+/// <remarks>Inputs and resources are borrowed and immutable. Materialized outputs have admitted owners;
+/// empty regions retain bounds and borrow clear pixels only when read. All intermediates are released
+/// on success, failure or cancellation; the final owner transfers to the caller. Cancellation covers
+/// copies, conversions, blur passes and composition. Calls are independent.</remarks>
 internal static class SvgFilterPlayback
 {
     // Native composition output is the input intersection for source-in and

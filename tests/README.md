@@ -85,6 +85,8 @@ cover repeated cropped stages under a one-output allowance, a clear final frame
 and color-matrix bias reading an empty result. They retain exact pixels, refusal,
 cleanup and retry; cancellation and borrowed-source ownership stay explicit.
 Existing filter mechanisms and native regressions protect arithmetic and placement.
+The [qualification](Research/release-baselines/empty-filter-stage-storage.json)
+binds failing-before cases, both runtimes, packages and original-source replay.
 
 [Capture-storage contracts](Research/release-baselines/filter-capture-storage.json)
 separate aligned-buffer reuse, wider blur requests, color-matrix output and shifted
