@@ -1,5 +1,5 @@
 {
-  "status": "Prepared pattern products partitioned by responsibility:all1944 original tuples/assertions remain,296 routine/1648 research. Nine primitive and56 graph mechanisms are added. All2009 cases pass on both hosts/runtimes; full CI pending.",
+  "status": "Complete:all1944 original prepared inputs/assertions remain,296 routine/1648 individually discovered Research;65 direct mechanisms added. All2009 affected cases pass on Windows/Linux under both runtimes. Global fast19879 cases pass on both hosts. Full Linux compatibility/tools/package CI passes; Windows retains only the independent frozen DejaVu discrepancy. The ten historical authored/radial interactions are reviewed and retained.",
   "source": {
     "baseCommit": "7fe936353583b8f133899b892a43cca4b1e9a276",
     "files": [
@@ -13,10 +13,23 @@
       "existingLiveControlsAndOtherPartialHelpersUnchanged": true,
       "inertTemplateFileUnchangedExceptRoutineSelectionPredicate": true,
       "productionRenderingFixturesReferencesUnchanged": true,
-      "fullProviderPartition": "provider-partition.json",
+      "fullProviderPartition": "#/partition",
       "newDirectPrimitiveCases": 9,
       "newGraphDiscoveryCases": 56
-    }
+    },
+    "sourceCommit": "2add2c495b78d661b26d03204f818403717dc4f9",
+    "fileIdentities": [
+      {
+        "file": "../../Lokad.Svg.Tests/OpenTypeFontTests.EmptyPatternTargets.cs",
+        "baseLfSha256": "0304ff0c999ffb6740cc00f0ce350c66fd710d67214a5726deefb45de58b77c2",
+        "currentLfSha256": "3aee89af51d7a7e6aadd9fb18a8d978c8a4beef3c8fd32f6d7f60359929f87c6"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs",
+        "baseLfSha256": "b6c603ef6f094836ec2440c3eb5e9fb2c88b8bc0b8cb8d854180b2f8ddaa02db",
+        "currentLfSha256": "8b6f9a54145e558b7a46ebdfea55ca151c9cab6f2b39f7f730f06974a8bfc18a"
+      }
+    ]
   },
   "partition": [
     {
@@ -312,5 +325,268 @@
       "net10": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0"
     },
     "originalReplay": "Not repeated for test-only changes; qualified production source/assets and ../svgweb/originals.json#/currentReview remain unchanged."
+  },
+  "fastCaseMovement": [
+    {
+      "host": "windows",
+      "previousFast": 20622,
+      "currentFast": 19879,
+      "movedPreparedToResearch": 844,
+      "promotedPreparedToRoutine": 36,
+      "addedDirectMechanisms": 65,
+      "everyMovedCaseRetainedInCompleteQualification": true,
+      "allOtherFastInputIdentitiesAndMultiplicitiesRetained": true
+    },
+    {
+      "host": "linux",
+      "previousFast": 20622,
+      "currentFast": 19879,
+      "movedPreparedToResearch": 844,
+      "promotedPreparedToRoutine": 36,
+      "addedDirectMechanisms": 65,
+      "everyMovedCaseRetainedInCompleteQualification": true,
+      "allOtherFastInputIdentitiesAndMultiplicitiesRetained": true
+    }
+  ],
+  "handoffReview": {
+    "sourceCommit": "2add2c495b78d661b26d03204f818403717dc4f9",
+    "markdownFiles": 193,
+    "sourceRoots": [
+      "root",
+      ".github",
+      "docs",
+      "src",
+      "tests",
+      "tools",
+      "benchmarks"
+    ],
+    "excluded": [
+      "artifacts",
+      "external",
+      "bin",
+      "obj",
+      "__pycache__",
+      ".git",
+      "node_modules",
+      "junctions",
+      "symlinks"
+    ],
+    "remainingTodoOrHandoffFiles": [],
+    "previousHandoff": "TODO-http-font-pack-resolver.md",
+    "disposition": "Already absorbed and removed; high-priority acceptance remains in PLAN.md. Existing host qualification and current font-source package qualification own the implemented contracts. No second resolver or preparation pipeline is needed."
+  },
+  "smallInteractionCostReview": {
+    "disposition": "Reviewed and retained:all ten individually discovered routine contract cases and their six-output assertions. No simplification is justified by the measured aggregate durations alone.",
+    "methods": [
+      {
+        "method": "SvgAuthoredPathTests.Bitmap_border_curves_preserve_all_six_outputs",
+        "cases": 4,
+        "introducedBy": "a1fb0b3e5e052f322de1d1bcf0d85391aedda3cb",
+        "retentionBasis": "Four paint dispatches retain a curve crossing bitmap borders under root scaling. Preserve exact six-output interactions; reducing canvas size or simplifying geometry would change the witnessed construction path."
+      },
+      {
+        "method": "SvgAuthoredPathTests.Contained_bitmap_curves_preserve_all_six_outputs",
+        "cases": 4,
+        "introducedBy": "d0ed9b83a73f2d171aa28c406987f16b13d734c8",
+        "retentionBasis": "Contained curves reach a different construction path from crossing curves. Pattern uses its authored coordinates; other paints retain the scaled viewBox. Preserve all four paints and six output forms."
+      },
+      {
+        "method": "SvgGradientCoordinateTests.Separate_radial_local_and_drawing_matrices_preserve_six_output_parity",
+        "cases": 2,
+        "introducedBy": "9adbe6f1fb7a349e5e5731d284cc640d07fc80bf",
+        "retentionBasis": "Translated rectangle and reflected path retain separate radial/local/drawing map interactions. Generic curve/image/resource cases in the96-case API matrix do not reproduce these inputs or matrix order."
+      }
+    ],
+    "executionBasis": "The six forms exercise returned storage, caller memory, synchronous stream encoding, scheduled conversion and actual asynchronous stream encoding. They are a bounded historical interaction bank; their inputs are absent from the general96-case API matrix. Equal PNGs do not justify deleting a path. Dedicated native references and direct geometry/radial mechanisms remain unchanged.",
+    "observations": [
+      {
+        "host": "windows",
+        "tenOriginalCaseIdentitiesAndMultiplicitiesUnchanged": true,
+        "observedCaseDurations": [
+          {
+            "stage": "before",
+            "method": "SvgAuthoredPathTests.Bitmap_border_curves_preserve_all_six_outputs",
+            "cases": 4,
+            "aggregateCaseSeconds": 7.0968347000000005
+          },
+          {
+            "stage": "before",
+            "method": "SvgAuthoredPathTests.Contained_bitmap_curves_preserve_all_six_outputs",
+            "cases": 4,
+            "aggregateCaseSeconds": 0.2658955
+          },
+          {
+            "stage": "before",
+            "method": "SvgGradientCoordinateTests.Separate_radial_local_and_drawing_matrices_preserve_six_output_parity",
+            "cases": 2,
+            "aggregateCaseSeconds": 7.0909619
+          },
+          {
+            "stage": "after",
+            "method": "SvgAuthoredPathTests.Bitmap_border_curves_preserve_all_six_outputs",
+            "cases": 4,
+            "aggregateCaseSeconds": 4.9432349
+          },
+          {
+            "stage": "after",
+            "method": "SvgAuthoredPathTests.Contained_bitmap_curves_preserve_all_six_outputs",
+            "cases": 4,
+            "aggregateCaseSeconds": 0.2065466
+          },
+          {
+            "stage": "after",
+            "method": "SvgGradientCoordinateTests.Separate_radial_local_and_drawing_matrices_preserve_six_output_parity",
+            "cases": 2,
+            "aggregateCaseSeconds": 3.9075488
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "tenOriginalCaseIdentitiesAndMultiplicitiesUnchanged": true,
+        "observedCaseDurations": [
+          {
+            "stage": "before",
+            "method": "SvgAuthoredPathTests.Bitmap_border_curves_preserve_all_six_outputs",
+            "cases": 4,
+            "aggregateCaseSeconds": 9.2399555
+          },
+          {
+            "stage": "before",
+            "method": "SvgAuthoredPathTests.Contained_bitmap_curves_preserve_all_six_outputs",
+            "cases": 4,
+            "aggregateCaseSeconds": 0.2550485
+          },
+          {
+            "stage": "before",
+            "method": "SvgGradientCoordinateTests.Separate_radial_local_and_drawing_matrices_preserve_six_output_parity",
+            "cases": 2,
+            "aggregateCaseSeconds": 8.2001393
+          },
+          {
+            "stage": "after",
+            "method": "SvgAuthoredPathTests.Bitmap_border_curves_preserve_all_six_outputs",
+            "cases": 4,
+            "aggregateCaseSeconds": 4.5058347
+          },
+          {
+            "stage": "after",
+            "method": "SvgAuthoredPathTests.Contained_bitmap_curves_preserve_all_six_outputs",
+            "cases": 4,
+            "aggregateCaseSeconds": 0.1623022
+          },
+          {
+            "stage": "after",
+            "method": "SvgGradientCoordinateTests.Separate_radial_local_and_drawing_matrices_preserve_six_output_parity",
+            "cases": 2,
+            "aggregateCaseSeconds": 4.9138949
+          }
+        ]
+      }
+    ],
+    "measurementScope": "Case durations overlap within parallel functional runs and are not wall-time savings or throughput. No test/runtime change was made for this ten-case review, so there is no claimed before/after improvement.",
+    "sourceFiles": [
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgAuthoredPathTests.cs",
+        "sha256": "2be351a8fc2d00ab675ab6197003f33d569a409d8f994feef8ee4f4406d15832"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgGradientCoordinateTests.cs",
+        "sha256": "41f4115b9be06f0d79f15f2dacae3e7311fea1b19f892f7ade6e05c4f6ed5847"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgConversionApiContractTests.cs",
+        "sha256": "ae2cdb69e80cd39a9ca649ef9bb61b2a74da3250015285e54f0a680992d0f21b"
+      },
+      {
+        "file": "src/Lokad.Svg/SvgConverter.Invocation.cs",
+        "sha256": "a94d4fac7cbb3b250c4c2717a27e88a16553b45e6a4f7078703f329a5ea3e822"
+      }
+    ]
+  },
+  "primaryCi": {
+    "run": 42075141520,
+    "status": "Terminal CLOSED; never repoll or refetch.",
+    "jobs": [
+      {
+        "host": "windows",
+        "job": 127413247484,
+        "conclusion": "failure",
+        "logSha256": "6b7af0762d1c713f5616b9d1aec68726a87369e1e10d67c0456c28934b2452eb",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47845,
+            "total": 47845
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73536,
+            "total": 73537
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "job": 127413248020,
+        "conclusion": "success",
+        "logSha256": "3cbabdcd07e9b3f0db07246dca3e8dee62ab2ee20ee9b1190432b83fe5eda41b",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47845,
+            "total": 47845
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73537,
+            "total": 73537
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12141,
+            "total": 12141
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ]
+      }
+    ]
   }
 }

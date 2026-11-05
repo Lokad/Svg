@@ -982,9 +982,12 @@ the template set separates resource admission from map/effect/consumer dispatch.
 The 1,440-case canonical template rendering bank remains unchanged. Nine direct
 primitive pairs and 56 graph-discovery cases isolate selection without snapshot,
 glyph or PNG work. Full qualification executes all 2,009 cases on both runtimes/hosts.
+The same review retains all ten authored-border, contained-curve and radial-map
+six-output cases. Their historical construction and transform inputs differ from
+the general API matrix; overlapping case durations justify no removal.
 
-All 504 empty and eight live rows retain both definition orders, raw rendering,
-snapshot emptiness, prepared replay and positive font controls. Nine rejection,
+All 504 empty rows retain both definition orders, raw rendering, snapshot emptiness,
+prepared replay and positive font controls; the eight live rows remain unchanged. Nine rejection,
 four inert-effect rendering and one borrowed-storage/refusal/cancellation/retry
 case remain. Shared builders in other partial files are unchanged. Moving the
 existing counted unused-font fixture intact avoids 897 unnecessary TrueType
