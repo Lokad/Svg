@@ -1360,7 +1360,7 @@ public sealed class SvgUseInstanceTests
 
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         Assert.Equal(3, root.Geometries.Length);
-        Assert.All(root.Rectangles, rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color));
+        Assert.All(root.Geometries.CharacterizeRectangles(), rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color));
     }
 
     [Fact]
@@ -1371,7 +1371,7 @@ public sealed class SvgUseInstanceTests
 
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         Assert.Equal(3, root.Geometries.Length);
-        Assert.All(root.Rectangles, rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color));
+        Assert.All(root.Geometries.CharacterizeRectangles(), rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color));
     }
 
     [Fact]

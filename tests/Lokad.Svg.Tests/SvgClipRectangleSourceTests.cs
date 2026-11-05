@@ -99,7 +99,7 @@ public sealed class SvgClipRectangleSourceTests
         Assert.False(root.HasUnsupportedChild);
         if (selected)
         {
-            SvgRectangle rectangle = Assert.Single(root.Rectangles);
+            SvgRectangle rectangle = Assert.Single(root.Geometries.CharacterizeRectangles());
             Assert.Equal(8, rectangle.Width);
             Assert.Equal(6, rectangle.Height);
         }

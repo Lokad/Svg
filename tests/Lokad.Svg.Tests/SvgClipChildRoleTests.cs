@@ -64,7 +64,7 @@ public sealed class SvgClipChildRoleTests
         Assert.False(root.HasUnsupportedChild);
         // The scene retains its source rectangle with an empty paint binding.
         // Clip descendants must neither add scene geometry nor expand that binding.
-        SvgRectangle rectangle = Assert.Single(root.Rectangles);
+        SvgRectangle rectangle = Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.Equal(0, rectangle.Width);
         Assert.Equal(0, rectangle.Height);
     }

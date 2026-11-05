@@ -799,7 +799,7 @@ public sealed class SvgRootRenderingTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><use href='#r' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgPathFillAssertions.MatchesIntegerBands(root, [new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null)]);
     }
 
@@ -827,7 +827,7 @@ public sealed class SvgRootRenderingTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><rect width='8' height='8' fill='red'/></symbol><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><use href='#s' x='0' y='0' width='8' height='8' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgPathFillAssertions.MatchesIntegerBands(root, [new SvgRectangle(2, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null)]);
     }
 
@@ -1578,7 +1578,7 @@ public sealed class SvgRootRenderingTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><use href='#r' clip-path='url(#c)'/><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgPathFillAssertions.MatchesIntegerBands(root, [new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null)]);
     }
 

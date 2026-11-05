@@ -49,21 +49,21 @@ public sealed class SvgViewportPercentageTests
     public void Root_percentages_use_the_viewBox_extent()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96' viewBox='0 0 64 48'><svg x='25%' y='25%' width='50%' height='50%'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        Assert.Equal(new SvgRectangle(16, 12, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(16, 12, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
     public void Nested_percentages_use_the_local_viewBox_extent()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><svg x='8' y='6' width='64' height='48' viewBox='0 0 32 24'><svg x='25%' y='25%' width='50%' height='50%'><rect width='8' height='8' fill='red'/></svg></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        Assert.Equal(new SvgRectangle(24, 18, 16, 16, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(24, 18, 16, 16, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
     public void Percentage_root_use_positions_resolve_before_instance_mapping()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs><rect id='r' width='8' height='8' fill='red'/></defs><use href='#r' x='25%' y='25%'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        Assert.Equal(new SvgRectangle(75, 37.5, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(75, 37.5, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]

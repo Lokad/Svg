@@ -25,6 +25,10 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+Parser characterization uses a [test-owned rectangle projection](Lokad.Svg.Tests/SvgRectangleCharacterization.cs)
+of root or retained-scene geometry. It preserves the assertion view's stroke bands
+and clipped bounds; rendering regressions retain their independent native images.
+
 [Mixed filter/mask methods](Research/release-baselines/filter-test-responsibilities.json)
 use individual responsibility traits: direct bounds/admission, storage/lifetimes and
 relational rendering controls remain distinct. All 65 cases and assertions remain;

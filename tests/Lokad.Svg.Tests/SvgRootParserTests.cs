@@ -58,7 +58,7 @@ public sealed class SvgRootParserTests
     public void Records_visible_child_elements_for_the_scene_stage()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' x='1' y='2' width='3' height='4' fill='red'/></defs><use href='#tile' x='5' y='6'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgRectangle(6, 8, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgRectangle(6, 8, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
     }
 
     [Fact]
@@ -75,8 +75,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><defs><rect id='tile' x='1' y='2' width='3' height='4' fill='red'/></defs></g><use href='#tile' x='5' y='6'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgRectangle(6, 8, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgRectangle(6, 8, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -85,8 +85,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><defs><rect id='tile' width='2' height='2' fill='red'/></defs><use href='#tile'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -95,9 +95,9 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='tile'><rect width='2' height='2' fill='red'/></g><use href='#tile' x='5' y='6'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Rectangles.Length);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
-        Assert.Equal(new SvgRectangle(5, 6, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[1]);
+        Assert.Equal(2, root.Geometries.CharacterizeRectangles().Length);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
+        Assert.Equal(new SvgRectangle(5, 6, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[1]);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -106,11 +106,11 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='inner'><rect id='r' width='2' height='2' fill='red'/><use href='#r' x='2'/></g><use href='#inner' y='4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(4, root.Rectangles.Length);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
-        Assert.Equal(new SvgRectangle(2, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[1]);
-        Assert.Equal(new SvgRectangle(0, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[2]);
-        Assert.Equal(new SvgRectangle(2, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[3]);
+        Assert.Equal(4, root.Geometries.CharacterizeRectangles().Length);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
+        Assert.Equal(new SvgRectangle(2, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[1]);
+        Assert.Equal(new SvgRectangle(0, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[2]);
+        Assert.Equal(new SvgRectangle(2, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[3]);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -119,9 +119,9 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#later' x='4'/><g id='later'><rect width='2' height='2' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Rectangles.Length);
-        Assert.Equal(new SvgRectangle(4, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[1]);
+        Assert.Equal(2, root.Geometries.CharacterizeRectangles().Length);
+        Assert.Equal(new SvgRectangle(4, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[1]);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -316,8 +316,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><switch><rect x='1' y='2' width='3' height='4' fill='red'/><rect x='5' y='6' width='7' height='8' fill='blue'/></switch></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -326,8 +326,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><switch><rect systemLanguage='en' x='1' y='2' width='3' height='4' fill='red'/><rect x='5' y='6' width='7' height='8' fill='blue'/></switch></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgRectangle(5, 6, 7, 8, new SvgColor(0, 0, 255, 255), true, null), root.Rectangles[0]);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgRectangle(5, 6, 7, 8, new SvgColor(0, 0, 255, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -345,8 +345,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><switch transform='translate(1, 2)'><rect width='2' height='2' fill='red'/><rect width='2' height='2' fill='blue'/></switch></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgRectangle(1, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgRectangle(1, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -355,7 +355,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><switch/><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -874,8 +874,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='1' width='4' height='4' fill='red' stroke='blue' stroke-width='2' stroke-linecap='butt' stroke-linejoin='miter' stroke-dasharray='none'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -884,7 +884,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>g { stroke-linecap: butt; }</style><g stroke-linejoin='miter'><rect width='1' height='1' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -907,7 +907,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='5' height='5' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='none' stroke-dashoffset='5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -916,7 +916,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c' clip-rule='evenodd'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><rect width='5' height='5' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -938,8 +938,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g font-variant='normal'><rect width='1' height='1' fill='red' color-interpolation='sRGB'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -962,7 +962,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5' overflow='hidden' style='overflow: hidden'><svg x='1' y='1' width='3' height='3' overflow='hidden'><rect width='5' height='5' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -983,8 +983,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><a href='https://example.com' target='_blank' rel='noopener' hreflang='en' download='logo' type='image/svg+xml' title='Example'><rect width='1' height='1' fill='red'/></a></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -1028,8 +1028,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Mark'><rect width='1' height='1' fill='red' data-x='1' tabindex='0'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -1038,8 +1038,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape'><g inkscape:label='Layer'><rect width='1' height='1' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -1050,7 +1050,7 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(12.5, root.Width?.Value);
         Assert.Equal(7, root.Height?.Value);
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -1059,8 +1059,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { pointer-events: none; }</style><rect width='1' height='1' fill='red' style='cursor: pointer' pointer-events='all'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -1069,7 +1069,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='red' onclick='x'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         Assert.False(root.HasUnsupportedChild);
-        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -1077,7 +1077,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(4,0)'><defs><rect id='r' x='0' y='0' width='4' height='8' fill='red'/></defs></g><use href='#r' x='0' y='0'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -1085,7 +1085,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='2' height='8' fill='red' transform='translate(2,0)'/></defs><use href='#r' x='0' y='0'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 0, 2, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(2, 0, 2, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -1103,8 +1103,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='2' height='2' fill='red'/></defs><use href='#tile' x='1.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgRectangle(1.5, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgRectangle(1.5, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
     }
 
     [Fact]
@@ -1151,7 +1151,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g fill='red'><rect width='1' height='1' fill='inherit'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1159,7 +1159,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g fill='red'><rect width='1' height='1' fill='initial'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(0, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(0, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1167,7 +1167,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g fill-opacity='0.5'><rect width='1' height='1' fill='red' fill-opacity='unset'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 128), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 128), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1175,9 +1175,9 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='red' stroke='blue' style='stroke: initial'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
-        Assert.Null(root.Rectangles[0].Stroke);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
+        Assert.Null(root.Geometries.CharacterizeRectangles()[0].Stroke);
     }
 
     [Fact]
@@ -1185,7 +1185,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g display='none'><rect width='1' height='1' fill='red' display='initial'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -1194,7 +1194,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#r { fill: inherit; }</style><g fill='red'><rect id='r' width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1202,7 +1202,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style><defs><rect id='tile' width='1' height='1'/></defs><use href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1210,7 +1210,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue !important; } #r { fill: red; }</style><rect id='r' width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1218,7 +1218,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#r { fill: blue !important; }</style><rect id='r' width='1' height='1' style='fill: red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1226,7 +1226,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#r { fill: blue !important; }</style><rect id='r' width='1' height='1' style='fill: red !important'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1234,7 +1234,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' style='fill: red !important; fill: blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1242,7 +1242,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#tile' x='2'/><defs><rect id='tile' width='1' height='1' fill='red'/></defs><rect x='3' width='1' height='1' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgRectangle(2, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), rectangle),
             rectangle => Assert.Equal(new SvgRectangle(3, 0, 1, 1, new SvgColor(0, 0, 255, 255), true, null), rectangle));
     }
@@ -1252,7 +1252,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' x='1' y='1' width='2' height='1' fill='red'/></defs><use href='#tile' x='3' y='2' transform='scale(2) translate(1, 0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(10, 6, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(10, 6, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
     }
 
     [Fact]
@@ -1260,7 +1260,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile'><rect width='1' height='1' fill='red'/></symbol></defs><use href='#tile' x='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(2, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
     }
 
     [Fact]
@@ -1268,10 +1268,10 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='1' height='1' fill='red'/></defs><use href='#tile' opacity='0.5'/><use href='#tile' display='none'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal((byte)255, root.Rectangles[0].Color.Alpha);
+        Assert.Equal((byte)255, root.Geometries.CharacterizeRectangles()[0].Color.Alpha);
         SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
-        Assert.True(root.Rectangles[0].HasFill);
-        Assert.False(root.Rectangles[1].HasFill);
+        Assert.True(root.Geometries.CharacterizeRectangles()[0].HasFill);
+        Assert.False(root.Geometries.CharacterizeRectangles()[1].HasFill);
     }
 
     [Fact]
@@ -1279,10 +1279,10 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#half { opacity: 0.5; } .hidden { display: none; }</style><defs><rect id='tile' width='1' height='1' fill='red'/></defs><use id='half' href='#tile'/><use class='hidden' href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal((byte)255, root.Rectangles[0].Color.Alpha);
+        Assert.Equal((byte)255, root.Geometries.CharacterizeRectangles()[0].Color.Alpha);
         SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
-        Assert.True(root.Rectangles[0].HasFill);
-        Assert.False(root.Rectangles[1].HasFill);
+        Assert.True(root.Geometries.CharacterizeRectangles()[0].HasFill);
+        Assert.False(root.Geometries.CharacterizeRectangles()[1].HasFill);
     }
 
     [Fact]
@@ -1290,7 +1290,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='1' height='1'/></defs><use href='#tile' style='fill: red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -1298,7 +1298,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#instance { fill: red; }</style><defs><rect id='tile' width='1' height='1'/></defs><use id='instance' href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.Single(root.Rectangles).Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.Single(root.Geometries.CharacterizeRectangles()).Color);
     }
 
     [Fact]
@@ -1306,14 +1306,14 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#tile' fill='red'/><defs><rect id='tile' width='1' height='1'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.Single(root.Rectangles).Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.Single(root.Geometries.CharacterizeRectangles()).Color);
     }
 
     [Fact]
     public void Authored_rectangle_fill_wins_over_use_fill()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='1' height='1' fill='blue'/></defs><use href='#tile' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        Assert.Equal(new SvgColor(0, 0, 255, 255), Assert.Single(root.Rectangles).Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Assert.Single(root.Geometries.CharacterizeRectangles()).Color);
     }
 
     [Fact]
@@ -1397,7 +1397,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.25' y='0.5' width='5.5' height='3.25'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0.25, 0.5, 5.5, 3.25, new SvgColor(0, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(0.25, 0.5, 5.5, 3.25, new SvgColor(0, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
     }
 
     [Fact]
@@ -1405,7 +1405,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='rgba(255, 0, 0, 0.5)' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal((byte)64, root.Rectangles[0].Color.Alpha);
+        Assert.Equal((byte)64, root.Geometries.CharacterizeRectangles()[0].Color.Alpha);
     }
 
     [Fact]
@@ -1451,7 +1451,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff000001' fill-opacity='0.5' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 1), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 1), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1459,7 +1459,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g fill-opacity='0.5'><rect width='1' fill='red'/></g><g fill='red' fill-opacity='0.5'><rect width='1' fill-opacity='1'/></g><g color='red' fill='currentColor'><rect width='1' color='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(255, 0, 0, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color));
@@ -1470,7 +1470,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='yellow'/><rect width='1' fill='Teal'/><rect width='1' fill='fuchsia'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(255, 255, 0, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 128, 128, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(255, 0, 255, 255), rectangle.Color));
@@ -1481,7 +1481,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='orange'/><rect width='1' fill='RebeccaPurple'/><rect width='1' fill='darkslategray'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(255, 165, 0, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(102, 51, 153, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(47, 79, 79, 255), rectangle.Color));
@@ -1492,7 +1492,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='darkgray'/><rect width='1' fill='darkgrey'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(169, 169, 169, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(169, 169, 169, 255), rectangle.Color));
     }
@@ -1502,7 +1502,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='rgb(100% 0% 0% / 50%)'/><rect width='1' fill='hsl(120 100% 50% / 0.5)'/><rect width='1' fill='rgba(1 2 3)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(255, 0, 0, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(1, 2, 3, 255), rectangle.Color));
@@ -1521,7 +1521,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; fill-opacity: 0.5; }</style><rect width='1'/><rect width='1' fill='red'/><rect width='1' style='fill: lime'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color));
@@ -1532,7 +1532,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>/* palette */ rect/* type */ { /* property */ fill: /* value */red; }</style><rect width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1540,7 +1540,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; fill-opacity: 0.5; } .accent { fill: red; } .accent { fill: teal; } #selected { fill: lime; } #selected { opacity: 0.5; }</style><rect width='1'/><rect width='1' class='accent'/><rect width='1' id='selected' class='accent'/><rect width='1' class='accent' style='fill: yellow'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 128, 128, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color),
@@ -1552,7 +1552,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style><style>rect { fill: blue; }</style><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(0, 0, 255, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(0, 0, 255, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -1560,14 +1560,14 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#r { fill: red; }</style><style>rect { fill: blue; }</style><rect id='r' width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
     public void Applies_stylesheets_after_styleable_content()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1'/><style>rect { fill: red; }</style></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -1575,7 +1575,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>.accent { fill: red; }</style><rect width='1' class='before&#x9;accent&#xA;after'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
     }
 
     [Fact]
@@ -1583,7 +1583,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; } g rect { fill: red; } g > rect { fill: lime; }</style><rect width='1'/><g><rect width='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 255), rectangle.Color));
     }
@@ -1593,7 +1593,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; } [ id ] { fill: red; } [ class = accent ] { fill: lime; }</style><rect width='1'/><rect width='1' id='other'/><rect width='1' class='accent'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 255), rectangle.Color));
@@ -1613,8 +1613,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#selected { stroke: red; } .hidden { display: none; }</style><line id='selected' x1='0' y1='1' x2='2' y2='1' stroke-width='2'/><line class='hidden' x1='0' y1='3' x2='2' y2='3' stroke='blue' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
-        Assert.False(root.Rectangles[1].HasFill);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
+        Assert.False(root.Geometries.CharacterizeRectangles()[1].HasFill);
     }
 
     [Fact]
@@ -1622,9 +1622,9 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>g { fill: red; } #hidden { display: none; }</style><g><rect width='1'/></g><g id='hidden'><rect width='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
-        Assert.True(root.Rectangles[0].HasFill);
-        Assert.False(root.Rectangles[1].HasFill);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries.CharacterizeRectangles()[0].Color);
+        Assert.True(root.Geometries.CharacterizeRectangles()[0].HasFill);
+        Assert.False(root.Geometries.CharacterizeRectangles()[1].HasFill);
     }
 
     [Fact]
@@ -1632,7 +1632,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; } rect.accent { fill: red; } rect#selected { fill: lime; } g.hidden { display: none; }</style><rect width='1' class='accent'/><rect width='1' id='selected'/><g class='hidden'><rect width='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 255), rectangle.Color),
             rectangle => Assert.False(rectangle.HasFill));
@@ -1642,7 +1642,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.1' width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal((double)0.1f, root.Rectangles[0].X);
+        Assert.Equal((double)0.1f, root.Geometries.CharacterizeRectangles()[0].X);
     }
 
     [Fact]
@@ -1650,8 +1650,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='2' width='2' height='2' fill='red' transform='translate(0.5, -0.25)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(1.5, root.Rectangles[0].X);
-        Assert.Equal(1.75, root.Rectangles[0].Y);
+        Assert.Equal(1.5, root.Geometries.CharacterizeRectangles()[0].X);
+        Assert.Equal(1.75, root.Geometries.CharacterizeRectangles()[0].Y);
     }
 
     [Fact]
@@ -1659,7 +1659,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='2' y='2' width='8' height='8' fill='red' stroke='black' stroke-width='2' transform='translate(0, 0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.NotNull(root.Rectangles[0].Stroke);
+        Assert.NotNull(root.Geometries.CharacterizeRectangles()[0].Stroke);
     }
 
     [Fact]
@@ -1684,7 +1684,7 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><rect width='1' height='1' fill='red'/><g><rect width='1' height='1' fill='blue'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.False(root.HasUnsupportedChild);
-        Assert.Collection(root.Rectangles, rectangle => Assert.Equal((byte)255, rectangle.Color.Red), rectangle => Assert.Equal((byte)255, rectangle.Color.Blue));
+        Assert.Collection(root.Geometries.CharacterizeRectangles(), rectangle => Assert.Equal((byte)255, rectangle.Color.Red), rectangle => Assert.Equal((byte)255, rectangle.Color.Blue));
     }
 
     [Fact]
@@ -1710,8 +1710,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='1' width='4' height='4' fill='none' stroke='red' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 2), root.Rectangles[0].Stroke);
-        Assert.False(root.Rectangles[0].HasFill);
+        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 2), root.Geometries.CharacterizeRectangles()[0].Stroke);
+        Assert.False(root.Geometries.CharacterizeRectangles()[0].HasFill);
     }
 
     [Fact]
@@ -1719,7 +1719,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g fill-opacity='0.5'><rect x='1' y='1' width='4' height='4' fill='none' stroke='red' stroke-width='2'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 2), root.Rectangles[0].Stroke);
+        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 2), root.Geometries.CharacterizeRectangles()[0].Stroke);
     }
 
     [Theory]
@@ -1731,8 +1731,8 @@ public sealed class SvgRootParserTests
 
         using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.False(root.Rectangles[0].HasFill);
-        Assert.Null(root.Rectangles[0].Stroke);
+        Assert.False(root.Geometries.CharacterizeRectangles()[0].HasFill);
+        Assert.Null(root.Geometries.CharacterizeRectangles()[0].Stroke);
     }
 
     [Fact]
@@ -1741,10 +1741,10 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='none' stroke='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         using SvgRoot translated = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='blue' stroke='red' stroke-width='1' transform='translate(1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgStroke stroke = Assert.NotNull(root.Rectangles[0].Stroke);
+        SvgStroke stroke = Assert.NotNull(root.Geometries.CharacterizeRectangles()[0].Stroke);
         Assert.Equal(1, stroke.Width);
-        Assert.Equal(1, translated.Rectangles[0].X);
-        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 1), translated.Rectangles[0].Stroke);
+        Assert.Equal(1, translated.Geometries.CharacterizeRectangles()[0].X);
+        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 1), translated.Geometries.CharacterizeRectangles()[0].Stroke);
     }
 
     [Fact]
@@ -1752,8 +1752,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='blue' stroke='red' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.True(root.Rectangles[0].HasFill);
-        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 2), root.Rectangles[0].Stroke);
+        Assert.True(root.Geometries.CharacterizeRectangles()[0].HasFill);
+        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 2), root.Geometries.CharacterizeRectangles()[0].Stroke);
     }
 
     [Fact]
@@ -1761,8 +1761,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='none' color='blue' stroke='currentColor' stroke-width='2'/><line x1='0' y1='6' x2='4' y2='6' color='red' stroke='currentColor' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgStroke(new SvgColor(0, 0, 255, 255), 2), root.Rectangles[0].Stroke);
-        Assert.Equal(new SvgRectangle(0, 5, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[1]);
+        Assert.Equal(new SvgStroke(new SvgColor(0, 0, 255, 255), 2), root.Geometries.CharacterizeRectangles()[0].Stroke);
+        Assert.Equal(new SvgRectangle(0, 5, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[1]);
     }
 
     [Fact]
@@ -1770,7 +1770,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='1' y1='3' x2='5' y2='3' stroke='red' stroke-width='2'/><line x1='4' y1='1' x2='4' y2='5' stroke='blue' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             line => Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 255), true, null), line),
             line => Assert.Equal(new SvgRectangle(3, 1, 2, 4, new SvgColor(0, 0, 255, 255), true, null), line));
     }
@@ -1790,7 +1790,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='1' y1='3' x2='5' y2='3' stroke='red' stroke-width='2' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
 
@@ -1799,7 +1799,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='1' y1='3' x2='5' y2='3' stroke='#ff000080' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -1829,8 +1829,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='-2147483648' y1='2' x2='2147483647' y2='2' stroke='red' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(-2_147_483_648, root.Rectangles[0].X);
-        Assert.Equal(4_294_967_295d, root.Rectangles[0].Width);
+        Assert.Equal(-2_147_483_648, root.Geometries.CharacterizeRectangles()[0].X);
+        Assert.Equal(4_294_967_295d, root.Geometries.CharacterizeRectangles()[0].Width);
     }
 
     [Fact]
@@ -1849,8 +1849,8 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(1, 2)'><g transform='translate(3)'><rect x='4' y='5' width='1' height='1' transform='translate(-1, 2)'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(7, root.Rectangles[0].X);
-        Assert.Equal(9, root.Rectangles[0].Y);
+        Assert.Equal(7, root.Geometries.CharacterizeRectangles()[0].X);
+        Assert.Equal(9, root.Geometries.CharacterizeRectangles()[0].Y);
     }
 
     [Fact]
@@ -1858,10 +1858,10 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(1, 2)'><g transform='scale(2, 3)'><rect x='4' y='5' width='1' height='2'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(9, root.Rectangles[0].X);
-        Assert.Equal(17, root.Rectangles[0].Y);
-        Assert.Equal(2, root.Rectangles[0].Width);
-        Assert.Equal(6, root.Rectangles[0].Height);
+        Assert.Equal(9, root.Geometries.CharacterizeRectangles()[0].X);
+        Assert.Equal(17, root.Geometries.CharacterizeRectangles()[0].Y);
+        Assert.Equal(2, root.Geometries.CharacterizeRectangles()[0].Width);
+        Assert.Equal(6, root.Geometries.CharacterizeRectangles()[0].Height);
     }
 
     [Fact]
@@ -1870,8 +1870,8 @@ public sealed class SvgRootParserTests
         using SvgRoot translatedThenScaled = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='4' y='5' width='1' height='1' transform='translate(1, 2) scale(2, 3)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         using SvgRoot scaledThenTranslated = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='4' y='5' width='1' height='1' transform='scale(2, 3) translate(1, 2)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(9, 17, 2, 3, new SvgColor(0, 0, 0, 255), true, null), translatedThenScaled.Rectangles[0]);
-        Assert.Equal(new SvgRectangle(10, 21, 2, 3, new SvgColor(0, 0, 0, 255), true, null), scaledThenTranslated.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(9, 17, 2, 3, new SvgColor(0, 0, 0, 255), true, null), translatedThenScaled.Geometries.CharacterizeRectangles()[0]);
+        Assert.Equal(new SvgRectangle(10, 21, 2, 3, new SvgColor(0, 0, 0, 255), true, null), scaledThenTranslated.Geometries.CharacterizeRectangles()[0]);
     }
 
     [Fact]
@@ -1879,10 +1879,10 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='2' y='3' width='1' height='1' transform='matrix(2 0 0 3 4 5)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(8, root.Rectangles[0].X);
-        Assert.Equal(14, root.Rectangles[0].Y);
-        Assert.Equal(2, root.Rectangles[0].Width);
-        Assert.Equal(3, root.Rectangles[0].Height);
+        Assert.Equal(8, root.Geometries.CharacterizeRectangles()[0].X);
+        Assert.Equal(14, root.Geometries.CharacterizeRectangles()[0].Y);
+        Assert.Equal(2, root.Geometries.CharacterizeRectangles()[0].Width);
+        Assert.Equal(3, root.Geometries.CharacterizeRectangles()[0].Height);
     }
 
     [Fact]
@@ -1890,7 +1890,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='2' width='3' height='4' transform='translate(8,0) scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(4, 2, 3, 4, new SvgColor(0, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(4, 2, 3, 4, new SvgColor(0, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
     }
 
     [Fact]
@@ -1898,7 +1898,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='2' width='3' height='4' transform='matrix(-1,0,0,1,8,0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(4, 2, 3, 4, new SvgColor(0, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(4, 2, 3, 4, new SvgColor(0, 0, 0, 255), true, null), root.Geometries.CharacterizeRectangles()[0]);
     }
 
     [Theory]
@@ -1933,7 +1933,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 4 4'><rect width='4' height='4' fill='red'/></symbol></defs><use href='#s' x='0' y='0' width='4' height='4' transform='translate(8,0) scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2268,7 +2268,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 3, 4, 2, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(2, 3, 4, 2, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2287,7 +2287,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='1' y='1' width='4' height='4' transform='translate(1,1)'/></clipPath></defs><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2296,7 +2296,7 @@ public sealed class SvgRootParserTests
         // Omitted nested dimensions default to 100 percent of the resolved root output size.
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><svg><rect x='10' y='10' width='20' height='20' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(10, 10, 20, 20, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(10, 10, 20, 20, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2305,7 +2305,7 @@ public sealed class SvgRootParserTests
         // Percentage bases resolve in parent user units, keeping scene content in root user space for the single output map.
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' width='100%' height='100%'><svg x='50%' width='5' height='5'><rect width='5' height='5' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(5, 0, 5, 5, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(5, 0, 5, 5, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2313,7 +2313,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><svg><rect width='5' height='5' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 5, 5, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 5, 5, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2321,7 +2321,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><svg x='0' y='0' width='8' height='8' opacity='0.5'/><rect x='0' y='0' width='8' height='8' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2497,7 +2497,7 @@ public sealed class SvgRootParserTests
         using SvgSceneBuilder accepted = new(new RenderBudget(new HostMemoryBudget(10_000)), CancellationToken.None);
         accepted.AddGeometries([SvgGeometry.FromRectangle(rectangle)]);
         using SvgSceneStorage storage = accepted.Build();
-        Assert.Equal([rectangle], storage.Rectangles);
+        Assert.Equal([rectangle], storage.Geometries.CharacterizeRectangles());
     }
 
     [Fact]
@@ -2505,7 +2505,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><title>sample</title><metadata><editor:note xmlns:editor='urn:editor'>ignored</editor:note></metadata><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         Assert.False(root.HasUnsupportedChild);
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
     }
 
     [Fact]
@@ -2528,7 +2528,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' fill='red' style='color: lime'><g fill='blue' style='fill: currentColor; fill-opacity: 0.5'><rect width='1' height='1'/></g><rect width='1' height='1' fill='red' style='fill: blue; opacity: 0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
+        Assert.Collection(root.Geometries.CharacterizeRectangles(),
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color));
         SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
@@ -2628,7 +2628,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect width='64' height='64' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2636,7 +2636,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='64' height='64' fill='red'/></defs><svg x='8' y='8' width='32' height='32'><use href='#tile'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
     [Fact]
     public void Offsets_a_polygon_use_instance_by_its_nested_viewport_origin()
@@ -2655,7 +2655,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect width='4' height='4' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2675,7 +2675,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect x='10' y='10' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(18, 18, 4, 4, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(18, 18, 4, 4, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2691,7 +2691,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile' viewBox='0 0 16 16'><rect width='16' height='16' fill='red'/></symbol></defs><use href='#tile' x='16' y='16' width='32' height='32'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(16, 16, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(16, 16, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2699,7 +2699,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><symbol id='tile' viewBox='0 0 16 16'><rect width='16' height='16' fill='red'/></symbol></defs><use href='#tile' x='16' y='16'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(16, 16, 64, 64, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(16, 16, 64, 64, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2707,7 +2707,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile'><rect width='16' height='16' fill='red'/></symbol></defs><use href='#tile' x='16' y='16' width='32' height='32'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(16, 16, 16, 16, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(16, 16, 16, 16, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2715,7 +2715,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile' viewBox='0 0 16 16'><rect width='16' height='16'/></symbol></defs><use href='#tile' x='16' y='16' width='32' height='32' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(16, 16, 32, 32, new SvgColor(0, 0, 255, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(16, 16, 32, 32, new SvgColor(0, 0, 255, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
     [Fact]
     public void Applies_a_fill_override_to_an_unstyled_polygon()
@@ -2732,7 +2732,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile' viewBox='0 0 16 8'><rect width='16' height='8' fill='red'/></symbol></defs><use href='#tile' width='32' height='32'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 8, 32, 16, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 8, 32, 16, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2740,14 +2740,14 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile' viewBox='0 0 16 16'><rect width='16' height='16' fill='red'/></symbol></defs><g transform='translate(4)'><use href='#tile' x='16' y='16' width='32' height='32'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(20, 16, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(20, 16, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
     [Fact]
     public void Applies_forward_masks_to_groups()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformGroupScope(root, 255, null);
     }
 
@@ -2756,7 +2756,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgDrawCommand begin = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         Assert.Equal(255, begin.Opacity);
         Assert.Equal(128, begin.MaskAlpha);
@@ -2784,7 +2784,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5' mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgDrawCommand begin = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         Assert.Equal(128, begin.Opacity);
         Assert.Equal(128, begin.MaskAlpha);
@@ -2806,7 +2806,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#c)' mask='url(#m)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         Assert.Collection(root.Commands.ToArray().Where(command => command.Kind == SvgDrawCommandKind.BeginGroup),
             clip =>
             {
@@ -2830,7 +2830,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window'><rect x='4' y='4' width='8' height='8'/></clipPath></defs><g clip-path='url(#window)'><rect width='16' height='16' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2848,7 +2848,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#later)'><g><rect width='16' height='16' fill='red'/></g></g><defs><clipPath id='later'><rect x='4' y='4' width='8' height='8'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2864,7 +2864,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window'><rect x='4' y='4' width='8' height='8'/></clipPath></defs><rect width='16' height='16' fill='red' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2872,7 +2872,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='0' y='0' width='48' height='24' viewBox='0 0 12 24'><rect x='0' y='0' width='12' height='24' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(18, 0, 12, 24, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(18, 0, 12, 24, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2880,7 +2880,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='0' y='0' width='48' height='24' viewBox='0 0 12 24' preserveAspectRatio='none'><rect x='0' y='0' width='12' height='24' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 48, 24, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 48, 24, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2888,7 +2888,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='0' y='0' width='48' height='24' viewBox='0 0 12 24' preserveAspectRatio='xMidYMid slice'><rect x='0' y='0' width='12' height='24' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 48, 24, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 48, 24, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2896,14 +2896,14 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='8' y='8' width='48' height='48' viewBox='8 8 48 48'><rect x='16' y='16' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(16, 16, 8, 8, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(16, 16, 8, 8, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
     [Fact]
     public void Resolves_percentage_nested_viewport_dimensions()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='50%' y='50%' width='50%' height='50%'><rect x='0' y='0' width='8' height='8' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(32, 32, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(32, 32, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2911,7 +2911,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><use href='#tile' x='50%' y='50%' width='50%' height='50%'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(32, 32, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(32, 32, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -2920,8 +2920,8 @@ public sealed class SvgRootParserTests
         using SvgRoot viewport = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg width='50%' height='50%'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         using SvgRoot use = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><use href='#tile' width='50%'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgRectangle expected = new(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null);
-        Assert.Equal(expected, Assert.Single(viewport.Rectangles));
-        Assert.Equal(expected, Assert.Single(use.Rectangles));
+        Assert.Equal(expected, Assert.Single(viewport.Geometries.CharacterizeRectangles()));
+        Assert.Equal(expected, Assert.Single(use.Geometries.CharacterizeRectangles()));
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><use href='#tile' width='50%'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None)).ErrorCode);
     }
 
@@ -2976,7 +2976,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><use href='#tile'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgRectangle rectangle = Assert.Single(root.Rectangles);
+        SvgRectangle rectangle = Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.Equal((8d, 8d, 16d, 16d), (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height));
         Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color);
     }
@@ -3008,7 +3008,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='4' height='4' fill='red'/><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs><use href='#tile' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -3016,7 +3016,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='4' height='4' fill='red'/></defs><use href='#tile' clip-path='url(#window)'/><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -3032,7 +3032,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#later)'/><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -3047,7 +3047,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#fade)' clip-path='url(#later)'/><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 255, null);
     }
 
@@ -3056,7 +3056,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><use href='#r' mask='url(#m)'/><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
 
@@ -3095,7 +3095,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#later)'/><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
 
@@ -3121,7 +3121,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#later)'/><defs><mask id='later' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 255, new(2, 2, 4, 4), new(0, 0, 8, 8));
     }
 
@@ -3130,7 +3130,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#later)'/><defs><mask id='later' x='0.25' y='0.25' width='0.5' height='0.5'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 255, new(2, 2, 4, 4), new(0, 0, 8, 8));
     }
 
@@ -3139,7 +3139,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#window)' mask='url(#later)'/><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
 
@@ -3148,7 +3148,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#window)' mask='url(#later)'/><defs><clipPath id='window'><rect x='2' y='2' width='4' height='4'/></clipPath><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
 
@@ -3165,7 +3165,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='a'><rect x='2' y='2' width='12' height='12'/></clipPath><clipPath id='b'><rect x='4' y='4' width='8' height='8'/></clipPath></defs><g clip-path='url(#a)'><g clip-path='url(#b)'><rect width='16' height='16' fill='red'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -4626,7 +4626,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#ffffff'/></mask></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -4634,7 +4634,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#808080'/></mask></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
     [Fact]
@@ -4940,7 +4940,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade' mask-type='alpha'><rect x='8' y='8' width='48' height='48' fill='#00ff00'/></mask></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Fact]
@@ -4948,7 +4948,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'/></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 0, null);
     }
 
@@ -4958,7 +4958,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskUnits='userSpaceOnUse' x='16' y='16' width='32' height='32'><rect x='0' y='0' width='64' height='64' fill='#808080'/></mask></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, new(16, 16, 32, 32), new(8, 8, 48, 48));
     }
 
@@ -4967,7 +4967,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' x='0' y='0' width='1' height='1'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, new(0, 0, 8, 8));
     }
 
@@ -4976,7 +4976,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' x='0.25' width='0.5'><rect x='-8' y='-8' width='24' height='24' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, new(2, -0.8, 4, 9.6), new(0, -1, 8, 10));
     }
 
@@ -5005,7 +5005,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='8' y='8' width='48' height='48' fill='#ff0000'/></defs><defs><mask id='window' x='0.25' y='0.25' width='0.5' height='0.5'><rect x='0' y='0' width='64' height='64' fill='#808080'/></mask></defs><use href='#r' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, new(20, 20, 24, 24), new(8, 8, 48, 48));
     }
 
@@ -5022,7 +5022,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><use href='#tile' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, new(1, 1, 2, 2), new(0, 0, 8, 8));
     }
 
@@ -5043,7 +5043,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><use href='#tile' mask='url(#m)'/><defs><mask id='m' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         SvgLeafMaskAssertions.UniformScope(root, 128, new(1, 1, 2, 2), new(0, 0, 8, 8));
     }
 
@@ -5240,7 +5240,7 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(12, root.Width?.Value);
         Assert.Equal(7, root.Height?.Value);
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -5258,7 +5258,7 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(12, root.Width?.Value);
         Assert.Equal(7, root.Height?.Value);
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -5276,7 +5276,7 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(12, root.Width?.Value);
         Assert.Equal(7, root.Height?.Value);
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -5292,7 +5292,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs id='defs1'/><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -5324,7 +5324,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -5333,7 +5333,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon'><style>.external-icon{fill:blue}</style><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(0, 0, 255, 255), Assert.Single(root.Rectangles).Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Assert.Single(root.Geometries.CharacterizeRectangles()).Color);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -5342,7 +5342,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon'><style>.other{fill:blue}</style><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.False(root.HasUnsupportedChild);
     }
 

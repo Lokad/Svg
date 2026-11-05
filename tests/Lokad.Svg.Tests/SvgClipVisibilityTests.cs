@@ -129,7 +129,7 @@ public sealed class SvgClipVisibilityTests
     {
         using SvgRoot root = SvgRootParser.Parse(Input(Clipped("<g display='none'><rect width='8' height='8'/></g>", "")), SvgRenderLimits.Default, CancellationToken.None);
         Assert.False(root.HasUnsupportedChild);
-        SvgRectangle rectangle = Assert.Single(root.Rectangles);
+        SvgRectangle rectangle = Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.Equal(0, rectangle.Width);
         Assert.Equal(0, rectangle.Height);
     }

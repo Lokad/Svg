@@ -26,9 +26,6 @@ internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Hei
     /// <summary>Borrows this scene's sealed bindings; child arenas separately borrow document-owned definitions.</summary>
     internal SvgFilterArena? FilterResources => SceneStorage?.Filters;
 
-    /// <summary>Materializes visible rectangle bounds only for parser characterization tests.</summary>
-    internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);
-
     /// <summary>Idempotently releases the shared scene owner after every borrower has finished.</summary>
     public void Dispose() => SceneStorage?.Dispose();
 }
@@ -199,28 +196,6 @@ internal readonly struct SvgGeometry
         _content?.Dispose();
     }
 
-    internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
-    {
-        SvgRectangle[] rectangles = new SvgRectangle[geometries.Length];
-        for (int index = 0; index < geometries.Length; index++)
-        {
-            rectangles[index] = geometries[index].Kind switch
-            {
-                SvgGeometryKind.Rectangle => geometries[index].Rectangle,
-                SvgGeometryKind.AxisAlignedLine => geometries[index].AxisAlignedLine.ToStrokeBand(),
-                SvgGeometryKind.OrthogonalBand => geometries[index].Rectangle,
-                _ => throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains unsupported geometry.")
-            };
-            if (rectangles[index].Clip is {} clip)
-            {
-                SvgRectangle rectangle = rectangles[index];
-                double left = Math.Max(rectangle.X, clip.X), top = Math.Max(rectangle.Y, clip.Y);
-                double right = Math.Min(rectangle.X + rectangle.Width, clip.Right), bottom = Math.Min(rectangle.Y + rectangle.Height, clip.Bottom);
-                rectangles[index] = rectangle with { X = left, Y = top, Width = Math.Max(0, right - left), Height = Math.Max(0, bottom - top), Clip = null };
-            }
-        }
-        return rectangles;
-    }
 }
 
 /// <summary>Selects the output-mapping discipline for one polygon fill.</summary>
@@ -1056,9 +1031,6 @@ internal sealed class SvgSceneStorage : IDisposable
     }
 
     internal SvgGeometry[] Geometries { get; }
-
-    /// <summary>Materializes rectangles only for parser characterization tests.</summary>
-    internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);
 
     internal SvgDrawCommand[] Commands { get; }
 

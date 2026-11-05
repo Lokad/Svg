@@ -41,7 +41,7 @@ public sealed class SvgStaticCssTests
             + "{filter:url(https://example.invalid/unused);font-family:Unused;stroke-linecap:unimplemented;unsupported-paint:1}</style><g><rect width='8' height='8'/></g>");
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         Assert.False(root.HasUnsupportedChild);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
     }
 
@@ -98,7 +98,7 @@ public sealed class SvgStaticCssTests
         byte[] input = Document("<g style='float:right'><rect width='8' height='8' style='float:left;fill:red'/></g>");
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         Assert.False(root.HasUnsupportedChild);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
     }
 
     [Theory]

@@ -188,7 +188,7 @@ public sealed class SvgDocumentDimensionsTests
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='200'><svg x='50%' y='50%' width='50%' height='50%'><rect width='4' height='4' fill='red'/></svg></svg>"u8.ToArray();
         Assert.Equal(new SvgViewport(200, 150), SvgConverter.InspectDimensions(svg, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
         using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None);
-        Assert.Equal(new SvgRectangle(100, 75, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(100, 75, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries.CharacterizeRectangles()));
         Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(svg, CancellationToken.None));
     }
 

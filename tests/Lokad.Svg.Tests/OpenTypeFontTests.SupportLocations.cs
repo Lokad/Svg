@@ -110,7 +110,7 @@ public sealed partial class OpenTypeFontTests
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><g><rect width='16' height='16'/></g></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>"u8.ToArray();
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         Assert.False(root.HasUnsupportedChild);
-        SvgRectangle rectangle = Assert.Single(root.Rectangles);
+        SvgRectangle rectangle = Assert.Single(root.Geometries.CharacterizeRectangles());
         Assert.Equal(0, rectangle.Width);
         Assert.Equal(0, rectangle.Height);
     }

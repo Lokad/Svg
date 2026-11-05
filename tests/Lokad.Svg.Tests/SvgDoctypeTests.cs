@@ -101,7 +101,7 @@ public sealed class SvgDoctypeTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
         if (admitted)
         {
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.Single(root.Rectangles);
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.Single(root.Geometries.CharacterizeRectangles());
             Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             SvgAffineTransform map = SvgPreparationTestHelper.GetOutputMap(input, new SvgRenderOptions(new SvgViewport(4, 6), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None);
             Assert.Equal((4.0, 6.0), (map.A, map.D));

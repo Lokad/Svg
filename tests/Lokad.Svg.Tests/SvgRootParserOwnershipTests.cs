@@ -21,7 +21,7 @@ public sealed class SvgRootParserOwnershipTests
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, insufficient.Snapshot().CurrentBytes);
         using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes)), CancellationToken.None);
-        Assert.Single(root.Rectangles);
+        Assert.Single(root.Geometries.CharacterizeRectangles());
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public sealed class SvgRootParserOwnershipTests
         using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(workspace + SvgSceneBuilder.RecordedPaintOwnerBytes)), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Empty(root.Rectangles);
+        Assert.Empty(root.Geometries.CharacterizeRectangles());
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public sealed class SvgRootParserOwnershipTests
         using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(new HostMemoryBudget(workspace)), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Empty(root.Rectangles);
+        Assert.Empty(root.Geometries.CharacterizeRectangles());
     }
 
     [Fact]
