@@ -39,6 +39,11 @@ dependency marker with source padding. Five focused converter contracts protect
 surface/memory admission and the shadow limit; two independent native fixtures
 protect fractional source placement and a selected single blur.
 
+[Shared source dependence](Lokad.Svg.Tests/SvgFilterSourceDependencyTests.cs) covers
+all primitive families, source sentinels, shared/unread branches and 256-node chains.
+The nested mapped-validation contract remains separate from pixel demand; existing
+native filter banks protect source-free logical extents and native rounding.
+
 Paint-recording and marker validation retains 202 canonical native checks, 40
 routine six-output contracts (including every error boundary) and all 167 remaining
 API matrices as individual Research cases. The explicit selections live beside

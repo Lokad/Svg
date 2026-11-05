@@ -338,10 +338,14 @@ internal static class SvgFilterPlayback
     /// <remarks>The resource is borrowed and immutable. Caller stack scratch has one entry per
     /// primitive and is cleared and filled;
     /// the returned count governs conservative source-capture padding as well as pixel playback.
+    /// Source dependence follows the same consumed inputs for bounds planning; declaration
+    /// and mapped-scalar validation remain independent of that dependence.
     /// Traversal observes cancellation and owns no storage. Declaration, scalar and reference
     /// validation remain with the existing readers, including nodes without pixel demand.</remarks>
-    internal static int MarkPixelDependencies(SvgFilterResource resource, Span<bool> needed, CancellationToken token)
+    internal static int MarkPixelDependencies(SvgFilterResource resource, Span<bool> needed, CancellationToken token,
+        out bool dependsOnSource)
     {
+        dependsOnSource = false;
         needed.Clear();
         if (needed.IsEmpty) return 0;
         int count = 0;
@@ -358,22 +362,23 @@ internal static class SvgFilterPlayback
                 foreach (SvgFilterInput input in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
                 {
                     token.ThrowIfCancellationRequested();
-                    Mark(input, index, needed);
+                    Mark(input, index, needed, ref dependsOnSource);
                 }
             }
             else
             {
-                Mark(primitive.Input, index, needed);
+                Mark(primitive.Input, index, needed, ref dependsOnSource);
                 if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
-                    Mark(primitive.SecondInput, index, needed);
+                    Mark(primitive.SecondInput, index, needed, ref dependsOnSource);
             }
         }
 
         return count;
 
         // Existing readers retain invalid-reference diagnostics and ordering.
-        static void Mark(SvgFilterInput input, int before, Span<bool> needed)
+        static void Mark(SvgFilterInput input, int before, Span<bool> needed, ref bool dependsOnSource)
         {
+            if (input.Index < 0) dependsOnSource = true;
             if ((uint)input.Index < (uint)before) needed[input.Index] = true;
         }
     }
@@ -656,7 +661,7 @@ internal static class SvgFilterPlayback
                 token.ThrowIfCancellationRequested();
             }
             int finalPaintIndex = count == 0 ? -1 : ResolvePaintSource(new(finalIndex)).Index;
-            MarkPixelDependencies(resource, needed, token);
+            MarkPixelDependencies(resource, needed, token, out _);
             for (int index = 0; index < count; index++)
             {
                 token.ThrowIfCancellationRequested();

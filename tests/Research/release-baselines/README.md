@@ -35,6 +35,11 @@ source halos and the single-stage padding decision. Five failing-before converte
 contracts and two independently captured curved-gradient controls protect
 admission, deviation validation, fractional sampling and the live blur.
 
+[Filter source dependence](filter-source-dependency.json) removes the duplicate
+bounds classifier and shares the final-result marker with capture/playback.
+Twenty graph mechanisms and one nested-validation contract retain source-free
+logical extents, native source rounding and existing ownership.
+
 [Polygon contour ownership](contour-ownership.md) records the shared paint-binding
 storage contract and its failing-before refusal, transfer and retry witnesses.
 [Filter command views](command-view-qualification.json) remove unchanged subtree

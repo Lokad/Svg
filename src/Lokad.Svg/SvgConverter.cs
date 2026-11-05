@@ -738,7 +738,7 @@ public static partial class SvgConverter
                 sourceRight = Math.Max(sourceCaptureBounds.Right, Math.Ceiling(hint.Right)); sourceBottom = Math.Max(sourceCaptureBounds.Bottom, Math.Ceiling(hint.Bottom));
             }
             Span<bool> neededPrimitives = stackalloc bool[resource.Primitives.Items.Length];
-            int neededCount = SvgFilterPlayback.MarkPixelDependencies(resource, neededPrimitives, cancellationToken);
+            int neededCount = SvgFilterPlayback.MarkPixelDependencies(resource, neededPrimitives, cancellationToken, out _);
             double paddingX = 0, paddingY = 0;
             double offsetPaddingX = 0, offsetPaddingY = 0;
             for (int index = 0; index < neededPrimitives.Length; index++)
@@ -2371,7 +2371,8 @@ public static partial class SvgConverter
                     objectUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), localRegion);
                 SvgPaintBounds sourceHint = new(MathF.Min(local.VisualBounds.Left, local.ObjectBounds.Left), MathF.Min(local.VisualBounds.Top, local.ObjectBounds.Top),
                     MathF.Max(local.VisualBounds.Right, local.ObjectBounds.Right), MathF.Max(local.VisualBounds.Bottom, local.ObjectBounds.Bottom));
-                bool dependsOnSource = DependsOnSource(filter, cancellationToken);
+                Span<bool> needed = stackalloc bool[filter.Primitives.Items.Length];
+                SvgFilterPlayback.MarkPixelDependencies(filter, needed, cancellationToken, out bool dependsOnSource);
                 if (kind != SvgFilterBoundsKind.Output && dependsOnSource)
                 {
                     SvgAffineTransform ctm = MapFilterDrawingTransform(binding.Transform);
@@ -2407,34 +2408,6 @@ public static partial class SvgConverter
             }
             return filtered;
 
-            static bool DependsOnSource(SvgFilterResource filter, CancellationToken token)
-            {
-                int count = filter.Primitives.Items.Length;
-                if (count == 0) return false;
-                // Definitions admit at most 256 primitives; each input names
-                // the source or an earlier slot, already written by this walk.
-                Span<bool> sources = stackalloc bool[count];
-                for (int index = 0; index < count; index++)
-                {
-                    token.ThrowIfCancellationRequested();
-                    SvgFilterPrimitive primitive = filter.Primitives.Items[index];
-                    bool usesSource = primitive.Kind != SvgFilterPrimitiveKind.Flood
-                        && (primitive.Input.Index < 0 || sources[primitive.Input.Index]);
-                    if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
-                    {
-                        usesSource = false;
-                        foreach (SvgFilterInput input in filter.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
-                        {
-                            token.ThrowIfCancellationRequested();
-                            usesSource |= input.Index < 0 || sources[input.Index];
-                        }
-                    }
-                    else if (primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend)
-                        usesSource |= primitive.SecondInput.Index < 0 || sources[primitive.SecondInput.Index];
-                    sources[index] = usesSource;
-                }
-                return count > 0 && sources[^1];
-            }
 
         }
 

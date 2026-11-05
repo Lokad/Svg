@@ -1,0 +1,124 @@
+{
+  "status": "The existing final-result marker now also reports source dependence for bounds planning. Duplicate forward classification is removed; capture, mapped validation, rounding, pixel arithmetic and owners remain. Affected qualification passes; full milestone checks follow.",
+  "source": {
+    "baseCommit": "76fb77a16bd0844b506d86f049216ce7fb917c49",
+    "files": [
+      {
+        "path": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+        "beforeLfSha256": "4fbcbd9fb4f45cc96d54b4c84bc5c8c92dcec8f86a51ba9be60b8560eb08059a",
+        "afterLfSha256": "ec86e751fe43d046723919db1a722d6c712d14b0d98060e9f8671b4cc9930981",
+        "entireBeforeFileReconstructed": true
+      },
+      {
+        "path": "../../../src/Lokad.Svg/SvgConverter.cs",
+        "beforeLfSha256": "90b44d890374a1cc7ba2edf21b3b31bc915047af2423c1c6f161ef202f70fed6",
+        "afterLfSha256": "5ef4a4eea923ec6bc68ce444febcfbab1732af0825011c8789c846245ca51905",
+        "entireBeforeFileReconstructed": true
+      }
+    ],
+    "duplicateForwardEvaluatorRemoved": true,
+    "oneBoundedTraversalForBoundsCaptureAndPixels": true,
+    "noCaptureValidationOwnershipPixelArithmeticOrCoordinateChanges": true,
+    "negativeSourceSentinelConventionRetained": true,
+    "noNewTypesCachesRetainedGraphOrHeapOwner": true
+  },
+  "regressions": {
+    "file": "../../Lokad.Svg.Tests/SvgFilterSourceDependencyTests.cs",
+    "mechanismCases": 20,
+    "contractCases": 1,
+    "focusedAfter": {
+      "counters": {
+        "executed": 44,
+        "passed": 44,
+        "failed": 0
+      },
+      "failures": []
+    },
+    "beforeNestedGuard": {
+      "counters": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "failures": []
+    },
+    "beforeLibrarySha256": "6e2139c83513988526625c9a6414ffad408d43ed45bc64e9ec898a92b5df323a",
+    "retains": [
+      "All eight primitive kinds and SourceGraphic/SourceAlpha sentinel paths",
+      "Ignored flood/empty-merge primary inputs and unread source branches",
+      "Selected secondary/merge edges and shared subgraphs",
+      "Empty graphs and both source-dependent/source-free256-node chains",
+      "Nested mapped drop-shadow validation and shared-budget cleanup under source-independent output",
+      "All existing tests, scalar/reference/region checks, native images, logical extents and native source rounding"
+    ]
+  },
+  "affectedValidation": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "9de31960011b4d04e7cd0efbd840d134cc0bfb6ae16ca2aa15ba428e8107f604",
+      "testAssemblySha256": "4868d5a3ead278986372aea14584b22ec1021fa74aa89dbec8986d52827f8c9c",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDropShadowStorageTests|FullyQualifiedName~SvgGaussianBlurTests|FullyQualifiedName~SvgColoredFilterTests|FullyQualifiedName~SvgEmptyFilterStageStorageTests|FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 11.684096899814904,
+      "counters": {
+        "executed": "862",
+        "passed": "862",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "9de31960011b4d04e7cd0efbd840d134cc0bfb6ae16ca2aa15ba428e8107f604",
+      "testAssemblySha256": "4868d5a3ead278986372aea14584b22ec1021fa74aa89dbec8986d52827f8c9c",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDropShadowStorageTests|FullyQualifiedName~SvgGaussianBlurTests|FullyQualifiedName~SvgColoredFilterTests|FullyQualifiedName~SvgEmptyFilterStageStorageTests|FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 20.386710999999195,
+      "counters": {
+        "executed": "862",
+        "passed": "862",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "9de31960011b4d04e7cd0efbd840d134cc0bfb6ae16ca2aa15ba428e8107f604",
+      "testAssemblySha256": "dc7e187bf19c4105fc5979e238bebf8c205f03839a95787420e995a40cfed482",
+      "selection": "(Category!=Research&(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgAffineFilterCaptureReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests))|(FullyQualifiedName~SvgPaintInputReferenceTests&((DisplayName~filter-uniform-precision)|(DisplayName~filter-source-composition)|(DisplayName~gradient-color-alpha)))",
+      "exitCode": 0,
+      "seconds": 166.32686950010248,
+      "counters": {
+        "executed": "21159",
+        "passed": "21159",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "9de31960011b4d04e7cd0efbd840d134cc0bfb6ae16ca2aa15ba428e8107f604",
+      "testAssemblySha256": "dc7e187bf19c4105fc5979e238bebf8c205f03839a95787420e995a40cfed482",
+      "selection": "(Category!=Research&(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgAffineFilterCaptureReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests))|(FullyQualifiedName~SvgPaintInputReferenceTests&((DisplayName~filter-uniform-precision)|(DisplayName~filter-source-composition)|(DisplayName~gradient-color-alpha)))",
+      "exitCode": 0,
+      "seconds": 166.40174570004456,
+      "counters": {
+        "executed": "21159",
+        "passed": "21159",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "beforeRendererQualification": "css-selector-identifiers.json",
+  "model": "One bounded caller stack bitmap and final-result walk; no new type, retained graph, cache, owner or coordinate model. Source dependence is conservative over consumed graph operands, retaining existing negative-sentinel semantics.",
+  "claims": "Behavior-preserving shared-model simplification. No allocation or renderer-speed claim. Capture removal remains separate because nested mapped admission and bitmap-local construction still matter."
+}

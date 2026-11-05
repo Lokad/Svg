@@ -175,6 +175,14 @@ validation checks. Seven unread primitive paths, selected secondary/merge inputs
 and inherited region defaults keep distinct roles; existing native banks retain
 the image integration. No API matrix or new native reference is added.
 
+[Shared source dependence](filter-source-dependency.json) uses the existing marker
+for bounds planning, capture padding and pixel playback. Twenty direct mechanisms
+cover every primitive family, both source sentinels, empty/shared/unread branches
+and 256-node chains. One contract preserves nested mapped validation under a
+source-independent outer filter; it passes against both the prior and new renderer.
+Select `FullyQualifiedName~SvgFilterSourceDependencyTests` for this seam, then the
+complete affected filter banks before promotion.
+
 For source-capture routing, add `FullyQualifiedName~SvgFilterCaptureDemandTests`
 and `FullyQualifiedName~SvgFilterCaptureDemandReferenceTests`. The
 [capture cohort](filter-capture-demand.json) adds five converter contracts and two
