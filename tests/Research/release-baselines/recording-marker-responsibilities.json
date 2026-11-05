@@ -1,0 +1,758 @@
+{
+  "status": "Separate native rendering from the remaining six-form paint-recording/marker API product. Every original input/reference, comparison/assertion, error message and API matrix remains. No production changes or new test framework.",
+  "source": {
+    "baseCommit": "ffff6683f502d07172541d296442822aa4066d14",
+    "initialPartitionCommit": "1994965a4cdd1a04272af9660edcd890783d8ed3",
+    "implementationCommit": "e7fc42838d0ed9fc121951159ed0cd25070224ee",
+    "preservation": [
+      {
+        "file": "tests/Lokad.Svg.VisualTests/SvgPaintRecordingReferenceTests.cs",
+        "originalMethod": "Recorded_paints_preserve_browser_results_through_all_six_outputs",
+        "newRenderingMethod": "Recorded_paints_preserve_browser_results",
+        "newResearchMethod": "Extended_recorded_paints_preserve_all_six_outputs",
+        "beforeFileLfSha256": "7c90220c273d65e3b6a3374882b19005a1aedde60a383483a2dbb77659dfd985",
+        "afterFileLfSha256": "071e2aced4355ee65c440e3b9b0b6c8175973a0b87a2fb56109604c53bf16290",
+        "originalValidationBodyLfSha256": "f87346f708dc09a975bf63e0b87f545b4910249b35f800c6898d76b83c7113b8",
+        "sharedBodyWithCanonicalReturnRemovedReproducesOriginal": true,
+        "allOriginalAssertionsAndTheirOrderRetainedForApiCases": true,
+        "originalUnfilteredCasesProviderUnchanged": true,
+        "integrityHashPolicy": "JSON-only LF normalization; original shared validation body and source/reference byte hashes remain untouched."
+      },
+      {
+        "file": "tests/Lokad.Svg.VisualTests/SvgMarkerReferenceTests.cs",
+        "originalMethod": "Marker_cases_preserve_frozen_pixels_and_explicit_boundaries_through_six_apis",
+        "newRenderingMethod": "Markers_preserve_frozen_pixels",
+        "newResearchMethod": "Extended_marker_cases_preserve_all_six_apis",
+        "beforeFileLfSha256": "3ea2f57df1a6dcc0d681ed1ca6e350d2c2dd7bacdf433410ab24eff0a4fe86ee",
+        "afterFileLfSha256": "d100c58586684e31201ba3e3427f7b59d7a85c04ef223bcf8642b2d85e5e8dc7",
+        "originalValidationBodyLfSha256": "1f3ff15a9591df228a2a658064060127dbbdc2eb1213a1b6b95a66fa186cf34c",
+        "sharedBodyWithCanonicalReturnRemovedReproducesOriginal": true,
+        "allOriginalAssertionsAndTheirOrderRetainedForApiCases": true,
+        "originalUnfilteredCasesProviderUnchanged": true,
+        "integrityHashPolicy": "JSON-only LF normalization; original shared validation body and source/reference byte hashes remain untouched."
+      }
+    ],
+    "productionTreeUnchanged": true,
+    "productionTreeIdentitySha256": "f87aea820f02e1ef3ec9e20c6b859330f069b758fd8f647ace135c4a589101f6"
+  },
+  "inventory": {
+    "beforeDeclaredMethods": 5083,
+    "afterDeclaredMethods": 5089,
+    "sourceFiles": 720,
+    "sourceAndCompiledMethodKeysMatch": true,
+    "priorFullNet10CasesJoined": 120963,
+    "beforeLayerCounts": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1807,
+        "Mechanism": 1316,
+        "Contract": 545,
+        "Rendering": 984,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 286,
+        "Contract": 18,
+        "Integrity": 19,
+        "Rendering": 107
+      }
+    },
+    "afterLayerCounts": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1807,
+        "Mechanism": 1316,
+        "Contract": 545,
+        "Rendering": 984,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 284,
+        "Contract": 22,
+        "Integrity": 21,
+        "Rendering": 109
+      }
+    },
+    "scope": "Complete declared Fact/Theory inventory from Roslyn syntax and compiled attributes; all prior full net10 Windows case definitions join those methods. Prior durations prioritize source review; static API sites do not measure executions.",
+    "beforeMethodBodyIdentitySha256": "3f7ef7e7ecd01e0a50c772317809ddf60faf1e3ef218a1f02bb1a74eed3c417b"
+  },
+  "coverage": {
+    "joins": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "originalMatrices": 207,
+        "routineMatrices": 40,
+        "researchMatrices": 167,
+        "positiveNativeInputs": 202,
+        "boundaryMatricesStillRoutine": 5,
+        "integrityChecks": 2,
+        "routineCases": 244,
+        "fullCases": 411,
+        "caseMultiplicityPreserved": true
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "originalMatrices": 207,
+        "routineMatrices": 40,
+        "researchMatrices": 167,
+        "positiveNativeInputs": 202,
+        "boundaryMatricesStillRoutine": 5,
+        "integrityChecks": 2,
+        "routineCases": 244,
+        "fullCases": 411,
+        "caseMultiplicityPreserved": true
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "originalMatrices": 207,
+        "routineMatrices": 40,
+        "researchMatrices": 167,
+        "positiveNativeInputs": 202,
+        "boundaryMatricesStillRoutine": 5,
+        "integrityChecks": 2,
+        "routineCases": 244,
+        "fullCases": 411,
+        "caseMultiplicityPreserved": true
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "originalMatrices": 207,
+        "routineMatrices": 40,
+        "researchMatrices": 167,
+        "positiveNativeInputs": 202,
+        "boundaryMatricesStillRoutine": 5,
+        "integrityChecks": 2,
+        "routineCases": 244,
+        "fullCases": 411,
+        "caseMultiplicityPreserved": true
+      }
+    ],
+    "beforeMethods": 5083,
+    "afterMethods": 5089,
+    "layers": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1807,
+        "Mechanism": 1316,
+        "Contract": 545,
+        "Rendering": 984,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 284,
+        "Contract": 22,
+        "Integrity": 21,
+        "Rendering": 109
+      }
+    },
+    "productionSourceUnchanged": true,
+    "productionTreeSha256": "f87aea820f02e1ef3ec9e20c6b859330f069b758fd8f647ace135c4a589101f6",
+    "rawApiExecutions": {
+      "routineBefore": 1242,
+      "routineAfter": 442,
+      "fullBefore": 1242,
+      "fullAfter": 1444
+    },
+    "scope": "Execution counts follow the preserved six-call API bodies and one-call canonical return for current metadata. No source, reference, API matrix or boundary is discarded; equal pixels play no role in selection."
+  },
+  "referenceIdentity": {
+    "cases": 207,
+    "identitySha256": "cf75c682026a111332cbcedc73064a6577cab9faa03bbc24ff00f1b1c8d3d41b",
+    "manifests": [
+      {
+        "family": "paint-recording",
+        "manifestSha256": "ed48ca9227e0b9fb0ecc5e5777d1f929304eafc4567ce73703656af0a4d4581f",
+        "cases": 149
+      },
+      {
+        "family": "marker-content",
+        "manifestSha256": "d68ce7f5c8488e3d4bc98eff01efe7f2112aee89f3d5d560472b96fe330ea072",
+        "cases": 20
+      },
+      {
+        "family": "path-marker-content",
+        "manifestSha256": "8317bc0c44c612ef2d5f17e3fa1241f0659a3249f95f77d160c0d71e577797c7",
+        "cases": 23
+      },
+      {
+        "family": "marker-instance-content",
+        "manifestSha256": "7326bf0bd52e9020c00201d63d64d8e1621505fd9caaf1669b0449479e7dbbf3",
+        "cases": 15
+      }
+    ],
+    "sourceReferenceCaptureAndLicenseFilesChanged": false,
+    "selectionUsesImageEquality": false
+  },
+  "checkoutIdentityCorrection": {
+    "initialCiRun": 41976491378,
+    "initialRunTerminalClosed": true,
+    "initialJobLogSha256": {
+      "linux": "00df609813562a122bd165a5bb2883d88ae4b5aa85b2ccef191564c5a14f8581",
+      "windows": "12f032245d06d1d408bdf43299e68dc24c6848ce747a29c7d24119193923f5bc"
+    },
+    "failingBefore": "Raw Windows JSON manifest byte hashes fail against LF checkout manifests. Local WSL used the same Windows files and did not expose checkout conversion.",
+    "fix": "Only new JSON manifest identities normalize CRLF to LF. SVG/PNG/raw source/reference checks are unchanged.",
+    "lineEndingQualification": {
+      "scope": "Temporarily exercise LF JSON checkout bytes in all four manifests, then restore each original byte sequence. SVG sources, PNGs, comparisons and reference hashes are never changed.",
+      "frameworks": [
+        "net11.0",
+        "net10.0"
+      ],
+      "hosts": [
+        "windows",
+        "linux"
+      ],
+      "manifestBytesRestored": true,
+      "originalByteSha256": {
+        "tests/Research/paint-recording/manifest.json": "ed48ca9227e0b9fb0ecc5e5777d1f929304eafc4567ce73703656af0a4d4581f",
+        "tests/Research/marker-content/manifest.json": "d68ce7f5c8488e3d4bc98eff01efe7f2112aee89f3d5d560472b96fe330ea072",
+        "tests/Research/path-marker-content/manifest.json": "8317bc0c44c612ef2d5f17e3fa1241f0659a3249f95f77d160c0d71e577797c7",
+        "tests/Research/marker-instance-content/manifest.json": "7326bf0bd52e9020c00201d63d64d8e1621505fd9caaf1669b0449479e7dbbf3"
+      }
+    },
+    "negativeGuardStillRejectsBoundaryDemotion": true
+  },
+  "responsibilities": {
+    "rendering": "All 149 paint-recording and 53 positive marker inputs retain their independent native images and exact comparison fields through one canonical raw conversion.",
+    "contract": "25 paint and 15 marker cases preserve six output forms. All five original marker error/message/no-stream-output boundaries stay routine. Existing 96-case raw/prepared/owned/memory/stream API and ownership matrices are untouched.",
+    "research": "All remaining 124 paint and 43 marker API matrices remain separate discovered Research cases, included by unfiltered qualification. Explicit source-bound lists retain representative reasons; unlisted new inputs remain routine.",
+    "integrity": "Two facts join full/routine/research provider identities, source manifest hashes and positive/boundary partitions. A controlled demotion fails even after removing the boundary from representative declarations; original selection bytes are restored."
+  },
+  "validation": {
+    "checks": [
+      {
+        "stage": "before-routine-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "acb88e032d766b9ee4157878a51735d1aa5778bf8afcec4c29120197d284f6bb",
+        "exitCode": 0,
+        "seconds": 13.787512499839067,
+        "counters": {
+          "executed": "207",
+          "passed": "207",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "before-routine-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "acb88e032d766b9ee4157878a51735d1aa5778bf8afcec4c29120197d284f6bb",
+        "exitCode": 0,
+        "seconds": 14.164486199850217,
+        "counters": {
+          "executed": "207",
+          "passed": "207",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "before-routine-net10",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "74156e3af77e5c0dc29822974d1b72c3e19f68d00436be464d5e998d67fe018e",
+        "exitCode": 0,
+        "seconds": 11.173356699990109,
+        "counters": {
+          "executed": "207",
+          "passed": "207",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "before-routine-net10",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "74156e3af77e5c0dc29822974d1b72c3e19f68d00436be464d5e998d67fe018e",
+        "exitCode": 0,
+        "seconds": 12.786551200086251,
+        "counters": {
+          "executed": "207",
+          "passed": "207",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "after-routine-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 0,
+        "seconds": 17.06186780007556,
+        "counters": {
+          "executed": "244",
+          "passed": "244",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "after-routine-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 0,
+        "seconds": 16.994968299986795,
+        "counters": {
+          "executed": "244",
+          "passed": "244",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "after-routine-net10",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "c64e051046b2592f0c78601bb63f1fd60543343fe6852adfd2992f911cfd600d",
+        "exitCode": 0,
+        "seconds": 16.50965190003626,
+        "counters": {
+          "executed": "244",
+          "passed": "244",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "after-routine-net10",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "c64e051046b2592f0c78601bb63f1fd60543343fe6852adfd2992f911cfd600d",
+        "exitCode": 0,
+        "seconds": 17.412338900147006,
+        "counters": {
+          "executed": "244",
+          "passed": "244",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "after-all-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 0,
+        "seconds": 12.811810200102627,
+        "counters": {
+          "executed": "411",
+          "passed": "411",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "after-all-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 0,
+        "seconds": 13.83146689995192,
+        "counters": {
+          "executed": "411",
+          "passed": "411",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "after-all-net10",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "c64e051046b2592f0c78601bb63f1fd60543343fe6852adfd2992f911cfd600d",
+        "exitCode": 0,
+        "seconds": 12.44022489991039,
+        "counters": {
+          "executed": "411",
+          "passed": "411",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "after-all-net10",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "c64e051046b2592f0c78601bb63f1fd60543343fe6852adfd2992f911cfd600d",
+        "exitCode": 0,
+        "seconds": 13.811396700097248,
+        "counters": {
+          "executed": "411",
+          "passed": "411",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "measure-after-routine-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 0,
+        "seconds": 11.030997100053355,
+        "counters": {
+          "executed": "244",
+          "passed": "244",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "measure-after-routine-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 0,
+        "seconds": 16.379769700113684,
+        "counters": {
+          "executed": "244",
+          "passed": "244",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "measure-after-routine-net10",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "c64e051046b2592f0c78601bb63f1fd60543343fe6852adfd2992f911cfd600d",
+        "exitCode": 0,
+        "seconds": 11.40277409995906,
+        "counters": {
+          "executed": "244",
+          "passed": "244",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "measure-after-routine-net10",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "c64e051046b2592f0c78601bb63f1fd60543343fe6852adfd2992f911cfd600d",
+        "exitCode": 0,
+        "seconds": 13.810580600053072,
+        "counters": {
+          "executed": "244",
+          "passed": "244",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "render-only-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 0,
+        "seconds": 10.767660399898887,
+        "counters": {
+          "executed": "202",
+          "passed": "202",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "render-only-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 0,
+        "seconds": 14.522598100127652,
+        "counters": {
+          "executed": "202",
+          "passed": "202",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "negative-boundary-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "8e9e414f0de88c95d405e934662d61d0f1ad57181854227387c34d452ade8b31",
+        "exitCode": 1,
+        "seconds": 9.381004099966958,
+        "counters": {
+          "executed": "1",
+          "passed": "0",
+          "failed": "1"
+        }
+      },
+      {
+        "stage": "crlf-fixed-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "cf9d7a3c09d0e7897681c7eccb8db407171771edc668435030706b2a06494cfe",
+        "exitCode": 0,
+        "seconds": 11.136459900066257,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "crlf-fixed-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "cf9d7a3c09d0e7897681c7eccb8db407171771edc668435030706b2a06494cfe",
+        "exitCode": 0,
+        "seconds": 15.754687199834734,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "crlf-fixed-net10",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "59a3ba4842c275556114a92874c5203521692e66fd86e8585de4adb218a7f178",
+        "exitCode": 0,
+        "seconds": 9.259822300169617,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "crlf-fixed-net10",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "59a3ba4842c275556114a92874c5203521692e66fd86e8585de4adb218a7f178",
+        "exitCode": 0,
+        "seconds": 10.485558400163427,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "lf-fixed-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "cf9d7a3c09d0e7897681c7eccb8db407171771edc668435030706b2a06494cfe",
+        "exitCode": 0,
+        "seconds": 9.374053000006825,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "lf-fixed-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "cf9d7a3c09d0e7897681c7eccb8db407171771edc668435030706b2a06494cfe",
+        "exitCode": 0,
+        "seconds": 11.344457099912688,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "lf-fixed-net10",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "59a3ba4842c275556114a92874c5203521692e66fd86e8585de4adb218a7f178",
+        "exitCode": 0,
+        "seconds": 8.737226899946108,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "lf-fixed-net10",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "59a3ba4842c275556114a92874c5203521692e66fd86e8585de4adb218a7f178",
+        "exitCode": 0,
+        "seconds": 9.805844399845228,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "negative-boundary-fixed-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "cf9d7a3c09d0e7897681c7eccb8db407171771edc668435030706b2a06494cfe",
+        "exitCode": 1,
+        "seconds": 9.437761400127783,
+        "counters": {
+          "executed": "1",
+          "passed": "0",
+          "failed": "1"
+        }
+      }
+    ],
+    "localRuntimeEvidence": "polygon-preparation.json",
+    "qualifiedLibrarySha256": {
+      "net11.0": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+      "net10.0": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d"
+    },
+    "policy": "Test-only changes receive routine, full affected and layer-specific checks on both hosts/runtimes, then full primary CI and existing compatibility/package gates. Local checks use exact previously qualified libraries. No redundant local renderer/package/original requalification.",
+    "timingScope": "Single functional process/discovery/TRX observations. Initial post-change qualification used four concurrent host/runtime processes; before and later per-runtime observations used two test processes, with audit work overlapping initial startup of the later sample. No universal wall-time or renderer speedup is claimed.",
+    "measuredRoutineSeconds": {
+      "net11Windows": {
+        "before": 13.787512499839067,
+        "after": 11.030997100053355
+      },
+      "net11Linux": {
+        "before": 14.164486199850217,
+        "after": 16.379769700113684
+      },
+      "net10Windows": {
+        "before": 11.173356699990109,
+        "after": 11.40277409995906
+      },
+      "net10Linux": {
+        "before": 12.786551200086251,
+        "after": 13.810580600053072
+      }
+    }
+  },
+  "ci": {
+    "runId": 41977358976,
+    "sourceCommit": "e7fc42838d0ed9fc121951159ed0cd25070224ee",
+    "status": "completed",
+    "terminalClosed": true,
+    "jobs": {
+      "linux": {
+        "jobId": 127079229634,
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47651,
+            "total": 47651
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73516,
+            "total": 73516
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "c227dd0d370dc9f9e17ee300902330c0186d3347b0d1b20a3f6bc3b9c658b7f7"
+      },
+      "windows": {
+        "jobId": 127079229838,
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47651,
+            "total": 47651
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73515,
+            "total": 73516
+          }
+        ],
+        "logSha256": "157aab5eec3c03036cea036836bc956f1368775a507e854084d9096cf387df77"
+      }
+    },
+    "boundary": "Ubuntu full/compatibility/tools/package gates pass. Windows differs solely at the unchanged frozen DejaVu target; retain its reference and assertion pending authority."
+  },
+  "remaining": "Remaining subsystem classification, ownership/font setup sharing, alpha/filter consumer selection, shared renderer correctness, original-source admission and quiet-VM performance remain open."
+}

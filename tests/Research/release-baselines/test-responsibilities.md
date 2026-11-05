@@ -17,6 +17,12 @@ The explicit `Category=Research` selection remains independent of the layer.
 | Integrity | The paint partition check detects missing or duplicate identities; manifest loading validates historical filter resolution and research selections. Reference/source hashes and licensed fixtures remain authoritative. |
 | Research | Extended numerical-context products and historical source-composition cases remain individually selectable and execute in full qualification. |
 
+The [recording/marker partition](recording-marker-responsibilities.json) separates
+202 canonical native fixtures from 40 routine and 167 Research six-form API
+matrices. All five error/message/output boundaries stay routine. The original
+validation bodies and references remain; two integrity checks preserve complete
+provider identities and accept LF/CRLF JSON metadata without normalizing SVG/PNG bytes.
+
 ## Paint-bank discovery and loading
 
 [The typed loader](../../Lokad.Svg.VisualTests/PaintReferenceBank.cs) discovers

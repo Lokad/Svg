@@ -38,6 +38,10 @@ the current architecture guide is condensed with section anchors preserved.
 [Opacity/clip responsibilities](opacity-clip-responsibilities.json) retain all 58
 cases and every API interaction, assigning 24 unclassified methods without changing
 assertions; fast selection preserves every previous member and adds eight checks.
+[Recording/marker responsibilities](recording-marker-responsibilities.json) retain
+202 canonical native inputs and all 207 six-form API matrices, separating 40 routine
+contracts from 167 individual Research replays. All five boundary matrices remain
+routine; JSON identities are qualified under both checkout newline forms.
 [Supplied-font test responsibilities](font-output-responsibilities.md) separate
 37 native rendering inputs from seven routine and 30 extended output matrices.
 [Raster ownership setup](raster-ownership.json) shares the parse-once lifetime

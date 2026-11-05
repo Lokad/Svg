@@ -31,6 +31,8 @@ API matrices as individual Research cases. The explicit selections live beside
 the [paint](Research/paint-recording/api-research-cases.json) and
 [marker](Research/marker-content/api-research-cases.json) manifests. New inputs stay
 routine; integrity checks preserve the full partition and boundary coverage.
+The [qualification](Research/release-baselines/recording-marker-responsibilities.json)
+records the source/compiled inventory, preserved matrices and before/after timings.
 
 Parser characterization uses a [test-owned rectangle projection](Lokad.Svg.Tests/SvgRectangleCharacterization.cs)
 of root or retained-scene geometry. It preserves the assertion view's stroke bands
