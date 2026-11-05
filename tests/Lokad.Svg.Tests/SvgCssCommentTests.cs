@@ -14,6 +14,7 @@ public sealed class SvgCssCommentTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(ValidDeclarations))]
     public void Comments_preserve_existing_declarations_and_importance(string location, string declaration)
     {
@@ -28,6 +29,7 @@ public sealed class SvgCssCommentTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("rect/**/.hot")]
     [InlineData("rect/*one*//**/.hot")]
     [InlineData("rect[id/**/=/**/'box'].hot")]
@@ -36,6 +38,7 @@ public sealed class SvgCssCommentTests
             Render("<style>" + selector + "{fill:red}</style><rect width='8' height='8' id='box' class='hot'/>"));
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(".ho/**/t{fill:red}")]
     [InlineData("re/**/ct{fill:red}")]
     [InlineData("#bo/**/x{fill:red}")]
@@ -47,6 +50,7 @@ public sealed class SvgCssCommentTests
             Assert.Throws<SvgException>(() => Render("<style>" + sheet + "</style><rect width='8' height='8' id='box' class='hot'/>")).ErrorCode);
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Comment_only_styles_are_inert_and_quoted_family_text_remains_literal()
     {
         Assert.Equal(Render("<rect width='8' height='8'/>"), Render("<rect width='8' height='8' style='/* comment; : */'/>"));
@@ -56,6 +60,7 @@ public sealed class SvgCssCommentTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Long_comment_scans_observe_cancellation_without_owned_storage()
     {
         string declaration = "fill:/*" + new string('x', 65_536) + "*/red";

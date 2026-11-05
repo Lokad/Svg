@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCurrentColorInheritanceTests
 {
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<g color='red'><rect $ width='8' height='8' fill='currentColor' stroke='currentColor' stroke-width='2'/></g>")]
     [InlineData("<g color='red'><g $><rect width='8' height='8' fill='currentColor'/></g></g>")]
     [InlineData("<defs><rect id='s' width='8' height='8' fill='currentColor'/></defs><g color='red'><use $ href='#s'/></g>")]
@@ -24,6 +25,7 @@ public sealed class SvgCurrentColorInheritanceTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("color='currentColor'")]
     [InlineData("style='color:currentColor'")]
     [InlineData("class='self'")]
@@ -35,6 +37,7 @@ public sealed class SvgCurrentColorInheritanceTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("color='blue' style='color:currentColor'", "", "red")]
     [InlineData("color='blue' style='color:blue'", ".self{color:currentColor!important}", "red")]
     [InlineData("color='currentColor' style='color:blue'", "", "blue")]
@@ -50,6 +53,7 @@ public sealed class SvgCurrentColorInheritanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fill_and_stroke_current_color_keep_binding_to_each_descendants_own_color()
     {
         const string shape = "<rect x='2' y='2' width='8' height='8' color='blue' stroke-width='2'/>";
@@ -59,6 +63,7 @@ public sealed class SvgCurrentColorInheritanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Self_reference_keeps_the_attribute_token_limit_before_normalization()
     {
         string value = new string(' ', SvgSyntaxLimits.MaximumValueTokenCharacters) + "currentColor";

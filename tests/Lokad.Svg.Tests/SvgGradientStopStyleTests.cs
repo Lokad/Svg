@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGradientStopStyleTests
 {
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("stop-color:red!important;stop-color:blue", "stop-color:red")]
     [InlineData("stop-opacity:.27!important;stop-opacity:.9", "stop-opacity:.27")]
     [InlineData("stop-color:red!important;stop-color:blue;stop-opacity:.27", "stop-color:red;stop-opacity:.27")]
@@ -28,6 +29,7 @@ public sealed class SvgGradientStopStyleTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Important_stop_opacity_retains_unquantized_source_alpha()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<stop stop-color='#46596d80' stop-opacity='.9' style='stop-opacity:27%!important;stop-opacity:1'/>"));
@@ -38,6 +40,7 @@ public sealed class SvgGradientStopStyleTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("stop-color:not-a-color!important;stop-color:red", SvgErrorCode.UnsupportedFeature)]
     [InlineData("stop-opacity:NaN!important;stop-opacity:1", SvgErrorCode.MalformedInput)]
     public void Invalid_winning_values_keep_their_errors_and_release_storage(string style, SvgErrorCode code)

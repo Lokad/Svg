@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStyleSheetStorageTests
 {
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(4095)]
     [InlineData(4096)]
     [InlineData(65536)]
@@ -26,6 +27,7 @@ public sealed class SvgStyleSheetStorageTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(4096)]
     [InlineData(65536)]
     [InlineData(1048576)]
@@ -54,6 +56,7 @@ public sealed class SvgStyleSheetStorageTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false)]
     [InlineData(true)]
     public void Text_readers_release_storage_on_invalid_children_and_cancellation(bool collect)

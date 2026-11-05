@@ -1,0 +1,512 @@
+{
+  "status": "73 existing methods classified individually; all341 cases, providers, loops, assertion bodies, case names and Research membership remain. The fast selection gains154 cases and loses none.",
+  "source": {
+    "baseCommit": "0026e9f0b4d00fd587ede3b3d2ce08df15a9fc79",
+    "files": [
+      {
+        "file": "../../Lokad.Svg.Tests/SvgCssCommentTests.cs",
+        "beforeLfSha256": "226b8b7f6589e102f617bab6331fd94e6c94745d9916d820471e471bec791543",
+        "afterLfSha256": "5039e42addfd3537cc03a5cc2ed514d96fbbbcde49cdb35cd174f49f86920292",
+        "methods": {
+          "Comments_preserve_existing_declarations_and_importance": "Rendering",
+          "Selector_comments_preserve_adjacent_compound_tokens": "Rendering",
+          "Comments_cannot_join_identifiers_into_another_supported_token": "Contract",
+          "Comment_only_styles_are_inert_and_quoted_family_text_remains_literal": "Rendering",
+          "Long_comment_scans_observe_cancellation_without_owned_storage": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgCssGeometryDimensionTests.cs",
+        "beforeLfSha256": "40921333b6151add1492433ae1d8ff2fb11df1a02b86b660034a7b74e1d19aaa",
+        "afterLfSha256": "4a27809e63e4317b70aaa841cfde7779a7a5dc3a844564e10720e6a0e0088f70",
+        "methods": {
+          "Unsupported_css_dimensions_report_the_winning_property_and_release_storage": "Contract",
+          "Matched_resource_and_instance_source_dimensions_are_rejected": "Contract",
+          "Nonapplicable_and_unmatched_dimension_rules_remain_inert": "Rendering",
+          "Root_sizing_and_dimension_inspection_keep_their_cascade": "Contract",
+          "Retained_image_dimensions_are_rejected_before_replay": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgCssSelectorTests.cs",
+        "beforeLfSha256": "1758f2b6c52d656098f5fde29672a597ab5d5fa1806a669a62f905b84a0e7298",
+        "afterLfSha256": "e203a6596f32dbe78774958ddfad85a58b11c3b5efb75d52957a1a0eb88410fd",
+        "methods": {
+          "Class_membership_uses_ascii_separators_without_splitting_unicode_tokens": "Rendering",
+          "Compound_selectors_match_the_actual_ancestor_chain": "Rendering",
+          "Class_specificity_outranks_any_number_of_element_selectors": "Rendering",
+          "Id_specificity_outranks_any_number_of_class_selectors": "Rendering",
+          "Important_declarations_outrank_high_specificity_and_normal_inline_values": "Rendering",
+          "Unmatched_supported_element_rules_leave_other_geometry_unchanged": "Rendering",
+          "Ancestors_of_a_previous_sibling_do_not_match_the_next_sibling": "Rendering",
+          "Definition_source_selectors_survive_local_instance_replay": "Rendering",
+          "Matching_root_rules_supply_inherited_paint": "Rendering",
+          "Root_stylesheet_dimensions_and_font_device_map_share_the_same_cascade": "Contract",
+          "Container_cascades_preserve_source_ancestor_exclusion": "Rendering",
+          "Selectors_outside_the_declared_subset_reject_before_rendering": "Contract",
+          "Compound_selectors_preserve_the_established_identifier_length_boundary": "Rendering",
+          "Excessive_selector_chains_retain_a_finite_syntax_limit": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgCssWhitespaceTests.cs",
+        "beforeLfSha256": "52f90780ddf1d8bea94cf38cb841951460b19ed42121a3546bfaecee542c4f83",
+        "afterLfSha256": "841875e48131b3f20e5b2fd1da5ddbf94e578458ce4a2833b4c16881f4f66280",
+        "methods": {
+          "Selector_boundaries_preserve_non_ascii_identifier_characters": "Rendering",
+          "Scalar_tokens_do_not_turn_unicode_characters_into_css_whitespace": "Rendering",
+          "Malformed_css_tokens_reject_without_changing_their_value": "Contract",
+          "Css_whitespace_preserves_quoted_unicode_and_form_feed_separation": "Mechanism",
+          "Gradient_stop_styles_preserve_non_ascii_property_and_value_boundaries": "Rendering"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgCurrentColorInheritanceTests.cs",
+        "beforeLfSha256": "2a22b3db85fecedd4a74d3b76f0b88bced6254c6c0ea526303ac1ed316631ac0",
+        "afterLfSha256": "576a49cc410b39997579fb8dc6deec8715558ba577ff6ab1240efafcfe8e4927",
+        "methods": {
+          "Winning_self_reference_matches_explicit_inheritance_through_source_and_instance_paths": "Rendering",
+          "Root_self_reference_uses_the_initial_inherited_color": "Rendering",
+          "Self_reference_is_resolved_only_after_cascade_and_importance": "Rendering",
+          "Fill_and_stroke_current_color_keep_binding_to_each_descendants_own_color": "Rendering",
+          "Self_reference_keeps_the_attribute_token_limit_before_normalization": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgGradientStopStyleTests.cs",
+        "beforeLfSha256": "d37b94dcf7b49e57429ce446cd82d2efd8948dc4c86222a6a5f71c5c23fedffe",
+        "afterLfSha256": "cb74949b038a3794b762bb717c56456a33f289967a9626587b24dda8ad94405d",
+        "methods": {
+          "Stop_styles_resolve_each_property_by_importance_then_source_order": "Rendering",
+          "Important_stop_opacity_retains_unquantized_source_alpha": "Mechanism",
+          "Invalid_winning_values_keep_their_errors_and_release_storage": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgStaticCssImageTests.cs",
+        "beforeLfSha256": "8691a9538ab2c20673d919885d7b40a535041618caa2bd7d9f2fd7f38ceba281",
+        "afterLfSha256": "113a8c0d582fb7bac44d294b3d23dd8a8c82061349893de79c6a18faabfb6221",
+        "methods": {
+          "Periodic_stop_padding_releases_ramp_owners_after_denial_cancellation_and_retry": "Contract",
+          "Periodic_factory_integration_releases_owners_after_denial_cancellation_and_retry": "Contract",
+          "Nested_viewport_clip_releases_owners_around_opacity_and_filter_output": "Contract",
+          "Constant_factory_paints_release_polygon_owners_after_denial_cancellation_and_retry": "Contract",
+          "Radial_stroke_bands_keep_stroke_opacity_separate_from_pattern_fill": "Mechanism",
+          "Reflected_radial_sources_release_owners_after_denial_cancellation_and_retry": "Contract",
+          "Constant_radial_cone_masks_release_owners_after_denial_cancellation_and_retry": "Contract",
+          "Source_bound_linear_fills_release_owners_after_denial_cancellation_and_retry": "Contract",
+          "Pattern_unit_replay_preserves_sources_and_releases_owners_after_denial_and_retry": "Contract",
+          "Pattern_content_replay_releases_image_filter_owners_on_denial_and_retry": "Contract",
+          "Filtered_tile_capture_cancellation_and_work_denial_release_temporary_owners": "Contract",
+          "Object_relative_tile_replay_cancellation_and_work_denial_release_temporary_owners": "Contract",
+          "Pattern_opacity_replay_preserves_sources_and_releases_owners_after_denial_and_retry": "Contract",
+          "Pattern_group_opacity_cancellation_and_work_denial_release_temporary_owners": "Contract",
+          "Composition_replay_preserves_sources_and_releases_owners_after_denial_and_retry": "Contract",
+          "Composition_replay_cancellation_and_work_denial_release_temporary_owners": "Contract",
+          "Affine_filter_layers_preserve_sources_and_release_temporary_owners_after_denial_and_retry": "Contract",
+          "Image_and_nested_styles_preserve_input_and_release_owners_after_denial_and_retry": "Contract",
+          "Affine_images_preserve_input_and_release_owners_after_denial_and_retry": "Contract",
+          "Marker_units_and_cascade_release_owners_after_denial_and_retry": "Contract",
+          "Image_filter_source_preserves_input_and_releases_owners_after_denial_and_retry": "Contract",
+          "Filter_output_clips_release_source_and_clip_owners_after_denial_and_retry": "Contract",
+          "Nested_filter_sources_release_intermediate_owners_after_denial_and_retry": "Contract",
+          "Mixed_filter_graphs_preserve_sources_and_release_temporary_owners_after_denial_and_retry": "Contract",
+          "Missing_output_clip_releases_the_decoded_image_and_does_not_publish_output": "Contract",
+          "Image_filter_cascade_uses_the_same_bounded_source_as_the_attribute": "Rendering",
+          "Image_filter_bounds_and_work_denial_preserve_the_prepared_source_for_retry": "Contract",
+          "Affine_coverage_cancellation_releases_temporary_owners": "Contract",
+          "Affine_filter_cancellation_releases_temporary_owners": "Contract",
+          "Decoded_image_owners_release_after_placement_or_later_document_failure": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgStrokeStyleSyntaxTests.cs",
+        "beforeLfSha256": "e086cb28a8e7ff871c073c7315b4c335ec8269b46d339b43147b18e9239fddd9",
+        "afterLfSha256": "9412afdf76e40915df7c66631b61b9f0c5961f600bca9ff353f64b220fd66ccb",
+        "methods": {
+          "Dash_materialization_preserves_values_and_odd_pattern_repetition": "Mechanism",
+          "Dash_validation_and_materialization_preserve_error_categories": "Mechanism",
+          "Stroke_validation_and_presence_checks_do_not_allocate_dash_arrays": "Contract"
+        }
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgStyleSheetStorageTests.cs",
+        "beforeLfSha256": "b6c29d9f380f3fbe836f54570d3d13b761fb291b040e332e9e4aafba11a504a5",
+        "afterLfSha256": "46f5b5eb0b43011a270dcfd1f5764ff983163d2a051e60e8f515e4f5c87806f9",
+        "methods": {
+          "Collected_text_fits_its_two_live_copies_without_growing_at_eof": "Contract",
+          "Consuming_collected_text_uses_bounded_storage_and_leaves_the_next_sibling": "Contract",
+          "Text_readers_release_storage_on_invalid_children_and_cancellation": "Contract"
+        }
+      }
+    ],
+    "onlyAddedTraits": true,
+    "removingOnlyNewTraitsRestoresAllFilesByteForByte": true,
+    "everyBodyProviderLoopCaseNameAndAssertionUnchanged": true,
+    "noProductionFixtureReferenceOrResearchChange": true
+  },
+  "compiledBodies": [
+    {
+      "framework": "net11.0",
+      "methods": 13212,
+      "identicalBodies": true,
+      "methodBodyIdentitySha256": "2e2028c4e0fa50289ba189a66e3d94d2cab1c4de026a4e5b719e4c29f65a836b"
+    },
+    {
+      "framework": "net10.0",
+      "methods": 13212,
+      "identicalBodies": true,
+      "methodBodyIdentitySha256": "2e2028c4e0fa50289ba189a66e3d94d2cab1c4de026a4e5b719e4c29f65a836b"
+    }
+  ],
+  "inventory": {
+    "declaredMethods": 5117,
+    "sourceFiles": 727,
+    "layers": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1606,
+        "Mechanism": 1427,
+        "Contract": 625,
+        "Rendering": 1009,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 277,
+        "Contract": 34,
+        "Integrity": 21,
+        "Rendering": 116,
+        "Mechanism": 1
+      }
+    },
+    "priorMethodsAndTraitsUnchangedOutsideThisCohort": true,
+    "unclassifiedCoreBefore": 1679,
+    "unclassifiedCoreAfter": 1606
+  },
+  "responsibilities": {
+    "Mechanism": {
+      "methods": 5,
+      "cases": 19,
+      "retains": [
+        "Direct dash materialization, odd repetition and syntax errors",
+        "Quoted CSS whitespace and unquantized stop alpha",
+        "Parsed recorded radial-stroke alpha independent of pattern fill"
+      ]
+    },
+    "Contract": {
+      "methods": 44,
+      "cases": 135,
+      "retains": [
+        "Public admission/diagnostics, root dimension inspection and syntax limits",
+        "Collected and consumed stylesheet text, bounded allocations, reader position, cancellation and cleanup",
+        "Shared parser/raster allowance, allocation refusal, prepared source retention, exact caller tokens and retry",
+        "Mid-paint analytic cancellation and temporary filter/pattern/image owners",
+        "Separate earlier/later decoded-image failure paths and no partially published stream"
+      ]
+    },
+    "Rendering": {
+      "methods": 24,
+      "cases": 187,
+      "retains": [
+        "Class membership and Unicode token boundaries across source/instance contexts",
+        "Ancestor chains, specificity, importance, root cascade and source-ancestor exclusion",
+        "CurrentColor self-reference, descendant binding and inheritance",
+        "Gradient-stop cascade and image-filter CSS/attribute equivalence"
+      ],
+      "oracle": "Explicit attribute controls and relational rendered comparisons. Independent native image banks remain separate and unchanged. Mixed boundary/consumer methods remain intact."
+    }
+  },
+  "fastSelection": {
+    "beforeCases": 19551,
+    "afterCases": 19705,
+    "addedMechanismCases": 19,
+    "addedContractCases": 135,
+    "removedCases": 0,
+    "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research"
+  },
+  "validation": [
+    {
+      "stage": "before",
+      "host": "windows",
+      "profile": "affected",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)",
+      "seconds": 11.291942399926484,
+      "exitCode": 0,
+      "counters": {
+        "executed": 341,
+        "passed": 341,
+        "failed": 0
+      },
+      "identitySha256": "f58529efabea3f60e03be19c6adebd700872cf77926de2f681349fb6578bbf68",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "a57b3be89b87901dad40f12ca97a6268b6f17144f27afe8b72285dac5112b01e"
+    },
+    {
+      "stage": "before",
+      "host": "linux",
+      "profile": "affected",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)",
+      "seconds": 13.640453099971637,
+      "exitCode": 0,
+      "counters": {
+        "executed": 341,
+        "passed": 341,
+        "failed": 0
+      },
+      "identitySha256": "f58529efabea3f60e03be19c6adebd700872cf77926de2f681349fb6578bbf68",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "a57b3be89b87901dad40f12ca97a6268b6f17144f27afe8b72285dac5112b01e"
+    },
+    {
+      "stage": "before",
+      "host": "windows",
+      "profile": "fast",
+      "framework": "net11.0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "seconds": 25.63841629982926,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19551,
+        "passed": 19551,
+        "failed": 0
+      },
+      "identitySha256": "3ec6eab0f4c1d77ab3a256f5a0ad454c684513f4b1e620b91460fbf7d38baf13",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "a57b3be89b87901dad40f12ca97a6268b6f17144f27afe8b72285dac5112b01e"
+    },
+    {
+      "stage": "before",
+      "host": "linux",
+      "profile": "fast",
+      "framework": "net11.0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "seconds": 27.30037870001979,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19551,
+        "passed": 19551,
+        "failed": 0
+      },
+      "identitySha256": "c6c1730ed3a9abae1e6353f68068e14466fe32791ccbbf7e9707437aafba4d8a",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "a57b3be89b87901dad40f12ca97a6268b6f17144f27afe8b72285dac5112b01e"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "affected",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)",
+      "seconds": 11.29958330001682,
+      "exitCode": 0,
+      "counters": {
+        "executed": 341,
+        "passed": 341,
+        "failed": 0
+      },
+      "identitySha256": "f58529efabea3f60e03be19c6adebd700872cf77926de2f681349fb6578bbf68",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "affected",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)",
+      "seconds": 14.224290000041947,
+      "exitCode": 0,
+      "counters": {
+        "executed": 341,
+        "passed": 341,
+        "failed": 0
+      },
+      "identitySha256": "f58529efabea3f60e03be19c6adebd700872cf77926de2f681349fb6578bbf68",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "affected",
+      "framework": "net10.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)",
+      "seconds": 15.218207200057805,
+      "exitCode": 0,
+      "counters": {
+        "executed": 341,
+        "passed": 341,
+        "failed": 0
+      },
+      "identitySha256": "f58529efabea3f60e03be19c6adebd700872cf77926de2f681349fb6578bbf68",
+      "librarySha256": "e8de8b16e96beb03f31bde19ba1b22e9aa29515f1389a1a928e21a67c42ced0b",
+      "testAssemblySha256": "b3c0d4021a44e434316b20547d24b2c412abbfee7f2f039d27a8f71ec19ade17"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "affected",
+      "framework": "net10.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)",
+      "seconds": 21.13854239997454,
+      "exitCode": 0,
+      "counters": {
+        "executed": 341,
+        "passed": 341,
+        "failed": 0
+      },
+      "identitySha256": "f58529efabea3f60e03be19c6adebd700872cf77926de2f681349fb6578bbf68",
+      "librarySha256": "e8de8b16e96beb03f31bde19ba1b22e9aa29515f1389a1a928e21a67c42ced0b",
+      "testAssemblySha256": "b3c0d4021a44e434316b20547d24b2c412abbfee7f2f039d27a8f71ec19ade17"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "fast",
+      "framework": "net11.0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "seconds": 21.780311499955133,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19705,
+        "passed": 19705,
+        "failed": 0
+      },
+      "identitySha256": "f491ed5e4dd4b3e184a0baa2501f1032e1685cb22e2ab1f64ca64686f4440ff0",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "fast",
+      "framework": "net11.0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "seconds": 24.37745859986171,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19705,
+        "passed": 19705,
+        "failed": 0
+      },
+      "identitySha256": "e8464b3c62922fa7dad2d2b56c0ab4dec893b6bb1ca913acdd095b54059252b1",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "mechanisms",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)&Layer=Mechanism",
+      "seconds": 6.645276000024751,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19,
+        "passed": 19,
+        "failed": 0
+      },
+      "identitySha256": "a5a0140602bfdcd6065bce98d03c00a3029a3ab1cfec7d086c6150e313c0a59c",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "mechanisms",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)&Layer=Mechanism",
+      "seconds": 11.610332099953666,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19,
+        "passed": 19,
+        "failed": 0
+      },
+      "identitySha256": "a5a0140602bfdcd6065bce98d03c00a3029a3ab1cfec7d086c6150e313c0a59c",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "contracts",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)&Layer=Contract",
+      "seconds": 7.956775599857792,
+      "exitCode": 0,
+      "counters": {
+        "executed": 135,
+        "passed": 135,
+        "failed": 0
+      },
+      "identitySha256": "44d9ef148558ebba49ba647cfd8c8b5c2eba17c59bf8bf7f8d8a504256ce78af",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "contracts",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)&Layer=Contract",
+      "seconds": 9.92886000010185,
+      "exitCode": 0,
+      "counters": {
+        "executed": 135,
+        "passed": 135,
+        "failed": 0
+      },
+      "identitySha256": "44d9ef148558ebba49ba647cfd8c8b5c2eba17c59bf8bf7f8d8a504256ce78af",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "rendering",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)&Layer=Rendering",
+      "seconds": 8.019053899915889,
+      "exitCode": 0,
+      "counters": {
+        "executed": 187,
+        "passed": 187,
+        "failed": 0
+      },
+      "identitySha256": "7ebbaedea5618c293f1d72f174154c485fc640abe589f729082114b4d3c5dd15",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "rendering",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgCssCommentTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgCssWhitespaceTests|FullyQualifiedName~SvgCurrentColorInheritanceTests|FullyQualifiedName~SvgGradientStopStyleTests|FullyQualifiedName~SvgStaticCssImageTests|FullyQualifiedName~SvgStrokeStyleSyntaxTests|FullyQualifiedName~SvgStyleSheetStorageTests)&Layer=Rendering",
+      "seconds": 9.760845100041479,
+      "exitCode": 0,
+      "counters": {
+        "executed": 187,
+        "passed": 187,
+        "failed": 0
+      },
+      "identitySha256": "7ebbaedea5618c293f1d72f174154c485fc640abe589f729082114b4d3c5dd15",
+      "librarySha256": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "testAssemblySha256": "2fcea75dc817ad35d4e5cdcdd456ba31352f1311aca65c2a95dddd419449debc"
+    }
+  ],
+  "renderer": {
+    "qualification": "filter-capture-demand.json",
+    "sourceCommit": "2078588ceaef4ffe3232193359b1a1919ddbbd70",
+    "packageSha256": "b4d2bd2cf6e955ea451ff8b6bc8d123544c7adda91f696c579bfcd998fefbb2a",
+    "librarySha256": {
+      "net11.0": "f2ac4f8b647096d6d43d307acca0a432c7d4517a1a5b2bda4f7d79aec35ea756",
+      "net10.0": "e8de8b16e96beb03f31bde19ba1b22e9aa29515f1389a1a928e21a67c42ced0b"
+    },
+    "productionAndNativeReferenceBytesUnchanged": true,
+    "hostedReplay": "Not repeated for trait-only changes; current runtime/package/original-source binding remains in ../svgweb/originals.json#/currentReview."
+  },
+  "measurement": "Fresh test processes on the development host, Windows/Linux paired runs. Wall times include test-host startup and warm-cache variation; no renderer-performance or test-throughput claim. Focused selections complement complete affected and milestone qualification."
+}

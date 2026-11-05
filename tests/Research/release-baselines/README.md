@@ -11,6 +11,11 @@ direct contour/analytic vectors separately from cancellation, allocation and out
 contracts. All cases and assertion bodies remain; focused selection and the source/
 compiled inventory are qualified against the existing renderer packages.
 
+[CSS test responsibilities](css-test-responsibilities.json) separates direct syntax
+and alpha checks, admission/storage/lifetime contracts and rendered cascade controls.
+All 341 cases and compiled assertion bodies remain; the fast selection gains the
+154 mechanism/contract cases without removing any previous member.
+
 [Current contract comments](current-contract-comments.json) removes obsolete
 work-charge descriptions while retaining actual memory admission and cancellation.
 Every executable token and compiled method body remains unchanged on both runtimes.

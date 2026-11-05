@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCssGeometryDimensionTests
 {
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("rect", "width", false)]
     [InlineData("rect", "height", false)]
     [InlineData("rect", "width", true)]
@@ -40,6 +41,7 @@ public sealed class SvgCssGeometryDimensionTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<defs><rect id='source' class='target' width='4' height='4'/></defs><use href='#source'/>")]
     [InlineData("<defs><symbol id='source'><rect class='target' width='4' height='4'/></symbol></defs><use href='#source'/>")]
     [InlineData("<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect class='target' width='4' height='4'/></pattern></defs><rect width='16' height='16' fill='url(#p)'/>")]
@@ -57,6 +59,7 @@ public sealed class SvgCssGeometryDimensionTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<g><rect width='4' height='4'/></g>", "g")]
     [InlineData("<circle cx='4' cy='4' r='3'/>", "circle")]
     [InlineData("<svg width='8' height='8'><rect width='4' height='4'/></svg>", "svg>svg")]
@@ -67,6 +70,7 @@ public sealed class SvgCssGeometryDimensionTests
         => Assert.Equal(Render(content), Render(content + "<style>" + selector + "{width:12px;height:12px}</style>"));
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Root_sizing_and_dimension_inspection_keep_their_cascade()
     {
         const string geometry = "<rect width='16' height='16' fill='red'/>";
@@ -82,6 +86,7 @@ public sealed class SvgCssGeometryDimensionTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Retained_image_dimensions_are_rejected_before_replay()
     {
         string content = "<defs><image id='source' href='" + ImageHref() + "' width='4' height='4'/></defs><use href='#source'/>";

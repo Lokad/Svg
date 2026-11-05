@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCssWhitespaceTests
 {
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(SvgCssSelectorTests.ClassSeparators), MemberType = typeof(SvgCssSelectorTests))]
     public void Selector_boundaries_preserve_non_ascii_identifier_characters(int character, bool whitespace)
     {
@@ -22,6 +23,7 @@ public sealed class SvgCssWhitespaceTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(SvgCssSelectorTests.ClassSeparators), MemberType = typeof(SvgCssSelectorTests))]
     public void Scalar_tokens_do_not_turn_unicode_characters_into_css_whitespace(int character, bool whitespace)
     {
@@ -55,6 +57,7 @@ public sealed class SvgCssWhitespaceTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("fill", "# f f f")]
     [InlineData("fill", "rgb(255\u00a00\u00a00)")]
     [InlineData("fill", "rgba(255,0,0,\u2003.5)")]
@@ -72,6 +75,7 @@ public sealed class SvgCssWhitespaceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Css_whitespace_preserves_quoted_unicode_and_form_feed_separation()
     {
         InlineStyle style = SvgInlineStyleParser.Parse("font-family:' \u00a0\u2003 ';\ffill:\fred\f!\fimportant\f", CancellationToken.None, true);
@@ -82,6 +86,7 @@ public sealed class SvgCssWhitespaceTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(SvgCssSelectorTests.ClassSeparators), MemberType = typeof(SvgCssSelectorTests))]
     public void Gradient_stop_styles_preserve_non_ascii_property_and_value_boundaries(int character, bool whitespace)
     {

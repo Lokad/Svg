@@ -14,6 +14,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(ClassSeparators))]
     public void Class_membership_uses_ascii_separators_without_splitting_unicode_tokens(int character, bool matches)
     {
@@ -35,6 +36,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(".outer .target", "<g class='outer'><g>{0}</g></g>", true)]
     [InlineData(".outer>.target", "<g class='outer'><g>{0}</g></g>", false)]
     [InlineData(".outer > rect.target", "<g class='outer'>{0}</g>", true)]
@@ -59,6 +61,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Class_specificity_outranks_any_number_of_element_selectors()
     {
         string groups = string.Concat(Enumerable.Repeat("<g>", 11));
@@ -70,6 +73,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(false)]
     [InlineData(true)]
     public void Id_specificity_outranks_any_number_of_class_selectors(bool important)
@@ -82,6 +86,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Important_declarations_outrank_high_specificity_and_normal_inline_values()
     {
         string ids = string.Concat(Enumerable.Repeat("#box", 12));
@@ -91,6 +96,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Unmatched_supported_element_rules_leave_other_geometry_unchanged()
     {
         Assert.Equal(Render("<rect/>"), Render("<style>circle { fill: red; }</style><rect/>"));
@@ -98,6 +104,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Ancestors_of_a_previous_sibling_do_not_match_the_next_sibling()
     {
         string first = "<g class='outer'><g><rect width='3' height='3'/></g></g>";
@@ -107,6 +114,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Definition_source_selectors_survive_local_instance_replay()
     {
         string geometry = "<defs><symbol id='shapes'><g class='outer'><rect width='7' height='7'{0}/></g></symbol></defs><use href='#shapes' x='2' y='2'/>";
@@ -115,6 +123,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("svg")]
     [InlineData("svg.root")]
     [InlineData("svg#root[id='root']")]
@@ -126,6 +135,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Root_stylesheet_dimensions_and_font_device_map_share_the_same_cascade()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' id='root' width='10' height='10' viewBox='0 0 10 10' style='width:30px'><rect width='10' height='10' fill='red'/><style>#root{width:20px!important;height:40px}</style></svg>"u8.ToArray();
@@ -138,6 +148,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("svg>svg", "<svg width='12' height='12'><rect width='7' height='7'/></svg>")]
     [InlineData("svg>defs", "<defs><symbol id='shapes'><rect width='7' height='7'/></symbol></defs><use href='#shapes'/>")]
     public void Container_cascades_preserve_source_ancestor_exclusion(string selector, string content)
@@ -147,6 +158,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(".outer>>rect")]
     [InlineData(">rect")]
     [InlineData("rect>")]
@@ -163,6 +175,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Compound_selectors_preserve_the_established_identifier_length_boundary()
     {
         string identifier = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters);
@@ -172,6 +185,7 @@ public sealed class SvgCssSelectorTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Excessive_selector_chains_retain_a_finite_syntax_limit()
     {
         string selector = string.Join(' ', Enumerable.Repeat(".a", SvgSyntaxLimits.MaximumCssSelectorCharacters / 2));

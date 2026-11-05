@@ -57,6 +57,12 @@ because font selection through preparation is part of that interaction.
 The [qualification](Research/release-baselines/reference-output-responsibilities.json)
 records each retained case, selection reason and measured validation time.
 
+[CSS and paint-resource responsibilities](Research/release-baselines/css-test-responsibilities.json)
+separate direct syntax/alpha mechanisms, API and ownership contracts, and rendered
+cascade controls within mixed classes. All 341 cases and their bodies remain;
+class names alone do not identify a test's role. Select affected siblings before
+promotion, including shared-budget and mid-paint cancellation paths.
+
 Parser characterization uses a [test-owned rectangle projection](Lokad.Svg.Tests/SvgRectangleCharacterization.cs)
 of root or retained-scene geometry. It preserves the assertion view's stroke bands
 and clipped bounds; rendering regressions retain their independent native images.

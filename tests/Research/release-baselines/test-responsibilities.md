@@ -52,6 +52,30 @@ integration. During paint arithmetic work, for example, select
 records complete affected selections and observed validation times, without a
 renderer performance claim.
 
+## CSS, cascade and paint-resource responsibilities
+
+The [CSS responsibility audit](css-test-responsibilities.json) classifies 73 methods
+across nine existing classes without changing a case, provider, loop or body.
+Five direct mechanism methods cover dash syntax, quoted whitespace, unquantized
+stop alpha and recorded stroke alpha. The 44 contract methods cover admission and
+diagnostics, dimension inspection, stylesheet storage, paint/image ownership,
+memory refusal, cancellation and retry. The 24 rendering methods compare CSS
+selection, inheritance and cascade with explicit attribute controls; they complement
+the independent native rendering banks.
+
+`SvgStaticCssImageTests` retains its existing identities: its pattern/filter/image
+lifetimes are contracts, its recorded stroke-alpha check is a mechanism, and its
+image-filter cascade comparison is rendering. Shared parser/raster allowances and
+cancellation during analytic replay retain their dedicated helpers. The general
+separate-budget/pre-cancellation helper does not replace those paths.
+
+For a syntax change, select the affected class and `Layer=Mechanism`. Include its
+`Layer=Contract` siblings for limits or lifetime changes and `Layer=Rendering`
+siblings for cascade or consumer changes. Complete affected integration retains all
+341 cases:19 mechanism,135 contract and187 rendering. The fast selection gains154
+cases without losing any prior member. Source reconstruction and compiled-body
+checks retain all assertions; the audit records measured functional wall times.
+
 ## Paint-bank discovery and loading
 
 [The typed loader](../../Lokad.Svg.VisualTests/PaintReferenceBank.cs) discovers

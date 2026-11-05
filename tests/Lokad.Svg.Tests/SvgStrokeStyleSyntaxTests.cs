@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStrokeStyleSyntaxTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(null, null)]
     [InlineData(" nOnE ", null)]
     [InlineData("2px, 3", new double[] { 2, 3 })]
@@ -22,6 +23,7 @@ public sealed class SvgStrokeStyleSyntaxTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("", SvgErrorCode.UnsupportedFeature)]
     [InlineData(" ", SvgErrorCode.UnsupportedFeature)]
     [InlineData("-1 2", SvgErrorCode.MalformedInput)]
@@ -37,6 +39,7 @@ public sealed class SvgStrokeStyleSyntaxTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("2 3")]
     [InlineData("1 2 3 4 5 6 7 8")]
     public void Stroke_validation_and_presence_checks_do_not_allocate_dash_arrays(string dasharray)
