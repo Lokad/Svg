@@ -1,0 +1,316 @@
+{
+  "status": "Prepared pattern products partitioned by responsibility:all1944 original tuples/assertions remain,296 routine/1648 research. Nine primitive and56 graph mechanisms are added. All2009 cases pass on both hosts/runtimes; full CI pending.",
+  "source": {
+    "baseCommit": "7fe936353583b8f133899b892a43cca4b1e9a276",
+    "files": [
+      "../../Lokad.Svg.Tests/OpenTypeFontTests.EmptyPatternTargets.cs",
+      "../../Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs"
+    ],
+    "productionFixturesReferencesAndCanonicalInertRenderingBankUnchanged": true,
+    "preservation": {
+      "allExistingPreparationAssertionsAndCallsUnchanged": true,
+      "extractedShapeAndConsumerBuildersByteExact": true,
+      "existingLiveControlsAndOtherPartialHelpersUnchanged": true,
+      "inertTemplateFileUnchangedExceptRoutineSelectionPredicate": true,
+      "productionRenderingFixturesReferencesUnchanged": true,
+      "fullProviderPartition": "provider-partition.json",
+      "newDirectPrimitiveCases": 9,
+      "newGraphDiscoveryCases": 56
+    }
+  },
+  "partition": [
+    {
+      "provider": "EmptyPatternTargets",
+      "totalInputs": 504,
+      "routineInputs": 72,
+      "researchInputs": 432,
+      "allOriginalInputsAndMultiplicitiesRetained": true,
+      "disjointPartition": true,
+      "inputIdentitySha256": "d2073926052d56e8287e1d7fd541ae207162d1bdb3cd9905eb735d9dcb3e7f1b"
+    },
+    {
+      "provider": "InertTemplateContracts",
+      "totalInputs": 1440,
+      "routineInputs": 224,
+      "researchInputs": 1216,
+      "allOriginalInputsAndMultiplicitiesRetained": true,
+      "disjointPartition": true,
+      "inputIdentitySha256": "8180eb4a1a04247a13e1c98bdc6b268d87090581486a7c5dfe5717cd0e6b3bef"
+    }
+  ],
+  "selectionCoverage": {
+    "allPrimitiveChannelLoweringPaths": 18,
+    "allConsumerContentChannelPaths": 56,
+    "allTemplateAdmissionPaths": 160,
+    "allCanonicalTemplateMapEffectConsumerChannelPaths": 72,
+    "routineTemplateIntersection": 8,
+    "moves": [
+      {
+        "provider": "EmptyPatternTargets",
+        "movedRoutineToResearch": 432,
+        "promotedResearchToRoutine": 0,
+        "retainedRoutine": 72
+      },
+      {
+        "provider": "InertTemplateContracts",
+        "movedRoutineToResearch": 412,
+        "promotedResearchToRoutine": 36,
+        "retainedRoutine": 188
+      }
+    ]
+  },
+  "originalCaseIdentityJoin": [
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "originalLogicalCases": 1944,
+      "allInputIdentitiesAndMultiplicitiesRetained": true
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "originalLogicalCases": 1944,
+      "allInputIdentitiesAndMultiplicitiesRetained": true
+    }
+  ],
+  "inventory": {
+    "methods": 5131,
+    "sourceFiles": 731,
+    "coreMethods": 4681,
+    "visualMethods": 450,
+    "coreRoles": {
+      "Unclassified": 1207,
+      "Mechanism": 1730,
+      "Contract": 686,
+      "Rendering": 1057,
+      "Integrity": 1
+    },
+    "visualUnclassified": 277,
+    "fullCoreCases": 47845,
+    "fullVisualCases": 73537,
+    "fontHostCases": 10,
+    "newDirectMechanismCases": 65,
+    "routineBeforeSelectedProducts": 1104,
+    "routineAfterPrepared": 296,
+    "routineAfterIncludingDirectMechanisms": 361,
+    "researchPrepared": 1648,
+    "allOriginalPreparedInputs": 1944,
+    "fastBefore": 20622,
+    "fastAfter": 19879,
+    "fastMovedToResearch": 844,
+    "fastAddedMechanisms": 65,
+    "previousResearchPromotedToRoutine": 36,
+    "netPreparedCasesMovedToResearch": 808
+  },
+  "validation": [
+    {
+      "stage": "before-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "80acb41ae8ef894e15611bd511bb9c175653f80dc032ae7ae7ae5229c0003041",
+      "selection": "FullyQualifiedName~Empty_primitive_pattern_paints_need_no_tile_fonts|FullyQualifiedName~Inert_template_paints_prepare_with_maps_effects_and_forward_replay",
+      "exitCode": 0,
+      "seconds": 13.13081969995983,
+      "counters": {
+        "executed": "1104",
+        "passed": "1104",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "80acb41ae8ef894e15611bd511bb9c175653f80dc032ae7ae7ae5229c0003041",
+      "selection": "FullyQualifiedName~Empty_primitive_pattern_paints_need_no_tile_fonts|FullyQualifiedName~Inert_template_paints_prepare_with_maps_effects_and_forward_replay",
+      "exitCode": 0,
+      "seconds": 16.537838299991563,
+      "counters": {
+        "executed": "1104",
+        "passed": "1104",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "b87f3ae657cccb3a45284dde9bbccf8d9d38d157cbefa68d931cd20a1625aa0f",
+      "selection": "FullyQualifiedName~Empty_primitive_pattern_paints_need_no_tile_fonts|FullyQualifiedName~Inert_template_paints_prepare_with_maps_effects_and_forward_replay|FullyQualifiedName~Intrinsic_empty_pattern_targets|FullyQualifiedName~Empty_pattern_graph_discovery",
+      "exitCode": 0,
+      "seconds": 11.674403899814934,
+      "counters": {
+        "executed": "361",
+        "passed": "361",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "b87f3ae657cccb3a45284dde9bbccf8d9d38d157cbefa68d931cd20a1625aa0f",
+      "selection": "FullyQualifiedName~Empty_primitive_pattern_paints_need_no_tile_fonts|FullyQualifiedName~Inert_template_paints_prepare_with_maps_effects_and_forward_replay|FullyQualifiedName~Intrinsic_empty_pattern_targets|FullyQualifiedName~Empty_pattern_graph_discovery",
+      "exitCode": 0,
+      "seconds": 15.86682500015013,
+      "counters": {
+        "executed": "361",
+        "passed": "361",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "aaaa90dba1cfe38cbdd7efa216d1d58ff4901cd9070f4b5023bd43aa1a269d4b",
+      "selection": "FullyQualifiedName~Empty_primitive_pattern_paints_need_no_tile_fonts|FullyQualifiedName~Inert_template_paints_prepare_with_maps_effects_and_forward_replay|FullyQualifiedName~Intrinsic_empty_pattern_targets|FullyQualifiedName~Empty_pattern_graph_discovery",
+      "exitCode": 0,
+      "seconds": 12.077463499968871,
+      "counters": {
+        "executed": "361",
+        "passed": "361",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "aaaa90dba1cfe38cbdd7efa216d1d58ff4901cd9070f4b5023bd43aa1a269d4b",
+      "selection": "FullyQualifiedName~Empty_primitive_pattern_paints_need_no_tile_fonts|FullyQualifiedName~Inert_template_paints_prepare_with_maps_effects_and_forward_replay|FullyQualifiedName~Intrinsic_empty_pattern_targets|FullyQualifiedName~Empty_pattern_graph_discovery",
+      "exitCode": 0,
+      "seconds": 15.433204400120303,
+      "counters": {
+        "executed": "361",
+        "passed": "361",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "complete-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "b87f3ae657cccb3a45284dde9bbccf8d9d38d157cbefa68d931cd20a1625aa0f",
+      "selection": "FullyQualifiedName~OpenTypeFontTests.Empty_primitive_pattern_paints_|FullyQualifiedName~OpenTypeFontTests.Inert_template_paints_|FullyQualifiedName~Intrinsic_empty_pattern_targets|FullyQualifiedName~Empty_pattern_graph_discovery",
+      "exitCode": 0,
+      "seconds": 16.513684100005776,
+      "counters": {
+        "executed": "2009",
+        "passed": "2009",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "complete-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "b87f3ae657cccb3a45284dde9bbccf8d9d38d157cbefa68d931cd20a1625aa0f",
+      "selection": "FullyQualifiedName~OpenTypeFontTests.Empty_primitive_pattern_paints_|FullyQualifiedName~OpenTypeFontTests.Inert_template_paints_|FullyQualifiedName~Intrinsic_empty_pattern_targets|FullyQualifiedName~Empty_pattern_graph_discovery",
+      "exitCode": 0,
+      "seconds": 20.97091109980829,
+      "counters": {
+        "executed": "2009",
+        "passed": "2009",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "complete-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "aaaa90dba1cfe38cbdd7efa216d1d58ff4901cd9070f4b5023bd43aa1a269d4b",
+      "selection": "FullyQualifiedName~OpenTypeFontTests.Empty_primitive_pattern_paints_|FullyQualifiedName~OpenTypeFontTests.Inert_template_paints_|FullyQualifiedName~Intrinsic_empty_pattern_targets|FullyQualifiedName~Empty_pattern_graph_discovery",
+      "exitCode": 0,
+      "seconds": 17.671281200135127,
+      "counters": {
+        "executed": "2009",
+        "passed": "2009",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "complete-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "aaaa90dba1cfe38cbdd7efa216d1d58ff4901cd9070f4b5023bd43aa1a269d4b",
+      "selection": "FullyQualifiedName~OpenTypeFontTests.Empty_primitive_pattern_paints_|FullyQualifiedName~OpenTypeFontTests.Inert_template_paints_|FullyQualifiedName~Intrinsic_empty_pattern_targets|FullyQualifiedName~Empty_pattern_graph_discovery",
+      "exitCode": 0,
+      "seconds": 19.746228300035,
+      "counters": {
+        "executed": "2009",
+        "passed": "2009",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "fast-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "b87f3ae657cccb3a45284dde9bbccf8d9d38d157cbefa68d931cd20a1625aa0f",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 22.14062610012479,
+      "counters": {
+        "executed": "19879",
+        "passed": "19879",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "fast-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "b87f3ae657cccb3a45284dde9bbccf8d9d38d157cbefa68d931cd20a1625aa0f",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 27.355459799990058,
+      "counters": {
+        "executed": "19879",
+        "passed": "19879",
+        "failed": "0"
+      }
+    }
+  ],
+  "basis": {
+    "primitive": "SvgMaskSyntax.HasPaintableTarget owns exact primitive eligibility; direct nine empty/live pairs isolate that branch. QueuePaintServers and HasSource use it before graph-dependent resource selection.",
+    "graph": "Fifty-six direct discovery cases retain every consumer/content/channel path in both definition orders, with empty and live controls. They construct no glyphs, snapshots, prepared documents or PNGs.",
+    "emptyContracts": "Routine72 retains all nine primitive/channel lowering paths directly and all seven consumer/four content/two channel paths on a zero-width primitive. The other432 cases keep the identical raw/snapshot/prepared/assertion body as individually discovered research.",
+    "templateContracts": "Routine224 covers the full160 server/units/channel/consumer/order admission product on one map/effect, plus all72 map/effect/consumer/channel routes on one inert pattern state, with eight overlaps.36 former research cases are promoted for non-direct translate/scale dispatch;412 former routine cases move to research. The full1440 canonical rendering product and1440 prepared product remain.",
+    "preservedInteractions": "Original live acquisition cases, invalid authored-value/effect checks, borrowed storage/refusal/cancellation/retry,96-case API matrix,54 sampled-pattern inputs/512 mechanisms and authored/radial six-output interactions are untouched. Equal pixels are not used as redundancy evidence."
+  },
+  "measurementScope": "Observed routine product validation changes1104 to361 cases, including65 new direct mechanisms:Windows13.13/11.67s and Linux16.54/15.87s before/after under.NET11. Global fast scope changes20622 to19879 cases:38.95/22.14s and46.92/27.36s across successive milestones. Hosts/caches/load vary; these functional wall times include discovery/host/TRX and exclude build. They establish scoped validation cost, not renderer throughput or a controlled speedup. Complete2009-case qualification remains recorded.",
+  "renderer": {
+    "qualification": "font-source-await.json",
+    "sourceCommit": "9f9720f02aec86fa5f81a8d2ff2886567df219c6",
+    "librarySha256": {
+      "net11": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "net10": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0"
+    },
+    "originalReplay": "Not repeated for test-only changes; qualified production source/assets and ../svgweb/originals.json#/currentReview remain unchanged."
+  }
+}

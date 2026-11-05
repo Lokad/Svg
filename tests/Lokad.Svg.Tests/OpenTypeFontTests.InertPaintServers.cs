@@ -20,9 +20,11 @@ public sealed partial class OpenTypeFontTests
     {
         foreach (object[] row in SvgInertPaintTests.TemplateCases())
         {
-            // Retain every server/units/consumer/order/effect combination with
-            // rotation, and every map/effect on the direct object-box route.
-            bool routine = (string)row[5] == "rotate(7 16 16)" || ((string)row[3] == "direct" && (bool)row[2]);
+            // Complete server/units/channel/consumer/order admission on one map/effect.
+            // Complete map/effect/consumer/channel dispatch on one inert pattern state.
+            bool admission = (string)row[5] == "rotate(7 16 16)" && ((string)row[6]).StartsWith("clip-path=", StringComparison.Ordinal);
+            bool dispatch = (string)row[0] == "empty-pattern" && (bool)row[2] && (bool)row[4];
+            bool routine = admission || dispatch;
             if (routine != research) yield return row;
         }
     }

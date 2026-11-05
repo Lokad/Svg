@@ -1,27 +1,44 @@
 using Lokad.Svg.Fonts;
+using Lokad.Svg.Parsing;
+using System.Xml;
 
 namespace Lokad.Svg.Tests;
 
 public sealed partial class OpenTypeFontTests
 {
-    public static IEnumerable<object[]> EmptyPatternTargets()
+    public static IEnumerable<object[]> EmptyPatternTargets(bool research)
     {
         foreach (string target in new[] { "width", "height", "circle", "rx", "ry", "ellipse-fallback", "path", "white-path", "omitted" })
         foreach (string role in new[] { "fill", "stroke" })
         foreach (string content in new[] { "text", "use", "mask-group", "mask-use" })
         foreach (string consumer in new[] { "direct", "identified", "use", "group", "symbol", "mask", "filter" })
-            yield return [target, role, content, consumer];
+        {
+            // Every consumer/content/channel route uses the same zero-extent predicate.
+            // Keep each primitive/channel lowering route directly as well.
+            bool routine = target == "width" || consumer == "direct" && content == "text";
+            if (routine != research) yield return [target, role, content, consumer];
+        }
     }
 
     [Theory]
     [Trait("Layer", "Contract")]
-    [MemberData(nameof(EmptyPatternTargets))]
-    public async Task Empty_primitive_pattern_paints_need_no_tile_fonts(string target, string role, string content, string consumer)
+    [MemberData(nameof(EmptyPatternTargets), false)]
+    public Task Empty_primitive_pattern_paints_need_no_tile_fonts(string target, string role, string content, string consumer)
+        => AssertEmptyPrimitivePattern(target, role, content, consumer);
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [Trait("Category", "Research")]
+    [MemberData(nameof(EmptyPatternTargets), true)]
+    public Task Empty_primitive_pattern_paints_extended_preparation(string target, string role, string content, string consumer)
+        => AssertEmptyPrimitivePattern(target, role, content, consumer);
+
+    private async Task AssertEmptyPrimitivePattern(string target, string role, string content, string consumer)
     {
         (var catalog, var provider, _) = CreateUnusedFontPack();
-        string emptyShape = Shape(false);
-        string visibleShape = Shape(true);
-        string emptyBody = Body(emptyShape);
+        string emptyShape = EmptyPatternShape(target, role, false);
+        string visibleShape = EmptyPatternShape(target, role, true);
+        string emptyBody = EmptyPatternBody(emptyShape, consumer);
         byte[] expected = Render(EmptyPatternDocument(EmptyPatternResources("solid") + emptyBody));
         if (consumer != "filter") Assert.Equal(Render(EmptyPatternDocument("")), expected);
         foreach (bool forward in new[] { false, true })
@@ -36,36 +53,82 @@ public sealed partial class OpenTypeFontTests
             Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
         }
         Assert.Equal(0, provider.RequestCount);
-        Assert.Single(SvgFontRequestDiscovery.Discover(EmptyPatternDocument(EmptyPatternResources(content) + Body(visibleShape)), CancellationToken.None));
+        Assert.Single(SvgFontRequestDiscovery.Discover(EmptyPatternDocument(EmptyPatternResources(content) + EmptyPatternBody(visibleShape, consumer)), CancellationToken.None));
+    }
 
-        string Shape(bool visible)
+    private static string EmptyPatternShape(string target, string role, bool visible)
+    {
+        string extent = visible ? "32" : "0";
+        string radius = visible ? "16" : "0";
+        string start = target switch
         {
-            string extent = visible ? "32" : "0";
-            string radius = visible ? "16" : "0";
-            string start = target switch
-            {
-                "width" => "<rect width='" + extent + "' height='32'",
-                "height" => "<rect width='32' height='" + extent + "'",
-                "circle" => "<circle cx='16' cy='16' r='" + radius + "'",
-                "rx" => "<ellipse cx='16' cy='16' rx='" + radius + "' ry='16'",
-                "ry" => "<ellipse cx='16' cy='16' rx='16' ry='" + radius + "'",
-                "ellipse-fallback" => "<ellipse cx='16' cy='16' rx='" + radius + "'",
-                "omitted" => "<rect height='32'" + (visible ? " width='32'" : ""),
-                _ => "<path d='" + (visible ? "M0 0H32V32H0Z" : target == "white-path" ? " &#9;&#10;&#13; " : "") + "'"
-            };
-            return start + (role == "fill" ? " fill='url(#p)'" : " fill='none' stroke='url(#p)' stroke-width='2'") + "/>";
-        }
-
-        string Body(string shape) => consumer switch
-        {
-            "identified" => shape.Replace("/>", " id='zero'/>", StringComparison.Ordinal),
-            "use" => "<defs>" + shape.Replace("/>", " id='zero'/>", StringComparison.Ordinal) + "</defs><use href='#zero' width='32' height='32'/>",
-            "group" => "<defs><g id='zero'>" + shape + "</g></defs><use href='#zero'/>",
-            "symbol" => "<defs><symbol id='zero' viewBox='0 0 32 32'>" + shape + "</symbol></defs><use href='#zero' width='32' height='32'/>",
-            "mask" => "<defs><mask id='target' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'>" + shape + "</mask></defs><rect width='32' height='32' fill='blue' mask='url(#target)'/>",
-            "filter" => "<defs>" + shape.Replace("/>", " id='zero'/>", StringComparison.Ordinal) + "<filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><use href='#zero'/></g>",
-            _ => shape
+            "width" => "<rect width='" + extent + "' height='32'",
+            "height" => "<rect width='32' height='" + extent + "'",
+            "circle" => "<circle cx='16' cy='16' r='" + radius + "'",
+            "rx" => "<ellipse cx='16' cy='16' rx='" + radius + "' ry='16'",
+            "ry" => "<ellipse cx='16' cy='16' rx='16' ry='" + radius + "'",
+            "ellipse-fallback" => "<ellipse cx='16' cy='16' rx='" + radius + "'",
+            "omitted" => "<rect height='32'" + (visible ? " width='32'" : ""),
+            _ => "<path d='" + (visible ? "M0 0H32V32H0Z" : target == "white-path" ? " &#9;&#10;&#13; " : "") + "'"
         };
+        return start + (role == "fill" ? " fill='url(#p)'" : " fill='none' stroke='url(#p)' stroke-width='2'") + "/>";
+    }
+
+    private static string EmptyPatternBody(string shape, string consumer) => consumer switch
+    {
+        "identified" => shape.Replace("/>", " id='zero'/>", StringComparison.Ordinal),
+        "use" => "<defs>" + shape.Replace("/>", " id='zero'/>", StringComparison.Ordinal) + "</defs><use href='#zero' width='32' height='32'/>",
+        "group" => "<defs><g id='zero'>" + shape + "</g></defs><use href='#zero'/>",
+        "symbol" => "<defs><symbol id='zero' viewBox='0 0 32 32'>" + shape + "</symbol></defs><use href='#zero' width='32' height='32'/>",
+        "mask" => "<defs><mask id='target' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'>" + shape + "</mask></defs><rect width='32' height='32' fill='blue' mask='url(#target)'/>",
+        "filter" => "<defs>" + shape.Replace("/>", " id='zero'/>", StringComparison.Ordinal) + "<filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><use href='#zero'/></g>",
+        _ => shape
+    };
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("width")]
+    [InlineData("height")]
+    [InlineData("circle")]
+    [InlineData("rx")]
+    [InlineData("ry")]
+    [InlineData("ellipse-fallback")]
+    [InlineData("path")]
+    [InlineData("white-path")]
+    [InlineData("omitted")]
+    public void Intrinsic_empty_pattern_targets_use_the_shared_primitive_predicate(string target)
+    {
+        Assert.False(HasTarget(EmptyPatternShape(target, "fill", false)));
+        Assert.True(HasTarget(EmptyPatternShape(target, "fill", true)));
+
+        static bool HasTarget(string shape)
+        {
+            using StringReader text = new(shape);
+            using XmlReader reader = XmlReader.Create(text);
+            reader.MoveToContent();
+            return SvgMaskSyntax.HasPaintableTarget(reader, true, null);
+        }
+    }
+
+    public static IEnumerable<object[]> EmptyPatternGraphCases()
+    {
+        foreach (object[] row in EmptyPatternTargets(false))
+            if ((string)row[0] == "width") yield return row;
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [MemberData(nameof(EmptyPatternGraphCases))]
+    public void Empty_pattern_graph_discovery_preserves_all_consumer_and_content_routes(string target, string role, string content, string consumer)
+    {
+        string resources = EmptyPatternResources(content);
+        string empty = EmptyPatternBody(EmptyPatternShape(target, role, false), consumer);
+        string visible = EmptyPatternBody(EmptyPatternShape(target, role, true), consumer);
+        foreach (bool forward in new[] { false, true })
+        {
+            Assert.Empty(SvgFontRequestDiscovery.Discover(EmptyPatternDocument(forward ? empty + resources : resources + empty), CancellationToken.None));
+            Assert.Single(SvgFontRequestDiscovery.Discover(EmptyPatternDocument(forward ? visible + resources : resources + visible), CancellationToken.None));
+        }
     }
 
     [Theory]

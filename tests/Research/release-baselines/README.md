@@ -110,6 +110,10 @@ catalog/source responsibility labels preserve all existing output paths.
 separates 238 retained mechanism, ownership/API and document rendering cases across
 nine classes, with unchanged bodies and exact identities. Timing repeats retain
 their observed variability; fast eligibility gains 178 cases without removals.
+[Pattern contract cost](pattern-contract-cost.json) retains all 1,944 original
+prepared tuples as 296 routine and 1,648 research cases, adding 65 direct selection
+mechanisms. Input joins and unchanged assertion bodies protect the consolidation;
+canonical rendering and known ownership interactions remain separate.
 [Color/filter responsibilities](color-filter-responsibilities.json) retains every
 native input and substantive font-recipe assertion while removing 34 empty recipe
 partitions. It maps numerical, ownership and rendering duties to focused edit

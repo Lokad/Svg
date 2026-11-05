@@ -559,6 +559,10 @@ retains all 669 direct numerical and lifetime cases across TrueType, Latin-light
 and LCD coverage. Select the affected class with `Layer=Mechanism`, include its
 contract siblings for storage/cancellation edits, then run independent font rendering.
 Native cell vectors and platform profiles remain exact; these labels change no bodies.
+For inactive pattern selection, use the [direct primitive/graph mechanisms](Research/release-baselines/pattern-contract-cost.json)
+before prepared integration. Routine contracts retain primitive/channel, consumer/
+content and template admission/dispatch paths; complete prepared products remain
+`Category=Research` where extended. Every original tuple and assertion is preserved.
 The [font-source controls](Research/release-baselines/font-source-await.json)
 keep genuinely pending success, cancellation and source/integrity failure separate.
 They retain caller-array identity and snapshot cleanup, alongside all six prepared

@@ -974,8 +974,16 @@ in full qualification. Selection depends on authored-child and consumer paths,
 not equality of resulting images. All 528 prepared checks retain complete PNG
 comparison and counted acquisition, with an independent provider for the control.
 
-The [empty-target contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.EmptyPatternTargets.cs)
-retain all 504 empty and eight live rows, both definition orders, raw rendering,
+The [pattern cost qualification](pattern-contract-cost.json) retains every original
+prepared tuple: 72 empty-target and 224 inert-template contracts stay routine;
+432 empty-target and 1,216 template contracts remain individually selectable research.
+The routine empty set retains all primitive/channel and consumer/content paths;
+the template set separates resource admission from map/effect/consumer dispatch.
+The 1,440-case canonical template rendering bank remains unchanged. Nine direct
+primitive pairs and 56 graph-discovery cases isolate selection without snapshot,
+glyph or PNG work. Full qualification executes all 2,009 cases on both runtimes/hosts.
+
+All 504 empty and eight live rows retain both definition orders, raw rendering,
 snapshot emptiness, prepared replay and positive font controls. Nine rejection,
 four inert-effect rendering and one borrowed-storage/refusal/cancellation/retry
 case remain. Shared builders in other partial files are unchanged. Moving the
