@@ -1,0 +1,124 @@
+{
+  "policy": "Every positive native fixture remains canonical routine rendering. All boundaries and named API interactions keep the six-form routine contract. Listed remaining matrices retain all original assertions as individual Research cases. Unlisted new inputs remain routine; selection never compares images.",
+  "manifests": [
+    {
+      "bank": "marker-content",
+      "sha256": "d68ce7f5c8488e3d4bc98eff01efe7f2112aee89f3d5d560472b96fe330ea072"
+    },
+    {
+      "bank": "path-marker-content",
+      "sha256": "8317bc0c44c612ef2d5f17e3fa1241f0659a3249f95f77d160c0d71e577797c7"
+    },
+    {
+      "bank": "marker-instance-content",
+      "sha256": "7326bf0bd52e9020c00201d63d64d8e1621505fd9caaf1669b0449479e7dbbf3"
+    }
+  ],
+  "routineInteractions": [
+    {
+      "id": "marker-content/odd-width-line",
+      "reason": "Line/source recording control."
+    },
+    {
+      "id": "marker-content/marker-stroke-width",
+      "reason": "Stroke-width marker units."
+    },
+    {
+      "id": "marker-content/marker-content-use",
+      "reason": "Marker content referencing a definition."
+    },
+    {
+      "id": "path-marker-content/path-curve-tangents",
+      "reason": "Curved path marker placement."
+    },
+    {
+      "id": "path-marker-content/path-opacity",
+      "reason": "Path/marker opacity composition."
+    },
+    {
+      "id": "path-marker-content/path-order-markers-fill-stroke",
+      "reason": "Marker/fill/stroke paint ordering."
+    },
+    {
+      "id": "path-marker-content/path-arc-boundary",
+      "reason": "Arc source admission and marker rendering."
+    },
+    {
+      "id": "marker-instance-content/instance-multiple-aliases",
+      "reason": "Nested instance alias materialization."
+    },
+    {
+      "id": "marker-instance-content/instance-symbol-group",
+      "reason": "Symbol/group source lowering."
+    },
+    {
+      "id": "marker-instance-content/instance-isolated-opacity",
+      "reason": "Instanced marker under isolated opacity."
+    },
+    {
+      "id": "marker-content/marker-recursion-boundary",
+      "reason": "Preserve the complete original six-form error/message/no-stream-output boundary."
+    },
+    {
+      "id": "marker-content/marker-missing-boundary",
+      "reason": "Preserve the complete original six-form error/message/no-stream-output boundary."
+    },
+    {
+      "id": "marker-content/marker-negative-size",
+      "reason": "Preserve the complete original six-form error/message/no-stream-output boundary."
+    },
+    {
+      "id": "marker-content/marker-use-boundary",
+      "reason": "Preserve the complete original six-form error/message/no-stream-output boundary."
+    },
+    {
+      "id": "marker-instance-content/instance-recursive-marker-boundary",
+      "reason": "Preserve the complete original six-form error/message/no-stream-output boundary."
+    }
+  ],
+  "research": [
+    "marker-content/composed-line",
+    "marker-content/marker-user-space",
+    "marker-content/marker-reversed-axis",
+    "marker-content/marker-reversed-diagonal",
+    "marker-content/marker-forward-cascade",
+    "marker-content/marker-element-opacity",
+    "marker-content/marker-hidden-and-zero",
+    "marker-content/marker-percentage-anchor",
+    "marker-content/marker-binary-edges",
+    "marker-content/line-intermediate-marker",
+    "marker-content/path-marker-boundary",
+    "marker-content/marker-source-paint",
+    "marker-content/marker-without-viewbox",
+    "path-marker-content/path-mid-dashes",
+    "path-marker-content/path-global-subpaths",
+    "path-marker-content/path-open-auto",
+    "path-marker-content/path-closed-auto",
+    "path-marker-content/path-degenerate-curves",
+    "path-marker-content/path-zero-vertices",
+    "path-marker-content/path-forward-mid",
+    "path-marker-content/path-order-fill-markers-stroke",
+    "path-marker-content/visible-marker-overflow",
+    "path-marker-content/point-list-marker-boundary",
+    "path-marker-content/marker-css-overflow-boundary",
+    "path-marker-content/path-css-open-auto",
+    "path-marker-content/path-css-closed-auto",
+    "path-marker-content/path-css-curve-tangents",
+    "path-marker-content/path-css-degenerate-curves",
+    "path-marker-content/path-css-opacity",
+    "path-marker-content/path-css-order-fill-markers-stroke",
+    "path-marker-content/path-css-order-markers-fill-stroke",
+    "path-marker-content/point-list-marker-longhand-boundary",
+    "marker-instance-content/instance-source-width",
+    "marker-instance-content/instance-leaf-none",
+    "marker-instance-content/instance-authored-marker",
+    "marker-instance-content/instance-path-mid-dashes",
+    "marker-instance-content/instance-curve-auto",
+    "marker-instance-content/instance-forward-alias",
+    "marker-instance-content/instance-css-priority",
+    "marker-instance-content/instance-affine-leaf",
+    "marker-instance-content/instance-marker-source-paint",
+    "marker-instance-content/instance-arc-boundary",
+    "marker-instance-content/instance-point-list-boundary"
+  ]
+}

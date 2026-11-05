@@ -17,9 +17,86 @@ public sealed class SvgMarkerReferenceTests
         }
     }
 
+    public static IEnumerable<object[]> RenderingCases() => SelectedCases(CaseKind.Rendering);
+    public static IEnumerable<object[]> OutputCases() => SelectedCases(CaseKind.RoutineOutputs);
+    public static IEnumerable<object[]> ExtendedOutputCases() => SelectedCases(CaseKind.ExtendedOutputs);
+
     [Theory]
-    [MemberData(nameof(Cases))]
-    public async Task Marker_cases_preserve_frozen_pixels_and_explicit_boundaries_through_six_apis(string family, string identity)
+    [MemberData(nameof(RenderingCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Markers_preserve_frozen_pixels(string family, string identity) => VerifyCase(family, identity, false);
+
+    [Theory]
+    [MemberData(nameof(OutputCases))]
+    [Trait("Layer", "Contract")]
+    public Task Marker_cases_preserve_frozen_pixels_and_explicit_boundaries_through_six_apis(string family, string identity) => VerifyCase(family, identity, true);
+
+    [Theory]
+    [MemberData(nameof(ExtendedOutputCases))]
+    [Trait("Layer", "Contract")]
+    [Trait("Category", "Research")]
+    public Task Extended_marker_cases_preserve_all_six_apis(string family, string identity) => VerifyCase(family, identity, true);
+
+    [Fact]
+    [Trait("Layer", "Integrity")]
+    public void Case_collections_partition_native_rendering_and_all_original_output_matrices()
+    {
+        string[] all = Cases().Select(static row => (string)row[0] + "/" + (string)row[1]).ToArray();
+        string[] routine = OutputCases().Select(static row => (string)row[0] + "/" + (string)row[1]).ToArray();
+        string[] extended = ExtendedOutputCases().Select(static row => (string)row[0] + "/" + (string)row[1]).ToArray();
+        string[] rendering = RenderingCases().Select(static row => (string)row[0] + "/" + (string)row[1]).ToArray();
+        Assert.Equal(all.Length, all.Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(all.Order(StringComparer.Ordinal).ToArray(), routine.Concat(extended).Order(StringComparer.Ordinal).ToArray());
+        using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "marker-content", "api-research-cases.json")));
+        string[] declared = selection.RootElement.GetProperty("research").EnumerateArray()
+            .Select(static value => value.GetString() ?? throw new InvalidDataException("Missing research identity.")).ToArray();
+        Assert.Equal(declared.Length, declared.Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(declared.Order(StringComparer.Ordinal).ToArray(), extended.Order(StringComparer.Ordinal).ToArray());
+        foreach (JsonElement interaction in selection.RootElement.GetProperty("routineInteractions").EnumerateArray())
+            Assert.Contains(Required(interaction, "id"), routine);
+        List<string> positive = [];
+        foreach (JsonElement source in selection.RootElement.GetProperty("manifests").EnumerateArray())
+        {
+            string family = Required(source, "bank");
+            byte[] bytes = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, family, "manifest.json"));
+            Assert.Equal(Required(source, "sha256"), Convert.ToHexStringLower(SHA256.HashData(bytes)));
+            using JsonDocument manifest = JsonDocument.Parse(bytes);
+            foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+            {
+                string identity = Required(item, "id");
+                if (!item.TryGetProperty("expectedError", out _)) positive.Add(family + "/" + identity);
+                else Assert.Contains(family + "/" + identity, routine);
+            }
+        }
+        Assert.Equal(positive.Order(StringComparer.Ordinal).ToArray(), rendering.Order(StringComparer.Ordinal).ToArray());
+    }
+
+    private enum CaseKind { Rendering, RoutineOutputs, ExtendedOutputs }
+
+    private static IEnumerable<object[]> SelectedCases(CaseKind kind)
+    {
+        using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "marker-content", "api-research-cases.json")));
+        HashSet<string> extended = selection.RootElement.GetProperty("research").EnumerateArray()
+            .Select(static value => value.GetString() ?? throw new InvalidDataException("Missing research identity.")).ToHashSet(StringComparer.Ordinal);
+        foreach (string family in new[] { "marker-content", "path-marker-content", "marker-instance-content" })
+        {
+            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, family, "manifest.json")));
+            foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+            {
+                string identity = Required(item, "id");
+                bool include = kind switch
+                {
+                    CaseKind.Rendering => !item.TryGetProperty("expectedError", out _),
+                    CaseKind.RoutineOutputs => !extended.Contains(family + "/" + identity),
+                    CaseKind.ExtendedOutputs => extended.Contains(family + "/" + identity),
+                    _ => throw new ArgumentOutOfRangeException(nameof(kind))
+                };
+                if (include) yield return new object[] { family, identity };
+            }
+        }
+    }
+
+    private static async Task VerifyCase(string family, string identity, bool allOutputs)
     {
         string directory = Path.Combine(ResearchCorpus.Root, family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -70,6 +147,7 @@ public sealed class SvgMarkerReferenceTests
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 130 * 130), PngRgbaDecoder.Decode(png, 130 * 130));
         Assert.True(comparison.IsExact, identity + ": " + comparison);
+        if (!allOutputs) return;
         byte[] destination = new byte[png.Length];
         Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
         Assert.Equal(png, destination);

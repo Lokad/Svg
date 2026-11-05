@@ -1,0 +1,237 @@
+{
+  "policy": "Every positive native fixture remains canonical routine rendering. All boundaries and named API interactions keep the six-form routine contract. Listed remaining matrices retain all original assertions as individual Research cases. Unlisted new inputs remain routine; selection never compares images.",
+  "manifests": [
+    {
+      "bank": "paint-recording",
+      "sha256": "ed48ca9227e0b9fb0ecc5e5777d1f929304eafc4567ce73703656af0a4d4581f"
+    }
+  ],
+  "routineInteractions": [
+    {
+      "id": "admission-rejects-translucent-paint-strokes-on-circles-1",
+      "reason": "Curved shader-stroke admission before the shared raw raster/encoding stage."
+    },
+    {
+      "id": "admission-rejects-translucent-round-capped-paint-lines-1",
+      "reason": "Capped translucent paint admission and stroke output."
+    },
+    {
+      "id": "line-bounds-linear-square-width6-viewport",
+      "reason": "Viewport recording with a linear stroke."
+    },
+    {
+      "id": "line-bounds-radial-square-width6-parent",
+      "reason": "Inherited radial stroke and parent recording."
+    },
+    {
+      "id": "mask-bounds-applies-a-gray-mask-to-a-gradient-outline-use-instance",
+      "reason": "Instanced gradient outline with a gray mask."
+    },
+    {
+      "id": "mask-identity-white-masked-fade-matches-unmasked-fade-2",
+      "reason": "Masked fading paint and byte output."
+    },
+    {
+      "id": "gradient-opacity-multiplies-element-opacity-with-gradient-fill-opacity-2",
+      "reason": "Combined element/fill opacity through all destinations."
+    },
+    {
+      "id": "pattern-tile-tile-fill-stroke-element",
+      "reason": "Pattern tile ownership with fill, stroke and element opacity."
+    },
+    {
+      "id": "pattern-tile-tile-rounded-rejection",
+      "reason": "Rounded source inside a pattern tile."
+    },
+    {
+      "id": "constant-coverage-linear-fractional-constant-transparent",
+      "reason": "Transparent constant-shader output."
+    },
+    {
+      "id": "constant-coverage-linear-fractional-constant-opaque",
+      "reason": "Opaque constant-shader output."
+    },
+    {
+      "id": "constant-coverage-radial-fractional-constant-translucent",
+      "reason": "Translucent constant-shader output."
+    },
+    {
+      "id": "mask-region-half-scaled-root",
+      "reason": "Mask-region restoration under root scaling."
+    },
+    {
+      "id": "layer-curve-circle-parent-multi-opacity",
+      "reason": "Multiple paints in an isolated opacity layer."
+    },
+    {
+      "id": "layer-curve-ellipse-scaled-root-masked",
+      "reason": "Scaled ellipse with mask construction/restoration."
+    },
+    {
+      "id": "spill-mask-width-radial",
+      "reason": "Radial paint with path-bounded mask storage."
+    },
+    {
+      "id": "spill-run-width-linear",
+      "reason": "Linear paint with direct/run coverage."
+    },
+    {
+      "id": "spill-masked-run-solid",
+      "reason": "Solid run painting followed by mask composition."
+    },
+    {
+      "id": "spill-supplemental-visible-pattern",
+      "reason": "Pattern content with visible overflow."
+    },
+    {
+      "id": "svg-order-rounded-wide-opacity",
+      "reason": "Rounded fill/stroke ordering inside opacity."
+    },
+    {
+      "id": "svg-order-oval-hair-half",
+      "reason": "Oval hairline ordering and partial opacity."
+    },
+    {
+      "id": "convex-quad-clipped-radial-outline",
+      "reason": "Convex curved fill and clipped radial outline."
+    },
+    {
+      "id": "group-clip-reflected-pattern",
+      "reason": "Reflected group clip and pattern paint."
+    },
+    {
+      "id": "oval-dash-circle-nonscaling",
+      "reason": "Non-scaling dashed source construction."
+    },
+    {
+      "id": "zero-area-stroke-scaled-pattern",
+      "reason": "Zero-signed-area source with scaled patterned stroke."
+    }
+  ],
+  "research": [
+    "admission-rejects-translucent-paint-strokes-on-rounded-definitions-1",
+    "admission-rejects-translucent-square-capped-radial-dashes-1",
+    "admission-rejects-translucent-round-capped-lines-1",
+    "admission-rejects-translucent-square-capped-gradient-dashes-1",
+    "admission-rejects-translucent-paint-strokes-on-ellipses-1",
+    "admission-rejects-translucent-paint-strokes-on-rounded-rectangles-1",
+    "admission-rejects-translucent-square-capped-pattern-dashes-1",
+    "admission-rejects-translucent-square-capped-dashed-lines-1",
+    "admission-rejects-translucent-strokes-on-filled-rounded-rectangles-1",
+    "line-bounds-linear-square-width6-leaf",
+    "line-bounds-linear-square-width6-parent",
+    "line-bounds-linear-square-width6-fill-none",
+    "line-bounds-linear-square-width6-copy",
+    "line-bounds-linear-square-width6-scaled-root",
+    "line-bounds-radial-square-width6-leaf",
+    "line-bounds-radial-square-width6-fill-none",
+    "line-bounds-radial-square-width6-copy",
+    "line-bounds-radial-square-width6-viewport",
+    "line-bounds-radial-square-width6-scaled-root",
+    "mask-bounds-applies-a-gray-mask-to-gradient-stroke-geometry",
+    "mask-bounds-applies-a-gray-mask-to-a-stroked-polygon-pair",
+    "mask-bounds-applies-a-gray-mask-to-a-gradient-outline-pair",
+    "mask-bounds-linear-square-width6-inherited-fill-none",
+    "mask-bounds-radial-square-width6-inherited-fill-none",
+    "mask-identity-white-mask-on-line-matches-unmasked-rendering-1",
+    "mask-identity-white-mask-on-line-matches-unmasked-rendering-2",
+    "mask-identity-white-masked-fade-matches-unmasked-fade-1",
+    "gradient-opacity-renders-gradient-fill-opacity-identical-to-opacity-1",
+    "gradient-opacity-renders-gradient-fill-opacity-identical-to-opacity-2",
+    "gradient-opacity-renders-gradient-path-fill-opacity-identical-to-opacity-1",
+    "gradient-opacity-renders-gradient-path-fill-opacity-identical-to-opacity-2",
+    "gradient-opacity-multiplies-element-opacity-with-gradient-fill-opacity-1",
+    "pattern-tile-tile-element-half",
+    "pattern-tile-tile-element-fraction",
+    "pattern-tile-tile-fill-element-rgba",
+    "pattern-tile-tile-linear-rejection",
+    "pattern-tile-tile-radial-rejection",
+    "constant-coverage-linear-fractional-constant-translucent",
+    "constant-coverage-radial-fractional-constant-transparent",
+    "constant-coverage-radial-fractional-constant-opaque",
+    "mask-region-half-left",
+    "mask-region-half-right",
+    "mask-region-half-top",
+    "mask-region-half-bottom",
+    "mask-region-half-all",
+    "mask-region-before-all",
+    "mask-region-after-all",
+    "mask-region-half-leaf",
+    "mask-region-half-copy",
+    "mask-region-half-gradient",
+    "mask-region-half-translated",
+    "layer-curve-circle-direct",
+    "layer-curve-circle-mask-white",
+    "layer-curve-circle-mask-alpha",
+    "layer-curve-circle-copy-masked",
+    "layer-curve-circle-scaled-root-masked",
+    "layer-curve-ellipse-direct",
+    "layer-curve-ellipse-mask-white",
+    "layer-curve-ellipse-mask-alpha",
+    "layer-curve-ellipse-parent-multi-opacity",
+    "layer-curve-ellipse-copy-masked",
+    "spill-mask-width-solid",
+    "spill-mask-width-linear",
+    "spill-mask-width-pattern",
+    "spill-run-width-solid",
+    "spill-run-width-radial",
+    "spill-run-width-pattern",
+    "spill-masked-run-linear",
+    "spill-masked-run-radial",
+    "spill-masked-run-pattern",
+    "svg-order-rounded-hair-half",
+    "svg-order-rounded-hair-three-quarters",
+    "svg-order-rounded-wide",
+    "svg-order-rounded-linear-fill",
+    "svg-order-rounded-scaled-wide",
+    "svg-order-oval-hair-three-quarters",
+    "svg-order-oval-wide",
+    "svg-order-oval-wide-opacity",
+    "svg-order-oval-linear-fill",
+    "svg-order-oval-scaled-wide",
+    "convex-quad-base-solid",
+    "convex-quad-base-linear-outline",
+    "convex-quad-base-radial-outline",
+    "convex-quad-phase-solid",
+    "convex-quad-phase-linear-outline",
+    "convex-quad-phase-radial-outline",
+    "convex-quad-clipped-solid",
+    "convex-quad-clipped-linear-outline",
+    "convex-quad-scaled-solid",
+    "convex-quad-scaled-linear-outline",
+    "convex-quad-scaled-radial-outline",
+    "group-clip-translated-solid",
+    "group-clip-translated-linear",
+    "group-clip-translated-radial",
+    "group-clip-translated-pattern",
+    "group-clip-scaled-solid",
+    "group-clip-scaled-linear",
+    "group-clip-scaled-radial",
+    "group-clip-scaled-pattern",
+    "group-clip-reflected-solid",
+    "group-clip-reflected-linear",
+    "group-clip-reflected-radial",
+    "oval-dash-circle-periodic",
+    "oval-dash-circle-offset",
+    "oval-dash-ellipse-single",
+    "oval-dash-ellipse-aperiodic",
+    "oval-dash-circle-seam",
+    "oval-dash-circle-filled",
+    "oval-dash-circle-thin",
+    "oval-dash-ellipse-thin",
+    "oval-dash-circle-root-scale",
+    "oval-dash-circle-pathlength",
+    "oval-dash-ellipse-clip",
+    "zero-area-stroke-direct-solid",
+    "zero-area-stroke-direct-linear",
+    "zero-area-stroke-direct-radial",
+    "zero-area-stroke-direct-pattern",
+    "zero-area-stroke-translated-solid",
+    "zero-area-stroke-translated-linear",
+    "zero-area-stroke-translated-radial",
+    "zero-area-stroke-translated-pattern",
+    "zero-area-stroke-scaled-solid",
+    "zero-area-stroke-scaled-linear",
+    "zero-area-stroke-scaled-radial"
+  ]
+}

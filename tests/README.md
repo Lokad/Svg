@@ -25,6 +25,13 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+Paint-recording and marker validation retains 202 canonical native checks, 40
+routine six-output contracts (including every error boundary) and all 167 remaining
+API matrices as individual Research cases. The explicit selections live beside
+the [paint](Research/paint-recording/api-research-cases.json) and
+[marker](Research/marker-content/api-research-cases.json) manifests. New inputs stay
+routine; integrity checks preserve the full partition and boundary coverage.
+
 Parser characterization uses a [test-owned rectangle projection](Lokad.Svg.Tests/SvgRectangleCharacterization.cs)
 of root or retained-scene geometry. It preserves the assertion view's stroke bands
 and clipped bounds; rendering regressions retain their independent native images.

@@ -13,9 +13,86 @@ public sealed class SvgPaintRecordingReferenceTests
             yield return new object[] { RequiredString(item, "id") };
     }
 
+    public static IEnumerable<object[]> RenderingCases() => SelectedCases(CaseKind.Rendering);
+    public static IEnumerable<object[]> OutputCases() => SelectedCases(CaseKind.RoutineOutputs);
+    public static IEnumerable<object[]> ExtendedOutputCases() => SelectedCases(CaseKind.ExtendedOutputs);
+
     [Theory]
-    [MemberData(nameof(Cases))]
-    public async Task Recorded_paints_preserve_browser_results_through_all_six_outputs(string identity)
+    [MemberData(nameof(RenderingCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Recorded_paints_preserve_browser_results(string identity) => VerifyCase(identity, false);
+
+    [Theory]
+    [MemberData(nameof(OutputCases))]
+    [Trait("Layer", "Contract")]
+    public Task Recorded_paints_preserve_browser_results_through_all_six_outputs(string identity) => VerifyCase(identity, true);
+
+    [Theory]
+    [MemberData(nameof(ExtendedOutputCases))]
+    [Trait("Layer", "Contract")]
+    [Trait("Category", "Research")]
+    public Task Extended_recorded_paints_preserve_all_six_outputs(string identity) => VerifyCase(identity, true);
+
+    [Fact]
+    [Trait("Layer", "Integrity")]
+    public void Case_collections_partition_native_rendering_and_all_original_output_matrices()
+    {
+        string[] all = Cases().Select(static row => (string)row[0]).ToArray();
+        string[] routine = OutputCases().Select(static row => (string)row[0]).ToArray();
+        string[] extended = ExtendedOutputCases().Select(static row => (string)row[0]).ToArray();
+        string[] rendering = RenderingCases().Select(static row => (string)row[0]).ToArray();
+        Assert.Equal(all.Length, all.Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(all.Order(StringComparer.Ordinal).ToArray(), routine.Concat(extended).Order(StringComparer.Ordinal).ToArray());
+        using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "paint-recording", "api-research-cases.json")));
+        string[] declared = selection.RootElement.GetProperty("research").EnumerateArray()
+            .Select(static value => value.GetString() ?? throw new InvalidDataException("Missing research identity.")).ToArray();
+        Assert.Equal(declared.Length, declared.Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(declared.Order(StringComparer.Ordinal).ToArray(), extended.Order(StringComparer.Ordinal).ToArray());
+        foreach (JsonElement interaction in selection.RootElement.GetProperty("routineInteractions").EnumerateArray())
+            Assert.Contains(RequiredString(interaction, "id"), routine);
+        List<string> positive = [];
+        foreach (JsonElement source in selection.RootElement.GetProperty("manifests").EnumerateArray())
+        {
+            string family = RequiredString(source, "bank");
+            byte[] bytes = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, family, "manifest.json"));
+            Assert.Equal(RequiredString(source, "sha256"), Convert.ToHexStringLower(SHA256.HashData(bytes)));
+            using JsonDocument manifest = JsonDocument.Parse(bytes);
+            foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+            {
+                string identity = RequiredString(item, "id");
+                if (RequiredString(item, "outcome") == "renders") positive.Add(identity);
+                else Assert.Contains(identity, routine);
+            }
+        }
+        Assert.Equal(positive.Order(StringComparer.Ordinal).ToArray(), rendering.Order(StringComparer.Ordinal).ToArray());
+    }
+
+    private enum CaseKind { Rendering, RoutineOutputs, ExtendedOutputs }
+
+    private static IEnumerable<object[]> SelectedCases(CaseKind kind)
+    {
+        using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "paint-recording", "api-research-cases.json")));
+        HashSet<string> extended = selection.RootElement.GetProperty("research").EnumerateArray()
+            .Select(static value => value.GetString() ?? throw new InvalidDataException("Missing research identity.")).ToHashSet(StringComparer.Ordinal);
+        foreach (string family in new[] { "paint-recording" })
+        {
+            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, family, "manifest.json")));
+            foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+            {
+                string identity = RequiredString(item, "id");
+                bool include = kind switch
+                {
+                    CaseKind.Rendering => RequiredString(item, "outcome") == "renders",
+                    CaseKind.RoutineOutputs => !extended.Contains(identity),
+                    CaseKind.ExtendedOutputs => extended.Contains(identity),
+                    _ => throw new ArgumentOutOfRangeException(nameof(kind))
+                };
+                if (include) yield return new object[] { identity };
+            }
+        }
+    }
+
+    private static async Task VerifyCase(string identity, bool allOutputs)
     {
         string directory = Path.Combine(ResearchCorpus.Root, "paint-recording");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -70,6 +147,7 @@ public sealed class SvgPaintRecordingReferenceTests
         Assert.Equal(recorded.GetProperty("MinimumMismatchY").GetInt32(), comparison.MinimumMismatchY);
         Assert.Equal(recorded.GetProperty("MaximumMismatchX").GetInt32(), comparison.MaximumMismatchX);
         Assert.Equal(recorded.GetProperty("MaximumMismatchY").GetInt32(), comparison.MaximumMismatchY);
+        if (!allOutputs) return;
         byte[] destination = new byte[expected.Length];
         Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
         Assert.Equal(expected, destination);
