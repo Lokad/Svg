@@ -32,6 +32,11 @@ Its [qualification](Research/release-baselines/rectangle-characterization.json)
 retains all 215 callers and 1,270 affected cases while removing three test-only
 members from both shipping assemblies.
 
+[Polygon preparation](Research/release-baselines/polygon-preparation.json) retains
+all existing tests while traversal and fallback coverage borrow the mapped owner
+by readonly reference. Geometry, dash, glyph, image, clip and paint paths keep their
+numerical/ownership checks and independent native references.
+
 [Mixed filter/mask methods](Research/release-baselines/filter-test-responsibilities.json)
 use individual responsibility traits: direct bounds/admission, storage/lifetimes and
 relational rendering controls remain distinct. All 65 cases and assertions remain;

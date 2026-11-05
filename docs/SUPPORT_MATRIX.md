@@ -539,7 +539,7 @@ Dormant/overridden/inactive paint does not require programs unless layout advanc
 or effect bounds need them. Glyph masks retain platform-specific fitting, filter
 guards and baseline rounding. The embedded family `Courier New` selects its
 Windows one-cell span policy; catalog aliases cannot enable another program's
-policy. [Native font references](../tests/README.md#qualification) record exactness
+policy. [Native font references](../tests/README.md#milestone-and-release-qualification) record exactness
 and platform distinctions.
 
 Wrapping, vertical text, general/language-specific GSUB/GPOS, path stretch/auto

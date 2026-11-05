@@ -31,6 +31,10 @@ shutdown and asynchronous output contracts to source and installed-package evide
 [Transparent scope storage](transparent-scope-storage.json) skips known-zero painting
 without dropping retained bounds or clip geometry. Three failing-before storage
 paths, full rendering, packages and original replay preserve their responsibilities.
+[Polygon preparation](polygon-preparation.json) colocates the existing descriptor
+with traversal and changes read-only consumers to borrow it. Source/compiled
+contracts, both runtimes, packages, primary CI and original replay retain exactness;
+the current architecture guide is condensed with section anchors preserved.
 [Opacity/clip responsibilities](opacity-clip-responsibilities.json) retain all 58
 cases and every API interaction, assigning 24 unclassified methods without changing
 assertions; fast selection preserves every previous member and adds eight checks.

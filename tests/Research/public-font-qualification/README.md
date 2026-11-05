@@ -21,7 +21,7 @@ This bank adds one focused control, no corpus document or API-combination quota.
 Font-format/shaping limits and library ownership/resource contracts remain unchanged.
 T3-public qualifies standalone use; the original four T3-private deployed-manifest
 requests remain pending before production adoption. Public success makes no claim
-of compatibility with that deployment. The [test guide](../../README.md#qualification) records both gates.
+of compatibility with that deployment. The [test guide](../../README.md#milestone-and-release-qualification) records both gates.
 
 All four end-to-end requests pass on Windows/Linux, including exact italic pixels.
 No production renderer correction, manifest conversion or package dependency was

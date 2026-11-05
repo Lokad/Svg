@@ -39,7 +39,7 @@ Qualification covers the [26 upstream documents](tests/Research/upstream-static-
 and focused regressions against frozen Windows/Linux references, plus
 [package and installed-consumer checks](.github/workflows/ci.yml).
 These results establish the declared outputs, not general SVG completeness.
-See [qualification](tests/README.md#qualification) for font evidence and
+See [qualification](tests/README.md#milestone-and-release-qualification) for font evidence and
 host-specific deployment checks.
 
 ## Development

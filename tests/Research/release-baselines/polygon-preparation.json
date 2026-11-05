@@ -1,0 +1,537 @@
+{
+  "status": "Mapped polygon preparation and complete bounds live beside the existing PolygonRaster traversal. Both consumers borrow the disposable 328-byte descriptor by readonly reference. No arithmetic, array, owner, public API, test input, assertion, reference or tolerance changes.",
+  "source": {
+    "sourceCommit": "146324ae136be6f86eb9bd5802ba1f2418151546",
+    "baseCommit": "e339a63a3f293c70c8858d131b99ccfff72113bf",
+    "movedLines": 94,
+    "movedBlockLfSha256": "7709dbf292910884390d6347115d7e3639d6ccae7fb67a2c966c4b99e5b6da26",
+    "beforeFilesReconstructedExactly": true,
+    "change": "Move existing MappedPolygon and SvgDeviceBounds into existing PolygonRaster partial; readonly-borrow descriptor at both read-only consumers and all seven call sites. No new type, state, owner, arithmetic, allocation, algorithm or public API.",
+    "files": [
+      {
+        "path": "src/Lokad.Svg/SvgConverter.cs",
+        "beforeLfSha256": "af6cf93e21a6fcab1a2fc041f8fcd0388e7f3bb3cf3550c6fbe432968e86f7e5",
+        "afterLfSha256": "ed12d32b682ad90e2aa85159170b872785c2c3f62dbb0a6ffe258e8b6b34c781"
+      },
+      {
+        "path": "src/Lokad.Svg/SvgConverter.PolygonRaster.cs",
+        "beforeLfSha256": "4695d90d3f8823273a34a627d8dadc1d94fb970ada03bb9efc533c1ede97ae95",
+        "afterLfSha256": "d6361148eb2722c556767f41642523d0c87129a772da0974bc38aa7cae065427"
+      }
+    ],
+    "readonlyTraversalCallers": 4,
+    "readonlyFallbackCallers": 3
+  },
+  "compiledContracts": {
+    "before": {
+      "label": "before",
+      "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+      "descriptorBytes": 328,
+      "traversalByReference": false,
+      "traversalReadonly": false,
+      "coverageByReference": false,
+      "coverageReadonly": false,
+      "normalizedTypeNamesSha256": "24aed26f2c6e92830e645da89b4b1716d9d4c46064cb3ded80613e5110eb47ce",
+      "typeNamesCount": 998,
+      "typeNamesSha256": "aa84e5769ebae109d393303fbd76262ce66741336331dccd3178d5f507100f5f",
+      "capturesCount": 555,
+      "capturesSha256": "e108b655827099b22ab46725f826fdd4683c2b02b71e84379cdbf1cf1d84110d"
+    },
+    "after": {
+      "label": "after",
+      "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+      "descriptorBytes": 328,
+      "traversalByReference": true,
+      "traversalReadonly": true,
+      "coverageByReference": true,
+      "coverageReadonly": true,
+      "normalizedTypeNamesSha256": "24aed26f2c6e92830e645da89b4b1716d9d4c46064cb3ded80613e5110eb47ce",
+      "typeNamesCount": 998,
+      "typeNamesSha256": "ff67928a0232c7a0db581cfdd617a9f1fc81b82be0b7885a8a8dc7a9cce49cc7",
+      "capturesCount": 555,
+      "capturesSha256": "e108b655827099b22ab46725f826fdd4683c2b02b71e84379cdbf1cf1d84110d"
+    },
+    "typeMultisetEqualAfterCompilerOrdinalJoin": true,
+    "capturedFieldsUnchanged": true,
+    "bothConsumersBorrowByReadonlyReference": true,
+    "generatedTypeIdentity": "Moving two nested declarations renumbers SvgConverter compiler-generated DisplayClass method ordinals. Only that prefix ordinal is normalized; all 998 type occurrences and all 555 captured fields are compared with multiplicity retained."
+  },
+  "coverage": {
+    "coreMethods": 4653,
+    "fullCoreCases": 47651,
+    "fullNativeCases": 73312,
+    "fastCases": 19136,
+    "newOrRemovedTests": 0,
+    "consumers": [
+      "Ordinary solid polygon painting",
+      "Linear/radial/pattern polygon painting",
+      "Glyph contours and clip geometry",
+      "Image destination/path coverage",
+      "Context-bound dash replay",
+      "Analytic and fallback traversal"
+    ]
+  },
+  "validation": {
+    "selections": {
+      "core": "FullyQualifiedName~SvgDashSourceOwnershipTests|FullyQualifiedName~SvgCurveOwnershipTests|FullyQualifiedName~SvgEmptyContourMappingTests|FullyQualifiedName~SvgRetainedCurveOutputMappingTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgAnalytic|FullyQualifiedName~SvgGradientPolygonTests|FullyQualifiedName~SvgShaderStrokePathTests|FullyQualifiedName~SvgShaderHairline|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests|FullyQualifiedName~SvgPolygonContourOwnershipTests|FullyQualifiedName~SvgNestedPatternOwnershipTests|FullyQualifiedName~SvgInheritedContourOwnershipTests|FullyQualifiedName~SvgInstanceContourOwnershipTests|FullyQualifiedName~SvgPointListCoverageTests|FullyQualifiedName~SvgCurveFillTests|FullyQualifiedName~SvgEvenOddCrossingTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~SvgPolygonOutputParityTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "visual": "Category!=Research&(FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSingleStopGradientReferenceTests|FullyQualifiedName~SvgPatternRepeatReferenceTests|FullyQualifiedName~SvgPatternRecordingReferenceTests|FullyQualifiedName~SvgNestedPatternReferenceTests|FullyQualifiedName~SvgFilterGradientSamplingReferenceTests|FullyQualifiedName~SvgRadialFilterCaptureReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgShaderContextReferenceTests|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgUnhintedGlyphOutlineTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests)"
+    },
+    "checks": [
+      {
+        "stage": "affected-net11",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "950d1f122444c61d960e70be2149f4870abaca79506e4dee2c1d7ab915383377",
+        "testAssemblySha256": "fc0b1f8f6a637b0dae6c7a4e8d7a2cc1e416a1c3274a860b742f06f37b40ead0",
+        "exitCode": 0,
+        "seconds": 13.917520599905401,
+        "counters": {
+          "executed": "2038",
+          "passed": "2038",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "affected-net11",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "950d1f122444c61d960e70be2149f4870abaca79506e4dee2c1d7ab915383377",
+        "testAssemblySha256": "fc0b1f8f6a637b0dae6c7a4e8d7a2cc1e416a1c3274a860b742f06f37b40ead0",
+        "exitCode": 0,
+        "seconds": 20.156582199968398,
+        "counters": {
+          "executed": "2038",
+          "passed": "2038",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "affected-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "950d1f122444c61d960e70be2149f4870abaca79506e4dee2c1d7ab915383377",
+        "testAssemblySha256": "acb88e032d766b9ee4157878a51735d1aa5778bf8afcec4c29120197d284f6bb",
+        "exitCode": 0,
+        "seconds": 14.36426499998197,
+        "counters": {
+          "executed": "135",
+          "passed": "135",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "affected-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "950d1f122444c61d960e70be2149f4870abaca79506e4dee2c1d7ab915383377",
+        "testAssemblySha256": "acb88e032d766b9ee4157878a51735d1aa5778bf8afcec4c29120197d284f6bb",
+        "exitCode": 0,
+        "seconds": 12.42706279992126,
+        "counters": {
+          "executed": "135",
+          "passed": "135",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "affected-net10",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "17ec118abb5ca5aa5ff633f0869ef2e7a28a4e98df6c04659688cb5048c05b0a",
+        "testAssemblySha256": "ffbd1d0cd578f5c7204c1ff86f5716165d5f8d12bc5a17a6d297fcb023bd4fbe",
+        "exitCode": 0,
+        "seconds": 15.397243599873036,
+        "counters": {
+          "executed": "2038",
+          "passed": "2038",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "affected-net10",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "17ec118abb5ca5aa5ff633f0869ef2e7a28a4e98df6c04659688cb5048c05b0a",
+        "testAssemblySha256": "ffbd1d0cd578f5c7204c1ff86f5716165d5f8d12bc5a17a6d297fcb023bd4fbe",
+        "exitCode": 0,
+        "seconds": 14.476993800140917,
+        "counters": {
+          "executed": "2038",
+          "passed": "2038",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "affected-net10",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "17ec118abb5ca5aa5ff633f0869ef2e7a28a4e98df6c04659688cb5048c05b0a",
+        "testAssemblySha256": "74156e3af77e5c0dc29822974d1b72c3e19f68d00436be464d5e998d67fe018e",
+        "exitCode": 0,
+        "seconds": 13.162523899925873,
+        "counters": {
+          "executed": "135",
+          "passed": "135",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "affected-net10",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "17ec118abb5ca5aa5ff633f0869ef2e7a28a4e98df6c04659688cb5048c05b0a",
+        "testAssemblySha256": "74156e3af77e5c0dc29822974d1b72c3e19f68d00436be464d5e998d67fe018e",
+        "exitCode": 0,
+        "seconds": 11.988325800048187,
+        "counters": {
+          "executed": "135",
+          "passed": "135",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "package-affected-net11",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "fc0b1f8f6a637b0dae6c7a4e8d7a2cc1e416a1c3274a860b742f06f37b40ead0",
+        "exitCode": 0,
+        "seconds": 15.174312500050291,
+        "counters": {
+          "executed": "2038",
+          "passed": "2038",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "package-affected-net11",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "fc0b1f8f6a637b0dae6c7a4e8d7a2cc1e416a1c3274a860b742f06f37b40ead0",
+        "exitCode": 0,
+        "seconds": 15.067899600137025,
+        "counters": {
+          "executed": "2038",
+          "passed": "2038",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "package-affected-net11",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "acb88e032d766b9ee4157878a51735d1aa5778bf8afcec4c29120197d284f6bb",
+        "exitCode": 0,
+        "seconds": 14.316853000083938,
+        "counters": {
+          "executed": "135",
+          "passed": "135",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "package-affected-net11",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "testAssemblySha256": "acb88e032d766b9ee4157878a51735d1aa5778bf8afcec4c29120197d284f6bb",
+        "exitCode": 0,
+        "seconds": 14.024036899907514,
+        "counters": {
+          "executed": "135",
+          "passed": "135",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "package-affected-net10",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "ffbd1d0cd578f5c7204c1ff86f5716165d5f8d12bc5a17a6d297fcb023bd4fbe",
+        "exitCode": 0,
+        "seconds": 13.50269170012325,
+        "counters": {
+          "executed": "2038",
+          "passed": "2038",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "package-affected-net10",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "ffbd1d0cd578f5c7204c1ff86f5716165d5f8d12bc5a17a6d297fcb023bd4fbe",
+        "exitCode": 0,
+        "seconds": 13.727008299902081,
+        "counters": {
+          "executed": "2038",
+          "passed": "2038",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "package-affected-net10",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "74156e3af77e5c0dc29822974d1b72c3e19f68d00436be464d5e998d67fe018e",
+        "exitCode": 0,
+        "seconds": 12.634330899920315,
+        "counters": {
+          "executed": "135",
+          "passed": "135",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "package-affected-net10",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "74156e3af77e5c0dc29822974d1b72c3e19f68d00436be464d5e998d67fe018e",
+        "exitCode": 0,
+        "seconds": 10.58532080007717,
+        "counters": {
+          "executed": "135",
+          "passed": "135",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "fast-package-net10",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "ffbd1d0cd578f5c7204c1ff86f5716165d5f8d12bc5a17a6d297fcb023bd4fbe",
+        "exitCode": 0,
+        "seconds": 28.72894229996018,
+        "counters": {
+          "executed": "19136",
+          "passed": "19136",
+          "failed": "0"
+        }
+      },
+      {
+        "stage": "fast-package-net10",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d",
+        "testAssemblySha256": "ffbd1d0cd578f5c7204c1ff86f5716165d5f8d12bc5a17a6d297fcb023bd4fbe",
+        "exitCode": 0,
+        "seconds": 25.119242900051177,
+        "counters": {
+          "executed": "19136",
+          "passed": "19136",
+          "failed": "0"
+        }
+      }
+    ],
+    "policy": "Affected mechanism/ownership/native checks on both hosts/runtimes, then exact-package checks. All 19,136 fast net10 checks run per host; full primary net11 CI supplies broad numerical/rendering qualification. The unchanged arithmetic and source/type/field proofs justify avoiding another full local net10 native sweep for a declaration move and readonly-parameter change.",
+    "timingScope": "Functional process/discovery/TRX wall times under concurrent workloads. No timed benchmark or speedup claim; quiet-VM performance remains unmeasured."
+  },
+  "promotion": {
+    "package": {
+      "sourceCommit": "146324ae136be6f86eb9bd5802ba1f2418151546",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "7c868e713418a3e63f177c596ce52e8bbf9c3385f7d6a8fa3084b14c29590444"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "5b709cde37b08ed2f40964c76d353f737c3deb15584f7284914b34c54e4f7b7a"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+        "net10.0": "c5d66394bc800e62b9a732b9ac8c8ba50de0277acfac34d448ed40f06fbece2d"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 6.435532300034538
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0
+      }
+    ],
+    "published": false,
+    "documentationScope": "Packages bind the runtime source commit above. Subsequent documentation-only condensation and renamed-anchor fixes are recorded separately below; final release artifacts must bind their release commit."
+  },
+  "hostedOriginalReplay": {
+    "originals": 204,
+    "librarySha256": "8da68c153381adcf2e3111106e39c541d1ac1a28c1e6d61aa36fa1a54b8dbf2a",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "allSourceHashesAndDiagnosticMetadataUnchanged": true,
+    "suppliedOriginalContextsExactPerHost": 22,
+    "staticDiagnosticsExactPerHost": 13,
+    "hostedSvgBodiesFragmentsAndRawAttributesRetained": 0,
+    "previousEvidence": "transparent-scope-storage.json",
+    "scope": "Defaults, supplied programs and declared diagnostics retain separate acceptance meanings. Full original static admission stays open."
+  },
+  "documentation": {
+    "file": "docs/RASTERIZATION_DESIGN.md",
+    "beforeLines": 671,
+    "afterLines": 235,
+    "beforeWords": 6001,
+    "afterWords": 1714,
+    "beforeLfSha256": "99a8bfda8337a703f8f191efbc43d4dae84df4b2a00a06673629c39fbf10bd6b",
+    "afterLfSha256": "47d904c073524ce2788d5b013f131fd2bd448a5b7496fe25e90ad5759794f4d1",
+    "allHeadingAnchorsPreserved": true,
+    "relativeLinksChecked": 25,
+    "sourceAndTestChanges": false,
+    "scope": "Current architecture/owners, distinct numerical domains and disposal/cancellation. Support details, capture procedures and regression qualifications remain in their existing dedicated documents.",
+    "renamedQualificationAnchorFixes": [
+      "README.md",
+      "docs/SUPPORT_MATRIX.md",
+      "docs/RASTERIZATION_DESIGN.md",
+      "tests/Research/public-font-qualification/README.md"
+    ]
+  },
+  "ci": {
+    "runId": 41971337232,
+    "sourceCommit": "146324ae136be6f86eb9bd5802ba1f2418151546",
+    "status": "completed",
+    "terminalClosed": true,
+    "jobs": {
+      "linux": {
+        "jobId": 127060060994,
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47651,
+            "total": 47651
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "842703553990593c6ad0f52d46a05021687d4b21a1049c0ad07db3fbc566c7fd"
+      },
+      "windows": {
+        "jobId": 127060060515,
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47651,
+            "total": 47651
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "total": 73312
+          }
+        ],
+        "logSha256": "a9912a94c2c17a89042d7f02c48d5a588779354b22418e2f28b1e09728f4f90f"
+      }
+    },
+    "boundary": "Ubuntu full/compatibility/tools/package gates pass; Windows differs solely at the unchanged frozen DejaVu target. Preserve its reference and assertion pending authority."
+  },
+  "remaining": "Broader scene/layer preparation, remaining test products/responsibilities, full original-source static acceptance, unresolved historical provenance, remaining documentation commands and quiet-VM performance."
+}
