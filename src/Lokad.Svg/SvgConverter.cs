@@ -627,7 +627,7 @@ public static partial class SvgConverter
                     if (geometry.AuthoredPath is {} path)
                     {
                         box = PathBounds(path);
-                        visual = PathBounds(path.StrokeOutline ?? path);
+                        visual = path.StrokeOutline is {} outline ? PathBounds(outline) : box;
                     }
                     else if (geometry.Kind == SvgGeometryKind.GlyphContours && geometry.Glyph.Source is {} glyph)
                     {
@@ -1260,7 +1260,7 @@ public static partial class SvgConverter
                                     (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(parameterInverse.ComposeChecked(source.SceneMap), cancellationToken));
                             }
                             SvgAuthoredPath outline = source.StrokeOutline ?? source;
-                            box = SvgPathBounds.Compute(outline.Commands, cancellationToken);
+                            if (!ReferenceEquals(outline, source)) box = SvgPathBounds.Compute(outline.Commands, cancellationToken);
                             visualBounds = Union(visualBounds, new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                                 .Map(placement.ComposeChecked(outline.SceneMap), cancellationToken));
                             if (sourcePaint.SourceObjectBounds is { VisualBounds: {} sourceVisual } retained)

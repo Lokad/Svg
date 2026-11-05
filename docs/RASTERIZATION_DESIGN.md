@@ -34,6 +34,8 @@ command indices. Captures finish before parent disposal. Ordinary filter capture
 and terminal offset/merge replay share this rule; paths that rewrite commands
 retain their admitted arrays. Affine capture rewrites its opacity/group envelope
 while borrowing geometry with the original scene indices.
+Filter placement reuses a fill path's computed bounds when it has no separate
+outline; strokes retain independent outline bounds and coordinate maps.
 [Ownership evidence](../tests/Research/release-baselines/command-view-qualification.json)
 protects fixed raster storage as the retained source grows.
 
