@@ -102,6 +102,8 @@ retain eight pre-change pixel hashes across blur kernels, color spaces, placemen
 and earlier graph input. Four tight-admission witnesses protect destination
 scratch reuse; linearRGB controls retain their separate sampling allowance.
 Refusal, cleanup, exact retry and borrowed input ownership remain explicit.
+Their [qualification](Research/release-baselines/shadow-scratch.json) preserves
+the failing-before controls and a negative control that omits destination clearing.
 
 [Capture-storage contracts](Research/release-baselines/filter-capture-storage.json)
 separate aligned-buffer reuse, wider blur requests, color-matrix output and shifted

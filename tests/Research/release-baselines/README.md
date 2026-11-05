@@ -81,6 +81,10 @@ empty, single and maximum-size graphs; all numerical and pixel-ownership paths r
 [Empty filter-stage storage](empty-filter-stage-storage.json) retains graph bounds
 without per-stage clear pixel planes. Failing-before allowance cases, empty-result
 ownership, alpha bias, cleanup/retry and native regression coverage remain distinct.
+[Drop-shadow scratch](shadow-scratch.json) reuses the clear destination for alpha
+input before blurring, removing one full RGBA allocation per shadow. Four admission
+regressions, eight frozen outputs, a clear-omission control and independent final
+sampling ownership qualify the lifetime change without changing filter arithmetic.
 [Shader polygon painting](shader-polygon-paint.json) shares the identical linear,
 radial and pattern coverage loop while preserving material coordinates and owners.
 Source expansion, existing mechanisms/contracts, native images and packaged replay
