@@ -13,13 +13,17 @@ native rasterizer or machine-font service.
 | Invoke | Validate raw/prepared calls and hold their operation, scene and output lifetimes through rasterization and encoding. | [Invocation/output](../src/Lokad.Svg/SvgConverter.Invocation.cs), [prepared document](../src/Lokad.Svg/SvgPreparedDocument.cs) |
 | Prepare | Read bounded XML/CSS, resolve sizing and inherited declarations, index definitions and select required fonts. | [Document preparation](../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs), [root parser](../src/Lokad.Svg/Parsing/SvgRootParser.cs) |
 | Retain | Own geometry, source curves, ordered commands, resource bindings and replay dependencies. | [Scene](../src/Lokad.Svg/Parsing/SvgRoot.cs), [authored paths](../src/Lokad.Svg/Parsing/SvgAuthoredPath.cs) |
-| Rasterize | Prepare mappings/coverage, render effects and layers, sample paints and composite pixels. | [Converter](../src/Lokad.Svg/SvgConverter.cs) |
+| Rasterize | Prepare mappings/coverage, render effects and layers, sample paints and composite pixels. | [Converter](../src/Lokad.Svg/SvgConverter.cs), [polygon preparation/traversal](../src/Lokad.Svg/SvgConverter.PolygonRaster.cs) |
 | Encode | Produce independently owned PNG memory, caller-memory output or stream output. | [Encoder](../src/Lokad.Svg/Encoding/PngEncoder.cs) |
 
 Raw and catalog/HTTP-prepared conversion share one prepared-scene lowering and
 admission gate. It borrows preparation, fonts and budget, transferring a supported
 scene to its caller or releasing an unsupported scene before reporting its retained
 diagnostic. Raster surfaces and PNG destinations keep their existing separate owners.
+
+Polygon painting owns its mapped/authored storage through traversal and disposal.
+Analytic traversal and fallback coverage borrow the mapped descriptor by readonly
+reference; source, complete-path, storage and paint bounds remain distinct.
 
 Definitions register before forward references resolve. Deferred paints, text,
 tiles and uses replace recorded placeholders in batches, retaining their source

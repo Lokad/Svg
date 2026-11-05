@@ -5,6 +5,100 @@ namespace Lokad.Svg;
 
 public static partial class SvgConverter
 {
+    /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
+    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, SvgClipAntialiasing ClipAntialiasing, bool ClipContainsPath, SvgDeviceBounds CompleteBounds, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans, RenderBudget.BudgetReservation? Reservation, int[] ContourEnds, int[]? Signs, SvgPreparedPathContours? Authored, SvgAffineTransform AuthoredMap, SvgPolygonMapping Mapping) : IDisposable
+    {
+        /// <summary>Borrows the retained dash source and its outline/preparation maps through this paint.</summary>
+        internal SvgDashPolygonSource? Dash { get; init; }
+        public void Dispose() { Reservation?.Dispose(); Authored?.Dispose(); }
+
+        /// <summary>Gets bordered construction when complete path/control bounds escape this bitmap or the SVG clip.</summary>
+        /// <remarks>Global bounds are only an initial containment check: moving translation into the
+        /// bitmap before mapping can put a retained point just outside an apparently touching edge.
+        /// The raw-operand check borrows source storage, allocates nothing and observes cancellation.</remarks>
+        internal SvgAnalyticClipContext? GetConstructionClip(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip, CancellationToken token)
+        {
+            SvgAnalyticClipBounds clip = GetBitmapClip(context, contentClip);
+            bool contained = ClipContainsPath && CompleteBounds.IsContainedBy(clip);
+            SvgCpuBitmapOrigin origin = context.Origin;
+            if (contained && Authored is {} source && (origin.X != 0 || origin.Y != 0))
+            {
+                int quad = 0, cubic = 0;
+                for (int index = 0; index < source.Points.Length; index++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!Contains(source.Points[index], AuthoredMap, origin, clip)) { contained = false; break; }
+                    // Retained curve endpoints and controls define native bounds. Interior
+                    // fallback samples are not operands of the source drawing.
+                    if (quad < source.QuadSpans.Length && source.QuadSpans[quad].StartIndex == index)
+                    {
+                        SvgQuadSpan span = source.QuadSpans[quad++];
+                        if (!Contains(span.Control, AuthoredMap, origin, clip)) { contained = false; break; }
+                        index = span.EndIndex - 1;
+                    }
+                    else if (cubic < source.CubicSpans.Length && source.CubicSpans[cubic].StartIndex == index)
+                    {
+                        SvgCubicSpan span = source.CubicSpans[cubic++];
+                        if (!Contains(span.FirstControl, AuthoredMap, origin, clip) || !Contains(span.SecondControl, AuthoredMap, origin, clip)) { contained = false; break; }
+                        index = span.EndIndex - 1;
+                    }
+                }
+            }
+            return contained ? null : new(clip, origin);
+
+            static bool Contains(SvgDevicePoint point, SvgAffineTransform map, SvgCpuBitmapOrigin origin, SvgAnalyticClipBounds clip)
+            {
+                SvgDevicePoint local = SvgAuthoredPath.MapPoint(map, point, origin);
+                return local.X >= (double)clip.Left - origin.X && local.X <= (double)clip.Right - origin.X
+                    && local.Y >= (double)clip.Top - origin.Y && local.Y <= (double)clip.Bottom - origin.Y;
+            }
+        }
+
+        /// <summary>Keeps bitmap walking distinct from whole-path storage and exclusively owned painting.</summary>
+        internal SvgAnalyticScanWindow GetScanWindow(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip)
+        {
+            SvgAnalyticClipBounds clip = GetBitmapClip(context, contentClip);
+            return new(clip.Left, clip.Right);
+        }
+
+        /// <summary>Retains AA paint routing even when the complete path needs no construction clipping.</summary>
+        internal SvgAnalyticPaintClip GetPaintClip(SvgCpuRasterContext context)
+            => Clip is {} bounds ? SvgAnalyticRectangleClip.Classify(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom, context.BitmapClip, ClipAntialiasing) : SvgAnalyticPaintClip.Binary;
+
+        private SvgAnalyticClipBounds GetBitmapClip(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip)
+        {
+            SvgAnalyticClipBounds bitmap = context.BitmapClip;
+            if (contentClip is {} content)
+            {
+                int left = Math.Max(bitmap.Left, content.Left), top = Math.Max(bitmap.Top, content.Top);
+                bitmap = new(left, top, Math.Max(left, Math.Min(bitmap.Right, content.Right)), Math.Max(top, Math.Min(bitmap.Bottom, content.Bottom)));
+            }
+            return Clip is {} bounds
+                ? new((int)Math.Clamp((ClipAntialiasing & SvgClipAntialiasing.BinaryLeft) != 0 ? Math.Floor(bounds.Left + .5) : Math.Floor(bounds.Left), bitmap.Left, bitmap.Right),
+                    (int)Math.Clamp((ClipAntialiasing & SvgClipAntialiasing.BinaryTop) != 0 ? Math.Floor(bounds.Top + .5) : Math.Floor(bounds.Top), bitmap.Top, bitmap.Bottom),
+                    (int)Math.Clamp((ClipAntialiasing & SvgClipAntialiasing.BinaryRight) != 0 ? Math.Floor(bounds.Right + .5) : Math.Ceiling(bounds.Right), bitmap.Left, bitmap.Right),
+                    (int)Math.Clamp((ClipAntialiasing & SvgClipAntialiasing.BinaryBottom) != 0 ? Math.Floor(bounds.Bottom + .5) : Math.Ceiling(bounds.Bottom), bitmap.Top, bitmap.Bottom))
+                : bitmap;
+        }
+    }
+
+    /// <summary>Complete mapped vertex/control bounds for construction and whole-path mask/run dispatch.</summary>
+    private readonly record struct SvgDeviceBounds(double Left, double Top, double Right, double Bottom)
+    {
+        /// <summary>Rounds complete bounds for mask/run dispatch without widening bounded raster storage.</summary>
+        internal SvgAnalyticClipBounds RoundOutForDispatch()
+        {
+            // Native safeRoundOut limits coordinates before mask/run width arithmetic.
+            // This rectangle selects the blitter only; row storage stays canvas-clamped.
+            const int limit = int.MaxValue >> 2;
+            return new((int)Math.Clamp(Math.Floor(Left), -limit, limit), (int)Math.Clamp(Math.Floor(Top), -limit, limit),
+                (int)Math.Clamp(Math.Ceiling(Right), -limit, limit), (int)Math.Clamp(Math.Ceiling(Bottom), -limit, limit));
+        }
+
+        internal bool IsContainedBy(SvgAnalyticClipBounds clip)
+            => Left >= clip.Left && Top >= clip.Top && Right <= clip.Right && Bottom <= clip.Bottom;
+    }
+
     private readonly record struct SvgDashPolygonSource(SvgAuthoredDashSource Source,
         SvgAffineTransform OutlineMap, SvgAffineTransform PreparationMap);
 
@@ -22,7 +116,7 @@ public static partial class SvgConverter
         private readonly int _storageStartX;
         private readonly SvgAnalyticClipBounds _paintArea;
 
-        internal PolygonRaster(scoped ref SvgAnalyticContourPreparation preparation, MappedPolygon raster,
+        internal PolygonRaster(scoped ref SvgAnalyticContourPreparation preparation, in MappedPolygon raster,
             SvgCpuRasterContext context, SvgAnalyticClipBounds? bitmapClip, SvgAnalyticPaintClip paintClip,
             SvgAnalyticClipBounds paintArea, RenderBudget budget,
             CancellationToken token)
