@@ -8,6 +8,12 @@ Reference images remain beside their existing licensed source collections.
 The [API migration audit](api-migration.json) accounts for every removed published
 declaration and verifies equivalent current API surfaces on both target frameworks.
 
+[PNG color admission](png-color-admission.json) rejects `cICP` sample color-space
+metadata through the existing unsupported color-management boundary. Three
+failing-before cases, affected native images, committed packages, installed
+consumers and full SVGWeb replay retain their duties; terminal CI preserves
+only the separate frozen Windows DejaVu discrepancy.
+
 [Geometry test responsibilities](geometry-test-responsibilities.json) classifies
 direct contour/analytic vectors separately from cancellation, allocation and output
 contracts. All cases and assertion bodies remain; focused selection and the source/

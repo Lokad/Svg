@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/decoration-fragment-order.json",
+    "evidence": "../release-baselines/png-color-admission.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "1740d2c39d1bd93bc21680f4f344e9e8727ecc72",
-    "sourceIdentity": "Clean-commit packaged renderer; source/package hashes and unchanged original/context replay are bound by the qualification.",
-    "librarySha256": "4f004d1899567e07680024d66cb37d99e096750e24d4e77c027b9f4ce31e76e4",
+    "sourceBaseline": "8bae191f2459e9d8f99fa6fed6f40b820360d81f",
+    "sourceIdentity": "Clean-commit packaged renderer. Fresh primary-runtime replay covers all 204 originals, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics; prior both-runtime references remain frozen. Source/package hashes and inherited/fresh scopes are explicit in evidence.",
+    "librarySha256": "68db361f4bba885b82dae42266e41c58ab74cc8cb7185594e2125e43c84988ae",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10401,7 +10401,7 @@
           "ny1-static-review.json",
           "svg2009-static-review.json"
         ],
-        "currentReplay": "special-static-replay.json"
+        "currentReplay": "../release-baselines/png-color-admission.json"
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0
