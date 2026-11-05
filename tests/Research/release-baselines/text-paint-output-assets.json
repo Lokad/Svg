@@ -189,5 +189,123 @@
   "timingBoundary": "Focused values are single fresh-process wall observations with the same Windows/Linux pair executing concurrently, after builds finished. Results are mixed and establish no execution or renderer speedup. Build wall observations include cache/compilation effects and do not isolate copy cost.",
   "validationRecipe": "Build Release core tests with --no-restore --no-incremental and an explicit new OutDir for each phase/runtime. Inventory and hash every TestData file. Use the exact qualified package renderer DLL/XML in both outputs. Run VSTest for SvgTextPaintBoundsTests|SvgTextPaintMatrixTests, compare all names/multiplicities, then run the unfiltered core assembly from each trimmed output on Windows/Linux. Ordinary incremental directories were not used for this audit.",
   "unchanged": "All C# test bodies/providers, production code, original and authored SVGs, native PNGs, provenance, licenses and tolerances remain unchanged. This test-copy change does not qualify new renderer packages or alter originals.currentReview.",
-  "remaining": "Broader output-asset consumer review, ownership setup, responsibility classification, shared scene/layer correctness and complete original-source admission remain open in PLAN.md."
+  "remaining": "Broader output-asset consumer review, ownership setup, responsibility classification, shared scene/layer correctness and complete original-source admission remain open in PLAN.md.",
+  "sourceCommit": "c80d9623e46a64922a1e79ff9b5841c287811e9f",
+  "followupGlobAudit": {
+    "remainingGlobs": 39,
+    "remainingFiles": 549,
+    "remainingBytes": 287775,
+    "manifestSelectedCohorts": [
+      {
+        "bank": "pattern-source-selection",
+        "files": 54,
+        "consumer": "SvgPatternFontReachabilityTests.Cases/ReadInput",
+        "allFilesSelected": true
+      },
+      {
+        "bank": "windows-font-unit-scaling",
+        "files": 4,
+        "consumer": "OpenTypeFontTests.WindowsFontUnitNativeCases/WindowsHorizontalPointNativeCases",
+        "allFilesSelected": true
+      },
+      {
+        "bank": "windows-small-strikes",
+        "files": 5,
+        "consumer": "OpenTypeFontTests.WindowsSmallStrikeCases/Windows_raster_size_governs_program_execution_and_default_scanning",
+        "allFilesSelected": true
+      },
+      {
+        "bank": "windows-conditional-targets",
+        "files": 2,
+        "consumer": "OpenTypeFontTests.WindowsLegacyDeltaTargetCases",
+        "allFilesSelected": true
+      }
+    ],
+    "boundary": "Read-only follow-up: literal filename absence is not a removal criterion. All files in these four cohorts are dynamically selected by existing manifests; keep them. Other copied SVG/TTF banks still require their consumer joins before any change."
+  },
+  "ci": {
+    "runId": 41996523720,
+    "sourceCommit": "c80d9623e46a64922a1e79ff9b5841c287811e9f",
+    "terminalClosed": true,
+    "jobs": {
+      "linux": {
+        "jobId": 127140938673,
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47699,
+            "total": 47699
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73566,
+            "total": 73566
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "d75156d1d7b95150bb0bff99ef1575b07909d02da4b11d81b7fd4ae6ed6842f0"
+      },
+      "windows": {
+        "jobId": 127140939293,
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47699,
+            "total": 47699
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73565,
+            "total": 73566
+          }
+        ],
+        "logSha256": "b1450cbd2e3f5ca9266f3fe4bc6efc5805dea61205c930af23c9cfceb60b9aad"
+      }
+    },
+    "boundary": "Ubuntu full/compatibility/tools/package gates pass. Windows retains solely the unchanged frozen DejaVu discrepancy. Preserve its reference/assertion; this test-copy change does not resolve native-reference authority."
+  }
 }
