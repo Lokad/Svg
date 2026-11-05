@@ -1,10 +1,12 @@
 using BenchmarkDotNet.Attributes;
 using Lokad.Svg.Encoding;
 using Lokad.Svg.Rendering;
+using System.Security.Cryptography;
+using System.Text.Json;
 
 namespace Lokad.Svg.Benchmarks;
 
-/// <summary>Compares PNG output allocation traffic and accounted peaks across sinks and entropies near the encoded-output limit.</summary>
+/// <summary>Compares PNG encoding time/allocation across sinks and entropies; reports tracked storage separately.</summary>
 [MemoryDiagnoser]
 public class PngBufferBenchmarks
 {
@@ -15,20 +17,27 @@ public class PngBufferBenchmarks
     private MemoryStream _stream = new();
     private MemoryStream _lowStream = new();
     private RenderBudget _encodeBudget = new RenderBudget();
-    private int _highLength;
-    private int _lowLength;
 
     [GlobalSetup]
     public void SetUp()
     {
         _highEntropy = CreateHighEntropyPixels();
         _lowEntropy = CreateLowEntropyPixels();
-        _highLength = PngEncoder.Encode(512, 512, _highEntropy, CancellationToken.None).Length;
-        _lowLength = PngEncoder.Encode(512, 512, _lowEntropy, CancellationToken.None).Length;
-        _callerDestination = new byte[_highLength];
-        _lowCallerDestination = new byte[_lowLength];
-        _stream = new MemoryStream(_highLength);
-        _lowStream = new MemoryStream(_lowLength);
+        int highLength = PngEncoder.Encode(512, 512, _highEntropy, CancellationToken.None).Length;
+        int lowLength = PngEncoder.Encode(512, 512, _lowEntropy, CancellationToken.None).Length;
+        _callerDestination = new byte[highLength];
+        _lowCallerDestination = new byte[lowLength];
+        _stream.Dispose();
+        _lowStream.Dispose();
+        _stream = new MemoryStream(highLength);
+        _lowStream = new MemoryStream(lowLength);
+    }
+
+    [GlobalCleanup]
+    public void CleanUp()
+    {
+        _stream.Dispose();
+        _lowStream.Dispose();
     }
 
     [Benchmark]
@@ -71,39 +80,44 @@ public class PngBufferBenchmarks
         return await PngEncoder.EncodeToAsync(512, 512, _lowEntropy, _lowStream, _encodeBudget, int.MaxValue, CancellationToken.None);
     }
 
-    [Benchmark]
-    public long HighEntropyOwnedPeak()
+    /// <summary>Writes untimed tracked-storage observations; caller owns the writer and fixture lifetime.
+    /// Encoder temporaries finish before each snapshot; source/caller stream buffers remain fixture-owned.
+    /// Call only between setup and cleanup, without concurrent benchmark operations.</summary>
+    internal void WriteMemoryReport(TextWriter destination)
     {
-        RenderBudget budget = new RenderBudget();
-        PngEncoder.Encode(512, 512, _highEntropy, budget, int.MaxValue, CancellationToken.None);
-        return budget.Snapshot().PeakBytes;
+        ArgumentNullException.ThrowIfNull(destination);
+        var report = new
+        {
+            measurement = "renderer-owned storage reservations; excludes caller inputs, stream capacity and process/native memory",
+            width = 512,
+            height = 512,
+            framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
+            librarySha256 = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(typeof(SvgConverter).Assembly.Location))),
+            highEntropy = Observe(_highEntropy, _stream),
+            lowEntropy = Observe(_lowEntropy, _lowStream),
+        };
+        destination.WriteLine(JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+
+        static PngStorageObservation Observe(byte[] pixels, MemoryStream stream)
+        {
+            string inputHash = Convert.ToHexStringLower(SHA256.HashData(pixels));
+            RenderBudget owned = new(), streamed = new();
+            byte[] png = PngEncoder.Encode(512, 512, pixels, owned, int.MaxValue, CancellationToken.None);
+            ResetStream(stream);
+            int length = PngEncoder.EncodeTo(512, 512, pixels, stream, streamed, int.MaxValue, CancellationToken.None);
+            if (length != png.Length || !stream.GetBuffer().AsSpan(0, length).SequenceEqual(png))
+                throw new InvalidOperationException("Owned and streamed PNG outputs differ.");
+            RenderBudgetSnapshot ownedSnapshot = owned.Snapshot(), streamSnapshot = streamed.Snapshot();
+            if (ownedSnapshot.CurrentBytes != 0 || streamSnapshot.CurrentBytes != 0)
+                throw new InvalidOperationException("PNG observation retained encoder scratch.");
+            if (inputHash != Convert.ToHexStringLower(SHA256.HashData(pixels)))
+                throw new InvalidOperationException("PNG observation modified caller pixels.");
+            return new(inputHash, length, Convert.ToHexStringLower(SHA256.HashData(png)), ownedSnapshot, streamSnapshot);
+        }
     }
 
-    [Benchmark]
-    public long HighEntropyStreamPeak()
-    {
-        RenderBudget budget = new RenderBudget();
-        ResetStream(_stream);
-        PngEncoder.EncodeTo(512, 512, _highEntropy, _stream, budget, int.MaxValue, CancellationToken.None);
-        return budget.Snapshot().PeakBytes;
-    }
-
-    [Benchmark]
-    public long LowEntropyOwnedPeak()
-    {
-        RenderBudget budget = new RenderBudget();
-        PngEncoder.Encode(512, 512, _lowEntropy, budget, int.MaxValue, CancellationToken.None);
-        return budget.Snapshot().PeakBytes;
-    }
-
-    [Benchmark]
-    public long LowEntropyStreamPeak()
-    {
-        RenderBudget budget = new RenderBudget();
-        ResetStream(_lowStream);
-        PngEncoder.EncodeTo(512, 512, _lowEntropy, _lowStream, budget, int.MaxValue, CancellationToken.None);
-        return budget.Snapshot().PeakBytes;
-    }
+    private readonly record struct PngStorageObservation(string RgbaSha256, int EncodedBytes, string PngSha256,
+        RenderBudgetSnapshot Owned, RenderBudgetSnapshot Stream);
 
     private static void ResetStream(MemoryStream stream)
     {

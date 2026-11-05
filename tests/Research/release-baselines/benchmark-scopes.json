@@ -1,0 +1,911 @@
+{
+  "status": "Benchmark scopes qualified: 59 existing timing cases retained with 47 method bodies unchanged; four tracked-storage scenarios move to explicit untimed JSON and three prepared-scene raster cases are added. All 62 generated workloads compile on both hosts/targets; untimed pixels, sink equivalence, input immutability and lifecycle checks pass. No timed benchmark execution or renderer performance claim.",
+  "sourceBaseCommit": "b9143d54d48f4e540e4d71a75c597355157babd5",
+  "productionSourceTreeGitId": "57619b897f3f9de3fded335ac0e2f455a563b05d",
+  "runtimeQualification": "png-row-storage.json",
+  "priorBuilderQualification": "benchmark-net11-qualification.json",
+  "benchmarkDotNet": "0.16.0-preview.2",
+  "engineeringFinding": "Returning PeakBytes from a Benchmark method times the encoding/snapshot operation; it does not export that return value as a memory metric. Allocation traffic and tracked storage need separate observations. Full-conversion scene cases retain only input bytes; one parsed root is owned by each targeted raster setup and disposed after it finishes.",
+  "primarySources": [
+    {
+      "url": "https://github.com/dotnet/performance/blob/main/docs/microbenchmark-design-guidelines.md",
+      "supports": "BenchmarkDotNet consumes returned values to prevent dead-code elimination."
+    },
+    {
+      "url": "https://benchmarkdotnet.org/articles/configs/diagnosers.html",
+      "supports": "MemoryDiagnoser allocation/GC reporting is distinct from a returned tracked-storage value."
+    },
+    {
+      "url": "https://benchmarkdotnet.org/articles/features/setup-and-cleanup.html",
+      "supports": "GlobalSetup/GlobalCleanup boundaries and targeted setup methods."
+    }
+  ],
+  "source": {
+    "files": [
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/PngBufferBenchmarks.cs",
+        "beforeLfSha256": "110e046672fb9349136e0baa63b7e3e20bd72303d60722305b6618237317535e",
+        "afterLfSha256": "cea1a8e52d05c8ca21d3b9ea3ce0b5277c32d4fae157899b30d57e89063a09c2"
+      },
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/Program.cs",
+        "beforeLfSha256": "b62d839822eb2b203f66d0a49778671fb5a6e8d62317dc0760a16801452ba574",
+        "afterLfSha256": "59a7894e20b30e45d235e7ae6bbbb746bebb94d89d7ecf51f6dec2616377da56"
+      },
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/SvgSceneBenchmarks.cs",
+        "beforeLfSha256": "d952bd1eff086b90196a2a36a0b3198762deea2335b57d9064c760cc951fa3e4",
+        "afterLfSha256": "bd089fc7dc378af6e860c6fd59b8a631765c67780824c9462c563ab4bafc7fcf"
+      }
+    ],
+    "all47RetainedTimedMethodBodiesByteExact": true,
+    "allRuntimeTestFixtureReferenceLockFilesUnchanged": true,
+    "noNewRendererDependencyOrBenchmarkFramework": true,
+    "sceneInputConstructionUnchanged": true,
+    "pngInputGeneratorsUnchanged": true
+  },
+  "partition": {
+    "beforeMethods": 51,
+    "beforeCasesPerRuntime": 63,
+    "retainedMethods": 47,
+    "retainedCasesPerRuntime": 59,
+    "movedToStorage": [
+      {
+        "before": "Lokad.Svg.Benchmarks.PngBufferBenchmarks.HighEntropyOwnedPeak",
+        "reportField": "highEntropy.owned",
+        "metrics": [
+          "currentBytes",
+          "peakBytes",
+          "deniedReservationCount",
+          "bytesByCategory"
+        ]
+      },
+      {
+        "before": "Lokad.Svg.Benchmarks.PngBufferBenchmarks.HighEntropyStreamPeak",
+        "reportField": "highEntropy.stream",
+        "metrics": [
+          "currentBytes",
+          "peakBytes",
+          "deniedReservationCount",
+          "bytesByCategory"
+        ]
+      },
+      {
+        "before": "Lokad.Svg.Benchmarks.PngBufferBenchmarks.LowEntropyOwnedPeak",
+        "reportField": "lowEntropy.owned",
+        "metrics": [
+          "currentBytes",
+          "peakBytes",
+          "deniedReservationCount",
+          "bytesByCategory"
+        ]
+      },
+      {
+        "before": "Lokad.Svg.Benchmarks.PngBufferBenchmarks.LowEntropyStreamPeak",
+        "reportField": "lowEntropy.stream",
+        "metrics": [
+          "currentBytes",
+          "peakBytes",
+          "deniedReservationCount",
+          "bytesByCategory"
+        ]
+      }
+    ],
+    "newRasterMethods": [
+      "Lokad.Svg.Benchmarks.SvgSceneBenchmarks.RasterizeInlineStyledRectangles",
+      "Lokad.Svg.Benchmarks.SvgSceneBenchmarks.RasterizeInlineStyledUses",
+      "Lokad.Svg.Benchmarks.SvgSceneBenchmarks.RasterizeStyledRectangles"
+    ],
+    "afterMethods": 50,
+    "afterCasesPerRuntime": 62,
+    "allRemainingOriginalIdentitiesRetained": true,
+    "joins": [
+      {
+        "hostRuntime": "linux-net10.0",
+        "beforeCasesPerRuntime": 63,
+        "retainedTimedCasesPerRuntime": 59,
+        "movedToUntimedStorage": 4,
+        "newRasterCasesPerRuntime": 3,
+        "afterTimedCasesPerRuntime": 62
+      },
+      {
+        "hostRuntime": "linux-net11.0",
+        "beforeCasesPerRuntime": 63,
+        "retainedTimedCasesPerRuntime": 59,
+        "movedToUntimedStorage": 4,
+        "newRasterCasesPerRuntime": 3,
+        "afterTimedCasesPerRuntime": 62
+      },
+      {
+        "hostRuntime": "windows-net10.0",
+        "beforeCasesPerRuntime": 63,
+        "retainedTimedCasesPerRuntime": 59,
+        "movedToUntimedStorage": 4,
+        "newRasterCasesPerRuntime": 3,
+        "afterTimedCasesPerRuntime": 62
+      },
+      {
+        "hostRuntime": "windows-net11.0",
+        "beforeCasesPerRuntime": 63,
+        "retainedTimedCasesPerRuntime": 59,
+        "movedToUntimedStorage": 4,
+        "newRasterCasesPerRuntime": 3,
+        "afterTimedCasesPerRuntime": 62
+      }
+    ]
+  },
+  "storageReporting": {
+    "command": "dotnet run -c Release --framework net11.0 --project benchmarks/Lokad.Svg.Benchmarks -- --png-memory",
+    "observationsPerHostRuntime": 4,
+    "observations": [
+      {
+        "hostRuntime": "linux-net10.0",
+        "entropy": "highEntropy",
+        "rgbaSha256": "b9a56eb486a3f0de877bfc5063efc387683db561edd38f0273fcc3078153980a",
+        "encodedBytes": 1049663,
+        "pngSha256": "f7180018ee0e458d5d036d081254c10a47f76b91cbc397ed26ac546e660e2632",
+        "owned": {
+          "currentBytes": 0,
+          "peakBytes": 2099077,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stream": {
+          "currentBytes": 0,
+          "peakBytes": 100353,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "hostRuntime": "linux-net10.0",
+        "entropy": "lowEntropy",
+        "rgbaSha256": "f1b8eae743293993f56bd1424645f7cbcb2e2942143f41ea7725013984a9a4b0",
+        "encodedBytes": 6254,
+        "pngSha256": "c351dd6713763f3c85eadecc54c0f3dc1bb591bea442083a28fc4e422bf5a3fd",
+        "owned": {
+          "currentBytes": 0,
+          "peakBytes": 12451,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stream": {
+          "currentBytes": 0,
+          "peakBytes": 14337,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "hostRuntime": "linux-net11.0",
+        "entropy": "highEntropy",
+        "rgbaSha256": "b9a56eb486a3f0de877bfc5063efc387683db561edd38f0273fcc3078153980a",
+        "encodedBytes": 1049663,
+        "pngSha256": "f7180018ee0e458d5d036d081254c10a47f76b91cbc397ed26ac546e660e2632",
+        "owned": {
+          "currentBytes": 0,
+          "peakBytes": 2099077,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stream": {
+          "currentBytes": 0,
+          "peakBytes": 100353,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "hostRuntime": "linux-net11.0",
+        "entropy": "lowEntropy",
+        "rgbaSha256": "f1b8eae743293993f56bd1424645f7cbcb2e2942143f41ea7725013984a9a4b0",
+        "encodedBytes": 6254,
+        "pngSha256": "c351dd6713763f3c85eadecc54c0f3dc1bb591bea442083a28fc4e422bf5a3fd",
+        "owned": {
+          "currentBytes": 0,
+          "peakBytes": 12451,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stream": {
+          "currentBytes": 0,
+          "peakBytes": 14337,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "hostRuntime": "windows-net10.0",
+        "entropy": "highEntropy",
+        "rgbaSha256": "b9a56eb486a3f0de877bfc5063efc387683db561edd38f0273fcc3078153980a",
+        "encodedBytes": 1049663,
+        "pngSha256": "f7180018ee0e458d5d036d081254c10a47f76b91cbc397ed26ac546e660e2632",
+        "owned": {
+          "currentBytes": 0,
+          "peakBytes": 2099077,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stream": {
+          "currentBytes": 0,
+          "peakBytes": 100353,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "hostRuntime": "windows-net10.0",
+        "entropy": "lowEntropy",
+        "rgbaSha256": "f1b8eae743293993f56bd1424645f7cbcb2e2942143f41ea7725013984a9a4b0",
+        "encodedBytes": 6254,
+        "pngSha256": "c351dd6713763f3c85eadecc54c0f3dc1bb591bea442083a28fc4e422bf5a3fd",
+        "owned": {
+          "currentBytes": 0,
+          "peakBytes": 12451,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stream": {
+          "currentBytes": 0,
+          "peakBytes": 14337,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "hostRuntime": "windows-net11.0",
+        "entropy": "highEntropy",
+        "rgbaSha256": "b9a56eb486a3f0de877bfc5063efc387683db561edd38f0273fcc3078153980a",
+        "encodedBytes": 1049663,
+        "pngSha256": "f7180018ee0e458d5d036d081254c10a47f76b91cbc397ed26ac546e660e2632",
+        "owned": {
+          "currentBytes": 0,
+          "peakBytes": 2099077,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stream": {
+          "currentBytes": 0,
+          "peakBytes": 100353,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "hostRuntime": "windows-net11.0",
+        "entropy": "lowEntropy",
+        "rgbaSha256": "f1b8eae743293993f56bd1424645f7cbcb2e2942143f41ea7725013984a9a4b0",
+        "encodedBytes": 6254,
+        "pngSha256": "c351dd6713763f3c85eadecc54c0f3dc1bb591bea442083a28fc4e422bf5a3fd",
+        "owned": {
+          "currentBytes": 0,
+          "peakBytes": 12451,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "stream": {
+          "currentBytes": 0,
+          "peakBytes": 14337,
+          "deniedReservationCount": 0,
+          "bytesByCategory": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    ],
+    "scope": "Deterministic renderer reservation snapshots; excludes caller input, reused destination capacity and process/native memory. No clock samples or throughput statistics. Reporter verifies owned/stream encoded bytes, unchanged source hashes and zero temporary retention. Input/output hashes bind the two 512x512 entropy cases."
+  },
+  "functionalChecks": {
+    "results": [
+      {
+        "host": "windows",
+        "targetFramework": "net11.0",
+        "framework": ".NET 11.0.0-rc.3.26522.148",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "pngResults": [
+          {
+            "method": "EncodeHighEntropyOwned",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyCallerMemory",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyStream",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyStreamAsync",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeLowEntropyOwned",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyCallerMemory",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyStream",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyStreamAsync",
+            "length": 6254
+          }
+        ],
+        "scenes": [
+          {
+            "id": "stylesheet",
+            "sourceSha256": "d30090cc07f932851c7dcd5535ab7cb6f0aa5252edc0878c2e856533225f80e9",
+            "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf",
+            "pngSha256": "6ad69929a7a6d4f13459b4b20631f65600eb3a2153707e4faceda44156120f95",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          },
+          {
+            "id": "inline",
+            "sourceSha256": "4381e633436447cf9934c9ae2c05d74fc7f69c74e29059b7e3d8e3f59e00129a",
+            "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf",
+            "pngSha256": "6ad69929a7a6d4f13459b4b20631f65600eb3a2153707e4faceda44156120f95",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          },
+          {
+            "id": "uses",
+            "sourceSha256": "a04eb3e944629cbb023ec9c6772b1fefd00274edfebf8ae74b2d77bac969f2a4",
+            "rgbaSha256": "eb4456260b7539871123faa3134c8e7d42987ed05f44cd01178e6150c5ca8f2a",
+            "pngSha256": "4e4c4d2e639312183757e961266cc483431a7fa018db77623508e99ccf760699",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          }
+        ],
+        "cleanupVerified": true,
+        "timedBenchmarkExecutions": 0,
+        "bdnExecutorCalls": 0,
+        "validationSeconds": 2.3108318001031876
+      },
+      {
+        "host": "linux",
+        "targetFramework": "net11.0",
+        "framework": ".NET 11.0.0-rc.3.26522.148",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "pngResults": [
+          {
+            "method": "EncodeHighEntropyOwned",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyCallerMemory",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyStream",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyStreamAsync",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeLowEntropyOwned",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyCallerMemory",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyStream",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyStreamAsync",
+            "length": 6254
+          }
+        ],
+        "scenes": [
+          {
+            "id": "stylesheet",
+            "sourceSha256": "d30090cc07f932851c7dcd5535ab7cb6f0aa5252edc0878c2e856533225f80e9",
+            "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf",
+            "pngSha256": "6ad69929a7a6d4f13459b4b20631f65600eb3a2153707e4faceda44156120f95",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          },
+          {
+            "id": "inline",
+            "sourceSha256": "4381e633436447cf9934c9ae2c05d74fc7f69c74e29059b7e3d8e3f59e00129a",
+            "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf",
+            "pngSha256": "6ad69929a7a6d4f13459b4b20631f65600eb3a2153707e4faceda44156120f95",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          },
+          {
+            "id": "uses",
+            "sourceSha256": "a04eb3e944629cbb023ec9c6772b1fefd00274edfebf8ae74b2d77bac969f2a4",
+            "rgbaSha256": "eb4456260b7539871123faa3134c8e7d42987ed05f44cd01178e6150c5ca8f2a",
+            "pngSha256": "4e4c4d2e639312183757e961266cc483431a7fa018db77623508e99ccf760699",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          }
+        ],
+        "cleanupVerified": true,
+        "timedBenchmarkExecutions": 0,
+        "bdnExecutorCalls": 0,
+        "validationSeconds": 7.444664699956775
+      },
+      {
+        "host": "windows",
+        "targetFramework": "net10.0",
+        "framework": ".NET 10.0.14",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "pngResults": [
+          {
+            "method": "EncodeHighEntropyOwned",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyCallerMemory",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyStream",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyStreamAsync",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeLowEntropyOwned",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyCallerMemory",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyStream",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyStreamAsync",
+            "length": 6254
+          }
+        ],
+        "scenes": [
+          {
+            "id": "stylesheet",
+            "sourceSha256": "d30090cc07f932851c7dcd5535ab7cb6f0aa5252edc0878c2e856533225f80e9",
+            "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf",
+            "pngSha256": "6ad69929a7a6d4f13459b4b20631f65600eb3a2153707e4faceda44156120f95",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          },
+          {
+            "id": "inline",
+            "sourceSha256": "4381e633436447cf9934c9ae2c05d74fc7f69c74e29059b7e3d8e3f59e00129a",
+            "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf",
+            "pngSha256": "6ad69929a7a6d4f13459b4b20631f65600eb3a2153707e4faceda44156120f95",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          },
+          {
+            "id": "uses",
+            "sourceSha256": "a04eb3e944629cbb023ec9c6772b1fefd00274edfebf8ae74b2d77bac969f2a4",
+            "rgbaSha256": "eb4456260b7539871123faa3134c8e7d42987ed05f44cd01178e6150c5ca8f2a",
+            "pngSha256": "4e4c4d2e639312183757e961266cc483431a7fa018db77623508e99ccf760699",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          }
+        ],
+        "cleanupVerified": true,
+        "timedBenchmarkExecutions": 0,
+        "bdnExecutorCalls": 0,
+        "validationSeconds": 2.3778811001684517
+      },
+      {
+        "host": "linux",
+        "targetFramework": "net10.0",
+        "framework": ".NET 10.0.14",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "pngResults": [
+          {
+            "method": "EncodeHighEntropyOwned",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyCallerMemory",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyStream",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeHighEntropyStreamAsync",
+            "length": 1049663
+          },
+          {
+            "method": "EncodeLowEntropyOwned",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyCallerMemory",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyStream",
+            "length": 6254
+          },
+          {
+            "method": "EncodeLowEntropyStreamAsync",
+            "length": 6254
+          }
+        ],
+        "scenes": [
+          {
+            "id": "stylesheet",
+            "sourceSha256": "d30090cc07f932851c7dcd5535ab7cb6f0aa5252edc0878c2e856533225f80e9",
+            "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf",
+            "pngSha256": "6ad69929a7a6d4f13459b4b20631f65600eb3a2153707e4faceda44156120f95",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          },
+          {
+            "id": "inline",
+            "sourceSha256": "4381e633436447cf9934c9ae2c05d74fc7f69c74e29059b7e3d8e3f59e00129a",
+            "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf",
+            "pngSha256": "6ad69929a7a6d4f13459b4b20631f65600eb3a2153707e4faceda44156120f95",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          },
+          {
+            "id": "uses",
+            "sourceSha256": "a04eb3e944629cbb023ec9c6772b1fefd00274edfebf8ae74b2d77bac969f2a4",
+            "rgbaSha256": "eb4456260b7539871123faa3134c8e7d42987ed05f44cd01178e6150c5ca8f2a",
+            "pngSha256": "4e4c4d2e639312183757e961266cc483431a7fa018db77623508e99ccf760699",
+            "repeatedRasterCalls": 2,
+            "rawPreparedByteExact": true,
+            "finalScratchBytes": 0
+          }
+        ],
+        "cleanupVerified": true,
+        "timedBenchmarkExecutions": 0,
+        "bdnExecutorCalls": 0,
+        "validationSeconds": 5.661112100118771
+      }
+    ],
+    "independentScenePixelJoins": [
+      {
+        "hostRuntime": "linux-net10.0",
+        "scene": "stylesheet",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf"
+      },
+      {
+        "hostRuntime": "linux-net10.0",
+        "scene": "inline",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf"
+      },
+      {
+        "hostRuntime": "linux-net10.0",
+        "scene": "uses",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "eb4456260b7539871123faa3134c8e7d42987ed05f44cd01178e6150c5ca8f2a"
+      },
+      {
+        "hostRuntime": "linux-net11.0",
+        "scene": "stylesheet",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf"
+      },
+      {
+        "hostRuntime": "linux-net11.0",
+        "scene": "inline",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf"
+      },
+      {
+        "hostRuntime": "linux-net11.0",
+        "scene": "uses",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "eb4456260b7539871123faa3134c8e7d42987ed05f44cd01178e6150c5ca8f2a"
+      },
+      {
+        "hostRuntime": "windows-net10.0",
+        "scene": "stylesheet",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf"
+      },
+      {
+        "hostRuntime": "windows-net10.0",
+        "scene": "inline",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf"
+      },
+      {
+        "hostRuntime": "windows-net10.0",
+        "scene": "uses",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "eb4456260b7539871123faa3134c8e7d42987ed05f44cd01178e6150c5ca8f2a"
+      },
+      {
+        "hostRuntime": "windows-net11.0",
+        "scene": "stylesheet",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf"
+      },
+      {
+        "hostRuntime": "windows-net11.0",
+        "scene": "inline",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "96a7814cae528e4425d4ba658173fe649b2b847c87ce42ca785f6a12d8b7aeaf"
+      },
+      {
+        "hostRuntime": "windows-net11.0",
+        "scene": "uses",
+        "width": 128,
+        "height": 128,
+        "exactPixels": 16384,
+        "rgbaSha256": "eb4456260b7539871123faa3134c8e7d42987ed05f44cd01178e6150c5ca8f2a"
+      }
+    ],
+    "independentPngDecoder": "Pillow 11.1.0",
+    "scope": "Eight retained PNG methods invoked once without timing; owned/caller/stream bytes agree and match independently decoded original RGBA with transparent RGB canonicalization. Three raster methods repeat on retained roots, match raw/prepared PNGs and literal grid controls. Null root after cleanup and disposed streams are checked. This is functional smoke execution, not a BDN executor or timed workload."
+  },
+  "generatedCompilation": {
+    "builds": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 13.950467800023034,
+        "cases": 62,
+        "identitySha256": "4327744c398f75cca889feb4edf295508a23c34da0396ad0e078f48dfcf23dbd",
+        "driverSha256": "1bcce7ce5c406934ace96864c4f3d73b4c3da8f1cf7b812db45e31974b63553e",
+        "generated": [
+          {
+            "cases": 62,
+            "executableSha256": "b90e4199b5f0a27dce553ab974af7824b6ccfed4c543962cf1c267ea5548ce8c",
+            "generatedSourceSha256": "9ef5652533336ab4aba8d663b419e482e2608021a20115fc73b90f6bccef659f"
+          }
+        ]
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 14.180295000085607,
+        "cases": 62,
+        "identitySha256": "4327744c398f75cca889feb4edf295508a23c34da0396ad0e078f48dfcf23dbd",
+        "driverSha256": "1bcce7ce5c406934ace96864c4f3d73b4c3da8f1cf7b812db45e31974b63553e",
+        "generated": [
+          {
+            "cases": 62,
+            "executableSha256": "8a7d8d6e01eb68bfe80a8b5a74df0b4b768c8946593f27e1f5f13fa591bfee8e",
+            "generatedSourceSha256": "9ef5652533336ab4aba8d663b419e482e2608021a20115fc73b90f6bccef659f"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 52.2799313000869,
+        "cases": 62,
+        "identitySha256": "4327744c398f75cca889feb4edf295508a23c34da0396ad0e078f48dfcf23dbd",
+        "driverSha256": "1bcce7ce5c406934ace96864c4f3d73b4c3da8f1cf7b812db45e31974b63553e",
+        "generated": [
+          {
+            "cases": 62,
+            "executableSha256": "b0c9eabe8cd761e29e83026efcec6478398c76847c2e34f50555bac3e9e81ddb",
+            "generatedSourceSha256": "77bfbb1efa2f2612f945be6cff0f94738a24dee62dddf111b0ea8624b58fef9c"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 47.06441450002603,
+        "cases": 62,
+        "identitySha256": "4327744c398f75cca889feb4edf295508a23c34da0396ad0e078f48dfcf23dbd",
+        "driverSha256": "1bcce7ce5c406934ace96864c4f3d73b4c3da8f1cf7b812db45e31974b63553e",
+        "generated": [
+          {
+            "cases": 62,
+            "executableSha256": "c487bd34a1880d2d87f004ed30b92e0552d85cf2ce387dc02dac7448264114c6",
+            "generatedSourceSha256": "77bfbb1efa2f2612f945be6cff0f94738a24dee62dddf111b0ea8624b58fef9c"
+          }
+        ]
+      }
+    ],
+    "casesPerHostRuntime": 62,
+    "allFourSceneLifecycleDescriptorsVerified": true,
+    "executorCalls": 0,
+    "timedBenchmarkExecutions": 0,
+    "recipe": "Use the previously qualified public CsProjBuilder without an executor. Preserve runtime-aware parameter expansion; enforce one source-specific setup/cleanup per scene raster case, input-only setup for conversion, and unchanged generation/compilation. Only case-count and lifecycle assertions change in the temporary driver."
+  },
+  "inheritedQualification": "Renderer source tree matches the fully qualified PNG milestone exactly. Existing Windows/Linux runtime/package/native/W1 evidence and the frozen Windows DejaVu discrepancy remain unchanged; no new renderer/full-CI/package qualification is claimed for this benchmark-only change.",
+  "remaining": "Quiet-VM timing, licensed representative scene expansion, baseline/native renderer comparisons and complete performance distributions remain open."
+}

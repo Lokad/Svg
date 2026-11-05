@@ -5,7 +5,21 @@ namespace Lokad.Svg.Benchmarks;
 
 internal static class Program
 {
-    private static void Main(string[] arguments) => BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(arguments);
+    private static void Main(string[] arguments)
+    {
+        if (arguments is ["--png-memory"])
+        {
+            PngBufferBenchmarks fixture = new();
+            try
+            {
+                fixture.SetUp();
+                fixture.WriteMemoryReport(Console.Out);
+            }
+            finally { fixture.CleanUp(); }
+            return;
+        }
+        BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(arguments);
+    }
 }
 
 /// <summary>Measures the current supported conversion pipeline without including input setup.</summary>
