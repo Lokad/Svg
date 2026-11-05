@@ -82,7 +82,7 @@
       {
         "id": "selected-matrix",
         "host": "windows",
-        "inputSha256": "a574d78ffe20fe933abd5ccfce4fb117d74166b3553a8fdaf899b1d58f870eb7",
+        "inputSha256": "68a9db5241b68d8e7a997409934c60ee5f617bf61278fb9382a01d245ffbbbc0",
         "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
         "captures": [
           {
@@ -110,7 +110,7 @@
       {
         "id": "selected-matrix",
         "host": "linux",
-        "inputSha256": "a574d78ffe20fe933abd5ccfce4fb117d74166b3553a8fdaf899b1d58f870eb7",
+        "inputSha256": "68a9db5241b68d8e7a997409934c60ee5f617bf61278fb9382a01d245ffbbbc0",
         "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
         "captures": [
           {
@@ -138,7 +138,7 @@
       {
         "id": "selected-blur",
         "host": "windows",
-        "inputSha256": "c565fc9e7ed06bd9c672fb3ebeffc787d19176f706d06ede9089931838a28796",
+        "inputSha256": "3ed36df2977b0a8005b6ca8f88670b0e4f37dc3935e3c2145c5e98cc9ee25fc7",
         "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
         "captures": [
           {
@@ -166,7 +166,7 @@
       {
         "id": "selected-blur",
         "host": "linux",
-        "inputSha256": "c565fc9e7ed06bd9c672fb3ebeffc787d19176f706d06ede9089931838a28796",
+        "inputSha256": "3ed36df2977b0a8005b6ca8f88670b0e4f37dc3935e3c2145c5e98cc9ee25fc7",
         "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
         "captures": [
           {
@@ -265,5 +265,72 @@
     "declarationAndRegionPlanningUnchanged": true,
     "numericalKernelsOwnersAndFrameConstructionUnchanged": true,
     "sourceBodies": "New controls are independently authored CC0 work. Hosted SVGWeb originals remain RAM-only."
-  }
+  },
+  "fixtureByteIdentity": "Sources use repository LF normalization. Three new independent captures per platform after normalization reproduce the same frozen PNGs byte for byte.",
+  "normalizedFixtureValidation": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "74a841a4fefa4ceb45844382378bcd870ee0591377e4a743e00b95c8483d02c9",
+      "testAssemblySha256": "3d8ef8dd7bfca84f2e2dea8052c6e8b478dabc019e0227267dffdc6a14885e14",
+      "selection": "FullyQualifiedName~SvgFilterCaptureDemandTests",
+      "exitCode": 0,
+      "seconds": 9.843798500020057,
+      "counters": {
+        "executed": "5",
+        "passed": "5",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "74a841a4fefa4ceb45844382378bcd870ee0591377e4a743e00b95c8483d02c9",
+      "testAssemblySha256": "3d8ef8dd7bfca84f2e2dea8052c6e8b478dabc019e0227267dffdc6a14885e14",
+      "selection": "FullyQualifiedName~SvgFilterCaptureDemandTests",
+      "exitCode": 0,
+      "seconds": 10.69663710007444,
+      "counters": {
+        "executed": "5",
+        "passed": "5",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "74a841a4fefa4ceb45844382378bcd870ee0591377e4a743e00b95c8483d02c9",
+      "testAssemblySha256": "dbe1efeaefd2a8348caa0d8b3ce68b5f0dd5ef2080d57bd95ebaa71605612c60",
+      "selection": "FullyQualifiedName~SvgFilterCaptureDemandReferenceTests",
+      "exitCode": 0,
+      "seconds": 9.987422399921343,
+      "counters": {
+        "executed": "2",
+        "passed": "2",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "74a841a4fefa4ceb45844382378bcd870ee0591377e4a743e00b95c8483d02c9",
+      "testAssemblySha256": "dbe1efeaefd2a8348caa0d8b3ce68b5f0dd5ef2080d57bd95ebaa71605612c60",
+      "selection": "FullyQualifiedName~SvgFilterCaptureDemandReferenceTests",
+      "exitCode": 0,
+      "seconds": 9.97516499995254,
+      "counters": {
+        "executed": "2",
+        "passed": "2",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ]
 }

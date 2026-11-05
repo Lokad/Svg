@@ -9,7 +9,7 @@
     {
       "id": "selected-matrix",
       "input": "selected-matrix.svg",
-      "inputSha256": "a574d78ffe20fe933abd5ccfce4fb117d74166b3553a8fdaf899b1d58f870eb7",
+      "inputSha256": "68a9db5241b68d8e7a997409934c60ee5f617bf61278fb9382a01d245ffbbbc0",
       "platforms": {
         "windows": {
           "reference": "observations/windows-selected-matrix.png",
@@ -68,7 +68,7 @@
     {
       "id": "selected-blur",
       "input": "selected-blur.svg",
-      "inputSha256": "c565fc9e7ed06bd9c672fb3ebeffc787d19176f706d06ede9089931838a28796",
+      "inputSha256": "3ed36df2977b0a8005b6ca8f88670b0e4f37dc3935e3c2145c5e98cc9ee25fc7",
       "platforms": {
         "windows": {
           "reference": "observations/windows-selected-blur.png",
