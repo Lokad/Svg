@@ -34,6 +34,24 @@ The explicit research identities live in each class; new inputs remain routine.
 The [qualification](reference-output-responsibilities.json) binds the selections,
 unchanged bodies, source/compiled inventory and both-host/runtime case joins.
 
+## Geometry and analytic coverage
+
+The [geometry responsibility audit](geometry-test-responsibilities.json) classifies
+123 methods across twelve contour, conic, bounds, clipping and paint classes.
+Their 103 mechanism methods retain native float bits, all 65,536 clip-alpha pairs,
+contour topology, flattening limits, scanline culling and paint-rounding vectors.
+The 20 contract methods retain caller scratch, cancellation, allocation/growth
+overlap, cached preparation, bounded scan windows and all ten six-output cases.
+These checks complement the existing canonical native rendering fixtures.
+
+Every case, provider, loop and assertion remains. Individual method traits keep
+the mixed classes honest; cancellation and ownership checks are not omitted from
+integration. During paint arithmetic work, for example, select
+`FullyQualifiedName~SvgAnalyticPaintTests&Layer=Mechanism`; include the class's
+`Layer=Contract` siblings when changing preparation or replay storage. The audit
+records complete affected selections and observed validation times, without a
+renderer performance claim.
+
 ## Paint-bank discovery and loading
 
 [The typed loader](../../Lokad.Svg.VisualTests/PaintReferenceBank.cs) discovers

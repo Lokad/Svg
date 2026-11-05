@@ -6,18 +6,21 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgOrthogonalGeometryLowererTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Unit_magnification_keeps_nominal_flatness()
     {
         Assert.Equal(0.25, SvgOrthogonalGeometryLowering.ScaledFlatness(1.0), precision: 10);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Magnification_refines_flatness_proportionally()
     {
         Assert.Equal(0.015625, SvgOrthogonalGeometryLowering.ScaledFlatness(16.0), precision: 10);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sampled_outline_capacity_scales_with_loops_and_segments()
     {
         Assert.Equal(1033, SvgOrthogonalGeometryLowering.SampledOutlineCapacity(1, 1024));
@@ -26,12 +29,14 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Minification_never_coarsens_flatness()
     {
         Assert.Equal(0.25, SvgOrthogonalGeometryLowering.ScaledFlatness(0.5), precision: 10);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_collapses_mapping_dust_to_the_earlier_value()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(8 + 1e-13, 8), new(0, 8)];
@@ -44,6 +49,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_preserves_bitwise_equal_joints_for_the_zero_length_path()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 0), new(0, 8)];
@@ -55,6 +61,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_ignores_separate_features_above_epsilon()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8 + 1e-6, 8), new(0, 8)];
@@ -66,6 +73,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_closes_dust_gaps_at_contour_end()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(0, 8), new(1e-13, 1e-13)];
@@ -77,6 +85,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_compacts_degenerate_dust_loops_for_existing_guards()
     {
         SvgDevicePoint[] points = [new(0, 0), new(1e-13, 0), new(0, 8)];
@@ -89,6 +98,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_tracks_ends_across_contours()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8), new(20, 20), new(28, 20), new(28, 28), new(28 + 1e-13, 28), new(20, 28)];
@@ -100,6 +110,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
         Assert.Equal(new SvgDevicePoint(28, 28), points[5]);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_maps_kept_indices_and_marks_dropped_ones()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8 + 5e-10, 0), new(8, 8)];
@@ -113,6 +124,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_marks_closing_drop_in_map()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(5e-10, 0)];
@@ -126,6 +138,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_snaps_spanned_closing_dust_shut()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(0, 8), new(1e-13, 1e-13)];
@@ -140,6 +153,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void WeldDustJoints_keeps_closing_flags_per_contour()
     {
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(0, 8), new(1e-13, 1e-13), new(20, 20), new(28, 20), new(28, 28), new(20 + 1e-13, 20 + 1e-13)];

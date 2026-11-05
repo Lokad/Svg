@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgContourStructureTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Overlapping_stub_reports_strict_overlap()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 0), new SvgDevicePoint(12, 0), new SvgDevicePoint(12, 2), new SvgDevicePoint(4, 2)];
@@ -14,6 +15,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Touching_twins_report_no_strict_overlap()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 8), new SvgDevicePoint(4, 14), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 2), new SvgDevicePoint(8, 8)];
@@ -23,6 +25,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nested_loops_report_strict_overlap()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(16, 0), new SvgDevicePoint(16, 16), new SvgDevicePoint(0, 16), new SvgDevicePoint(4, 4), new SvgDevicePoint(12, 4), new SvgDevicePoint(12, 12), new SvgDevicePoint(4, 12)];
@@ -31,6 +34,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Poking_vertex_reports_strict_overlap()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 4), new SvgDevicePoint(12, 4), new SvgDevicePoint(4, 10)];
@@ -39,6 +43,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Simple_square_reports_none()
     {
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];
@@ -47,6 +52,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Trailing_duplicate_reports_zero_length_and_touch()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 8)];
@@ -55,6 +61,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Bowtie_reports_proper_crossing_only()
     {
         SvgDevicePoint[] bowtie = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
@@ -63,6 +70,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Figure_eight_reports_self_touch_only()
     {
         SvgDevicePoint[] eight = [new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 8), new SvgDevicePoint(4, 4), new SvgDevicePoint(8, 0)];
@@ -71,6 +79,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Retraced_square_reports_coincidence_and_touch()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(4, 0)];
@@ -79,6 +88,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Classify_supports_subslices_and_rejects_ranges()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];
@@ -91,6 +101,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Disjoint_set_reports_none()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 4), new SvgDevicePoint(8, 8), new SvgDevicePoint(12, 8), new SvgDevicePoint(12, 12), new SvgDevicePoint(8, 12)];
@@ -99,6 +110,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nested_separated_set_reports_none()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
@@ -107,6 +119,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Shared_vertex_reports_other_touch_only()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(-8, 0), new SvgDevicePoint(-8, 8)];
@@ -115,6 +128,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Crossing_contours_report_other_touch_only()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, -2), new SvgDevicePoint(4, 10)];
@@ -123,6 +137,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Set_rejects_invalid_ends()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
@@ -131,6 +146,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Structure_precancelled_token_throws()
     {
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];
@@ -141,6 +157,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Bowtie_reports_first_crossing_with_interior_point()
     {
         SvgDevicePoint[] bowtie = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
@@ -152,6 +169,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Simple_square_reports_no_crossing()
     {
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];
@@ -160,6 +178,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Single_crossing_reports_no_other_crossing()
     {
         SvgDevicePoint[] bowtie = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
@@ -169,6 +188,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Double_crossing_reports_another_crossing()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(10, 10), new SvgDevicePoint(10, 0), new SvgDevicePoint(0, 10), new SvgDevicePoint(6, 10), new SvgDevicePoint(6, 4)];
@@ -177,6 +197,7 @@ public sealed class SvgContourStructureTests
         Assert.True(SvgContourStructure.HasAnotherProperCrossing(points, 0, points.Length, firstEdge, secondEdge, CancellationToken.None));
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Split_bowtie_loops_admit_union()
     {
         SvgDevicePoint[] loops = [new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 4)];
@@ -185,6 +206,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Crossing_squares_report_inter_loop_crossing()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 2), new SvgDevicePoint(12, 2), new SvgDevicePoint(12, 8), new SvgDevicePoint(4, 8)];
@@ -198,6 +220,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Disjoint_squares_report_no_inter_loop_crossing()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(2, 0), new SvgDevicePoint(2, 2), new SvgDevicePoint(0, 2), new SvgDevicePoint(4, 4), new SvgDevicePoint(6, 4), new SvgDevicePoint(6, 6), new SvgDevicePoint(4, 6)];
@@ -206,6 +229,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Corner_touching_squares_report_no_inter_loop_crossing()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 4), new SvgDevicePoint(4, 4), new SvgDevicePoint(8, 4), new SvgDevicePoint(8, 8), new SvgDevicePoint(4, 8)];
@@ -214,6 +238,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Inter_loop_crossing_rejects_bad_ranges()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
@@ -222,6 +247,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Touching_loops_reject_union()
     {
         SvgDevicePoint[] loops = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 4), new SvgDevicePoint(12, 0), new SvgDevicePoint(12, 8)];
@@ -230,6 +256,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Overlapping_loops_reject_union()
     {
         SvgDevicePoint[] loops = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 4), new SvgDevicePoint(12, 4), new SvgDevicePoint(12, 12), new SvgDevicePoint(4, 12)];
@@ -238,6 +265,7 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nested_loops_admit_union()
     {
         SvgDevicePoint[] loops = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];

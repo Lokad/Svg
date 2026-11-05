@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgAnalyticPaintTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Opaque_color_pair_keeps_its_distinct_interpolation_scale()
     {
         SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(new(0, 52, 120, 255));
@@ -18,6 +19,7 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Opaque_black_pair_preserves_byte_coverage()
     {
         byte[] pixel = new byte[4];
@@ -26,6 +28,7 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Translucent_material_quantizes_before_coverage()
     {
         byte[] pixel = new byte[4];
@@ -36,6 +39,7 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Full_span_keeps_one_descriptor_and_preserves_indexed_paint()
     {
         const int width = 4096;
@@ -56,6 +60,7 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Cancellation_before_span_growth_preserves_token_and_releases_owners()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -70,6 +75,7 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Span_storage_denial_releases_preparation_and_pixel_links()
     {
         long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, 64, 64, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(64);
@@ -88,6 +94,7 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Operation_growth_reserves_old_and_replacement_storage_together()
     {
         long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, 64, 64, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(64);
@@ -107,6 +114,7 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Cancellation_during_operation_growth_preserves_token_and_releases_owners()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -125,6 +133,7 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Cancellation_during_operation_replay_preserves_token_and_releases_raster_storage()
     {
         using CancellationTokenSource source = new();

@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgAnalyticClipCoverageTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Every_path_and_clip_byte_pair_matches_the_compiled_native_product()
     {
         // Generated with SkMulDiv255Round from include/private/SkMath.h at
@@ -18,6 +19,7 @@ public sealed class SvgAnalyticClipCoverageTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(.15, 0, 285.85, 200, 0, 100, 217)]
     [InlineData(.15, 0, 285.85, 200, 285, 100, 216)]
     [InlineData(.3, 0, 571.7, 400, 0, 200, 179)]
@@ -39,6 +41,7 @@ public sealed class SvgAnalyticClipCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Initially_binary_nearly_integral_rectangle_uses_integer_coverage()
     {
         SvgAnalyticClipCoverage mask = SvgAnalyticRectangleClip.GetCoverage((.06, .06, 35.94, 27.94), SvgClipAntialiasing.All, 0, 0);
@@ -47,6 +50,7 @@ public sealed class SvgAnalyticClipCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Allocation_only_bounds_preserve_geometric_fallback()
     {
         SvgAnalyticClipCoverage area = SvgAnalyticRectangleClip.GetCoverage((.15, .375, 35.85, 27.625), SvgClipAntialiasing.None, 0, 0);

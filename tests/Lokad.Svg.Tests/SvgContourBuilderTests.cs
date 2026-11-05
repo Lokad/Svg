@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgContourBuilderTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Diagonal_triangle_covers_exact_area()
     {
         SvgContourBuilder builder = new(16, 4);
@@ -20,6 +21,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Premapped_device_points_pass_through()
     {
         SvgAffineTransform scale = SvgAffineTransform.FromScale(2, 2);
@@ -34,6 +36,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quadratic_chains_flattened_points()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -45,6 +48,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_chains_flattened_points()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -56,6 +60,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Arc_chains_sampled_points_with_exact_endpoints()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -70,6 +75,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Arc_finer_flatness_never_shrinks_contour()
     {
         int coarse = ArcContourLength(2.0);
@@ -80,6 +86,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Degenerate_arc_appends_line()
     {
         SvgContourBuilder builder = new(16, 4);
@@ -91,6 +98,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Two_figures_store_separate_contours()
     {
         SvgContourBuilder builder = new(32, 4);
@@ -113,6 +121,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Point_capacity_throws_LimitExceeded()
     {
         SvgContourBuilder builder = new(2, 4);
@@ -123,6 +132,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Contour_capacity_throws_LimitExceeded()
     {
         SvgContourBuilder builder = new(16, 1);
@@ -133,6 +143,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Misuse_throws_InvalidOperation()
     {
         SvgContourBuilder builder = new(16, 4);
@@ -147,6 +158,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Clear_reuses_storage()
     {
         SvgContourBuilder builder = new(16, 4);
@@ -164,6 +176,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Ellipse_appends_standalone_loop()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -176,6 +189,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Ellipse_rejects_open_contour_and_bad_shapes()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -188,6 +202,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sharp_rect_is_exact()
     {
         SvgContourBuilder builder = new(16, 4);
@@ -197,6 +212,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Coarse_rounded_rect_is_exact()
     {
         // The contour starts at the top-right arc entrance with the same cyclic order, so the implicit
@@ -208,6 +224,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Oversized_corners_clamp_to_half_sides()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -222,6 +239,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rounded_rect_rejects_bad_inputs_and_open_contour()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -234,6 +252,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Zero_sized_rect_draws_nothing()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -265,6 +284,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Growing_builder_matches_fixed_contours_and_bounds_maxima()
     {
         SvgFlattenPolicy policy = new(0.25, 64, 256);
@@ -292,6 +312,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quadratic_records_slice_relative_span_with_control()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -311,6 +332,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("quadratic", 1, 1024, "subdivision depth")]
     [InlineData("cubic", 1, 1024, "subdivision depth")]
     [InlineData("arc", 1, 1024, "subdivision depth")]
@@ -336,6 +358,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("quadratic")]
     [InlineData("cubic")]
     [InlineData("ellipse")]
@@ -366,6 +389,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("quadratic", false)]
     [InlineData("quadratic", true)]
     [InlineData("cubic", false)]
@@ -410,6 +434,7 @@ public sealed class SvgContourBuilderTests
         }
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quad_spans_stay_empty_without_retention_and_clear_resets()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -429,6 +454,7 @@ public sealed class SvgContourBuilderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quad_spans_track_contours_with_flattened_points_unchanged()
     {
         SvgContourBuilder retained = new(256, 8);

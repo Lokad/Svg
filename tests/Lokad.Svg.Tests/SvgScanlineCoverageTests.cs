@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgScanlineCoverageTests
 {
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false)]
     [InlineData(true)]
     public void Denied_scratch_storage_does_not_allocate_contour_arrays(bool voted)
@@ -50,6 +51,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Skipped_pixels_match_zero_fan_total_on_simple_triangle()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(14, 2), new SvgDevicePoint(2, 14)];
@@ -73,6 +75,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Skipped_pixels_match_zero_fan_total_on_evenodd_hole()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(16, 0), new SvgDevicePoint(16, 16), new SvgDevicePoint(0, 16), new SvgDevicePoint(5, 5), new SvgDevicePoint(11, 5), new SvgDevicePoint(11, 11), new SvgDevicePoint(5, 11)];
@@ -97,6 +100,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Touching_pair_keeps_shared_vertex_pixels_evaluated()
     {
         SvgDevicePoint shared = new(8, 8);
@@ -122,6 +126,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Plain_winding_without_roles_matches_fan_sign()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 14), new SvgDevicePoint(14, 14), new SvgDevicePoint(14, 2)];
@@ -141,6 +146,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Degenerate_contours_contribute_no_edges()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(14, 2), new SvgDevicePoint(2, 14), new SvgDevicePoint(30, 30), new SvgDevicePoint(40, 40)];
@@ -154,6 +160,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Non_finite_vertices_disable_culling()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(14, 2), new SvgDevicePoint(double.NaN, 14)];
@@ -168,6 +175,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Empty_payload_culls_everything()
     {
         SvgDevicePoint[] points = [];
@@ -180,6 +188,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Mismatched_role_counts_throw_like_coverage()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
@@ -192,6 +201,7 @@ public sealed class SvgScanlineCoverageTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Self_intersecting_outline_keeps_even_winding_lens_evaluated()
     {
         // Acute-apex miter stroke outline whose ring self-intersects: the lens between the two upward crossings carries winding two, which parity culling mistook for outside.

@@ -1,0 +1,540 @@
+{
+  "status": "123 methods classified individually; every case, provider, loop, body, exact assertion, API form and native/platform target remains. No rendering or Research partition changes.",
+  "source": {
+    "baseCommit": "61ddd6e28415af17dd96e71e01b4d38fa801e9bc",
+    "files": [
+      {
+        "file": "../../Lokad.Svg.Tests/SvgAnalyticClipCoverageTests.cs",
+        "methods": {
+          "Every_path_and_clip_byte_pair_matches_the_compiled_native_product": "Mechanism",
+          "Rectangle_mask_preserves_native_boundary_bytes": "Mechanism",
+          "Initially_binary_nearly_integral_rectangle_uses_integer_coverage": "Mechanism",
+          "Allocation_only_bounds_preserve_geometric_fallback": "Mechanism"
+        },
+        "beforeLfSha256": "f38dc20c2cc45b99c05d0f9cae79352817ef07a59edf758d0d2810cd6d7246ca",
+        "afterLfSha256": "3773fee29e1a9892ee98453c83882e2b660ed95f75f68edf8c989452392620ee"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgAnalyticClipperTests.cs",
+        "methods": {
+          "Clipped_pieces_match_compiled_native_float_bits": "Mechanism",
+          "Clipping_preserves_the_cancelled_token_before_mutating_caller_scratch": "Contract"
+        },
+        "beforeLfSha256": "7626a9f446c049c28945b15602d557258495d86e8d8d4ac1b85134f0b1da7a59",
+        "afterLfSha256": "097b4b21971eae9a9a00276ce410170e397cae0957854c0fdd27a95be0d2daf3"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgAnalyticPaintClipTests.cs",
+        "methods": {
+          "Mask_bounds_do_not_create_AA_boundaries_and_intersections_retain_geometric_origins": "Mechanism",
+          "Reflected_maps_preserve_the_selected_boundary_provenance": "Mechanism",
+          "Compiled_native_predicate_and_edge_snapping_vectors_match": "Mechanism",
+          "Tiny_path_dispatch_is_context_local_and_does_not_contaminate_cached_geometry": "Contract",
+          "Forced_run_link_memory_refusal_releases_prepared_owners": "Contract",
+          "Tiny_forced_run_cancellation_during_replay_preserves_token_and_ownership": "Contract",
+          "Six_outputs_agree_for_fractionally_clipped_contained_curves_across_four_paints": "Contract"
+        },
+        "beforeLfSha256": "aed0689cd2fb2f266e62370f10faf0b6d0c0bd51e00311101aaa178c9de28a78",
+        "afterLfSha256": "7a4af75af5f233d94a7fdc11ee60c982c077b66ca7dd50b61ac36b918d08c2af"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgAnalyticPaintTests.cs",
+        "methods": {
+          "Opaque_color_pair_keeps_its_distinct_interpolation_scale": "Mechanism",
+          "Opaque_black_pair_preserves_byte_coverage": "Mechanism",
+          "Translucent_material_quantizes_before_coverage": "Mechanism",
+          "Full_span_keeps_one_descriptor_and_preserves_indexed_paint": "Contract",
+          "Cancellation_before_span_growth_preserves_token_and_releases_owners": "Contract",
+          "Span_storage_denial_releases_preparation_and_pixel_links": "Contract",
+          "Operation_growth_reserves_old_and_replacement_storage_together": "Contract",
+          "Cancellation_during_operation_growth_preserves_token_and_releases_owners": "Contract",
+          "Cancellation_during_operation_replay_preserves_token_and_releases_raster_storage": "Contract"
+        },
+        "beforeLfSha256": "cf96acf554530e134ca02dc12a2a8bac06cab968a40b75e42a8bdf66adf64b22",
+        "afterLfSha256": "619ee5f1e689dfe62e80d1fac9b8247767b9bd0ab5d7f77db1d701c82e7b1bec"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgAnalyticScanWindowTests.cs",
+        "methods": {
+          "Run_walk_uses_clip_window_without_expanding_path_storage": "Contract",
+          "Mask_walk_keeps_its_path_window_inside_a_large_canvas": "Mechanism"
+        },
+        "beforeLfSha256": "42d49aadf474566336d9232c819787fd9da3a7bc0c6c6675fdf22df993be2aa0",
+        "afterLfSha256": "be03c07cf229c9ac7b4ca16828080423be384a64a62c8f7a8993e20e655ba7d4"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgConicTests.cs",
+        "methods": {
+          "Original_compiled_legacy_conic_subdivision_matches_every_float_bit": "Mechanism",
+          "Ovals_retain_four_rational_verbs_through_placement": "Mechanism",
+          "Retained_conics_have_six_output_parity": "Contract",
+          "Live_convex_conics_cache_classification_and_release_on_denial_or_cancellation": "Contract",
+          "Conversion_observes_the_token_and_the_caller_buffer": "Contract",
+          "Float_collapsed_oval_bounds_enclose_no_area": "Mechanism",
+          "Overflowed_oval_bounds_report_a_renderer_limit": "Mechanism"
+        },
+        "beforeLfSha256": "b9814345ab3326d5d2d4abef66cda77c36ae280533ebdf0aac0377f6ae03977d",
+        "afterLfSha256": "45841f26d39c9a34ce4fd5d9c4fbd046a40fbb521243323b788ac5d0b3445458"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgContourBuilderTests.cs",
+        "methods": {
+          "Diagonal_triangle_covers_exact_area": "Mechanism",
+          "Premapped_device_points_pass_through": "Mechanism",
+          "Quadratic_chains_flattened_points": "Mechanism",
+          "Cubic_chains_flattened_points": "Mechanism",
+          "Arc_chains_sampled_points_with_exact_endpoints": "Mechanism",
+          "Arc_finer_flatness_never_shrinks_contour": "Mechanism",
+          "Degenerate_arc_appends_line": "Mechanism",
+          "Two_figures_store_separate_contours": "Mechanism",
+          "Point_capacity_throws_LimitExceeded": "Mechanism",
+          "Contour_capacity_throws_LimitExceeded": "Mechanism",
+          "Misuse_throws_InvalidOperation": "Mechanism",
+          "Clear_reuses_storage": "Mechanism",
+          "Ellipse_appends_standalone_loop": "Mechanism",
+          "Ellipse_rejects_open_contour_and_bad_shapes": "Mechanism",
+          "Sharp_rect_is_exact": "Mechanism",
+          "Coarse_rounded_rect_is_exact": "Mechanism",
+          "Oversized_corners_clamp_to_half_sides": "Mechanism",
+          "Rounded_rect_rejects_bad_inputs_and_open_contour": "Mechanism",
+          "Zero_sized_rect_draws_nothing": "Mechanism",
+          "Growing_builder_matches_fixed_contours_and_bounds_maxima": "Mechanism",
+          "Quadratic_records_slice_relative_span_with_control": "Mechanism",
+          "Growing_builder_propagates_policy_failures_without_growing": "Mechanism",
+          "Growing_builder_propagates_numeric_failures_without_growing": "Mechanism",
+          "Growing_curve_output_matches_fixed_points_and_retained_spans": "Mechanism",
+          "Quad_spans_stay_empty_without_retention_and_clear_resets": "Mechanism",
+          "Quad_spans_track_contours_with_flattened_points_unchanged": "Mechanism"
+        },
+        "beforeLfSha256": "0d833ea47b280fe83601bda9ed9e034cafba70b3aa074bcd571e1a76c9a82712",
+        "afterLfSha256": "38fb6bfdf8917a119e2bf169de2cf8ac32280db65b0b37d6a8a7ff433bf3110f"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgContourStructureTests.cs",
+        "methods": {
+          "Overlapping_stub_reports_strict_overlap": "Mechanism",
+          "Touching_twins_report_no_strict_overlap": "Mechanism",
+          "Nested_loops_report_strict_overlap": "Mechanism",
+          "Poking_vertex_reports_strict_overlap": "Mechanism",
+          "Simple_square_reports_none": "Mechanism",
+          "Trailing_duplicate_reports_zero_length_and_touch": "Mechanism",
+          "Bowtie_reports_proper_crossing_only": "Mechanism",
+          "Figure_eight_reports_self_touch_only": "Mechanism",
+          "Retraced_square_reports_coincidence_and_touch": "Mechanism",
+          "Classify_supports_subslices_and_rejects_ranges": "Mechanism",
+          "Disjoint_set_reports_none": "Mechanism",
+          "Nested_separated_set_reports_none": "Mechanism",
+          "Shared_vertex_reports_other_touch_only": "Mechanism",
+          "Crossing_contours_report_other_touch_only": "Mechanism",
+          "Set_rejects_invalid_ends": "Mechanism",
+          "Structure_precancelled_token_throws": "Contract",
+          "Bowtie_reports_first_crossing_with_interior_point": "Mechanism",
+          "Simple_square_reports_no_crossing": "Mechanism",
+          "Single_crossing_reports_no_other_crossing": "Mechanism",
+          "Double_crossing_reports_another_crossing": "Mechanism",
+          "Split_bowtie_loops_admit_union": "Mechanism",
+          "Crossing_squares_report_inter_loop_crossing": "Mechanism",
+          "Disjoint_squares_report_no_inter_loop_crossing": "Mechanism",
+          "Corner_touching_squares_report_no_inter_loop_crossing": "Mechanism",
+          "Inter_loop_crossing_rejects_bad_ranges": "Mechanism",
+          "Touching_loops_reject_union": "Mechanism",
+          "Overlapping_loops_reject_union": "Mechanism",
+          "Nested_loops_admit_union": "Mechanism"
+        },
+        "beforeLfSha256": "56829e63631b347b33378ff7d654093d77ae4076122ac8a9e54a2620052e055e",
+        "afterLfSha256": "81cd1116308423127fd02215e8ca13e5b94d45d99f78c816d0e49103657f03a7"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgContourTopologyTests.cs",
+        "methods": {
+          "Classify_identifies_orthogonal_contours": "Mechanism",
+          "Classify_identifies_diagonal_contours": "Mechanism",
+          "Classify_follows_the_implicit_closing_edge": "Mechanism",
+          "Classify_supports_subslices": "Mechanism",
+          "Classify_rejects_out_of_range_slices": "Mechanism",
+          "Open_segment_plus_square_parses_single_fill": "Mechanism",
+          "Closed_two_point_fill_parses_empty": "Mechanism",
+          "Diagonal_open_fill_parses_to_empty_geometries": "Mechanism",
+          "Final_subpath_may_omit_Z_for_fill_closure": "Mechanism"
+        },
+        "beforeLfSha256": "7cdc4830eb9b889b94c03cce596a61fb5cba0823e1d4f641e29e1cdb3e274b0c",
+        "afterLfSha256": "6ea10a0901dc92567a1302b53b2bac8186728df1bac41017d4496bbc9e965312"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgOrthogonalGeometryLowererTests.cs",
+        "methods": {
+          "Unit_magnification_keeps_nominal_flatness": "Mechanism",
+          "Magnification_refines_flatness_proportionally": "Mechanism",
+          "Sampled_outline_capacity_scales_with_loops_and_segments": "Mechanism",
+          "Minification_never_coarsens_flatness": "Mechanism",
+          "WeldDustJoints_collapses_mapping_dust_to_the_earlier_value": "Mechanism",
+          "WeldDustJoints_preserves_bitwise_equal_joints_for_the_zero_length_path": "Mechanism",
+          "WeldDustJoints_ignores_separate_features_above_epsilon": "Mechanism",
+          "WeldDustJoints_closes_dust_gaps_at_contour_end": "Mechanism",
+          "WeldDustJoints_compacts_degenerate_dust_loops_for_existing_guards": "Mechanism",
+          "WeldDustJoints_tracks_ends_across_contours": "Mechanism",
+          "WeldDustJoints_maps_kept_indices_and_marks_dropped_ones": "Mechanism",
+          "WeldDustJoints_marks_closing_drop_in_map": "Mechanism",
+          "WeldDustJoints_snaps_spanned_closing_dust_shut": "Mechanism",
+          "WeldDustJoints_keeps_closing_flags_per_contour": "Mechanism"
+        },
+        "beforeLfSha256": "013928f1d54d94769d2d8e7195496d7805a7ab38f0e9775cbfe928e7c594d505",
+        "afterLfSha256": "3b80235a54f3a5f5d5d6448e291a67f79c8a2bd5a5385078bdb68bf140c8fb0c"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgPathBoundsTests.cs",
+        "methods": {
+          "Curve_bounds_match_original_compiled_native_extrema_and_evaluation": "Mechanism",
+          "Bounds_cancellation_preserves_its_token": "Contract",
+          "Affine_curve_bounds_find_extrema_after_mapping_controls": "Mechanism",
+          "Repeated_curve_bounds_queries_allocate_no_heap_storage": "Contract",
+          "Six_outputs_agree_for_curved_gradient_boxes_and_clips": "Contract"
+        },
+        "beforeLfSha256": "94e5cff491ef3fc4aa2154cc7dd82611612ab2f2d98f2ba6c75a47ae58ddf941",
+        "afterLfSha256": "a7773cb9c59717750821e21cc4b66c3c0b2239f0cca1cf93d6daf4a7615d4a2d"
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgScanlineCoverageTests.cs",
+        "methods": {
+          "Denied_scratch_storage_does_not_allocate_contour_arrays": "Contract",
+          "Skipped_pixels_match_zero_fan_total_on_simple_triangle": "Mechanism",
+          "Skipped_pixels_match_zero_fan_total_on_evenodd_hole": "Mechanism",
+          "Touching_pair_keeps_shared_vertex_pixels_evaluated": "Mechanism",
+          "Plain_winding_without_roles_matches_fan_sign": "Mechanism",
+          "Degenerate_contours_contribute_no_edges": "Mechanism",
+          "Non_finite_vertices_disable_culling": "Mechanism",
+          "Empty_payload_culls_everything": "Mechanism",
+          "Mismatched_role_counts_throw_like_coverage": "Mechanism",
+          "Self_intersecting_outline_keeps_even_winding_lens_evaluated": "Mechanism"
+        },
+        "beforeLfSha256": "9b62da31a860734e4fbd421863610fbd22f865f3adbb5bc1a36450c82ea02c36",
+        "afterLfSha256": "7400bf4135db7d18abca66b464d6656f78176c4a7b9ee7e2d721c3a177a36630"
+      }
+    ],
+    "declaredMethods": 5109,
+    "sourceFiles": 724,
+    "allDeclaredBodyIdentitySha256": "fc00f3cb26b62698e556b1acfcec05c60de939e7038c20747f70dde1946303fe",
+    "allDeclaredBodiesUnchanged": true,
+    "removingOnlyNewTraitsRestoresAllTwelveFilesByteForByte": true,
+    "productionReferencesAndFixtureBytesUnchanged": true
+  },
+  "responsibilities": {
+    "Mechanism": {
+      "methods": 103,
+      "cases": 315,
+      "retains": [
+        "Compiled-native clipped float pieces and conic subdivision bits",
+        "All65536 native clip-alpha products and rectangle fringe vectors",
+        "Contour building/topology/intersections, implicit closure, flatness and numerical capacities",
+        "Scanline culling including the former even-winding self-intersection bug",
+        "Opaque/translucent analytic paint rounding and mapped curve extrema"
+      ]
+    },
+    "Contract": {
+      "methods": 20,
+      "cases": 30,
+      "retains": [
+        "Cancellation preserves the caller token and does not mutate caller scratch",
+        "Preparation ownership, refusal, span/link/operation growth and old/replacement overlap",
+        "Context-local clip dispatch does not contaminate retained geometry",
+        "Large-canvas scan windows preserve path storage and the independent native250/245 fringe",
+        "Cached conic preparation releases on refusal/cancellation",
+        "Heap-free bounds queries and all10 six-output cases remain"
+      ]
+    },
+    "Rendering": "Existing canonical native references complement these direct checks; no image equality was used to delete or demote a case."
+  },
+  "identity": {
+    "affectedCasesBefore": 345,
+    "affectedCasesAfter": 345,
+    "mechanismContractPartitionDisjointAndComplete": true,
+    "fastBefore": 19183,
+    "fastAfter": 19528,
+    "fastRemoved": 0,
+    "fastAdded": 345,
+    "allCompiledMethodIdentitiesUnchanged": true,
+    "inventory": {
+      "declaredMethods": 5109,
+      "sourceFiles": 724,
+      "layers": {
+        "Lokad.Svg.Tests": {
+          "Unclassified": 1679,
+          "Mechanism": 1420,
+          "Contract": 576,
+          "Rendering": 985,
+          "Integrity": 1
+        },
+        "Lokad.Svg.VisualTests": {
+          "Unclassified": 277,
+          "Contract": 34,
+          "Integrity": 21,
+          "Rendering": 115,
+          "Mechanism": 1
+        }
+      }
+    }
+  },
+  "renderer": {
+    "sourceCommit": "3d23deed96603dd2c34a2ecf09a5d10851202769",
+    "qualification": "polygon-map-work.json",
+    "packageSha256": "95d4151c5660167702c5fe2eeebbd7dadb5de8f1c7b91b33e85c620e186dab4a",
+    "librarySha256": {
+      "net11.0": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "net10.0": "41bdc276ae65bcc5c74ea54ff539275184d2000e7d41a724532e48e3818cb2c4"
+    },
+    "note": "Local before/after checks use exactly the existing qualified package libraries. No renderer, package, source projection or SVGWeb outcome change is claimed."
+  },
+  "validation": [
+    {
+      "stage": "before",
+      "host": "windows",
+      "profile": "affected",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)",
+      "seconds": 24.91974449995905,
+      "exitCode": 0,
+      "counters": {
+        "executed": 345,
+        "passed": 345,
+        "failed": 0
+      },
+      "identitySha256": "4f92ff9ba7f57f3085d32b205337912b5f3bab38cad39e53aea63638b94ba5d3",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "41c406e028717b69f49a8283e3d499b9c66d55c1f2dec415636913f462d6ff91"
+    },
+    {
+      "stage": "before",
+      "host": "linux",
+      "profile": "affected",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)",
+      "seconds": 54.60043739993125,
+      "exitCode": 0,
+      "counters": {
+        "executed": 345,
+        "passed": 345,
+        "failed": 0
+      },
+      "identitySha256": "4f92ff9ba7f57f3085d32b205337912b5f3bab38cad39e53aea63638b94ba5d3",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "41c406e028717b69f49a8283e3d499b9c66d55c1f2dec415636913f462d6ff91"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "affected",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)",
+      "seconds": 20.540808300022036,
+      "exitCode": 0,
+      "counters": {
+        "executed": 345,
+        "passed": 345,
+        "failed": 0
+      },
+      "identitySha256": "4f92ff9ba7f57f3085d32b205337912b5f3bab38cad39e53aea63638b94ba5d3",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "ab7a6a8a5f40c2cd22452ce33b63018af29d842b9dfb7afcfc7bb0d4d2d0ee2c"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "affected",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)",
+      "seconds": 15.470348899951205,
+      "exitCode": 0,
+      "counters": {
+        "executed": 345,
+        "passed": 345,
+        "failed": 0
+      },
+      "identitySha256": "4f92ff9ba7f57f3085d32b205337912b5f3bab38cad39e53aea63638b94ba5d3",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "ab7a6a8a5f40c2cd22452ce33b63018af29d842b9dfb7afcfc7bb0d4d2d0ee2c"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "affected",
+      "framework": "net10.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)",
+      "seconds": 18.362303900066763,
+      "exitCode": 0,
+      "counters": {
+        "executed": 345,
+        "passed": 345,
+        "failed": 0
+      },
+      "identitySha256": "4f92ff9ba7f57f3085d32b205337912b5f3bab38cad39e53aea63638b94ba5d3",
+      "librarySha256": "41bdc276ae65bcc5c74ea54ff539275184d2000e7d41a724532e48e3818cb2c4",
+      "testAssemblySha256": "590c78990bc43b8911243327ddf2315691c5c085db99c39257307b6059076317"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "affected",
+      "framework": "net10.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)",
+      "seconds": 17.17686210013926,
+      "exitCode": 0,
+      "counters": {
+        "executed": 345,
+        "passed": 345,
+        "failed": 0
+      },
+      "identitySha256": "4f92ff9ba7f57f3085d32b205337912b5f3bab38cad39e53aea63638b94ba5d3",
+      "librarySha256": "41bdc276ae65bcc5c74ea54ff539275184d2000e7d41a724532e48e3818cb2c4",
+      "testAssemblySha256": "590c78990bc43b8911243327ddf2315691c5c085db99c39257307b6059076317"
+    },
+    {
+      "stage": "before",
+      "host": "windows",
+      "profile": "fast",
+      "framework": "net11.0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "seconds": 46.82822780008428,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19183,
+        "passed": 19183,
+        "failed": 0
+      },
+      "identitySha256": "56cce0243fb46595fa8063e5a3ee27ae8c64aedf48361f9cbc33b5e763adf4bb",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "41c406e028717b69f49a8283e3d499b9c66d55c1f2dec415636913f462d6ff91"
+    },
+    {
+      "stage": "before",
+      "host": "linux",
+      "profile": "fast",
+      "framework": "net11.0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "seconds": 48.22843430005014,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19183,
+        "passed": 19183,
+        "failed": 0
+      },
+      "identitySha256": "bbf4b9e82851863c83f6f2f2d792f072129e1547ef7fb6da544f1aad1fc212e3",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "41c406e028717b69f49a8283e3d499b9c66d55c1f2dec415636913f462d6ff91"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "fast",
+      "framework": "net11.0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "seconds": 28.26842400012538,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19528,
+        "passed": 19528,
+        "failed": 0
+      },
+      "identitySha256": "6b966850392fd4559709f40d2601b3c4f7e35708b3bc54dc3e131ea665ec3179",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "ab7a6a8a5f40c2cd22452ce33b63018af29d842b9dfb7afcfc7bb0d4d2d0ee2c"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "fast",
+      "framework": "net11.0",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "seconds": 25.998116200091317,
+      "exitCode": 0,
+      "counters": {
+        "executed": 19528,
+        "passed": 19528,
+        "failed": 0
+      },
+      "identitySha256": "ce355f67110d08db6024528dca10f56dccd7959494b62cfd987a82507f442ac8",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "ab7a6a8a5f40c2cd22452ce33b63018af29d842b9dfb7afcfc7bb0d4d2d0ee2c"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "mechanisms",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)&Layer=Mechanism",
+      "seconds": 8.67914090002887,
+      "exitCode": 0,
+      "counters": {
+        "executed": 315,
+        "passed": 315,
+        "failed": 0
+      },
+      "identitySha256": "32ce0ed414713c3a996e6d739d5fdf45b91ce0d23c21cd17daf363ccf6f68f04",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "ab7a6a8a5f40c2cd22452ce33b63018af29d842b9dfb7afcfc7bb0d4d2d0ee2c"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "mechanisms",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)&Layer=Mechanism",
+      "seconds": 10.006898100022227,
+      "exitCode": 0,
+      "counters": {
+        "executed": 315,
+        "passed": 315,
+        "failed": 0
+      },
+      "identitySha256": "32ce0ed414713c3a996e6d739d5fdf45b91ce0d23c21cd17daf363ccf6f68f04",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "ab7a6a8a5f40c2cd22452ce33b63018af29d842b9dfb7afcfc7bb0d4d2d0ee2c"
+    },
+    {
+      "stage": "after",
+      "host": "windows",
+      "profile": "contracts",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)&Layer=Contract",
+      "seconds": 8.688324499875307,
+      "exitCode": 0,
+      "counters": {
+        "executed": 30,
+        "passed": 30,
+        "failed": 0
+      },
+      "identitySha256": "9c4130a127b48200cdf97c93d63907278ec05dd85b3e3638d5efdcfd5f6bf8e9",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "ab7a6a8a5f40c2cd22452ce33b63018af29d842b9dfb7afcfc7bb0d4d2d0ee2c"
+    },
+    {
+      "stage": "after",
+      "host": "linux",
+      "profile": "contracts",
+      "framework": "net11.0",
+      "selection": "(FullyQualifiedName~SvgAnalyticClipCoverageTests|FullyQualifiedName~SvgAnalyticClipperTests|FullyQualifiedName~SvgAnalyticPaintClipTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgConicTests|FullyQualifiedName~SvgContourBuilderTests|FullyQualifiedName~SvgContourStructureTests|FullyQualifiedName~SvgContourTopologyTests|FullyQualifiedName~SvgOrthogonalGeometryLowererTests|FullyQualifiedName~SvgPathBoundsTests|FullyQualifiedName~SvgScanlineCoverageTests)&Layer=Contract",
+      "seconds": 9.619830599986017,
+      "exitCode": 0,
+      "counters": {
+        "executed": 30,
+        "passed": 30,
+        "failed": 0
+      },
+      "identitySha256": "9c4130a127b48200cdf97c93d63907278ec05dd85b3e3638d5efdcfd5f6bf8e9",
+      "librarySha256": "e22ddbeb8369f1f23ee184ec96a3bc1ae01855dec3d2e239b70d5cdeb4a25b71",
+      "testAssemblySha256": "ab7a6a8a5f40c2cd22452ce33b63018af29d842b9dfb7afcfc7bb0d4d2d0ee2c"
+    }
+  ],
+  "measurementLimits": "One normal-development wall observation per selection/host. Hosts ran concurrently; discovery/startup and host state are included. Affected before/after scope is identical. Layer loops deliberately cover different duties. Faster observed walls establish neither a test execution speedup nor renderer throughput.",
+  "builds": {
+    "frameworks": [
+      "net11.0",
+      "net10.0"
+    ],
+    "warnings": 0,
+    "errors": 0,
+    "noIncremental": true
+  },
+  "ci": {
+    "status": "Awaiting the committed test-only milestone; qualification will be attached after its terminal safe point."
+  }
+}

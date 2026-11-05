@@ -10,6 +10,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgConicTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("circle-r2")]
     [InlineData("ellipse-wide")]
     [InlineData("large-r409")]
@@ -55,6 +56,7 @@ public sealed class SvgConicTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("<ellipse cx='32' cy='32' rx='24' ry='16' fill='red'/>")]
     [InlineData("<g transform='translate(.5 .25)'><circle cx='32' cy='32' r='16' fill='red'/></g>")]
     [InlineData("<defs><symbol id='s' viewBox='0 0 64 64'><ellipse cx='32' cy='32' rx='24' ry='16' fill='red'/></symbol></defs><use href='#s' width='64' height='64'/>")]
@@ -69,6 +71,7 @@ public sealed class SvgConicTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<circle cx='15.375' cy='16.625' r='11.125' fill='#d3264a'/>")]
     [InlineData("<ellipse cx='.125' cy='15.875' rx='19.625' ry='11.125' fill='red'/>")]
     [InlineData("<defs><radialGradient id='g'><stop stop-color='yellow'/><stop offset='1' stop-color='blue'/></radialGradient></defs><circle cx='16' cy='16' r='12' fill='url(#g)' fill-opacity='.61'/>")]
@@ -91,6 +94,7 @@ public sealed class SvgConicTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false)]
     [InlineData(true)]
     public void Live_convex_conics_cache_classification_and_release_on_denial_or_cancellation(bool clipped)
@@ -130,6 +134,7 @@ public sealed class SvgConicTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Conversion_observes_the_token_and_the_caller_buffer()
     {
         using CancellationTokenSource cancellation = new();
@@ -141,6 +146,7 @@ public sealed class SvgConicTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Float_collapsed_oval_bounds_enclose_no_area()
     {
         SvgContourBuilder builder = new(64, 1);
@@ -151,6 +157,7 @@ public sealed class SvgConicTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Overflowed_oval_bounds_report_a_renderer_limit()
     {
         SvgContourBuilder builder = new(64, 1);

@@ -9,6 +9,7 @@ public sealed class SvgAnalyticPaintClipTests
     private static readonly SvgDevicePoint[] Triangle = [new(2.43, 2.761), new(27.8125, 16.013), new(6.43, 28.375)];
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Mask_bounds_do_not_create_AA_boundaries_and_intersections_retain_geometric_origins()
     {
         SvgClipBox geometric = new(.375, .625, 80, 64);
@@ -24,6 +25,7 @@ public sealed class SvgAnalyticPaintClipTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Reflected_maps_preserve_the_selected_boundary_provenance()
     {
         SvgClipBox source = new(4, 6, 20, 24) { Antialiasing = SvgClipAntialiasing.Left | SvgClipAntialiasing.Top };
@@ -32,6 +34,7 @@ public sealed class SvgAnalyticPaintClipTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Compiled_native_predicate_and_edge_snapping_vectors_match()
     {
         using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "analytic-paint-clip-native.json")));
@@ -48,6 +51,7 @@ public sealed class SvgAnalyticPaintClipTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Tiny_path_dispatch_is_context_local_and_does_not_contaminate_cached_geometry()
     {
         SvgAnalyticContourPreparation preparation = new(Triangle, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(0, 0, 32, 32), 96, 80);
@@ -84,6 +88,7 @@ public sealed class SvgAnalyticPaintClipTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Forced_run_link_memory_refusal_releases_prepared_owners()
     {
         SvgAnalyticContourPreparation preparation = new(Triangle, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(0, 0, 32, 32), 96, 80);
@@ -110,6 +115,7 @@ public sealed class SvgAnalyticPaintClipTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Tiny_forced_run_cancellation_during_replay_preserves_token_and_ownership()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -136,6 +142,7 @@ public sealed class SvgAnalyticPaintClipTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("solid")]
     [InlineData("linear")]
     [InlineData("radial")]

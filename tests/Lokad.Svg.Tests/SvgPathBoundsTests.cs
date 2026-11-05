@@ -8,6 +8,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPathBoundsTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Curve_bounds_match_original_compiled_native_extrema_and_evaluation()
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "TestData");
@@ -38,6 +39,7 @@ public sealed class SvgPathBoundsTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Bounds_cancellation_preserves_its_token()
     {
         SvgAuthoredPathCommand[] commands =
@@ -54,6 +56,7 @@ public sealed class SvgPathBoundsTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Affine_curve_bounds_find_extrema_after_mapping_controls()
     {
         SvgAuthoredPathCommand[] commands =
@@ -69,6 +72,7 @@ public sealed class SvgPathBoundsTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Repeated_curve_bounds_queries_allocate_no_heap_storage()
     {
         SvgAuthoredPathCommand[] commands =
@@ -91,6 +95,7 @@ public sealed class SvgPathBoundsTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("clip-pair-radial.svg")]
     [InlineData("raw-cubic-tangent-shader.svg")]
     [InlineData("aa-clip-root-shader.svg")]

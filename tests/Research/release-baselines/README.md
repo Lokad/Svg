@@ -6,6 +6,11 @@ hashes and qualification selections. These are inherited release results, not
 new measurements. Use `git show v0.3.0:path/to/file` to inspect an original file.
 Reference images remain beside their existing licensed source collections.
 
+[Geometry test responsibilities](geometry-test-responsibilities.json) classifies
+direct contour/analytic vectors separately from cancellation, allocation and output
+contracts. All cases and assertion bodies remain; focused selection and the source/
+compiled inventory are qualified against the existing renderer packages.
+
 [Polygon contour ownership](contour-ownership.md) records the shared paint-binding
 storage contract and its failing-before refusal, transfer and retry witnesses.
 [Filter command views](command-view-qualification.json) remove unchanged subtree

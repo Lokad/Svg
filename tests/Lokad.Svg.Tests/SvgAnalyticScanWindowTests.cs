@@ -9,6 +9,7 @@ public sealed class SvgAnalyticScanWindowTests
     private const string SecondCircle = "M52,50C52,41.163444002707301,59.163444002707301,34,68,34C76.836555997292692,34,84,41.163444002707301,84,50C84,58.836555997292699,76.836555997292692,66,68,66C59.163444002707301,66,52,58.836555997292699,52,50Z";
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(100)]
     [InlineData(70_000)]
     public void Run_walk_uses_clip_window_without_expanding_path_storage(int canvasWidth)
@@ -36,6 +37,7 @@ public sealed class SvgAnalyticScanWindowTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Mask_walk_keeps_its_path_window_inside_a_large_canvas()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><path d='" + FirstCircle + "' fill='#003478'/></svg>");

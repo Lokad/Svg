@@ -512,6 +512,11 @@ maps the shared fix to native controls and the complete green-grapes original.
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;
 a layer filter does not replace affected unclassified tests or full qualification.
+The [geometry responsibility audit](Research/release-baselines/geometry-test-responsibilities.json)
+separates direct analytic/contour/conic/bounds checks from their allocation,
+cancellation and output contracts. For paint arithmetic, select
+`FullyQualifiedName~SvgAnalyticPaintTests&Layer=Mechanism`; include its contract
+siblings for preparation/replay changes and affected native images for integration.
 For direct mask-bound vectors, use `FullyQualifiedName~SvgMaskPaintRegionTests&Layer=Mechanism`;
 include its contract siblings for storage refusal, cancellation and replay.
 The [supplied-font output map](Research/release-baselines/font-output-responsibilities.md)

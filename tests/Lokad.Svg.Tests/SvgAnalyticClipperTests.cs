@@ -16,6 +16,7 @@ public sealed class SvgAnalyticClipperTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [MemberData(nameof(NativeCases))]
     public void Clipped_pieces_match_compiled_native_float_bits(string identity, int kind, int[] bounds, bool cull, float[] coordinates, uint[][] expected)
     {
@@ -42,6 +43,7 @@ public sealed class SvgAnalyticClipperTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Clipping_preserves_the_cancelled_token_before_mutating_caller_scratch()
     {
         using CancellationTokenSource cancellation = new();
