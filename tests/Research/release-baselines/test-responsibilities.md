@@ -52,6 +52,20 @@ integration. During paint arithmetic work, for example, select
 records complete affected selections and observed validation times, without a
 renderer performance claim.
 
+## Font catalogs and program acquisition
+
+The [source-await qualification](font-source-await.json) keeps all 73 module
+cases: 40 manifest/weight-selection mechanisms and 33 API/ownership contracts.
+The contracts retain the six prepared output forms, immutable catalog views,
+provider/source failures and cancellation. Four pending-result cases additionally
+exercise real suspension, caller-array identity, separate source/integrity origins
+and snapshot refunds. Existing assertions and data rows remain unchanged.
+
+Use `FullyQualifiedName~SvgFontPackCatalogTests&Layer=Mechanism` for catalog syntax
+or weight rules, and its contract siblings plus `SvgFontProgramSourceTests` for
+acquisition and lifetime changes. Independent font rendering stays separate;
+the installed consumer protects HTTP/cache/document/result ownership together.
+
 ## Font hinting and glyph coverage
 
 The [hinting responsibility audit](hinting-test-responsibilities.json) classifies

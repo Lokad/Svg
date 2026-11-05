@@ -1,5 +1,5 @@
 {
-  "status": "Verified-source pending-read wrappers collapsed into one static local ValueTask continuation. Four genuinely pending preservation cases pass before/after; all73 catalog/source cases and13403 affected core cases per host pass. Full committed package/runtime/W1 qualification pending.",
+  "status": "One static local ValueTask continuation replaces two single-caller font-source wrappers. Source/integrity failure origin, caller bytes, cancellation and snapshot cleanup remain. Four pending cases pass before/after; all old assertions and output paths remain. Both-runtime affected integration, exact packages, installed consumers and original/context replay are qualified. The independent frozen Windows DejaVu discrepancy remains open.",
   "source": {
     "baseCommit": "3b4c4f26a556a46f9559d9551494ba735494d309",
     "preservation": {
@@ -12,7 +12,8 @@
       "completedFastPathAndIntegrityKernelUnchanged": true,
       "newTestMethods": 3,
       "newTestCases": 4
-    }
+    },
+    "sourceCommit": "9f9720f02aec86fa5f81a8d2ff2886567df219c6"
   },
   "scope": "No public signature, source ownership, integrity arithmetic, completed fast path, exception-origin policy or cancellation order changed. No allocation or throughput improvement claimed.",
   "contracts": {
@@ -122,7 +123,11 @@
       }
     ],
     "sourceClassRole": "Contract",
-    "retained": "All six representative sync/async memory/stream prepared-output forms, encoded-size paths, source/provider origin combinations and every existing assertion remain."
+    "retained": "All six representative sync/async memory/stream prepared-output forms, encoded-size paths, source/provider origin combinations and every existing assertion remain.",
+    "caseRoles": {
+      "Contract": 33,
+      "Mechanism": 40
+    }
   },
   "moduleBefore": [
     {
@@ -263,6 +268,333 @@
       "failures": []
     }
   ],
-  "qualificationPending": true,
-  "rendererBaseline": "analytic-edge-storage.json"
+  "qualificationPending": false,
+  "rendererBaseline": "analytic-edge-storage.json",
+  "packages": {
+    "sourceCommit": "9f9720f02aec86fa5f81a8d2ff2886567df219c6",
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "d23064246943a86b9dab6b9fbc1a92f5918aa8e0a39872f1278985a2a25a8bb7",
+        "bytes": 2437769
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "437200ef779ea3dd6be55755f6e2079658545426df7d95e5a28907254141ea1c",
+        "bytes": 726240
+      }
+    ],
+    "librarySha256": {
+      "net11.0": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "net10.0": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0"
+    },
+    "byteIdenticalRepeats": true,
+    "noRuntimeDependencies": true,
+    "noSvgOrRuntimeSpecificAssets": true
+  },
+  "inventory": {
+    "methods": 5128,
+    "sourceFiles": 731,
+    "coreMethods": 4678,
+    "visualMethods": 450,
+    "coreRoles": {
+      "Unclassified": 1398,
+      "Mechanism": 1607,
+      "Contract": 663,
+      "Rendering": 1009,
+      "Integrity": 1
+    },
+    "visualUnclassified": 277,
+    "priorMethodsRetained": 5125,
+    "newContractMethods": 3,
+    "newCases": 4,
+    "existingMethodsClassified": 37,
+    "fastEligibility": 20444,
+    "priorFastEligibility": 20371,
+    "fastCasesAdded": 73,
+    "fullCoreCases": 47780,
+    "fullVisualCases": 73537,
+    "fontHostCases": 10
+  },
+  "moduleIdentityJoins": [
+    {
+      "host": "windows",
+      "cases": 73,
+      "beforeAfterSameTestAssembly": true,
+      "allCasesAndMultiplicitiesRetained": true,
+      "identitySha256": "34a58394687816fa6c30560987028c85b41a148108c731745b7b0ecf46cdc919"
+    },
+    {
+      "host": "linux",
+      "cases": 73,
+      "beforeAfterSameTestAssembly": true,
+      "allCasesAndMultiplicitiesRetained": true,
+      "identitySha256": "34a58394687816fa6c30560987028c85b41a148108c731745b7b0ecf46cdc919"
+    }
+  ],
+  "fastIdentityJoins": [
+    {
+      "host": "windows",
+      "beforeCases": 20371,
+      "afterCases": 20444,
+      "addedCases": 73,
+      "lostCases": 0,
+      "beforeIdentitySha256": "5217a003a69be76dcaf280f8e3e8e3b79afe7f31966fe2816ca38905784c72a3",
+      "afterIdentitySha256": "76487944370ea92a8babbbcb24b4a53d6103b57f35cb431d86f53b7fff23c413"
+    },
+    {
+      "host": "linux",
+      "beforeCases": 20371,
+      "afterCases": 20444,
+      "addedCases": 73,
+      "lostCases": 0,
+      "beforeIdentitySha256": "391a3fd1985e39a2dbd29776e4fccf2988ac79383d00b286ce007b08d55fe416",
+      "afterIdentitySha256": "3434a49b8e45b5a5dae37da04a2c8a63a692266cff6bc11d365d0688a4d02381"
+    }
+  ],
+  "fastProfile": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "033baba1ade727f817a2a23281840415d1bfe8d97ae76c2eb63a49a035d6badb",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 41.91863560001366,
+      "counters": {
+        "executed": "20444",
+        "passed": "20444",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "033baba1ade727f817a2a23281840415d1bfe8d97ae76c2eb63a49a035d6badb",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 46.36339359986596,
+      "counters": {
+        "executed": "20444",
+        "passed": "20444",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affectedNet10": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "c62e5747d4102400fa0b09fc281d5518ac186f9aa060b3864f56e335b7f9db05",
+      "selection": "FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgFontPackCatalogTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 48.873926900094375,
+      "counters": {
+        "executed": "13403",
+        "passed": "13403",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "c62e5747d4102400fa0b09fc281d5518ac186f9aa060b3864f56e335b7f9db05",
+      "selection": "FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgFontPackCatalogTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 47.8202802001033,
+      "counters": {
+        "executed": "13403",
+        "passed": "13403",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "516018181f7a06eef3dc78c9204b20637fa061110b8a90ea89c072de2c4d2b41",
+      "selection": "FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgStaticTrueTypeFontTests",
+      "exitCode": 1,
+      "seconds": 21.02172530000098,
+      "counters": {
+        "executed": "12",
+        "passed": "11",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "516018181f7a06eef3dc78c9204b20637fa061110b8a90ea89c072de2c4d2b41",
+      "selection": "FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgStaticTrueTypeFontTests",
+      "exitCode": 0,
+      "seconds": 24.325253500137478,
+      "counters": {
+        "executed": "12",
+        "passed": "12",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "installedConsumers": [
+    {
+      "host": "windows",
+      "exitCode": 0,
+      "seconds": 7.704673700034618
+    },
+    {
+      "host": "linux",
+      "exitCode": 0,
+      "seconds": 86.9638183999341
+    }
+  ],
+  "links": {
+    "checkedRelativeLinks": 290,
+    "allResolved": true
+  },
+  "measurementScope": "Module functional wall times use the same test assembly against old/new production libraries, with paired host runs concurrent with affected integration. Windows 9.92/9.23 s and Linux 17.04/17.92 s before/after include discovery/host/TRX and exclude build. Cache/load variation prevents a throughput claim. Completed reads remain direct; the local continuation removes a wrapper chain, with no measured allocation or renderer-speed claim.",
+  "primaryCi": {
+    "run": 42066239077,
+    "status": "Terminal CLOSED; never repoll or refetch.",
+    "jobs": [
+      {
+        "host": "windows",
+        "job": 127380964570,
+        "conclusion": "failure",
+        "logSha256": "02740ae1a1134e8fe32589b965aeda084e405ab80dd5a23b51aff28dd85b4af0",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47780,
+            "total": 47780
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73536,
+            "total": 73537
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "job": 127380964945,
+        "conclusion": "success",
+        "logSha256": "bfa637b266c30ac26f5645e99fbc2ad465008708f1f09c15ee122fee9acb1b08",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47780,
+            "total": 47780
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73537,
+            "total": 73537
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ]
+      }
+    ]
+  },
+  "svgweb": {
+    "replay": {
+      "originals": 204,
+      "suppliedContexts": 22,
+      "staticDiagnostics": 13,
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        }
+      },
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "sourceBodiesRetained": 0,
+      "rawAttributesRetained": 0
+    },
+    "directoryIndex": {
+      "checkedUtc": "2026-11-05T16:40:46.817843+00:00",
+      "httpStatus": 200,
+      "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+      "files": 204,
+      "sameMembership": true,
+      "indexBodyRetained": false
+    }
+  }
 }
