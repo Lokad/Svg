@@ -25,6 +25,12 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+The [original anchor screen](Research/text-paint-bounds/anchor-screening.json)
+retains 744 pairs as 1,488 independent native comparisons plus one integrity case.
+Select `FullyQualifiedName~Original_anchor_screen_` for this optional Research bank.
+Its [source recipe](Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Anchors.cs)
+reconstructs the originals without copying another SVG/PNG collection.
+
 Text declaration/family parsing and whitespace/list normalization are direct
 mechanisms. Their public early-failure, cancellation, storage transfer and growth
 checks remain contracts. The [qualification](Research/release-baselines/text-front-end-responsibilities.json)

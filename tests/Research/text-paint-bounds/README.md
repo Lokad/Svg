@@ -109,3 +109,14 @@ ownership matrix. Select it with `FullyQualifiedName~Full_text_paint_screen`;
 metadata, immutable catalogs and font bytes avoid repeated setup; snapshots remain
 independent per case. [Qualification](../release-baselines/text-screen-qualification.json)
 records source/context joins, retained identities and validation costs.
+
+The [original anchor screen](anchor-screening.json) retains all 36 original and
+708 screening pairs from R48. Its [recipe](../../Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Anchors.cs)
+reconstructs all 1,488 declarations byte-for-byte. Each has an independent exact
+native RGBA target on both hosts, reproduced by three healthy, stable captures.
+The 197 Windows and 195 Linux unequal pairs retain both targets; every declaration
+has different platform pixels. Select `FullyQualifiedName~Original_anchor_screen_`
+for the 1,488 Research rendering cases and their source/font/capture integrity check.
+Existing routine regressions and API/ownership contracts remain unchanged.
+[Qualification](../release-baselines/anchor-screen-qualification.json) closes this
+entire original cohort; other historical node/phase/fitting witnesses remain separate.

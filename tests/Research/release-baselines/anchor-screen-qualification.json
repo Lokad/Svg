@@ -1,0 +1,242 @@
+{
+  "status": "The complete original R48 anchor/fragment screen is closed against independent native targets:36 original plus708 matrix pairs,1488 declarations. Existing qualified renderer assets match every target on both hosts/runtimes. No implementation change is required. Other independent R49/R60/R61 original witnesses remain separate.",
+  "source": {
+    "baseCommit": "49c34ad67db3d1844ed829c9d652f78ff095ccbd",
+    "manifest": "../text-paint-bounds/anchor-screening.json",
+    "manifestLfSha256": "8c252aef259fea0c365f602914b62a9065086bf82b76932e3d57c5ed9ae80f61",
+    "manifestSemanticSha256": "c8902e95cdee672d10be9e8c24f826b3430bc4a6cc3a79d3b38bbfad95b414d9",
+    "factory": {
+      "file": "../../Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Anchors.cs",
+      "lfSha256": "c9f246272ec96da1c633f90ce65fd3c5f2f481d0058ff76a2d7d1be11d3e66e5",
+      "originalDeclarations": 1488,
+      "allGeneratedSourcesMatchOriginalBytes": true
+    },
+    "historicalInputSha256": {
+      "original.json": "eed51908a303d23a79af187cd1bd27312e8ced1c71f69013ad0219afce9c5e91",
+      "matrix.json": "3da1b559e7f45b020d83c74c39a7209b6d6d84b05d7b312e992518ad000f9a24",
+      "generate.py": "afcf54665190d66ce18c5b895a3cfdfe584d5eeb3c24b82fed5a171fa217ce79",
+      "Probe.cs": "f4802e6fa0fd1da5c96067b08a1a7c548504bf2e76871d3a7facc8df5d480f78",
+      "checkpoint.json": "e7570573b4feaa20d3c1cf34376fd2cbad638ed21bdcd26641b4c395263e1dab"
+    },
+    "historicalScope": "Original36 text-relative-anchor pairs;648 relative-anchor matrix pairs;54 absolute/relative chunk-reset and fitting pairs; six calibrated translation pairs. Every original candidate and control is preserved independently.",
+    "nativeFont": {
+      "path": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "license": "../supplied-font-labels/README.md"
+    },
+    "sourceClass": {
+      "file": "../../Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.cs",
+      "beforeLfSha256": "46cfb1f1c2088f8dbd9d0c947eaa823cc81a3aab3c31eefe5eee81d5f5dba61e",
+      "afterLfSha256": "8dc7b3987a863288de50cc585e5926d7c50430ca7140042350cb28785952b779",
+      "sourceRestoration": "The entire original class is recovered by removing the new lazy bank, its source-factory switch arm and the extension of the existing digest-only reference branch. Existing providers, default source/image branches, assertions, catalogs, pixel comparison and zero-alpha convention are unchanged."
+    }
+  },
+  "native": {
+    "captures": "The linked manifest retains all six healthy process receipts and per-host PNG/canonical-RGBA targets. Three fresh captures per host reproduce every PNG byte and RGBA digest. Source/native hashes preserve the original single-font style binding.",
+    "pins": "../text-node-boundaries/original-acceptance.json#/cohorts/0/platformPins",
+    "declaredInputs": 1488,
+    "pairs": 744,
+    "processesPerHost": 3,
+    "byteStableNativeImagesPerHost": 1488,
+    "rendererExactPerHostAndRuntime": 1488,
+    "unequalNativePairs": {
+      "windows": 197,
+      "linux": 195
+    },
+    "platformDifferences": 1488,
+    "existingNativeJoins": {
+      "count": 53,
+      "manifest": "../text-node-boundaries/capture.json",
+      "allSourceFontScaleNativeContextsAndFrozenPixelsRetained": true
+    },
+    "exactness": "32x32 dimensions and every canonical straight RGBA8 byte. Only zero-alpha RGB follows the existing PixelComparer convention. Pair equality is never an oracle;197 Windows and195 Linux unequal pairs retain both targets."
+  },
+  "responsibilities": {
+    "rendering": "1488 individually discovered Category=Research cases each exercise one canonical conversion. Source construction is a recipe rather than1488 SVG copies; independent RGBA digests avoid a duplicate PNG bank.",
+    "integrity": "One separate Research case checks complete cohort/index/role coverage, original source hashes, embedded native context, font identity, scale/dimensions and all healthy capture triples.",
+    "routine": "Every existing routine witness and ownership/API interaction remains. General destination matrices, resource refusal, cancellation, cleanup and retry are not multiplied over the screen.",
+    "retention": "Historical source JSON/producers and private native PNG evidence remain preserved. This change authorizes no generated-output deletion."
+  },
+  "caseJoins": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "priorCases": 2647,
+      "newCases": 1489,
+      "currentCases": 4136,
+      "allPriorIdentitiesAndMultiplicitiesRetained": true,
+      "newCasesAreIndividuallyDiscoveredResearch": true,
+      "currentIdentitySha256": "01501dbd745e33bc08d04b29e887384140b9c6dfa21345bcbfc8ab28f39afe65"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "priorCases": 2647,
+      "newCases": 1489,
+      "currentCases": 4136,
+      "allPriorIdentitiesAndMultiplicitiesRetained": true,
+      "newCasesAreIndividuallyDiscoveredResearch": true,
+      "currentIdentitySha256": "01501dbd745e33bc08d04b29e887384140b9c6dfa21345bcbfc8ab28f39afe65"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "priorCases": 2647,
+      "newCases": 1489,
+      "currentCases": 4136,
+      "allPriorIdentitiesAndMultiplicitiesRetained": true,
+      "newCasesAreIndividuallyDiscoveredResearch": true,
+      "currentIdentitySha256": "01501dbd745e33bc08d04b29e887384140b9c6dfa21345bcbfc8ab28f39afe65"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "priorCases": 2647,
+      "newCases": 1489,
+      "currentCases": 4136,
+      "allPriorIdentitiesAndMultiplicitiesRetained": true,
+      "newCasesAreIndividuallyDiscoveredResearch": true,
+      "currentIdentitySha256": "01501dbd745e33bc08d04b29e887384140b9c6dfa21345bcbfc8ab28f39afe65"
+    }
+  ],
+  "inventory": {
+    "methods": 5141,
+    "sourceFiles": 735,
+    "coreMethods": 4688,
+    "visualMethods": 453,
+    "coreUnclassified": 1155,
+    "visualUnclassified": 277,
+    "priorMethodsAndRolesUnchanged": true,
+    "addedMethods": [
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests",
+        "name": "Original_anchor_screen_preserves_each_independent_native_target",
+        "layers": [
+          "Rendering"
+        ]
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests",
+        "name": "Original_anchor_screen_retains_source_font_options_and_healthy_native_triples",
+        "layers": [
+          "Integrity"
+        ]
+      }
+    ],
+    "fullCoreCasesUnchanged": 47926,
+    "fullVisualCasesDerived": 75027,
+    "fontHostCasesUnchanged": 10,
+    "fastCasesUnchanged": 20069
+  },
+  "validation": {
+    "builds": {
+      "frameworks": [
+        "net11.0",
+        "net10.0"
+      ],
+      "warnings": 0,
+      "errors": 0
+    },
+    "focused": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "cases": 1489,
+        "seconds": 15.591742699965835
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "cases": 1489,
+        "seconds": 19.739752700086683
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "cases": 1489,
+        "seconds": 17.347581600071862
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "cases": 1489,
+        "seconds": 17.978387200040743
+      }
+    ],
+    "integration": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "cases": 4136,
+        "seconds": 34.94314350001514
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "cases": 4136,
+        "seconds": 33.209748399909586
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "cases": 4136,
+        "seconds": 27.593429900007322
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "cases": 4136,
+        "seconds": 28.41588669992052
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "cases": 267,
+        "seconds": 11.287927099969238
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "cases": 267,
+        "seconds": 12.056916599860415
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "cases": 267,
+        "seconds": 11.221547499997541
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "cases": 267,
+        "seconds": 11.171625200193375
+      }
+    ],
+    "scope": "Functional validation costs include discovery/host/TRX and exclude builds. No throughput claim. No renderer code changes, package generation, full CI or hosted-original replay was needed for this test/evidence milestone. The current package/native/SVGWeb qualification remains bound to unchanged renderer assets.",
+    "manifestFormatting": "The per-case compact JSON representation preserves every parsed value from the data exercised by validation."
+  },
+  "renderer": {
+    "qualification": "unit-domain-contracts.json",
+    "sourceCommit": "1f194273b9dd3edd3282905f52c720caad79bdc8",
+    "librarySha256": {
+      "net11.0": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "net10.0": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90"
+    }
+  },
+  "remaining": "Source-join independent R49/R60/R61 node/phase/fitting originals beyond this screen; retain the closed R103/R104/R108 and39 precision cohorts. Other PLAN.md duties, including original-source admission, provenance, support claims and quiet-VM/release gates, remain open."
+}
