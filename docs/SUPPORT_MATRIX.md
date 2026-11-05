@@ -116,11 +116,13 @@ bounds, and excessive intermediate surfaces, fail explicitly.
 
 Fills support nonzero/even-odd winding. Strokes support butt/round/square caps,
 miter/round/bevel joins, miter limits, finite dash arrays/offsets, `pathLength`,
-independent paints and ordinary/non-scaling widths. Stroke widths, dash arrays
-and dash offsets accept bare numbers and fixed CSS length units; percentages
-and font-relative units remain unsupported. Dashed non-scaling line, circle
-and curved-path strokes reject rotation/shear; dashed gradient line
-strokes require uniform scaling. CSS/inherited vector effects are unsupported.
+independent paints and ordinary/non-scaling widths. Stroke widths, dash entries
+and offsets accept bare numbers and `px`, `in`, `cm`, `mm`, `pt`, `pc`, `q` lengths.
+Conversion precedes numeric range admission; zero widths avoid resources needed
+only by that stroke. Percentage and font-relative stroke metrics remain unsupported.
+Dashed non-scaling line, circle and curved-path strokes reject rotation/shear;
+dashed gradient line strokes require uniform scaling. CSS/inherited vector
+effects are unsupported.
 Local uses retain rectangle source strokes independently of fill/stroke material.
 Affine uses also retain rectangle fills and hidden path/point-list source commands;
 visibility continues to control painting independently of geometry retention.
@@ -130,11 +132,6 @@ attributes remain unsupported; paint-server transforms keep their own admission 
 Nonuniform symbol viewBox maps preserve retained source fills and stroke outlines,
 including solid, gradient and pattern paints. Lowered polygons without retained
 source commands remain unsupported under nonuniform symbol scaling.
-
-Stroke widths, dash entries and offsets accept bare numbers and `px`, `in`, `cm`,
-`mm`, `pt`, `pc`, `q` lengths. Conversion precedes numeric range admission; zero
-widths avoid resources needed only by that stroke. Percentage and font-relative
-stroke metrics remain unsupported.
 
 All-zero dash lists use a solid stroke; zero-length dashes with positive gaps
 retain cap behavior. Dash placement follows authored endpoint order. Zero-size
@@ -356,6 +353,8 @@ its computed display remains available to children that explicitly inherit it.
 `currentColor` resolves against each element's effective color; `color:currentColor`
 uses inherited color. Comma RGB/RGBA channels must all be numbers or percentages;
 space syntax may mix them. RGB(A)/HSL(A) aliases accept slash alpha.
+Percentage and decimal alpha can quantize differently; paint retains the precision
+required by the [native color controls](../tests/Research/gradient-color-alpha/README.md).
 
 Token rules:
 

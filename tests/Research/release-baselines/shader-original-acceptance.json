@@ -1,5 +1,5 @@
 {
-  "status": "Original R54/R55/R69 source/native acceptance joins and local focused/integration qualification pass. Full CI record is pending; renderer/package/W1 qualification is inherited from the identical already-qualified library assets.",
+  "status": "Original R54, R55 and R69 findings are closed: all 567 original pairs/1,134 declarations match their independent native targets; the acceptance map retains shared bounds/maps, focal arithmetic, alpha precision, ownership and representative APIs. All pre-existing test sources, assertions, frozen targets, tolerances and renderer code remain unchanged. Full Linux CI passes; Windows has only the known frozen DejaVu reference-authority failure.",
   "sourceBaseCommit": "e7e3c56bd1683d132c3800b623b56539bfb6c741",
   "renderingBank": "../shader-originals/capture.json",
   "sourceFactory": "../../Lokad.Svg.VisualTests/SvgShaderOriginalReferenceTests.Sources.cs",
@@ -144,7 +144,7 @@
         "text-layout-acceptance.json",
         "../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs"
       ],
-      "reason": "All134 supplied-font declarations in the original screen retain independent platform pixels. Existing wider text-box/paint banks and representative prepared/node contracts retain fractional positions, mixed fonts, fitted text and resource replay; their inputs and assertions are unchanged."
+      "reason": "All 134 gradient/symbol supplied-font declarations retain independent platform pixels. Existing wider text-box/paint banks and representative prepared/node contracts retain fractional positions, mixed fonts, fitted text and resource replay; their inputs and assertions are unchanged."
     },
     {
       "finding": "R55",
@@ -429,5 +429,168 @@
     "previousFailingRegressions": "Every prior routine and Research case remains. New optional original-source tests complement existing failing-before orthogonal regressions; equal resulting images are not used as a redundancy proof."
   },
   "measurementScope": "Single-run functional validation seconds include discovery/host/TRX and exclude build. Focused1135-case scope takes11.75\u201315.10s on the four host/runtime combinations. This is new optional coverage, not a before/after speedup or renderer throughput claim.",
-  "remaining": "The broader R85/R86 wide-lineage upstream-source provenance, W1 admission boundaries, support audit and test-responsibility review remain separate."
+  "remaining": "The broader R85/R86 wide-lineage upstream-source provenance, W1 admission boundaries, support audit and test-responsibility review remain separate.",
+  "testSourceCommit": "10ced3681b662c389b6db4077b4f3d0ff317a6b0",
+  "findings": [
+    {
+      "id": "R54",
+      "status": "Closed",
+      "originalNamedDeclarations": 14
+    },
+    {
+      "id": "R55",
+      "status": "Closed",
+      "originalNamedDeclarations": 4
+    },
+    {
+      "id": "R69",
+      "status": "Closed",
+      "originalNamedDeclarations": 34
+    }
+  ],
+  "inventory": {
+    "methods": 5147,
+    "sourceFiles": 739,
+    "coreMethods": 4688,
+    "visualMethods": 459,
+    "layers": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1155,
+        "Mechanism": 1777,
+        "Contract": 695,
+        "Rendering": 1060,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 277,
+        "Contract": 34,
+        "Integrity": 25,
+        "Rendering": 122,
+        "Mechanism": 1
+      }
+    },
+    "all5145PriorMethodsAndTraitsRetained": true,
+    "all737PriorTestSourceFilesUnchanged": true,
+    "added": [
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgShaderOriginalReferenceTests",
+        "name": "Original_shader_and_alpha_screen_preserves_each_native_target",
+        "layers": [
+          "Rendering"
+        ]
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "type": "Lokad.Svg.VisualTests.SvgShaderOriginalReferenceTests",
+        "name": "Original_shader_and_alpha_screen_retains_sources_fonts_and_healthy_native_triples",
+        "layers": [
+          "Integrity"
+        ]
+      }
+    ],
+    "coreCases": 47926,
+    "fontHostCases": 10,
+    "fastCasesUnchanged": 20069,
+    "visualCases": 76870,
+    "fullCiCaseCountConfirmed": true
+  },
+  "links": {
+    "relativeLinksChecked": 341,
+    "allResolved": true
+  },
+  "primaryCi": {
+    "run": 42107675484,
+    "status": "Terminal CLOSED; never repoll or refetch.",
+    "jobs": [
+      {
+        "host": "windows",
+        "job": 127526697701,
+        "conclusion": "failure",
+        "logSha256": "55d4166ec6cf1965316cbc232236076c0d241654639830576975cf957426d632",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47926,
+            "total": 47926
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 76869,
+            "total": 76870
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "job": 127526697132,
+        "conclusion": "success",
+        "logSha256": "c267d30a88f0045171bff01dcae5719e440230dd3c39e8a2cd71376fa92dfc11",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47926,
+            "total": 47926
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 76870,
+            "total": 76870
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12222,
+            "total": 12222
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1175,
+            "total": 1175
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ]
+      }
+    ]
+  },
+  "documentationAudit": {
+    "file": "../../../docs/SUPPORT_MATRIX.md",
+    "beforeLfSha256": "d3746bbb40c9af0e12e0b37a416897c8e6ddf69aabebad66cf1cee153b80ce4d",
+    "afterLfSha256": "2bc9f2f720a9a2a65fb6282e94a3d8217136d18ccda3c173200542154445c4d6",
+    "change": "Combine duplicate fixed stroke/dash unit guidance while retaining every unit, range, zero-stroke resource and unsupported-domain clause. Explain native percentage/decimal alpha precision using the existing color controls.",
+    "admissionChanged": false,
+    "unitEvidence": "unit-domain-contracts.json",
+    "alphaEvidence": "../gradient-color-alpha/README.md"
+  }
 }
