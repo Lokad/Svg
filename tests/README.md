@@ -58,6 +58,11 @@ keeps original scene indices through the rewritten command envelope. Small, larg
 and sparse source controls protect bounded storage, parent immutability and retry;
 independent affine, nested-filter and supplied-font images remain separate.
 
+[Path-bounds reuse](Research/release-baselines/path-bounds-reuse.json) retains the
+existing direct numerical and independent rendering checks. Private observations on
+six authored inputs verify fewer repeated fill scans without adding tests that
+mirror the implementation; separate stroke scans and exact pixels remain unchanged.
+
 [Scene-admission contracts](Research/release-baselines/invocation-ownership.json)
 cover raw, catalog-prepared and HTTP-prepared rejection after lowering. They retain
 the source diagnostic, one preparation, borrowed owners, released charges and
