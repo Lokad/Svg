@@ -1,0 +1,292 @@
+{
+  "status": "Smoke temporary ownership and runtime forwarding closed. All four local smoke contexts and Ubuntu full/compatibility/tools/package CI pass. Windows retains only frozen DejaVu.",
+  "sourceCommit": "9164a7e5bfe960a326d173530b67c30c196704d2",
+  "baseCommit": "16c8225c573083298168d45c03899b122fc0d55a",
+  "sourcePreservation": {
+    "captureWrapperCoreUnchangedExceptParentAndShortDirectoryName": true,
+    "outerWrapperCoreUnchangedExceptExplicitForwarding": true,
+    "largeViewportAndDensityRecipesUnchanged": true,
+    "allExistingFailureDeadlineAndPublicationChecksRetained": true,
+    "sourceLfSha256": {
+      "tools/test-chrome.ps1": "08255f201db8d3409b5f60f9a8d6ccd767d7c1e5d99053e31747de54131c972c",
+      "tools/capture-chrome-process.ps1": "7e06d97dd89cf9f5fe3e0ae29c1a45c7db5db9d314426a2e4bcd8c1c7151d6f6",
+      "tools/capture-chrome.ps1": "8597c075d2f4f2293b8699e91afa9d0ab475613990c66bb2da4eb05718595c76"
+    },
+    "rendererTestsAndFrozenReferencesUnchanged": true
+  },
+  "change": "Each smoke owns a short private temporary parent and lends it only to direct children and the capture wrapper. The wrapper retains its existing owned subdirectory and unchanged termination/drain/publication core. The outer script forwards explicit runtime and parent; new parameters append after existing positional parameters. Only an empty owned parent is removed. Independent sibling owners remain intact.",
+  "permanentRegression": "After captures begin, create independent profile and capture-root siblings, preserve their markers through wrapper failures/deadline and the owned-root assertion, then clean only those fixtures. A machine-wide directory snapshot would now fail an ordinary smoke without external concurrency.",
+  "before": {
+    "host": "windows",
+    "framework": "net11.0",
+    "exitCode": 1,
+    "seconds": 37.99,
+    "nativeComparisonsExact": 15,
+    "unrelatedOwnersPreserved": 2,
+    "failure": "Machine-wide profile snapshot reports a leak after independent owners appear.",
+    "logSha256": "6c1f7c687e4f76b8b0a3c1fa2081e5c3ea54024caf04e5e8d3ce2d0145e4267e",
+    "recipe": "Run original test-chrome.ps1. After its first PNG is created, create lokad-svg-chrome-* and lokad-svg-capture-* siblings with marker files under its temporary parent. Keep them until exit, verify their markers, then remove only those fixtures."
+  },
+  "validation": {
+    "runs": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "seconds": 43.91,
+        "nativeComparisons": 15,
+        "allExactFrozenPixels": true,
+        "healthyCleanedProcesses": 15,
+        "independentSiblingOwnersPreserved": 2,
+        "externalCoordinatorOwnersPreserved": 2,
+        "failureDeadlineAndPublicationControlsPassed": true,
+        "fingerprintSha256": "b5f39922fc5dda4c4cf927f3334c368c5efe27c4478c41876c136b63fb8d2ef1",
+        "launchHealthRecordSha256": "0005700cfb4b9680f118d5b8c24690f72d8462001771c24bb5ef66685c325a11",
+        "pngs": {
+          "boundary-0-75-ID": {
+            "captures": 3,
+            "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde"
+          },
+          "boundary-1-5-ID": {
+            "captures": 3,
+            "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3"
+          },
+          "image-viewport-ID": {
+            "captures": 3,
+            "pngSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+          },
+          "large-svg-ID": {
+            "captures": 3,
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
+          },
+          "pinned-chrome-smoke-ID": {
+            "captures": 3,
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
+          }
+        },
+        "toolSha256": "c4fd4e587f75b3463f12849f72fbd2c078566977b95cf63113f20df995e67ca1",
+        "captureToolRuntimeFramework": ".NET 11.0.0-rc.3.26522.148"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "seconds": 56.01,
+        "nativeComparisons": 15,
+        "allExactFrozenPixels": true,
+        "healthyCleanedProcesses": 15,
+        "independentSiblingOwnersPreserved": 2,
+        "externalCoordinatorOwnersPreserved": 2,
+        "failureDeadlineAndPublicationControlsPassed": true,
+        "fingerprintSha256": "f58863ba0512f224c5d9ac726d9abc8d3e43f32ac6a6d265d35e4c36c08eb292",
+        "launchHealthRecordSha256": "2092ee12b385b0f51b4b7cc348e74ca9450a72648bf60d84dbb10b7c8e7ea93f",
+        "pngs": {
+          "boundary-0-75-ID": {
+            "captures": 3,
+            "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde"
+          },
+          "boundary-1-5-ID": {
+            "captures": 3,
+            "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3"
+          },
+          "image-viewport-ID": {
+            "captures": 3,
+            "pngSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+          },
+          "large-svg-ID": {
+            "captures": 3,
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
+          },
+          "pinned-chrome-smoke-ID": {
+            "captures": 3,
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
+          }
+        },
+        "toolSha256": "45aef4330b444ab7a8424ec25af95566dc50a447b3d0b1dfc6f0226d75b20f61",
+        "captureToolRuntimeFramework": ".NET 10.0.14"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "seconds": 211.19,
+        "nativeComparisons": 15,
+        "allExactFrozenPixels": true,
+        "healthyCleanedProcesses": 15,
+        "independentSiblingOwnersPreserved": 2,
+        "externalCoordinatorOwnersPreserved": 2,
+        "failureDeadlineAndPublicationControlsPassed": true,
+        "fingerprintSha256": "57ee99976dfff2d1b1afdf1a3bff72c149519fbfefd52dc919b1f23350f4cd1b",
+        "launchHealthRecordSha256": "cc81f21f932851aa64794099ae1db455d6ad968d03e2b44b66a1f7fb25c9aaa7",
+        "pngs": {
+          "boundary-0-75-ID": {
+            "captures": 3,
+            "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde"
+          },
+          "boundary-1-5-ID": {
+            "captures": 3,
+            "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3"
+          },
+          "image-viewport-ID": {
+            "captures": 3,
+            "pngSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+          },
+          "large-svg-ID": {
+            "captures": 3,
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
+          },
+          "pinned-chrome-smoke-ID": {
+            "captures": 3,
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
+          }
+        },
+        "toolSha256": "c4fd4e587f75b3463f12849f72fbd2c078566977b95cf63113f20df995e67ca1",
+        "captureToolRuntimeFramework": ".NET 11.0.0-rc.3.26522.148"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "seconds": 190.21,
+        "nativeComparisons": 15,
+        "allExactFrozenPixels": true,
+        "healthyCleanedProcesses": 15,
+        "independentSiblingOwnersPreserved": 2,
+        "externalCoordinatorOwnersPreserved": 2,
+        "failureDeadlineAndPublicationControlsPassed": true,
+        "fingerprintSha256": "ce3bbccc42dc768160c470e2e8199ddf55ad219c4e7b913dae1b098a6a830c55",
+        "launchHealthRecordSha256": "38a7509d6502bec819cb289f33f52909d89c5d1f0fb4caeee79422aaedb04120",
+        "pngs": {
+          "boundary-0-75-ID": {
+            "captures": 3,
+            "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde"
+          },
+          "boundary-1-5-ID": {
+            "captures": 3,
+            "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3"
+          },
+          "image-viewport-ID": {
+            "captures": 3,
+            "pngSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+          },
+          "large-svg-ID": {
+            "captures": 3,
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
+          },
+          "pinned-chrome-smoke-ID": {
+            "captures": 3,
+            "pngSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
+          }
+        },
+        "toolSha256": "45aef4330b444ab7a8424ec25af95566dc50a447b3d0b1dfc6f0226d75b20f61",
+        "captureToolRuntimeFramework": ".NET 10.0.14"
+      }
+    ],
+    "totalNativeComparisons": 60,
+    "originalComparisonsPerRun": 15,
+    "comparisonsRemoved": 0,
+    "referencesChanged": 0,
+    "newRenderingFixtures": 0,
+    "newSiblingOwnerControlsPerRun": 2,
+    "negativeOwnedLeak": {
+      "host": "windows",
+      "framework": "net11.0",
+      "exitCode": 1,
+      "seconds": 45.29,
+      "nativeComparisonsStillExact": 15,
+      "independentOwnersPreserved": true,
+      "noSuccessFingerprint": true,
+      "diagnosticEntryNames": [
+        "injected-owned-leftover.txt"
+      ],
+      "logSha256": "7633aaf22e16cd66084c295a19753e115af8ba37c3a51a5505a7862500671e41",
+      "launchHealthRecordSha256": "ff0249b460db856d26a4b04d6e500e9dedd6fb1e34908281c870c33f5fdef649",
+      "recipe": "After the first PNG is created, write injected-owned-leftover.txt into the unique svg-s-* run directory. The final empty-parent assertion must fail and retain its bounded cleanup report; sibling fixtures still clean in finally."
+    }
+  },
+  "timing": "Functional end-to-end samples include browser setup, I/O, captures, wrappers and concurrent local qualification. The original Windows sample uses a deeper temporary fixture than the final samples. Values are not a matched benchmark or evidence of renderer speed; no test-count reduction is claimed.",
+  "nativeEnvironment": "Native Linux temporary storage and short scope names preserve Chrome IPC paths. Initial Windows deep-root and Linux Windows-mounted/native-long-root failures remain local diagnostics; no browser flags, image recipe, sandbox policy or target changed to obtain passing output.",
+  "rendererQualification": "path-bounds-reuse.json",
+  "remaining": "Shared renderer scene/layer preparation, graph-query allocation, test responsibilities and original-source acceptance remain open. Published 0.3.0 is unchanged.",
+  "ci": {
+    "runId": 41951430536,
+    "sourceCommit": "9164a7e5bfe960a326d173530b67c30c196704d2",
+    "status": "completed",
+    "terminalClosed": true,
+    "conclusion": "failure",
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47639,
+            "total": 47639
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12875,
+            "total": 12875
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "dde4be7c78c78a074ff10ff0d5a876af741b424be98d19564b0d2e9e09cdc157"
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47639,
+            "total": 47639
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "total": 73312
+          }
+        ],
+        "logSha256": "dabe8bfc73c967e3582cd410c96b664134f3907ce033030837dd50e6a4fa5a4d"
+      }
+    },
+    "boundary": "Windows later compatibility/tool/package steps skip after the unchanged DejaVu failure. All four local host/runtime smoke contexts pass, preserving the frozen reference and assertion."
+  }
+}

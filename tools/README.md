@@ -393,6 +393,8 @@ retains that parent and records bounded immediate entries in
 accept `-TemporaryParent` to select a borrowed parent, and `-TargetFramework` selects
 the runtime through the outer wrapper and its child. Use a short parent path for
 Chrome's native temporary files and IPC endpoints.
+The [smoke qualification](../tests/Research/release-baselines/chrome-smoke-isolation.json)
+retains all 15 native comparisons and the independent-owner and owned-leak controls.
 
 ```powershell
 tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests
