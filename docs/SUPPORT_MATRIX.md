@@ -318,7 +318,9 @@ independently of supported ordinary affine image placement.
 Selectors include bounded unescaped ASCII element/ID/class names, their presence or
 exact-equality attribute selectors, lists, element+ID/class, descendants and
 children. Specificity, source order, inline priority, inheritance and `!important`
-apply. Empty/comment-only stylesheets are no-ops. Comments preserve token boundaries
+apply. Unescaped selector identifiers follow CSS start rules; numeric SVG IDs
+remain usable through [quoted attribute selectors and local references](../tests/Research/css-selector-identifiers/README.md).
+Empty/comment-only stylesheets are no-ops. Comments preserve token boundaries
 and quoted text; namespace declarations on style/defs are accepted.
 Active unknown or unsupported property names reject outside the
 [inline stop-style rules](#gradients-and-patterns). General CSS error recovery

@@ -63,6 +63,11 @@ cascade controls within mixed classes. All 341 cases and their bodies remain;
 class names alone do not identify a test's role. Select affected siblings before
 promotion, including shared-budget and mid-paint cancellation paths.
 
+[Selector identifier controls](Research/css-selector-identifiers/README.md) keep
+unescaped name grammar separate from quoted attribute strings and numeric SVG IDs.
+Direct mechanisms and admission/cleanup contracts complement canonical native
+checks; invalid CSS syntax rejects before output publication.
+
 Parser characterization uses a [test-owned rectangle projection](Lokad.Svg.Tests/SvgRectangleCharacterization.cs)
 of root or retained-scene geometry. It preserves the assertion view's stroke bands
 and clipped bounds; rendering regressions retain their independent native images.

@@ -106,8 +106,12 @@ internal static class SvgCssSelectorSyntax
                 if (!value.SequenceEqual("id") && !value.SequenceEqual("class")) throw Unsupported();
                 if (separator < 0) { kind = ComponentKind.AttributePresent; return true; }
                 expected = SvgCssWhitespace.Trim(attribute[(separator + 1)..]);
-                if (expected.Length >= 2 && expected[0] is '\'' or '"' && expected[^1] == expected[0]) expected = expected[1..^1];
-                ValidateIdentifier(expected);
+                if (expected.Length >= 2 && expected[0] is '\'' or '"' && expected[^1] == expected[0])
+                {
+                    expected = expected[1..^1];
+                    ValidateNameCharacters(expected);
+                }
+                else ValidateIdentifier(expected);
                 kind = ComponentKind.AttributeEquals;
                 return true;
             }
@@ -139,6 +143,15 @@ internal static class SvgCssSelectorSyntax
         private static bool IsIdentifierCharacter(char value) => char.IsAsciiLetterOrDigit(value) || value is '-' or '_';
 
         private static void ValidateIdentifier(ReadOnlySpan<char> value)
+        {
+            ValidateNameCharacters(value);
+            // Selector tokens follow identifier-start grammar. Quoted attribute
+            // strings retain their separate admitted character and length bounds.
+            if (char.IsAsciiDigit(value[0]) || value[0] == '-'
+                && (value.Length == 1 || char.IsAsciiDigit(value[1]))) throw Unsupported();
+        }
+
+        private static void ValidateNameCharacters(ReadOnlySpan<char> value)
         {
             if (value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS identifiers exceed the configured syntax limit.");
             if (value.IsEmpty) throw Unsupported();

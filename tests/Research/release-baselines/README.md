@@ -16,6 +16,11 @@ and alpha checks, admission/storage/lifetime contracts and rendered cascade cont
 All 341 cases and compiled assertion bodies remain; the fast selection gains the
 154 mechanism/contract cases without removing any previous member.
 
+[CSS selector identifiers](css-selector-identifiers.json) corrects shared name-start
+validation while preserving quoted attribute literals, numeric SVG ID references,
+existing token bounds and native images. Eighteen failing-before admissions close;
+valid mechanisms and canonical rendering retain their separate responsibilities.
+
 [Current contract comments](current-contract-comments.json) removes obsolete
 work-charge descriptions while retaining actual memory admission and cancellation.
 Every executable token and compiled method body remains unchanged on both runtimes.

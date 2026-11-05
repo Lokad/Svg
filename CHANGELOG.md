@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject invalid unescaped CSS selector names while retaining quoted numeric
+  attribute values and numeric SVG ID references.
 - Evaluate filter pixels only along final-result dependencies, avoiding unused
   intermediate planes and source-capture halos while preserving declaration,
   region and scalar validation.
