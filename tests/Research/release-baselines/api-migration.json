@@ -1,0 +1,235 @@
+{
+  "status": "Every removed published declaration is covered by the migration note. Three SvgRenderLimits constructors become six/seven/eight-argument forms; MaximumAccountedBytes and MaximumWorkUnits (and their two accessors) are removed. All 346 retained metadata entries have identical declarations, parameter names, defaults, modifiers, effective nullability, inheritance and enum constants. Current target frameworks expose identical API rows.",
+  "published": {
+    "baseline": "0.3.0.json",
+    "sourceCommit": "3f770d2db64519de957f6572c4b391934313cb6b",
+    "packageSha256": "422b55321cf709dd004f2b8bb3d6dbee2b6a4bc5aef46e835d403835064f46f5",
+    "librarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625",
+    "exportedTypes": 32,
+    "metadataEntries": 353,
+    "surfaceSha256": "51369e6f118c406ffe2beafe5660e53254b7a15e287c3519ad3d3dfc29e85b79"
+  },
+  "current": {
+    "qualification": "unit-domain-contracts.json",
+    "sourceCommit": "1f194273b9dd3edd3282905f52c720caad79bdc8",
+    "librarySha256": {
+      "net11.0": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "net10.0": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90"
+    },
+    "exportedTypes": 38,
+    "metadataEntries": 394,
+    "surfaceSha256": "d875211bd75a8d1b0f5e8ed52378f7645b1fe1d9e389acd09b4361277a1e73e0",
+    "identicalAcrossTargets": true
+  },
+  "scope": {
+    "method": "Enumerate exported types and their declared public/protected constructors, methods, fields, properties and events through reflection. Include property accessors, visibility/static/virtual flags, base types/interfaces, parameter names/defaults/ref modifiers, generic-method constraints, return modifiers, effective recursive nullability and literal values. Use NullabilityInfoContext rather than comparing compiler attribute placement.",
+    "entryCounting": "A property and its getter are distinct metadata entries; the seven removed entries represent five source declarations. Inherited members are represented through their declaring exported type and the unchanged inheritance graph.",
+    "limits": "Declaration compatibility audit, not a claim of binary compatibility or unchanged behavior. The assembly version and removed limits signatures require recompilation. No renderer/reference changes or new package generation."
+  },
+  "removed": [
+    {
+      "type": "Lokad.Svg.SvgRenderLimits",
+      "signature": "Void .ctor(Int64, Int32, Int32, Int32, Int32, Int32, Int32, Int32)",
+      "parameters": [
+        "maximumAccountedBytes",
+        "maximumInputBytes",
+        "maximumDimension",
+        "maximumPixels",
+        "maximumEncodedPngBytes",
+        "maximumNodes",
+        "maximumPathCommands",
+        "maximumWorkUnits"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.SvgRenderLimits",
+      "signature": "Void .ctor(Int64, Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32)",
+      "parameters": [
+        "maximumAccountedBytes",
+        "maximumInputBytes",
+        "maximumDimension",
+        "maximumPixels",
+        "maximumEncodedPngBytes",
+        "maximumNodes",
+        "maximumPathCommands",
+        "maximumWorkUnits",
+        "maximumXmlDepth"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.SvgRenderLimits",
+      "signature": "Void .ctor(Int64, Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32)",
+      "parameters": [
+        "maximumAccountedBytes",
+        "maximumInputBytes",
+        "maximumDimension",
+        "maximumPixels",
+        "maximumEncodedPngBytes",
+        "maximumNodes",
+        "maximumPathCommands",
+        "maximumWorkUnits",
+        "maximumXmlDepth",
+        "maximumAttributesPerElement"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.SvgRenderLimits",
+      "property": "MaximumAccountedBytes",
+      "accessor": "get_MaximumAccountedBytes"
+    },
+    {
+      "type": "Lokad.Svg.SvgRenderLimits",
+      "property": "MaximumWorkUnits",
+      "accessor": "get_MaximumWorkUnits"
+    }
+  ],
+  "replacementConstructors": [
+    {
+      "signature": "Void .ctor(Int32, Int32, Int32, Int32, Int32, Int32)",
+      "parameters": [
+        "maximumInputBytes",
+        "maximumDimension",
+        "maximumPixels",
+        "maximumEncodedPngBytes",
+        "maximumNodes",
+        "maximumPathCommands"
+      ]
+    },
+    {
+      "signature": "Void .ctor(Int32, Int32, Int32, Int32, Int32, Int32, Int32)",
+      "parameters": [
+        "maximumInputBytes",
+        "maximumDimension",
+        "maximumPixels",
+        "maximumEncodedPngBytes",
+        "maximumNodes",
+        "maximumPathCommands",
+        "maximumXmlDepth"
+      ]
+    },
+    {
+      "signature": "Void .ctor(Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32)",
+      "parameters": [
+        "maximumInputBytes",
+        "maximumDimension",
+        "maximumPixels",
+        "maximumEncodedPngBytes",
+        "maximumNodes",
+        "maximumPathCommands",
+        "maximumXmlDepth",
+        "maximumAttributesPerElement"
+      ]
+    }
+  ],
+  "added": {
+    "metadataEntries": 48,
+    "countsByKind": {
+      "Constructor": 4,
+      "Field": 3,
+      "Method": 26,
+      "Property": 9,
+      "type": 6
+    },
+    "types": [
+      "Lokad.Svg.Fonts.SvgHttpFontAcquisitionOptions",
+      "Lokad.Svg.Fonts.SvgHttpFontPackResolver",
+      "Lokad.Svg.IMemoryBudget",
+      "Lokad.Svg.IMemoryReservation",
+      "Lokad.Svg.IMemoryScope",
+      "Lokad.Svg.SvgPngResult"
+    ],
+    "existingTypeDeclarations": [
+      "Lokad.Svg.SvgRenderLimits :: Void .ctor(Int32, Int32, Int32, Int32, Int32, Int32)",
+      "Lokad.Svg.SvgRenderLimits :: Void .ctor(Int32, Int32, Int32, Int32, Int32, Int32, Int32)",
+      "Lokad.Svg.SvgRenderLimits :: Void .ctor(Int32, Int32, Int32, Int32, Int32, Int32, Int32, Int32)",
+      "Lokad.Svg.Fonts.SvgFontFailureStage :: Lokad.Svg.Fonts.SvgFontFailureStage Size",
+      "Lokad.Svg.Fonts.SvgFontFailureStage :: Lokad.Svg.Fonts.SvgFontFailureStage Timeout",
+      "Lokad.Svg.Fonts.SvgFontFailureStage :: Lokad.Svg.Fonts.SvgFontFailureStage Transport",
+      "Lokad.Svg.Fonts.SvgFontSnapshot :: System.Threading.Tasks.ValueTask`1[Lokad.Svg.Fonts.SvgFontSnapshot] CreateAsync(Lokad.Svg.Fonts.SvgFontPackCatalog, System.Collections.Generic.IReadOnlyList`1[Lokad.Svg.Fonts.SvgFontFaceRequest], Lokad.Svg.Fonts.ISvgFontProgramSourceProvider, Lokad.Svg.Fonts.SvgFontSelectionPolicy, Lokad.Svg.IMemoryBudget, System.Threading.CancellationToken)",
+      "Lokad.Svg.Fonts.SvgFontSnapshot :: System.Threading.Tasks.ValueTask`1[Lokad.Svg.Fonts.SvgFontSnapshot] CreateAsync(Lokad.Svg.Fonts.SvgFontPackCatalog, System.Collections.Generic.IReadOnlyList`1[Lokad.Svg.Fonts.SvgFontFaceRequest], Lokad.Svg.Fonts.ISvgFontProgramSourceProvider, Lokad.Svg.IMemoryBudget, System.Threading.CancellationToken)",
+      "Lokad.Svg.Fonts.SvgFontSnapshot :: System.Threading.Tasks.ValueTask`1[Lokad.Svg.Fonts.SvgFontSnapshot] CreateAsync(System.Collections.Generic.IReadOnlyList`1[Lokad.Svg.Fonts.SvgFontProgramResolution], Lokad.Svg.IMemoryBudget, System.Threading.CancellationToken)",
+      "Lokad.Svg.Fonts.SvgFontSnapshot :: System.Threading.Tasks.ValueTask`1[Lokad.Svg.Fonts.SvgFontSnapshot] CreateAsync(System.ReadOnlyMemory`1[System.Byte], Lokad.Svg.Fonts.SvgFontPackCatalog, Lokad.Svg.Fonts.ISvgFontProgramSourceProvider, Lokad.Svg.SvgRenderOptions, System.Threading.CancellationToken)",
+      "Lokad.Svg.SvgConverter :: Lokad.Svg.SvgPngResult ConvertToOwnedPng(System.ReadOnlyMemory`1[System.Byte], Lokad.Svg.SvgRenderOptions, System.Threading.CancellationToken)",
+      "Lokad.Svg.SvgConverter :: System.Threading.Tasks.Task`1[Lokad.Svg.SvgPngResult] ConvertToOwnedPngAsync(System.ReadOnlyMemory`1[System.Byte], Lokad.Svg.SvgRenderOptions, System.Threading.CancellationToken)",
+      "Lokad.Svg.SvgPreparedDocument :: Lokad.Svg.SvgPngResult ConvertToOwnedPng(System.Threading.CancellationToken)",
+      "Lokad.Svg.SvgPreparedDocument :: System.Threading.Tasks.Task`1[Lokad.Svg.SvgPngResult] ConvertToOwnedPngAsync(System.Threading.CancellationToken)",
+      "Lokad.Svg.SvgPreparedDocument :: System.Threading.Tasks.ValueTask`1[Lokad.Svg.SvgPreparedDocument] CreateAsync(System.ReadOnlyMemory`1[System.Byte], Lokad.Svg.Fonts.SvgHttpFontPackResolver, Lokad.Svg.SvgRenderOptions, System.Threading.CancellationToken)",
+      "Lokad.Svg.SvgRenderOptions :: Lokad.Svg.SvgRenderOptions WithMemoryBudget(Lokad.Svg.IMemoryBudget)",
+      "Lokad.Svg.SvgRenderOptions :: Lokad.Svg.IMemoryBudget get_MemoryBudget()",
+      "Lokad.Svg.SvgRenderOptions :: Lokad.Svg.IMemoryBudget MemoryBudget"
+    ],
+    "newTypes": "HTTP acquisition policy/resolver, memory admission interfaces and owned PNG result. Property accessor entries are included in the counts but not repeated as separate migration obligations."
+  },
+  "guidance": "../../../CHANGELOG.md",
+  "witness": "../../Lokad.Svg.Tests/PublicContractTests.cs",
+  "validation": {
+    "checks": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+        "testAssemblySha256": "aa8ca62b2694ad549eabbb9e7e65b056f7eb1a736c5c5af359570040bb83bfc0",
+        "selection": "FullyQualifiedName~PublicContractTests",
+        "exitCode": 0,
+        "seconds": 8.808953499887139,
+        "counters": {
+          "executed": "111",
+          "passed": "111",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+        "testAssemblySha256": "aa8ca62b2694ad549eabbb9e7e65b056f7eb1a736c5c5af359570040bb83bfc0",
+        "selection": "FullyQualifiedName~PublicContractTests",
+        "exitCode": 0,
+        "seconds": 15.818273199955001,
+        "counters": {
+          "executed": "111",
+          "passed": "111",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+        "testAssemblySha256": "f3c8ae7c5c3f83c591d209726b6678dc7291e50d83cca29acfaf4ac956374fed",
+        "selection": "FullyQualifiedName~PublicContractTests",
+        "exitCode": 0,
+        "seconds": 10.540766600053757,
+        "counters": {
+          "executed": "111",
+          "passed": "111",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90",
+        "testAssemblySha256": "f3c8ae7c5c3f83c591d209726b6678dc7291e50d83cca29acfaf4ac956374fed",
+        "selection": "FullyQualifiedName~PublicContractTests",
+        "exitCode": 0,
+        "seconds": 11.969685899792239,
+        "counters": {
+          "executed": "111",
+          "passed": "111",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "scope": "111 focused public-contract cases pass on each host/runtime using the unchanged, already qualified renderer assets. No full CI/package/SVGWeb replay was required for this documentation/evidence change."
+  },
+  "remaining": "Broader current support claims and historical reference provenance remain separate PLAN.md duties."
+}

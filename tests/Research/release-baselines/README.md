@@ -5,6 +5,8 @@ source tag, Git identities of the test/reference trees, license/support document
 hashes and qualification selections. These are inherited release results, not
 new measurements. Use `git show v0.3.0:path/to/file` to inspect an original file.
 Reference images remain beside their existing licensed source collections.
+The [API migration audit](api-migration.json) accounts for every removed published
+declaration and verifies equivalent current API surfaces on both target frameworks.
 
 [Geometry test responsibilities](geometry-test-responsibilities.json) classifies
 direct contour/analytic vectors separately from cancellation, allocation and output

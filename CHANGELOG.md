@@ -187,11 +187,15 @@ Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
   retrying a refused allocation and keep canceled symbol sealing transactional.
 - API migration: remove `maximumAccountedBytes` and `maximumWorkUnits` from
   `SvgRenderLimits` constructor calls and stop reading their properties. Limits
-  now describe input/output and structure. Borrow host admission with
+  constructors now take six, seven or eight explicit arguments for input/output
+  and structure. Recompile consumers: the former constructors and quota getters
+  are binary-incompatible. Borrow host admission with
   `SvgRenderOptions.WithMemoryBudget`; governed retained output uses disposable
   `ConvertToOwnedPng`/`ConvertToOwnedPngAsync` results. Font snapshot overloads
   accept the host budget/options and retain metadata charges until disposal.
   The memory probe uses `--memory-budget-bytes` and removes the former quota options.
+  Existing font-snapshot overloads remain available. Failure-stage switches should
+  also handle the new `Transport`, `Timeout` and `Size` values.
 - Fail memory admission rather than selecting storage-pressure rendering paths;
   retain direct numerical routes and independent native references.
 - Correct partially transparent backgrounds and prevent zero-alpha background
