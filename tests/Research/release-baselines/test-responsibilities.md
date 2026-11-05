@@ -34,6 +34,16 @@ The explicit research identities live in each class; new inputs remain routine.
 The [qualification](reference-output-responsibilities.json) binds the selections,
 unchanged bodies, source/compiled inventory and both-host/runtime case joins.
 
+The [image-presentation split](image-presentation-responsibilities.json) retains
+all 52 rendering inputs through direct and prepared conversion, discovery and
+zero font acquisition. Destination APIs use four original inputs covering uniform
+color, retained pixels and axis/affine source paths, with 48 independently discovered
+Contract cases. The four scene-owner refusal/cancellation/retry cases and two XML
+paint-admission cases remain unchanged. Select `Image_presentation_` for these
+checks with `Layer=Contract` for API/admission/lifetime work, or select the file's
+three `Layer=Rendering` methods for all presentation inputs. Independent image banks
+stay in rendering coverage.
+
 ## Geometry and analytic coverage
 
 The [geometry responsibility audit](geometry-test-responsibilities.json) classifies

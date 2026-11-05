@@ -17,6 +17,10 @@ compiled inventory are qualified against the existing renderer packages.
 declaration/family parsing and normalization from cancellation and buffer ownership.
 All 112 cases remain; the inline-only font case now asserts its resolved values.
 
+[Image-presentation responsibilities](image-presentation-responsibilities.json)
+retain every raw/prepared rendering input and move repeated destination APIs to
+four representative storage/source paths. Admission, cleanup and native images remain.
+
 [CSS test responsibilities](css-test-responsibilities.json) separates direct syntax
 and alpha checks, admission/storage/lifetime contracts and rendered cascade controls.
 All 341 cases and compiled assertion bodies remain; the fast selection gains the

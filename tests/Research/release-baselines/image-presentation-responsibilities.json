@@ -1,0 +1,267 @@
+{
+  "status": "All52 image-presentation inputs retain exact direct/prepared PNG comparisons, discovery and zero font acquisition. Repeated destination APIs move to48 independently discovered contracts covering four original source/storage paths. All58 former cases remain, including refusal/cancellation/retry and direct XML paint admission; no runtime or native-reference change.",
+  "source": {
+    "file": "../../Lokad.Svg.Tests/SvgImagePaintTests.cs",
+    "baseCommit": "8b7c4947b41143306ea045f2f5c28ddd1856b58a",
+    "beforeLfSha256": "17ced39615c12f8803890916cd40d7fe7c7bde52ab1e1a15674f82aedf29db5e",
+    "afterLfSha256": "0aa57b1a19da3a68803b4ddf9d0900a18353431ce78b16a24e68b3003a13c08e",
+    "allOriginalTestMethodsProvidersDocumentBuilderAndOwnershipAssertionsRetained": true,
+    "sourceProof": "Every original source line preceding the former output enum/helper is reconstructed exactly by removing five role labels, one using alias and reverting three helper call names. The original XML/PNG construction, all input axes, existing test IDs, control generation and ownership/admission assertions are unchanged.",
+    "changedHelper": "All52 presentation inputs keep explicit discovery, exact direct and prepared PNG comparisons and zero provider/source acquisition. The destination switch moves to48 independently discovered Contract cases using four original group/fill:none inputs and every original API form. Destination-tail, input immutability and open-stream assertions are added.",
+    "noProductionFixtureNativeReferenceOrOriginalReplayChange": true
+  },
+  "responsibilities": {
+    "rendering": {
+      "methods": 3,
+      "cases": 52,
+      "axes": "40 uniform/varied \u00d7 axis/affine \u00d7 root/group/inline/stylesheet/pattern \u00d7 fill:none/stroke:red; ten visibility/opacity/composed effects; two irrelevant paint-server controls.",
+      "retained": "Every original XML/PNG constructor, data row, control and exact raw/prepared comparison; discovery and no-acquisition assertions per input."
+    },
+    "contracts": {
+      "methods": 3,
+      "cases": 54,
+      "apiMatrix": "Four original group/fill:none inputs \u00d7 raw/prepared \u00d7 synchronous/asynchronous memory result/caller memory/stream =48. Uniform colors avoid retained pixels; varied images own raster bytes; affine images also retain source paths.",
+      "owners": "Four existing uniform/varied \u00d7 axis/affine scene-owner cases retain refusal, cancellation identity, cleanup, retry and borrowed input checks unchanged.",
+      "admission": "Two existing direct XML fill/stroke rejections keep exact error and cleanup checks.",
+      "strengthened": "API cases also assert input immutability, a17-byte untouched destination suffix and open streams. The96-case general API matrix and governed disposable-PNG contracts remain unchanged."
+    },
+    "native": "127 affected canonical native checks per host/runtime:120 source views, one source-view complete-PNG representative, three fit/sampling cases and three affine image cases. Every source/options/platform reference and tolerance is unchanged.",
+    "mechanisms": "Existing PNG format/order/premultiplication and syntax/numerical mechanisms remain independent and are included in affected core coverage."
+  },
+  "cost": {
+    "scope": "Only the52 rendering inputs and the new48 API cases; the unchanged scene-owner/admission cases are excluded from these invocation counts.",
+    "before": {
+      "renderingControls": 52,
+      "renderingActuals": 624,
+      "totalConversions": 676,
+      "preparedDocuments": 312
+    },
+    "after": {
+      "renderingControls": 52,
+      "renderingActuals": 104,
+      "apiControls": 48,
+      "apiActuals": 48,
+      "totalConversions": 252,
+      "preparedDocuments": 76
+    },
+    "reason": "Destination dispatch/encoding follows shared renderer/preparation entry paths. Retaining each raw/prepared input protects presentation/discovery; four representatives preserve distinct color/raster/source-path storage. Equal PNGs were not used as redundancy proof."
+  },
+  "caseJoins": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "before": 58,
+      "after": 106,
+      "all58OriginalIdentitiesAndMultiplicitiesRetained": true,
+      "addedApiCases": 48,
+      "caseIdentitySha256": "462e0335bfecee6e64d1739563f15fab2bebff476b58c213a51fb4eff3cc824a"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "before": 58,
+      "after": 106,
+      "all58OriginalIdentitiesAndMultiplicitiesRetained": true,
+      "addedApiCases": 48,
+      "caseIdentitySha256": "462e0335bfecee6e64d1739563f15fab2bebff476b58c213a51fb4eff3cc824a"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "before": 58,
+      "after": 106,
+      "all58OriginalIdentitiesAndMultiplicitiesRetained": true,
+      "addedApiCases": 48,
+      "caseIdentitySha256": "462e0335bfecee6e64d1739563f15fab2bebff476b58c213a51fb4eff3cc824a"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "before": 58,
+      "after": 106,
+      "all58OriginalIdentitiesAndMultiplicitiesRetained": true,
+      "addedApiCases": 48,
+      "caseIdentitySha256": "462e0335bfecee6e64d1739563f15fab2bebff476b58c213a51fb4eff3cc824a"
+    }
+  ],
+  "fastJoins": [
+    {
+      "host": "windows",
+      "before": 20015,
+      "after": 20069,
+      "added": 54,
+      "lost": 0,
+      "allPriorIdentitiesAndMultiplicitiesRetained": true
+    },
+    {
+      "host": "linux",
+      "before": 20015,
+      "after": 20069,
+      "added": 54,
+      "lost": 0,
+      "allPriorIdentitiesAndMultiplicitiesRetained": true
+    }
+  ],
+  "inventory": {
+    "methods": 5139,
+    "sourceFiles": 734,
+    "coreMethods": 4688,
+    "coreRoles": {
+      "Unclassified": 1155,
+      "Mechanism": 1777,
+      "Contract": 695,
+      "Rendering": 1060,
+      "Integrity": 1
+    },
+    "visualMethods": 451,
+    "visualUnclassified": 277,
+    "closedUnclassifiedMethods": 5,
+    "fullCoreCasesDerivedFromUnchangedProviders": 47926,
+    "fullVisualCasesUnchanged": 73538,
+    "fontHostCasesUnchanged": 10,
+    "fastCasesExecuted": 20069
+  },
+  "timing": {
+    "windowsNet11Sequential": {
+      "before": {
+        "cases": 58,
+        "seconds": [
+          7.815361600136384,
+          7.200197100173682,
+          7.139550700085238
+        ],
+        "medianSeconds": 7.200197100173682
+      },
+      "after": {
+        "cases": 106,
+        "seconds": [
+          7.14675600011833,
+          6.992760999826714,
+          6.5198546999599785
+        ],
+        "medianSeconds": 6.992760999826714
+      }
+    },
+    "scope": "Three fresh sequential processes per phase, including discovery/host/TRX and excluding builds. No integration/fast run overlaps these samples. Observation only; no renderer throughput claim.",
+    "otherFocused": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforeSeconds": 7.022601499920711,
+        "afterSeconds": 7.850949400104582
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforeSeconds": 12.993971300078556,
+        "afterSeconds": 12.482818300137296
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "beforeSeconds": 6.655918200034648,
+        "afterSeconds": 7.999925500014797
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "beforeSeconds": 10.379760999931023,
+        "afterSeconds": 10.812675399938598
+      }
+    ]
+  },
+  "validation": {
+    "builds": {
+      "frameworks": [
+        "net11.0",
+        "net10.0"
+      ],
+      "warnings": 0,
+      "errors": 0
+    },
+    "integration": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "cases": 581,
+        "seconds": 7.725415899883956
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "cases": 581,
+        "seconds": 11.981823500012979
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "cases": 581,
+        "seconds": 7.099719199817628
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "cases": 581,
+        "seconds": 11.12413899996318
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "cases": 127,
+        "seconds": 11.216396400006488
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "cases": 127,
+        "seconds": 11.957641899818555
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "cases": 127,
+        "seconds": 11.371303800027817
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "cases": 127,
+        "seconds": 13.03203359991312
+      }
+    ],
+    "fast": [
+      {
+        "host": "windows",
+        "cases": 20069,
+        "seconds": 25.87683600001037
+      },
+      {
+        "host": "linux",
+        "cases": 20069,
+        "seconds": 26.285031100036576
+      }
+    ],
+    "scope": "Focused and affected integration checks execute existing qualified renderer assets. No full CI/package/SVGWeb replay was rerun for this test/documentation-only change; full counts are derived by preserving every former provider plus48 new contract cases."
+  },
+  "renderer": {
+    "qualification": "unit-domain-contracts.json",
+    "sourceCommit": "1f194273b9dd3edd3282905f52c720caad79bdc8",
+    "librarySha256": {
+      "net11.0": "d4c0b0acf3996bb2863571ecb911802db9d423f4af14b87b8badd9001658f7f3",
+      "net10.0": "901e25fa1f003d00e3af791c3d7708d82e99a5122b0289ecf3763962c775ab90"
+    }
+  },
+  "support": {
+    "document": "../../../docs/SUPPORT_MATRIX.md#embedded-pngs",
+    "correction": "CSS and inherited fill/stroke are inert on images; direct XML fill/stroke attributes reject. The text now distinguishes those existing admission paths."
+  },
+  "remaining": "Other unclassified methods, current support-claim areas, original-context semantics, historical provenance and full release/performance gates remain in PLAN.md."
+}

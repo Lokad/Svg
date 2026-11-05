@@ -313,8 +313,10 @@ color-management/orientation conversion and external fetching reject.
 
 Placement accepts finite viewport-relative percentages, affine maps, meet/slice
 and `preserveAspectRatio=none`. Missing/empty href paints nothing; omitted
-dimensions use intrinsic size/aspect. Fill/stroke do not paint images;
-display/visibility/opacity, clips, masks and source filters still apply. Patterns
+dimensions use intrinsic size/aspect. CSS/inherited fill and stroke are inert;
+direct XML `fill`/`stroke` attributes reject. The
+[presentation tests](../tests/Lokad.Svg.Tests/SvgImagePaintTests.cs) protect both boundaries.
+Display, visibility, opacity, clips, masks and source filters still apply. Patterns
 can contain images; masks cannot. Affine filter replay for image sources rejects,
 independently of supported ordinary affine image placement.
 

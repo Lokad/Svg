@@ -2,6 +2,7 @@ using Lokad.Svg.Encoding;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
+using OutputForm = Lokad.Svg.Tests.SvgConversionApiContractTests.OutputForm;
 
 namespace Lokad.Svg.Tests;
 
@@ -16,13 +17,14 @@ public sealed partial class OpenTypeFontTests
             yield return [varied, affine, site, paint];
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [MemberData(nameof(ImagePaintCases))]
     public async Task Images_ignore_shape_paint_through_raw_and_prepared_outputs(bool varied, bool affine, string site, string paint)
     {
         byte[] control = ImagePaintDocument(varied, affine, site, "", "");
         byte[] expected = SvgConverter.ConvertToPng(control, SvgRenderOptions.Default, CancellationToken.None).ToArray();
-        await AssertImagePaintOutputs(ImagePaintDocument(varied, affine, site, paint, ""), expected);
+        await AssertImagePaintReplay(ImagePaintDocument(varied, affine, site, paint, ""), expected);
     }
 
     public static IEnumerable<object[]> ImagePaintEffectCases()
@@ -33,6 +35,7 @@ public sealed partial class OpenTypeFontTests
             yield return [varied, effect];
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [MemberData(nameof(ImagePaintEffectCases))]
     public async Task Image_presentation_keeps_visibility_opacity_and_composed_effects(bool varied, string effect)
@@ -40,9 +43,10 @@ public sealed partial class OpenTypeFontTests
         byte[] control = ImagePaintDocument(varied, true, "inline", "", effect);
         byte[] expected = SvgConverter.ConvertToPng(control, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         byte[] input = ImagePaintDocument(varied, true, "inline", "fill:none;fill-opacity:0;stroke:red;stroke-width:0", effect);
-        await AssertImagePaintOutputs(input, expected);
+        await AssertImagePaintReplay(input, expected);
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -51,9 +55,10 @@ public sealed partial class OpenTypeFontTests
         byte[] control = ImagePaintDocument(varied, true, "inline", "", "");
         byte[] expected = SvgConverter.ConvertToPng(control, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         byte[] input = ImagePaintDocument(varied, true, "inline", "fill:url(#unused);stroke:url(#unused)", "");
-        await AssertImagePaintOutputs(input, expected);
+        await AssertImagePaintReplay(input, expected);
     }
 
+    [Trait("Layer", "Contract")]
     [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]
@@ -87,6 +92,7 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(original, input);
     }
 
+    [Trait("Layer", "Contract")]
     [Theory]
     [InlineData("fill")]
     [InlineData("stroke")]
@@ -125,49 +131,76 @@ public sealed partial class OpenTypeFontTests
             + (site == "root" ? " style='" + paint + "'" : "") + ">" + definitions + "<g " + effect + ">" + body + "</g></svg>");
     }
 
-    private enum ImagePaintOutput { Owned, OwnedAsync, Memory, MemoryAsync, Stream, StreamAsync }
-
-    private static async Task AssertImagePaintOutputs(byte[] input, byte[] expected)
+    public static IEnumerable<object[]> ImagePaintApiCases()
     {
+        // Uniform images retain a color, varied images own pixels; affine images
+        // also retain a source path. Each path keeps raw/prepared destination APIs.
+        foreach (bool varied in new[] { false, true })
+        foreach (bool affine in new[] { false, true })
+        foreach (bool prepared in new[] { false, true })
+        foreach (OutputForm form in Enum.GetValues<OutputForm>())
+            yield return [varied, affine, prepared, form];
+    }
+
+    [Trait("Layer", "Contract")]
+    [Theory]
+    [MemberData(nameof(ImagePaintApiCases))]
+    public async Task Image_presentation_api_forms_preserve_distinct_source_paths(bool varied, bool affine, bool prepared, OutputForm form)
+    {
+        byte[] input = ImagePaintDocument(varied, affine, "group", "fill:none", "");
+        byte[] unchanged = input.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(ImagePaintDocument(varied, affine, "group", "", ""), SvgRenderOptions.Default, CancellationToken.None).ToArray();
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
-        foreach (bool prepared in new[] { false, true })
-        foreach (ImagePaintOutput form in Enum.GetValues<ImagePaintOutput>())
+        using SvgPreparedDocument? document = prepared
+            ? await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None) : null;
+        byte[] target = Enumerable.Repeat((byte)0xA5, expected.Length + 17).ToArray();
+        using MemoryStream stream = new();
+        ReadOnlyMemory<byte> result;
+        int written;
+        switch (form)
         {
-            using SvgPreparedDocument? document = prepared
-                ? await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None) : null;
-            byte[] target = new byte[expected.Length];
-            using MemoryStream stream = new();
-            ReadOnlyMemory<byte> result;
-            int written;
-            switch (form)
-            {
-                case ImagePaintOutput.Owned:
-                    result = document is null ? SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None) : document.ConvertToPng(CancellationToken.None);
-                    break;
-                case ImagePaintOutput.OwnedAsync:
-                    result = document is null ? await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None) : await document.ConvertToPngAsync(CancellationToken.None);
-                    break;
-                case ImagePaintOutput.Memory:
-                    written = document is null ? SvgConverter.ConvertToPng(input, target, SvgRenderOptions.Default, CancellationToken.None) : document.ConvertToPng(target, CancellationToken.None);
-                    Assert.Equal(expected.Length, written); result = target.AsMemory(0, written);
-                    break;
-                case ImagePaintOutput.MemoryAsync:
-                    written = document is null ? await SvgConverter.ConvertToPngAsync(input, target, SvgRenderOptions.Default, CancellationToken.None) : await document.ConvertToPngAsync(target, CancellationToken.None);
-                    Assert.Equal(expected.Length, written); result = target.AsMemory(0, written);
-                    break;
-                case ImagePaintOutput.Stream:
-                    written = document is null ? SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None) : document.ConvertToPng(stream, CancellationToken.None);
-                    Assert.Equal(expected.Length, written); result = stream.ToArray();
-                    break;
-                case ImagePaintOutput.StreamAsync:
-                    written = document is null ? await SvgConverter.ConvertToPngAsync(input, stream, SvgRenderOptions.Default, CancellationToken.None) : await document.ConvertToPngAsync(stream, CancellationToken.None);
-                    Assert.Equal(expected.Length, written); result = stream.ToArray();
-                    break;
-                default: throw new ArgumentOutOfRangeException(nameof(form));
-            }
-            Assert.Equal(expected, result.ToArray());
+            case OutputForm.Owned:
+                result = document is null ? SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None) : document.ConvertToPng(CancellationToken.None);
+                break;
+            case OutputForm.AsyncOwned:
+                result = document is null ? await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None) : await document.ConvertToPngAsync(CancellationToken.None);
+                break;
+            case OutputForm.Memory:
+                written = document is null ? SvgConverter.ConvertToPng(input, target, SvgRenderOptions.Default, CancellationToken.None) : document.ConvertToPng(target, CancellationToken.None);
+                Assert.Equal(expected.Length, written); result = target.AsMemory(0, written);
+                break;
+            case OutputForm.AsyncMemory:
+                written = document is null ? await SvgConverter.ConvertToPngAsync(input, target, SvgRenderOptions.Default, CancellationToken.None) : await document.ConvertToPngAsync(target, CancellationToken.None);
+                Assert.Equal(expected.Length, written); result = target.AsMemory(0, written);
+                break;
+            case OutputForm.Stream:
+                written = document is null ? SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None) : document.ConvertToPng(stream, CancellationToken.None);
+                Assert.Equal(expected.Length, written); result = stream.ToArray();
+                break;
+            case OutputForm.AsyncStream:
+                written = document is null ? await SvgConverter.ConvertToPngAsync(input, stream, SvgRenderOptions.Default, CancellationToken.None) : await document.ConvertToPngAsync(stream, CancellationToken.None);
+                Assert.Equal(expected.Length, written); result = stream.ToArray();
+                break;
+            default: throw new ArgumentOutOfRangeException(nameof(form));
         }
+        Assert.Equal(expected, result.ToArray());
+        Assert.Equal(unchanged, input);
+        Assert.All(target.AsSpan(expected.Length).ToArray(), value => Assert.Equal((byte)0xA5, value));
+        Assert.True(stream.CanWrite);
+        Assert.Equal(0, provider.RequestCount);
+        Assert.Equal(0, source.RequestCount);
+    }
+
+    private static async Task AssertImagePaintReplay(byte[] input, byte[] expected)
+    {
+        // Destination contracts are exercised above for the four storage/source
+        // paths; every presentation input still protects preparation and discovery.
+        Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        Assert.Empty(SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, document.ConvertToPng(CancellationToken.None).ToArray());
         Assert.Equal(0, provider.RequestCount);
         Assert.Equal(0, source.RequestCount);
     }
