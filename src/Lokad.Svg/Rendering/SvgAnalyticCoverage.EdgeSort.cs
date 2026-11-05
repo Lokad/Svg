@@ -5,7 +5,7 @@ namespace Lokad.Svg.Rendering;
 internal ref partial struct SvgAnalyticCoverage
 {
     /// <summary>Preserves native ordering of coincident edges, including introsort's equal-key permutations.</summary>
-    /// <remarks>Sorts the caller-owned array in place without allocating. Partition, insertion and heap loops observe cancellation during bounded O(n log n) sorting. Stack depth
+    /// <remarks>Sorts the caller-owned span in place without allocating. Partition, insertion and heap loops observe cancellation during bounded O(n log n) sorting. Stack depth
     /// is limited to twice the logarithm of the edge count. No state is shared between conversions.</remarks>
     private static void SortEdges(Span<AnalyticEdge> edges, CancellationToken token)
     {

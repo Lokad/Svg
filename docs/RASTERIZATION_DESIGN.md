@@ -66,6 +66,9 @@ and direct fringe events survive storage trimming. Triangle/trapezoid alpha
 narrows before additive saturation.
 
 Polygon painting owns mapped/authored storage until traversal finishes.
+Analytic coverage sorts completed edge-builder buffers in place and retains their
+readonly spans under its existing reservation. Builders stop mutating before
+publication; row rewind reuses the same native edge order and live-curve snapshots.
 Point placement chooses its authored or fallback map once; bounds include curve
 controls before storage clamping. Source-coordinate admission remains separate.
 `PolygonRaster` and fallback pixel coverage borrow its descriptor by readonly

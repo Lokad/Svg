@@ -1,6 +1,7 @@
 // Horizontal clip routing follows Skia's SkScan_Path.cpp and SkBlitter.h at
 // the revision recorded in THIRD_PARTY_NOTICES.txt. Copyright 2006 The Android Open Source Project.
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
@@ -153,7 +154,9 @@ internal ref partial struct SvgAnalyticCoverage
         -1048576, -1398101, -2097152, -4194304, 0,
     ];
 
-    private readonly AnalyticEdge[] _edges;
+    // Owns the completed builder buffer; no list mutation occurs after publication.
+    // The span keeps its backing array alive through row walking and rewind.
+    private readonly ReadOnlySpan<AnalyticEdge> _edges;
     private readonly AnalyticEdge? _head;
     private readonly AnalyticEdge? _tail;
     private readonly byte[] _row;
@@ -196,7 +199,7 @@ internal ref partial struct SvgAnalyticCoverage
     /// <summary>Native horizontal rectangle and AA clip wrappers forward fringe pairs as ordinary runs.</summary>
     internal readonly SvgAnalyticPaintKind PairPaintKind => _usesHorizontalClip || _forceRle ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Pair;
 
-    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, byte[] temp, byte[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool rawBox, bool useRunBlitter, bool usesHorizontalClip, SvgAnalyticPaintClip paintClip, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
+    private SvgAnalyticCoverage(ReadOnlySpan<AnalyticEdge> edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, byte[] temp, byte[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool rawBox, bool useRunBlitter, bool usesHorizontalClip, SvgAnalyticPaintClip paintClip, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
     {
         _edges = edges;
         _head = head;
@@ -1274,7 +1277,8 @@ internal ref partial struct SvgAnalyticCoverage
     {
         long bytes;
         // Edges carry 36 integers, two links and an object header (176 bytes on
-        // x64); 32 more bytes cover references during list growth and ToArray.
+        // x64); retain the conservative 32-byte reference envelope for list growth
+        // and its completed capacity, now retained without an exact-size copy.
         // The old 80-byte envelope predates retained live-curve snapshots.
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 2) + ParserCollectionMemory.GetArrayByteCount<byte>(spanWidth + 4) + ParserCollectionMemory.GetArrayByteCount<byte>(spanWidth + 4) + 32 + ((long)pointCount + maximumCurveEdges + 2) * 208); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic coverage storage exceeds the supported accounting range."); }
@@ -1596,7 +1600,7 @@ internal ref partial struct SvgAnalyticCoverage
                 }
                 if (constructionPoints.IsBitmapLocal)
                     foreach (AnalyticEdge edge in multiKept) TranslateConstructedEdge(edge, bitmapOrigin, cancellationToken);
-                AnalyticEdge[] multiEdges = multiKept.ToArray();
+                Span<AnalyticEdge> multiEdges = CollectionsMarshal.AsSpan(multiKept);
                 SortEdges(multiEdges, cancellationToken);
                 AnalyticEdge multiHead = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
                 AnalyticEdge multiTail = new() { UpperY = int.MaxValue, LowerY = int.MaxValue, X = int.MaxValue, UpperX = int.MaxValue, DY = int.MaxValue };
@@ -1754,7 +1758,7 @@ internal ref partial struct SvgAnalyticCoverage
             }
             if (constructionPoints.IsBitmapLocal)
                 foreach (AnalyticEdge edge in kept) TranslateConstructedEdge(edge, bitmapOrigin, cancellationToken);
-            AnalyticEdge[] edges = kept.ToArray();
+            Span<AnalyticEdge> edges = CollectionsMarshal.AsSpan(kept);
             SortEdges(edges, cancellationToken);
             AnalyticEdge head = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
             AnalyticEdge tail = new() { UpperY = int.MaxValue, LowerY = int.MaxValue, X = int.MaxValue, UpperX = int.MaxValue, DY = int.MaxValue };

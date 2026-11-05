@@ -3,6 +3,7 @@
 namespace Lokad.Svg.Rendering;
 
 using Lokad.Svg.Parsing;
+using System.Runtime.InteropServices;
 
 internal ref partial struct SvgAnalyticCoverage
 {
@@ -143,7 +144,7 @@ internal ref partial struct SvgAnalyticCoverage
                 TranslateConstructedEdge(edge, origin, token);
             }
             token.ThrowIfCancellationRequested();
-            AnalyticEdge[] edges = kept.ToArray();
+            Span<AnalyticEdge> edges = CollectionsMarshal.AsSpan(kept);
             SortEdges(edges, token);
             AnalyticEdge head = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
             AnalyticEdge tail = new() { UpperY = int.MaxValue, LowerY = int.MaxValue, X = int.MaxValue, UpperX = int.MaxValue, DY = int.MaxValue };

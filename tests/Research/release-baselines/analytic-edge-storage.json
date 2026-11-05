@@ -1,0 +1,109 @@
+{
+  "status": "Three completed edge-reference copies removed across single, compound and clipped preparation. Focused lifetime and affected native/contract checks pass. Full runtime/package/original-source qualification pending.",
+  "source": {
+    "baseCommit": "089ae53f75d7983e26d66e8b4779cc589c555350",
+    "files": [
+      {
+        "path": "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs",
+        "beforeLfSha256": "eed58e995fffb82ef15d46fdba46ff99c6083fcc357facee3ac79b65e5f85fcb",
+        "afterLfSha256": "5611e3653385834772b8b1b0ada5afe2553b421a235faff2d8fe330ab8e4abbe",
+        "reversingOnlyBufferPublicationAndCommentsRestoresEntireFile": true
+      },
+      {
+        "path": "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.ClippedPreparation.cs",
+        "beforeLfSha256": "e461c428143176b4e8b47cf9deab2e9d04441798601f5a8369e54b73fd8f9ca0",
+        "afterLfSha256": "326ece9b4a3eb90f5c884f070d7dd6d3d0c5198c1cf8b7363a323ccd90fcbc7a",
+        "reversingOnlyBufferPublicationAndCommentsRestoresEntireFile": true
+      },
+      {
+        "path": "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.EdgeSort.cs",
+        "beforeLfSha256": "68df97c9a3711d34f6c50cee37247c8e54c164a4740b5c58a31a2e47c8c62ba6",
+        "afterLfSha256": "f92ddd1ad7a379fcbc6f4cfa53440e585dbfd9ed94a5b59f24f7ff0a4bd53840",
+        "reversingOnlyBufferPublicationAndCommentsRestoresEntireFile": true
+      }
+    ],
+    "unchangedSorterAndNumericalKernels": true,
+    "unchangedScratchByteCountAndAdmission": true,
+    "noChangesToExistingTestsFixturesReferencesOrLicenses": true
+  },
+  "model": {
+    "storage": "The coverage value retains the completed list backing buffer as a readonly span. Construction finishes before AsSpan; no later append/resize is possible because the builder never escapes. Existing in-place sorting sees the same reference order and count.",
+    "ownership": "A managed span roots its backing array. The existing coverage reservation owns the retained buffer and mutable edge objects through row walking/rewind. Disposal, cancellation, source/preparation borrowing and coarse owners are unchanged.",
+    "tradeoff": "Removes cumulative allocation of an exact-size reference array. Retained list capacity can exceed the former exact-size array; the existing conservative capacity/growth envelope is unchanged. No claim of lower steady live memory, reduced admission or measured renderer throughput."
+  },
+  "coverage": {
+    "test": "../../Lokad.Svg.Tests/SvgAnalyticEdgeStorageTests.cs",
+    "newMethods": 1,
+    "newCases": 3,
+    "beforeAndAfterAllThreePass": true,
+    "responsibility": "One mechanism case for each distinct construction path. Exact complete pixels survive forced compacting collection and row rewind; live admission remains stable and disposal refunds it. Existing refusal/cancellation/native exactness remain separate.",
+    "affected": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "584b16999c806125809184b28fe0b20356860009ec54443fb1871eda22119e87",
+        "testAssemblySha256": "25e8020f290e8ec87b3ace257e174582d766a7b0c707c3daa6b89a1340e876d9",
+        "selection": "FullyQualifiedName~SvgAnalytic|FullyQualifiedName~SvgContour|FullyQualifiedName~SvgPolygon|FullyQualifiedName~SvgNativeClipWinding|FullyQualifiedName~SvgCurvedClipSource|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 9.381025299895555,
+        "counters": {
+          "executed": "666",
+          "passed": "666",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "584b16999c806125809184b28fe0b20356860009ec54443fb1871eda22119e87",
+        "testAssemblySha256": "25e8020f290e8ec87b3ace257e174582d766a7b0c707c3daa6b89a1340e876d9",
+        "selection": "FullyQualifiedName~SvgAnalytic|FullyQualifiedName~SvgContour|FullyQualifiedName~SvgPolygon|FullyQualifiedName~SvgNativeClipWinding|FullyQualifiedName~SvgCurvedClipSource|FullyQualifiedName~SvgConversionApiContractTests",
+        "exitCode": 0,
+        "seconds": 14.493337499909103,
+        "counters": {
+          "executed": "666",
+          "passed": "666",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "584b16999c806125809184b28fe0b20356860009ec54443fb1871eda22119e87",
+        "testAssemblySha256": "8af0097cdcbb2a60f238ee7b1f9b1354ba92898751cf6f7ad642c5aabc78ff9e",
+        "selection": "FullyQualifiedName~SvgGeometryLengthReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgTextClipReferenceTests|FullyQualifiedName~ClipPairRouteReferenceTests|FullyQualifiedName~AntialiasedPaintClipReferenceTests",
+        "exitCode": 0,
+        "seconds": 11.211534899892285,
+        "counters": {
+          "executed": "56",
+          "passed": "56",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "584b16999c806125809184b28fe0b20356860009ec54443fb1871eda22119e87",
+        "testAssemblySha256": "8af0097cdcbb2a60f238ee7b1f9b1354ba92898751cf6f7ad642c5aabc78ff9e",
+        "selection": "FullyQualifiedName~SvgGeometryLengthReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgTextClipReferenceTests|FullyQualifiedName~ClipPairRouteReferenceTests|FullyQualifiedName~AntialiasedPaintClipReferenceTests",
+        "exitCode": 0,
+        "seconds": 10.62656810018234,
+        "counters": {
+          "executed": "56",
+          "passed": "56",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "allocationMethod": "Private diagnostic reuses the committed test host budget and direct Prepare calls. Each host/runtime/route has12 warmups and32 per-thread managed-allocation observations with tiering disabled. Counts cover preparation/disposal; no timing or process-peak claim. Final exact-package observations pending.",
+  "rendererBaseline": "filter-source-dependency.json"
+}

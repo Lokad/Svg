@@ -96,6 +96,9 @@ protect the helper's two policies independently of rendering fixtures.
 counter and private scope class that silenced inherited child callbacks. Four
 context contracts extend the existing guards; buffer-growth/replay cancellation,
 ownership, native images, packages and original-source replay remain qualified.
+[Analytic edge storage](analytic-edge-storage.json) retains completed builder
+buffers without three reference-copy sites. Separate single, compound and clipped
+controls preserve collection/rewind, admission and native ordering.
 [Color/filter responsibilities](color-filter-responsibilities.json) retains every
 native input and substantive font-recipe assertion while removing 34 empty recipe
 partitions. It maps numerical, ownership and rendering duties to focused edit
