@@ -25,352 +25,40 @@
     "allInputsProvidersAndExistingAssertionsRetained": true,
     "onlyExecutableTestChange": "Four resolved-font assertions on the unchanged inline-only input,with an accurate name.",
     "onlyOtherTextChange": "workDenied local renamed cancelledBudget; storage/cancellation behavior is unchanged.",
-    "noProductionNativeReferenceFixtureOrTextLayoutChange": true
+    "noProductionNativeReferenceFixtureOrTextLayoutChange": true,
+    "testSourceCommit": "41a4e30d54d976c260d9ea39c9ebd24d3e4b5bd4"
   },
   "classification": {
-    "methods": [
+    "groups": [
       {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Inline_font_size_preserves_svg_lengths_and_importance",
-        "role": "Mechanism",
-        "addedRole": false
+        "file": "../../Lokad.Svg.Tests/SvgTextSyntaxTests.cs",
+        "methods": 26,
+        "mechanism": 24,
+        "contract": 2,
+        "contractMethods": [
+          "Rotation_length_units_reject_before_text_layout",
+          "Denied_or_cancelled_list_preparation_releases_partial_storage"
+        ]
       },
       {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Stylesheet_unitless_font_size_preserves_the_valid_declaration",
-        "role": "Mechanism",
-        "addedRole": false
+        "file": "../../Lokad.Svg.Tests/SvgFontFamilyTests.cs",
+        "methods": 11,
+        "mechanism": 10,
+        "contract": 1,
+        "contractMethods": [
+          "Tokenization_observes_original_cancellation"
+        ]
       },
       {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Inherited_text_style_requires_a_positive_weight_and_font_size",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Parses_the_initial_explicit_text_style_and_baseline",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Normalizes_shared_text_font_tokens_before_constructing_a_request",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Applies_last_inline_font_declarations_over_presentation_attributes",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Scans_one_inline_font_declaration_set_once",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Rejects_an_oversized_inline_font_value",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Rejects_inline_font_declarations_outside_the_paint_style_subset",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Normalizes_a_quoted_direct_font_family",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Parses_admitted_text_anchors",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Parses_scalar_direct_text_position_adjustments",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Root_lists_follow_normalized_scalar_boundaries_and_descendant_precedence",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Root_lists_validate_every_value_before_layout",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Rotation_length_units_reject_before_text_layout",
-        "role": "Contract",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Denied_or_cancelled_list_preparation_releases_partial_storage",
-        "role": "Contract",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Parses_scalar_letter_spacing_from_attributes_and_inline_style",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Parses_finite_word_spacing_and_normal",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Parses_finite_text_coordinates_without_rectangle_quantization",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Resolves_inherited_text_properties_with_inline_precedence",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Presentation_anchors_follow_container_and_direct_text_inheritance",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Resolves_bounded_css_whitespace_over_xml_and_inherited_modes",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Admits_whitespace_font_spacing_and_scalar_position_tspan_styles",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Uses_the_initial_serif_request_and_preserves_ordered_family_candidates",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Admits_valid_absolute_span_lists",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgTextSyntaxTests.cs",
-        "type": "Lokad.Svg.Tests.SvgTextSyntaxTests",
-        "name": "Rejects_unresolved_span_percentages_and_nonfinite_values",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Discovery_shares_quoted_and_escaped_syntax_across_presentation_inline_and_stylesheet",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Literal_bangs_do_not_change_real_declaration_priority",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "An_escaped_bang_at_the_end_of_a_name_is_not_an_important_suffix",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Inherit_and_initial_keep_family_list_and_generic_semantics",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Decodes_ordered_names_and_distinguishes_generic_keywords",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Categorizes_malformed_lists_without_selecting_a_prefix",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "A_maximum_length_canonical_list_round_trips_with_all_families",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Expanded_control_escapes_round_trip_near_the_character_bound",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Oversized_canonical_text_is_rejected_on_the_first_parse",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Decoded_name_bound_is_preserved_within_a_round_trippable_list",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "SvgFontFamilyTests.cs",
-        "type": "Lokad.Svg.Tests.SvgFontFamilyTests",
-        "name": "Tokenization_observes_original_cancellation",
-        "role": "Contract",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Collapsed_spaces_keep_the_first_span_owner_and_trim_only_the_final_separator",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Nested_lists_count_normalized_scalars_across_chunks_and_resume_ancestor_values",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Scoped_list_denial_and_cancellation_release_active_and_detached_storage",
-        "role": "Contract",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Transfers_the_final_string_charge_and_releases_it_with_the_consumer",
-        "role": "Contract",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Reserves_replacement_character_storage_before_growth",
-        "role": "Contract",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Normalizes_direct_text_whitespace_across_reader_chunks_without_bypassing_the_source_limit",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Retains_only_normalized_letter_spacing_intervals_that_differ_from_the_parent_text",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Retains_a_positioned_span_offset_for_its_first_descendant_character",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Lets_a_nearer_zero_position_offset_override_an_outer_span",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Resolves_each_position_offset_axis_from_its_nearest_span",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Retains_absolute_zero_and_resolves_coordinates_separately_from_relative_offsets",
-        "role": "Mechanism",
-        "addedRole": true
-      },
-      {
-        "file": "BudgetedTextBufferTests.cs",
-        "type": "Lokad.Svg.Tests.BudgetedTextBufferTests",
-        "name": "Empty_absolute_position_scopes_do_not_reposition_later_parent_text",
-        "role": "Mechanism",
-        "addedRole": true
+        "file": "../../Lokad.Svg.Tests/BudgetedTextBufferTests.cs",
+        "methods": 12,
+        "mechanism": 9,
+        "contract": 3,
+        "contractMethods": [
+          "Scoped_list_denial_and_cancellation_release_active_and_detached_storage",
+          "Transfers_the_final_string_charge_and_releases_it_with_the_consumer",
+          "Reserves_replacement_character_storage_before_growth"
+        ]
       }
     ],
     "counts": {
@@ -383,7 +71,8 @@
       "after": "Inline_font_declarations_resolve_without_presentation_attributes",
       "assertionsAdded": 4,
       "inputUnchanged": true
-    }
+    },
+    "scope": "Source hashes bind the complete method/trait map; only the six distinct contract exceptions are repeated here. Every other method in these three frozen files is a mechanism."
   },
   "inventory": {
     "methods": 5138,
