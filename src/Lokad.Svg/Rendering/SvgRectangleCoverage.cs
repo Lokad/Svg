@@ -3,7 +3,7 @@
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Retains the native rectangle's rounded 24.8 edges after clipping to the finite output bitmap.</summary>
-/// <remarks>This immutable value owns no storage. Preparation visits four edges; GetAlpha performs constant work covered by the caller's raster pixel charge. Cancellation belongs to the caller's draw/row traversal. The one-pixel specializations retain the native minus-one rule.</remarks>
+/// <remarks>This immutable value owns no storage. Preparation visits four edges; GetAlpha performs constant work. Cancellation belongs to the caller's draw/row traversal. The one-pixel specializations retain the native minus-one rule.</remarks>
 internal readonly record struct SvgRectangleCoverage(long Left, long Top, long Right, long Bottom)
 {
     internal static SvgRectangleCoverage Create(double left, double top, double right, double bottom, int width, int height)

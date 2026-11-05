@@ -165,7 +165,7 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
 
     /// <summary>Samples a picture image view through the generic fused pipeline, with clamped edges and the parent stride.</summary>
     /// <remarks>Pixels are borrowed premultiplied RGBA8. Bounds and coordinates are caller-validated;
-    /// sampling owns no storage. The caller owns work accounting and cancellation.</remarks>
+    /// sampling owns no storage. The caller checks cancellation during raster traversal.</remarks>
     internal static SvgShaderPaint SampleView(ReadOnlySpan<byte> pixels, int stride, SvgAnalyticClipBounds bounds,
         float x, float y, float opacity)
         => SampleBilinear(pixels, stride, bounds, x, y, new(0, 0), opacity, transparentBorder: false, fusedProducts: true);

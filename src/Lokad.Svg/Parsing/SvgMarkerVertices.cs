@@ -7,8 +7,8 @@ internal enum SvgMarkerVertexRole { Start, Mid, End }
 internal readonly record struct SvgMarkerPosition(SvgMarkerVertexRole Role, SvgDevicePoint Point, double Angle);
 
 /// <summary>Reads authored path and point-list vertices before stroke dashing or fill closure.</summary>
-/// <remarks>Command, corner and output lists charge caller-owned bounded parser storage. Every command,
-/// derivative and vertex consumes work and observes cancellation; no curve flattening is required.</remarks>
+/// <remarks>Command, corner and output lists charge caller-owned bounded parser storage. Command
+/// and vertex traversal observes cancellation; no curve flattening is required.</remarks>
 internal static class SvgMarkerVertices
 {
     private readonly record struct Corner(SvgDevicePoint Point, SvgDevicePoint Incoming, SvgDevicePoint Outgoing,

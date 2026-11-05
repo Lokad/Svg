@@ -6,8 +6,8 @@ namespace Lokad.Svg.Rendering;
 
 /// <summary>Paints ordered native line hairline coverage directly into a borrowed premultiplied surface.</summary>
 /// <remarks>Owns no heap storage. The caller retains the surface and paint. Clipping bounds fixed-point coordinates;
-/// subdivision has at most eight stack levels within that range. Every subdivision and pixel visit consumes work
-/// before painting and checks cancellation. Binary rectangle classification scans borrowed clip bands once per walker.
+/// subdivision has at most eight stack levels within that range. Every subdivision and pixel visit checks
+/// cancellation before painting. Binary rectangle classification scans borrowed clip bands once per walker.
 /// Instances belong to one conversion and share no mutable state.</remarks>
 internal ref struct SvgHairlineCoverage
 {

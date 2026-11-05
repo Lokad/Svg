@@ -103,7 +103,7 @@ internal readonly record struct TrueTypeHintSuperRound(int Period, int Phase, in
 
 /// <summary>Executes the bounded TrueType subset needed by the selected public Latin fonts.</summary>
 /// <remarks>Owns scratch and borrows programs, glyph points and contour ends for one conversion.
-/// Every visited instruction, skipped operand and point consumes work and observes cancellation.
+/// Instruction execution, operand scans and point traversal observe cancellation.
 /// Malformed stacks/ranges are categorized; unsupported executed instructions remain explicit.
 /// A machine and its caller-owned inputs belong to one thread and one glyph; disposal releases
 /// its reservation and function-program borrows. It does not select fonts or draw pixels.

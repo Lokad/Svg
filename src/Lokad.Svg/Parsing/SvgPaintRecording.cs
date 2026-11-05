@@ -32,7 +32,7 @@ internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity 
     /// <remarks>Output retains the complete prepared map; ancestor canvas stages still belong
     /// to shader preparation. The marker owns no storage and survives scene/instance rebinding.</remarks>
     internal bool IsPreparedDrawing { get => (Role & SvgRecordedPaintRole.PreparedDrawing) != 0; init => Role = value ? Role | SvgRecordedPaintRole.PreparedDrawing : Role & ~SvgRecordedPaintRole.PreparedDrawing; }
-    /// <summary>Retains the previous constructor contract; source recording assigns the stroke role explicitly.</summary>
+    /// <summary>Creates fill-role metadata; source recording assigns the stroke role explicitly.</summary>
     internal SvgRecordedPaintValue(SvgPaintOperationIdentity identity, float alpha, bool foldable, SvgRecordingScope scope, SvgPaintOpacity elementOpacity, SvgRecordingScope opacityScope)
         : this(identity, alpha, foldable, SvgRecordedPaintRole.Fill, SvgPaintOrder.FillStrokeMarkers, scope, elementOpacity, opacityScope) { }
     // Source visual bounds survive lowering; they do not describe a shader coordinate box or a clip.
@@ -136,8 +136,7 @@ internal static class SvgPaintRecording
     }
 
     /// <summary>Creates a non-painting target that carries effects without contributing geometry bounds.</summary>
-    /// <remarks>The scene owns charged paint metadata; the returned value owns no native storage.
-    /// Registration shares the scene's work allowance and cancellation.</remarks>
+    /// <remarks>The scene owns charged paint metadata; the returned value owns no native storage.</remarks>
     internal static SvgGeometry CreateEffectAnchor(SvgSceneBuilder scene, SvgDocumentState state, SvgRecordingScope scope)
     {
         SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), 0, false,
@@ -147,7 +146,7 @@ internal static class SvgPaintRecording
 
     /// <summary>Records an empty eligible source for an active filter without inventing painted geometry.</summary>
     /// <remarks>Only empty batches need fallback bounds parsing. Native parsers retain authored limits,
-    /// work and cancellation; the document owns paint metadata and the returned batch owns its container.</remarks>
+    /// cancellation and storage reservations; the document owns paint metadata and the returned batch owns its container.</remarks>
     internal static SvgParsedGeometry Attach(SvgParsedGeometry parsed, SvgRecordedPaintStyle source, XmlReader reader,
         SvgPaintableElementContext context, SvgViewportFrame? frame, int maximumCommands, SvgDocumentState state)
     {
@@ -165,7 +164,7 @@ internal static class SvgPaintRecording
     /// <summary>Retains collapsed source bounds without constructing paint, strokes, markers or source-local effects.</summary>
     /// <remarks>Uses the ordinary bounded primitive/path parsers and existing nonpainting source role.
     /// The returned batch owns its container; the document owns its paint metadata. Source bounds remain
-    /// available to enclosing effects and instance placement. All work shares the conversion budget and cancellation.</remarks>
+    /// available to enclosing effects and instance placement. Storage uses the conversion budget; traversal observes cancellation.</remarks>
     internal static SvgParsedGeometry? RetainCollapsedSource(SvgRecordedPaintStyle source, XmlReader reader,
         SvgPaintableElementContext context, SvgViewportFrame? frame, int maximumCommands, SvgDocumentState state)
     {

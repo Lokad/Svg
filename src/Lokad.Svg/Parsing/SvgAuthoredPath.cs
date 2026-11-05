@@ -83,7 +83,7 @@ internal sealed class SvgAuthoredPath : IDisposable
     }
 
     /// <summary>Replays authored commands and maps their vertices/controls once with the composed output matrix.</summary>
-    /// <remarks>Reserves temporary builder storage before allocation. Every command and copied point consumes caller work;
+    /// <remarks>Reserves temporary builder storage before allocation. Command and point traversal observe cancellation;
     /// flattening uses its existing bounded, cancellable policy. The result exclusively owns its surface arrays.</remarks>
     internal SvgPreparedPathContours Prepare(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, CancellationToken cancellationToken)
         => Replay(outputMap, isEvenOdd, true, budget, cancellationToken);

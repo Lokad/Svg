@@ -5,7 +5,7 @@ using Lokad.Svg.Parsing;
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Borrows validated source stops and exposes native normal-gradient canonicalization without allocating storage.</summary>
-/// <remarks>At most 256 authored stops and two implicit endpoints. Creation and enumeration consume caller work and observe
+/// <remarks>At most 256 authored stops and two implicit endpoints. Creation and enumeration observe
 /// cancellation. Source storage must remain immutable and alive until every draw-local enumerator finishes; no owner transfers.</remarks>
 internal readonly ref struct SvgGradientStops
 {

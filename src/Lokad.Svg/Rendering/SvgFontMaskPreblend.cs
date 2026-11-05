@@ -5,7 +5,7 @@ namespace Lokad.Svg.Rendering;
 using Lokad.Svg.Parsing;
 
 /// <summary>Builds the measured platform font-mask preblend into caller-owned byte storage.</summary>
-/// <remarks>Uses pinned three-bit canonical luminance and platform gamma/contrast. No mask, font or destination storage is retained. Each entry consumes work and observes cancellation; concurrent callers use independent buffers. Paint alpha and clipping apply after preblend.</remarks>
+/// <remarks>Uses pinned three-bit canonical luminance and platform gamma/contrast. No mask, font or destination storage is retained. Each entry observes cancellation; concurrent callers use independent buffers. Paint alpha and clipping apply after preblend.</remarks>
 internal static class SvgFontMaskPreblend
 {
     internal static void BuildLinuxGrayTable(Span<byte> table, SvgColor color, CancellationToken token)

@@ -76,7 +76,7 @@ CancellationToken token)
 
     /// <summary>Emits one queued run into its recorded scene; the caller replaces its paint slot in source order.</summary>
     /// <remarks>The document retains ownership on failure. Success releases the run and metadata allowance;
-    /// teardown is idempotent. Temporary scene and filter bindings are restored even on work denial or cancellation.</remarks>
+    /// teardown is idempotent. Temporary scene and filter bindings are restored even on memory refusal or cancellation.</remarks>
     internal static void Emit(SvgDocumentState state, int index, SvgRenderLimits limits, CancellationToken token)
     {
         SvgPendingTextRun pending = state.PendingTextRuns[index];

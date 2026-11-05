@@ -31,7 +31,7 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
     }
 
     /// <summary>Returns registry-owned viewport clips shared across glyph paints and retained text paths.</summary>
-    /// <remarks>Frames and metadata belong to one conversion. Each ancestor consumes work and observes cancellation; registry teardown releases partial reservations on failure. The returned chain is borrowed until final command emission.</remarks>
+    /// <remarks>Frames and metadata belong to one conversion. Each ancestor visit observes cancellation; registry teardown releases partial reservations on failure. The returned chain is borrowed until final command emission.</remarks>
     internal static SvgLeafMaskBinding? ResolveGlyphClip(SvgDocumentState state, CancellationToken token)
     {
         if (state.DefinitionReplayScene is not null) return null;

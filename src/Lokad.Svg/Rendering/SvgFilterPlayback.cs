@@ -561,7 +561,7 @@ internal static class SvgFilterPlayback
         => Apply(source, width, height, resource, map, new(0, 0, width, height), budget, token);
 
     // Requested output uses the source grid's coordinates, independently of its
-    // physical allocation and the source ink. All storage/work stays budgeted.
+    // physical allocation and the source ink. Storage stays budgeted; traversal observes cancellation.
     internal static SvgFilterResult Apply(ReadOnlySpan<byte> source, int width, int height,
         SvgFilterResource resource, SvgFilterDeviceMap map, SvgPaintBounds requestedOutput, RenderBudget budget,
         CancellationToken token)

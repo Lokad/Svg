@@ -593,7 +593,7 @@ internal static class SvgDocumentTraversal
     /// <summary>Consumes one non-empty foreign-namespace subtree when no descendant can render, reporting whether it was skipped.</summary>
     /// <remarks>
     /// <para>Recognized editor/test descriptions are eligible. Unknown nonempty foreign elements keep the unsupported flag. A skipped subtree holds no SVG descendants, so it paints nothing and defines no resources.</para>
-    /// <para>Mirrors the main loop per-element accounting: structural limits, node budget, work and cancellation, plus the symbol-depth rule. Leaves the reader on the foreign end element so the main loop end-element bookkeeping runs normally. Well-formed XML always closes the subtree; reaching the reader end reports false.</para>
+    /// <para>Mirrors the main loop's structural limits, node count and cancellation, plus the symbol-depth rule. Leaves the reader on the foreign end element so the main loop end-element bookkeeping runs normally.</para>
     /// </remarks>
     private static bool TrySkipInertForeignSubtree(System.Xml.XmlReader reader, SvgDocumentState state, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
@@ -606,8 +606,8 @@ internal static class SvgDocumentTraversal
         return !subtree.ContainsSvg && state.SymbolDepth < 0;
     }
 
-    /// <summary>Consumes one non-empty rendered-leaf subtree, reporting whether it holds any child elements.</summary>
-    /// <remarks>Element-free subtrees (whitespace or text only, which the leaf lowerers and the main loop both ignore) render exactly like the self-closing form. Mirrors the main-loop per-element accounting while consuming, and leaves the reader on the leaf end element so end-element bookkeeping runs normally.</remarks>
+    /// <summary>Rejects remaining reader content after the SVG root except XML whitespace.</summary>
+    /// <remarks>Borrows the reader; each trailing read observes cancellation.</remarks>
     private static void ValidateDocumentEnd(XmlReader reader, CancellationToken cancellationToken)
     {
         while (reader.Read())

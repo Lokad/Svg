@@ -4083,8 +4083,8 @@ public static partial class SvgConverter
             }
         }
 
-        // Borrow the current viewport tape; its scope owner charges preparation/intersection and
-        // releases it after command replay. Each raster consumer's existing pixel charge covers lookup.
+        // Borrow the current viewport tape; its scope owner reserves storage and
+        // releases it after command replay. Raster traversal owns cancellation during lookup.
         byte ViewportAlpha(byte alpha, int x, int y)
             => !activeViewport.HasMask ? alpha : (byte)((alpha * activeViewport.Mask.GetAlphaAtOffset(outputWidth, (y * outputWidth + x) * 4) + 127) / 255);
 

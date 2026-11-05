@@ -36,8 +36,8 @@ internal static class SvgClipPathSyntax
 
     /// <summary>Creates a rectangular clip boundary without introducing an opacity or mask owner.</summary>
     /// <remarks>The conversion-thread caller borrows box/map and parser state. Native content transfers
-    /// to scene; an analytic region owns no content. Every mapping/construction step consumes caller
-    /// work and cancellation. Failed construction leaves adopted content with scene teardown.</remarks>
+    /// to scene; an analytic region owns no content. Mapping and construction observe cancellation.
+    /// Failed construction leaves adopted content with scene teardown.</remarks>
     internal static SvgDrawCommand CreateRectangleScope(SvgClipBox box, SvgAffineTransform map, SvgDocumentState state,
         SvgSceneBuilder scene, CancellationToken cancellationToken)
     {
