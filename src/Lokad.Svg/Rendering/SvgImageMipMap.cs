@@ -89,12 +89,6 @@ internal static class SvgImageMipMap
         return float.IsFinite(squared) ? MathF.Sqrt(squared) : (float)Math.Sqrt((double)a * a + (double)b * b);
     }
 
-    internal static int SampleCount(SvgAnalyticClipBounds bounds)
-    {
-        int width = bounds.Right - bounds.Left, height = bounds.Bottom - bounds.Top;
-        return (width == 1 ? 1 : 2 + (width & 1)) * (height == 1 ? 1 : 2 + (height & 1));
-    }
-
     /// <summary>Writes one nonoverlapping level, preserving parent stride and truncating only after both axis sums.</summary>
     internal static void Reduce(ReadOnlySpan<byte> source, int stride, SvgAnalyticClipBounds bounds,
         Span<byte> destination, CancellationToken cancellationToken)

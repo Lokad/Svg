@@ -24,6 +24,6 @@ placement, enclosure, stride, decode/mip selection, all eight reduction kernels
 and cancellation directly. Three selected
 [ownership inputs](../../Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs) protect
 source-replacement resize, mip reduction and adjacent picture-level storage,
-including refusal, work exhaustion, cleanup, retry and prepared memory replay.
+including refusal, cancellation, cleanup, retry and prepared memory replay.
 The rendering bank uses one conversion path per input; general API destination
 contracts remain in the representative matrix.

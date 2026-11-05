@@ -124,7 +124,6 @@ public sealed class SvgImageSourceViewTests
         }
         byte[] unchanged = pixels.ToArray(), output = new byte[4];
         SvgAnalyticClipBounds bounds = new(1, 1, width + 1, height + 1);
-        Assert.Equal(width * height, SvgImageMipMap.SampleCount(bounds));
         SvgImageMipMap.Reduce(pixels, stride, bounds, output, CancellationToken.None);
         Assert.Equal(new byte[] { red, green, blue, alpha }, output);
         Assert.Equal(unchanged, pixels);
