@@ -75,6 +75,13 @@ existing stage and browser-reference tests protect filter arithmetic and interac
 distinguish zero opacity, constant-zero masks and zero-opacity filters. They check
 surface admission, exact sibling output and borrowed-scene refusal/cleanup/retry;
 existing bounds, clip and native regressions retain their separate responsibilities.
+Their [qualification](Research/release-baselines/transparent-scope-storage.json)
+includes failing-before controls, both hosts/runtimes, packages and original replay.
+
+[Opacity/clip responsibilities](Research/release-baselines/opacity-clip-responsibilities.json)
+retain all 58 cases: relational rendering, direct admission and API/cleanup contracts
+stay distinct. The small six-output opacity interaction matrix remains intact;
+fast selection preserves every member and adds eight admission/API checks.
 
 [Affine geometry ownership](Research/release-baselines/affine-geometry-ownership.json)
 keeps original scene indices through the rewritten command envelope. Small, large

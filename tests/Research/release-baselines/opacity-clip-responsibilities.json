@@ -1,0 +1,348 @@
+{
+  "status": "Classify opacity inheritance, clip visibility and the existing six-output opacity interaction matrix. All 25 methods/58 cases, data, loops, assertions and native values remain. Only Layer traits change; 24 previously unclassified methods gain responsibilities.",
+  "source": {
+    "baseCommit": "c82896f52a691f9e43fed84fad92d47857d30e56",
+    "files": [
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgOpacityInheritanceTests.cs",
+        "beforeLfSha256": "642ba14baa287cc8da6fac886b85242ff3c4d48d2fc9580f4d3beeee673e0df1",
+        "afterLfSha256": "c7b1a19384c30d4f393de2e89f58d764241c6c6ddef66c49d6e458155e5e30c7",
+        "onlyLayerTraitsChanged": true,
+        "methods": 11,
+        "newlyClassifiedMethods": 11
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgClipVisibilityTests.cs",
+        "beforeLfSha256": "d279ce057dff874ad1ce72deb49d6fc9afd4290d3c807e010ae63cd2ad0bd17f",
+        "afterLfSha256": "978f4ef3f7b0a20e76957f32516ea2896138e8907dab2cb373a33bace1e84df8",
+        "onlyLayerTraitsChanged": true,
+        "methods": 13,
+        "newlyClassifiedMethods": 12
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgOpacityLayerTests.cs",
+        "beforeLfSha256": "deec9c47a2b81a2d991ce912ff113b84364612973aa658a4978bbcff11053242",
+        "afterLfSha256": "5d7da5e80b5414cda3c320f04ef8ed520061f5e01e1a92f07ff4ab11f573007b",
+        "onlyLayerTraitsChanged": true,
+        "methods": 1,
+        "newlyClassifiedMethods": 1
+      }
+    ],
+    "mapping": {
+      "SvgOpacityInheritanceTests": {
+        "Leaf_inherit_uses_parent_own_opacity_with_its_original_precision": "Rendering",
+        "Omitted_intermediate_opacity_resets_the_logical_parent_to_one": "Rendering",
+        "Noninherited_keywords_use_the_initial_opacity": "Rendering",
+        "Retained_inheritance_rebinds_for_independent_instances": "Rendering",
+        "Root_inherit_uses_initial_opacity": "Rendering",
+        "Inherited_group_opacity_preserves_nested_composition_boundary": "Rendering",
+        "Viewport_own_opacity_separates_parent_layers_from_child_inheritance": "Rendering",
+        "Parent_mask_alpha_does_not_replace_its_own_opacity": "Rendering",
+        "Plain_definition_inheritance_binds_to_each_use_instead_of_lexical_ancestors": "Rendering",
+        "Marker_inheritance_uses_its_definition_parent": "Rendering",
+        "Nested_viewport_layers_close_at_their_own_boundaries_and_restore_siblings": "Rendering"
+      },
+      "SvgClipVisibilityTests": {
+        "Hidden_children_do_not_contribute_for_attributes_inline_or_stylesheet_rules": "Rendering",
+        "Fill_stroke_and_opacity_do_not_suppress_raw_clip_geometry": "Rendering",
+        "Resource_visibility_inherits_from_its_own_ancestors_and_children_can_override_it": "Rendering",
+        "Own_display_none_disables_the_clip_while_ancestor_display_preserves_it": "Rendering",
+        "Hidden_union_members_do_not_change_the_visible_members_coverage": "Rendering",
+        "Object_box_hidden_children_leave_an_empty_clip": "Rendering",
+        "Referenced_source_visibility_overrides_inheritance_but_not_display_none": "Rendering",
+        "Cascade_and_importance_select_visibility_before_clip_construction": "Rendering",
+        "A_clip_local_source_keeps_its_independent_ordinary_use_visibility": "Rendering",
+        "Hidden_content_keeps_existing_unsupported_admission_and_releases_owners": "Contract",
+        "Hidden_clip_groups_do_not_contribute_geometry": "Mechanism",
+        "Hidden_referenced_compound_paths_keep_the_single_contour_admission_boundary": "Mechanism",
+        "Clip_visibility_denial_and_cancellation_release_storage_and_allow_retry": "Contract"
+      },
+      "SvgOpacityLayerTests": {
+        "Isolated_opacity_matches_browser_pixels_through_all_six_outputs": "Contract"
+      }
+    }
+  },
+  "coverage": {
+    "beforeCases": 58,
+    "afterCases": 58,
+    "identitySha256": "8ccb99f52f20a941436c95909128430fe5041de10f2a1a6bd9952361ba0092e6",
+    "layers": {
+      "Rendering": 49,
+      "Contract": 7,
+      "Mechanism": 2
+    },
+    "newlyClassifiedMethods": 24,
+    "newlyClassifiedCases": 57,
+    "previouslyClassifiedMechanismCases": 1,
+    "coreMethods": 4653,
+    "coreMethodsStillUnclassified": 1807,
+    "visualMethodsStillUnclassified": 286,
+    "retained": [
+      "Every opacity precision, instance, marker, nested viewport and sibling interaction",
+      "Clip geometry independent of fill/stroke/opacity, visibility cascade and ordinary-use roles",
+      "Unsupported admission, refusal, cancellation, zero remaining charge and retry",
+      "All four native-valued root/group/backward-mask/forward-mask cases through all six original outputs"
+    ]
+  },
+  "fastMembership": {
+    "beforeCases": 19128,
+    "afterCases": 19136,
+    "removedCases": 0,
+    "addedCases": 8,
+    "joins": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforeCases": 19128,
+        "afterCases": 19136,
+        "removed": 0,
+        "added": 8,
+        "duplicateDisplayNameMultiplicityPreserved": true,
+        "addedCaseIdentities": [
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Clip_visibility_denial_and_cancellation_release_storage_and_allow_retry",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(child: \"<path d='M0 0X1 1' display='none'/>\")",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(child: \"<use href='#missing' display='none'/>\")",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_referenced_compound_paths_keep_the_single_contour_admission_boundary",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"backward\", whiteLane: 191)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"forward\", whiteLane: 191)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"none\", whiteLane: 127)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"root\", mask: \"none\", whiteLane: 126)"
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforeCases": 19128,
+        "afterCases": 19136,
+        "removed": 0,
+        "added": 8,
+        "duplicateDisplayNameMultiplicityPreserved": true,
+        "addedCaseIdentities": [
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Clip_visibility_denial_and_cancellation_release_storage_and_allow_retry",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(child: \"<path d='M0 0X1 1' display='none'/>\")",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(child: \"<use href='#missing' display='none'/>\")",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_referenced_compound_paths_keep_the_single_contour_admission_boundary",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"backward\", whiteLane: 191)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"forward\", whiteLane: 191)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"none\", whiteLane: 127)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"root\", mask: \"none\", whiteLane: 126)"
+        ]
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "beforeCases": 19128,
+        "afterCases": 19136,
+        "removed": 0,
+        "added": 8,
+        "duplicateDisplayNameMultiplicityPreserved": true,
+        "addedCaseIdentities": [
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Clip_visibility_denial_and_cancellation_release_storage_and_allow_retry",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(child: \"<path d='M0 0X1 1' display='none'/>\")",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(child: \"<use href='#missing' display='none'/>\")",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_referenced_compound_paths_keep_the_single_contour_admission_boundary",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"backward\", whiteLane: 191)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"forward\", whiteLane: 191)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"none\", whiteLane: 127)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"root\", mask: \"none\", whiteLane: 126)"
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "beforeCases": 19128,
+        "afterCases": 19136,
+        "removed": 0,
+        "added": 8,
+        "duplicateDisplayNameMultiplicityPreserved": true,
+        "addedCaseIdentities": [
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Clip_visibility_denial_and_cancellation_release_storage_and_allow_retry",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(child: \"<path d='M0 0X1 1' display='none'/>\")",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(child: \"<use href='#missing' display='none'/>\")",
+          "Lokad.Svg.Tests.SvgClipVisibilityTests.Hidden_referenced_compound_paths_keep_the_single_contour_admission_boundary",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"backward\", whiteLane: 191)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"forward\", whiteLane: 191)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"group\", mask: \"none\", whiteLane: 127)",
+          "Lokad.Svg.Tests.SvgOpacityLayerTests.Isolated_opacity_matches_browser_pixels_through_all_six_outputs(scope: \"root\", mask: \"none\", whiteLane: 126)"
+        ]
+      }
+    ]
+  },
+  "validation": {
+    "checks": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+        "testAssemblySha256": "8c9e755d89a8356b865921712f8272e28dd6142a6332a7138e6e493e893788ae",
+        "exitCode": 0,
+        "seconds": 12.914907600032166,
+        "counters": {
+          "executed": "58",
+          "passed": "58",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+        "testAssemblySha256": "8c9e755d89a8356b865921712f8272e28dd6142a6332a7138e6e493e893788ae",
+        "exitCode": 0,
+        "seconds": 17.530480600195006,
+        "counters": {
+          "executed": "58",
+          "passed": "58",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+        "testAssemblySha256": "8c9e755d89a8356b865921712f8272e28dd6142a6332a7138e6e493e893788ae",
+        "exitCode": 0,
+        "seconds": 34.33070669998415,
+        "counters": {
+          "executed": "19128",
+          "passed": "19128",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+        "testAssemblySha256": "8c9e755d89a8356b865921712f8272e28dd6142a6332a7138e6e493e893788ae",
+        "exitCode": 0,
+        "seconds": 28.396103999810293,
+        "counters": {
+          "executed": "19128",
+          "passed": "19128",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+        "testAssemblySha256": "f7054878ca129f0b54c7b741b26c832e13851da2c47e9bf3706f5b8d5e6e12cc",
+        "exitCode": 0,
+        "seconds": 10.576906500151381,
+        "counters": {
+          "executed": "58",
+          "passed": "58",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+        "testAssemblySha256": "f7054878ca129f0b54c7b741b26c832e13851da2c47e9bf3706f5b8d5e6e12cc",
+        "exitCode": 0,
+        "seconds": 8.620425200089812,
+        "counters": {
+          "executed": "58",
+          "passed": "58",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+        "testAssemblySha256": "f7054878ca129f0b54c7b741b26c832e13851da2c47e9bf3706f5b8d5e6e12cc",
+        "exitCode": 0,
+        "seconds": 31.379456599941477,
+        "counters": {
+          "executed": "19136",
+          "passed": "19136",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "5837d1692448d44e0e5b19c887e007886fd668da7ea7d870d8083e9ca0fff3c4",
+        "testAssemblySha256": "f7054878ca129f0b54c7b741b26c832e13851da2c47e9bf3706f5b8d5e6e12cc",
+        "exitCode": 0,
+        "seconds": 27.99756359984167,
+        "counters": {
+          "executed": "19136",
+          "passed": "19136",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "6566bb05640a055104c790b099a0b5e0d9fc5f432e5b0cd69f3038382b3f50fc",
+        "testAssemblySha256": "8de6c2064fe2131ced7e65f2b269a2a85f70706484c4330150d227a75229b27b",
+        "exitCode": 0,
+        "seconds": 9.710204800125211,
+        "counters": {
+          "executed": "58",
+          "passed": "58",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "6566bb05640a055104c790b099a0b5e0d9fc5f432e5b0cd69f3038382b3f50fc",
+        "testAssemblySha256": "8de6c2064fe2131ced7e65f2b269a2a85f70706484c4330150d227a75229b27b",
+        "exitCode": 0,
+        "seconds": 11.437384400051087,
+        "counters": {
+          "executed": "58",
+          "passed": "58",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "6566bb05640a055104c790b099a0b5e0d9fc5f432e5b0cd69f3038382b3f50fc",
+        "testAssemblySha256": "8de6c2064fe2131ced7e65f2b269a2a85f70706484c4330150d227a75229b27b",
+        "exitCode": 0,
+        "seconds": 31.825359999900684,
+        "counters": {
+          "executed": "19136",
+          "passed": "19136",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "6566bb05640a055104c790b099a0b5e0d9fc5f432e5b0cd69f3038382b3f50fc",
+        "testAssemblySha256": "8de6c2064fe2131ced7e65f2b269a2a85f70706484c4330150d227a75229b27b",
+        "exitCode": 0,
+        "seconds": 29.937630099942908,
+        "counters": {
+          "executed": "19136",
+          "passed": "19136",
+          "failed": "0"
+        }
+      }
+    ],
+    "policy": "Focused unchanged cohort and exact fast-membership joins on both hosts/runtimes. Runtime/full rendering/package/original qualification remains in transparent-scope-storage.json; a trait-only change does not require another full numerical/native sweep.",
+    "timingScope": "Functional process/discovery/TRX wall times before/after under different concurrent workloads. No test cases or API executions are removed; no renderer or test-suite speedup is claimed."
+  },
+  "runtimeEvidence": "transparent-scope-storage.json",
+  "unchanged": "Production code, public APIs, owners, test inputs, every loop/assertion, references, tolerances and full test count.",
+  "remaining": "Finish other subsystem responsibilities and actual costly fixture/API products. Retain this small distinct API/opacity interaction matrix until source-path evidence justifies a further split."
+}

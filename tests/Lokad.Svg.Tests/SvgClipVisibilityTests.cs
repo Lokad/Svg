@@ -11,6 +11,7 @@ public sealed class SvgClipVisibilityTests
     [InlineData("circle")]
     [InlineData("ellipse")]
     [InlineData("use")]
+    [Trait("Layer", "Rendering")]
     public void Hidden_children_do_not_contribute_for_attributes_inline_or_stylesheet_rules(string kind)
     {
         byte[] empty = Render(string.Empty);
@@ -28,6 +29,7 @@ public sealed class SvgClipVisibilityTests
     [InlineData("circle")]
     [InlineData("ellipse")]
     [InlineData("use")]
+    [Trait("Layer", "Rendering")]
     public void Fill_stroke_and_opacity_do_not_suppress_raw_clip_geometry(string kind)
         => Assert.Equal(Render(Clipped(Shape(kind).Replace("$", "", StringComparison.Ordinal), "")),
             Render(Clipped(Shape(kind).Replace("$", "fill='none' stroke='none' opacity='0'", StringComparison.Ordinal), "")));
@@ -35,6 +37,7 @@ public sealed class SvgClipVisibilityTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Rendering")]
     public void Resource_visibility_inherits_from_its_own_ancestors_and_children_can_override_it(bool ancestor)
     {
         string content = Clipped("<rect width='8' height='8'/>", "style='visibility:hidden'");
@@ -52,6 +55,7 @@ public sealed class SvgClipVisibilityTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Rendering")]
     public void Own_display_none_disables_the_clip_while_ancestor_display_preserves_it(bool ancestor)
     {
         string content = Clipped("<rect width='8' height='8'/>", "style='display:none'");
@@ -63,6 +67,7 @@ public sealed class SvgClipVisibilityTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Rendering")]
     public void Hidden_union_members_do_not_change_the_visible_members_coverage(bool hiddenFirst)
     {
         const string visible = "<rect x='2.25' y='2.25' width='4.5' height='4.5' rx='1.25'/>";
@@ -71,6 +76,7 @@ public sealed class SvgClipVisibilityTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Object_box_hidden_children_leave_an_empty_clip()
     {
         const string child = "<rect x='.125' y='.125' width='.5' height='.5'/>";
@@ -85,6 +91,7 @@ public sealed class SvgClipVisibilityTests
     [InlineData("display='none'", "visibility='visible'", false)]
     [InlineData("visibility='visible'", "display='none'", false)]
     [InlineData("fill='none' opacity='0'", "", true)]
+    [Trait("Layer", "Rendering")]
     public void Referenced_source_visibility_overrides_inheritance_but_not_display_none(string sourceAttributes, string useAttributes, bool visible)
     {
         string source = "<path id='p' d='M2 2H10V10H2Z' " + sourceAttributes + "/>";
@@ -98,6 +105,7 @@ public sealed class SvgClipVisibilityTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Cascade_and_importance_select_visibility_before_clip_construction()
     {
         const string child = "<rect id='child' width='8' height='8' visibility='hidden' style='visibility:hidden'/>";
@@ -106,6 +114,7 @@ public sealed class SvgClipVisibilityTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void A_clip_local_source_keeps_its_independent_ordinary_use_visibility()
     {
         const string source = "<path id='p' d='M1 1H5V5H1Z'/>";
@@ -116,6 +125,7 @@ public sealed class SvgClipVisibilityTests
     [Theory]
     [InlineData("<use href='#missing' display='none'/>")]
     [InlineData("<path d='M0 0X1 1' display='none'/>")]
+    [Trait("Layer", "Contract")]
     public void Hidden_content_keeps_existing_unsupported_admission_and_releases_owners(string child)
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -135,6 +145,7 @@ public sealed class SvgClipVisibilityTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Hidden_referenced_compound_paths_keep_the_single_contour_admission_boundary()
     {
         const string source = "<defs><path id='compound' d='M1 1H5V5H1Z M8 8H12V12H8Z'/></defs>";
@@ -142,6 +153,7 @@ public sealed class SvgClipVisibilityTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Clip_visibility_denial_and_cancellation_release_storage_and_allow_retry()
     {
         const string visible = "<rect x='1' y='1' width='3' height='3'/><path d='M1 1C2 0 6 0 7 1V7H1Z'/>";

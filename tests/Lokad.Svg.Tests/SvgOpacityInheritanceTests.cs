@@ -3,6 +3,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Rendering")]
 public sealed class SvgOpacityInheritanceTests
 {
     [Theory]

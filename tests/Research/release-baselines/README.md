@@ -28,6 +28,12 @@ material-dependent source-retention gap and its 24 original use admissions.
 bindings from synthetic scope carriers and closes eight original filter residuals.
 [Governed host qualification](host-api-qualification.md) maps resolver, admission,
 shutdown and asynchronous output contracts to source and installed-package evidence.
+[Transparent scope storage](transparent-scope-storage.json) skips known-zero painting
+without dropping retained bounds or clip geometry. Three failing-before storage
+paths, full rendering, packages and original replay preserve their responsibilities.
+[Opacity/clip responsibilities](opacity-clip-responsibilities.json) retain all 58
+cases and every API interaction, assigning 24 unclassified methods without changing
+assertions; fast selection preserves every previous member and adds eight checks.
 [Supplied-font test responsibilities](font-output-responsibilities.md) separate
 37 native rendering inputs from seven routine and 30 extended output matrices.
 [Raster ownership setup](raster-ownership.json) shares the parse-once lifetime

@@ -4,6 +4,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Contract")]
 public sealed class SvgOpacityLayerTests
 {
     [Theory]
