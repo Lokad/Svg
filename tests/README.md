@@ -79,6 +79,8 @@ Font-free fixtures share a [rejecting provider](Shared/RejectFontProgramSourcePr
 with explicit per-call messages and cancellation policy. Counting, acquisition and
 asynchronous-failure providers stay separate. Two direct controls retain synchronous
 rejection and exact cancellation-token behavior without repeating them per image.
+The [qualification](Research/release-baselines/font-free-setup.json) records preserved
+messages/policies, whole-file reconstruction, exact case joins and measured timings.
 The [shared-budget contracts](Research/release-baselines/shared-budget-ownership.json)
 keep one allowance across parsing and rasterization, the complete refusal sweep,
 explicit viewports and exact retry pixels. Their 54 named cases use `Layer=Contract`;

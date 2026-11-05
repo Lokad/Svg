@@ -1,0 +1,925 @@
+{
+  "status": "Nineteen stateless font-free rejection providers share one test source without merging cancellation policies. Every original construction site, failure message, fixture, reference and assertion body remains; two direct controls protect synchronous failure and token identity. Production and renderer package assets are unchanged.",
+  "sourceCommit": "9f103885666472a1cb676dfa102b792ccb96d5a6",
+  "baseCommit": "c5b6311213596bd7714db77558b18fc08db69e6b",
+  "source": {
+    "helper": "tests/Shared/RejectFontProgramSourceProvider.cs",
+    "guardTests": "tests/Lokad.Svg.Tests/RejectFontProgramSourceProviderTests.cs",
+    "providersRemoved": 19,
+    "constructionSitesPreserved": 21,
+    "unconditionalProviders": 16,
+    "cancellationFirstProviders": 3,
+    "files": [
+      {
+        "path": "tests/Lokad.Svg.Tests/SvgEmptyFilterGroupTests.cs",
+        "className": "SvgEmptyFilterGroupTests",
+        "formerProvider": "NoFonts",
+        "message": "No font acquisition expected.",
+        "observeCancellation": true,
+        "constructionSites": 2,
+        "beforeLfSha256": "d430eb3006061888269d9efabeccfcfdb7e0ab454387c6c3ee9bf02bc951b416",
+        "afterLfSha256": "b9a2131ae5709706832ef0f1bb9a3db07e2bb5fcece7585cfbf68ee3dbd6cfc2",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs",
+        "className": "SvgFilterBitmapOwnershipTests",
+        "formerProvider": "RejectFonts",
+        "message": "These filter inputs require no fonts.",
+        "observeCancellation": true,
+        "constructionSites": 1,
+        "beforeLfSha256": "fa3c42dccafcd72c83ebf9557021310adee7915157abc9439635033389762995",
+        "afterLfSha256": "ff0742506f727c2ecd5eb5e96f3ca1a5da9dd3580306c817f81480fb66fe0812",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.Tests/SvgHostViewportPercentageTests.cs",
+        "className": "SvgHostViewportPercentageTests",
+        "formerProvider": "UnusedFontProvider",
+        "message": "A font-free document must not acquire fonts.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "765fdabf7adc9d804a6fa396da147bb42f0e1df3a099e937d17755e50e698a0a",
+        "afterLfSha256": "9df16fd7819748d12f649cce690d116bdd717397c1f3e792f0ee74d76b106609",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.Tests/SvgOrderedClipOwnershipTests.cs",
+        "className": "SvgOrderedClipOwnershipTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free clip replay must not request font programs.",
+        "observeCancellation": false,
+        "constructionSites": 2,
+        "beforeLfSha256": "da270b04d57365efe6c448aae7fcb769667fa83262978db8e3365a81bfb07f93",
+        "afterLfSha256": "862adb7ce295a3068029dc93fbb85f90ea77644869428601928955a31960d86b",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.Tests/SvgPatternDeviceTests.cs",
+        "className": "SvgPatternDeviceTests",
+        "formerProvider": "NoFonts",
+        "message": "The pattern fixture must not request a font program.",
+        "observeCancellation": true,
+        "constructionSites": 1,
+        "beforeLfSha256": "6a0d600dd1f7efbc1c1bd8b42b596037f75c68d6d8a9fee38f3a65d9bafa4744",
+        "afterLfSha256": "c4f4e640d5c324f4161ada59026568380fe6fe375b2e7d30ad06633268428459",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgContainedMaskClipReferenceTests.cs",
+        "className": "SvgContainedMaskClipReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free contained mask clips must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "82eb8025b2b89ef8d1ec36a60bfd725d778ca273547f918b326b039de501e59a",
+        "afterLfSha256": "67dc307a770973f2fb563ea18a1e954fa39961004349ccd761b7c15703bb6141",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgEmptyContourReferenceTests.cs",
+        "className": "SvgEmptyContourReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "An empty contour must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "d5efdf575e1bb1f014e879f08ff0a6efb955b2997b8193b26099cc831cd262ea",
+        "afterLfSha256": "652ebd19a908f0591f620eb0960b1882072437173bea0558b354e7d4389c385e",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgFractionalMaskRegionReferenceTests.cs",
+        "className": "SvgFractionalMaskRegionReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free mask content must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "c20fc0d177b5573593d9fdb8b3e8f974946571aca97bc31b28393e8210bf9216",
+        "afterLfSha256": "e3a9f96c5a3667c930de64dd83f262c4fbc71dfe6d11c3f53936a4a8ea5dc4de",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgInheritedClipReferenceTests.cs",
+        "className": "SvgInheritedClipReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free clip composition must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "51d29b73de4bd408406a9c09b720d1a7c53342b8a769ebd641b0bee1e279f36b",
+        "afterLfSha256": "67ed8378067c7ee5caa21efd78b2755973409d8f83bdfc98405dbe16dd7ebade",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgLineMarkerReferenceTests.cs",
+        "className": "SvgLineMarkerReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free marker content must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "3615fce90cda7bd06dc0b5721bc36041066bc9c1e15b5fe3dddf22d2161224af",
+        "afterLfSha256": "34128ce142f2ce1d7a18ae38edbc1aa7973b3c79690a8dd4649c3d794fe269ab",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgMarkerPaintBindingReferenceTests.cs",
+        "className": "SvgMarkerPaintBindingReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free marker content must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "e16574b3d9ecf7a154843ed5d9f7d88e820d2fcdf3c4bcf20ac5a4f1a70c8cd5",
+        "afterLfSha256": "d5b291a463825c72370d19f7bd54d3551e2929c0d566d891146b9b29bc730291",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgMaskClipReferenceTests.cs",
+        "className": "SvgMaskClipReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free mask clip groups must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "291b75ca6683b6e44da90e79f2821357c1a045c197db361c8a8711362fa77c3a",
+        "afterLfSha256": "359f207acf0ae77848da3600468d966ee696d70adce59b506ffb9f5133388d7e",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgOwnClipReferenceTests.cs",
+        "className": "SvgOwnClipReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free own clip groups must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "af1e92dd482f9acfce68075552c15de7439bd7f551b52674125adca35c9fe703",
+        "afterLfSha256": "9d9bdbb448f1b35078c3277c6a798cfc5df0c5a1186da08c60b38acea88b9371",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgRectanglePaintOverlapReferenceTests.cs",
+        "className": "SvgRectanglePaintOverlapReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free rectangle overlap must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "a27b0485cca497b1904393523771883d12ec15105a8b5aa267849a9842f2b39d",
+        "afterLfSha256": "e3dc53a0136157e348a13d979aec94b2497d231d6af56cefab4efc84e44119bb",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgRectangleShaderFrameReferenceTests.cs",
+        "className": "SvgRectangleShaderFrameReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free rectangle frames must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "9321c8f8646664fe5029f96cfaea97d5b8c59504091cdbb2b3c7ec6117296f6b",
+        "afterLfSha256": "667eba115d6c62fc8a1b230176a1fdc48c9c9957a491acc594326753628415a1",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgShaderHairlineReferenceTests.cs",
+        "className": "SvgShaderHairlineReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free rectangle overlap must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "d3f1d75c56b12c5cbb510db304089fa77ccb668ff4aff3bfda38133fd7b19ed6",
+        "afterLfSha256": "c9702f32c7ae9c8963dff0f6106500932087647f237f52214a6c8e6d8f4190ab",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgSourceVisibilityReferenceTests.cs",
+        "className": "SvgSourceVisibilityReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free source replay must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "ccd30826badfefda26d0f40006eb8b520bbbc49772d582953f2b0e943620a65c",
+        "afterLfSha256": "5b5ebdf8d774ba090046d8d54928f2c8fc4911fa5eb6f5ab9faea7d6e9ce0553",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgViewportRecordingReferenceTests.cs",
+        "className": "SvgViewportRecordingReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free viewport references must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "78c0f2f614330cbf8286d51e4bfa345f2eb89646e05e04bd462813bf270bfdf7",
+        "afterLfSha256": "1e4ca355034b5ef28a115e59ec572bd68c1b58913c378d8e3244046049e599a6",
+        "wholeBeforeFileReconstructed": true
+      },
+      {
+        "path": "tests/Lokad.Svg.VisualTests/SvgZeroRadiusPaintReferenceTests.cs",
+        "className": "SvgZeroRadiusPaintReferenceTests",
+        "formerProvider": "NoFonts",
+        "message": "Font-free rectangle overlap must not request a font program.",
+        "observeCancellation": false,
+        "constructionSites": 1,
+        "beforeLfSha256": "2923252a09d203d5d0dc148ad01b419707dbac3c3dfc01f51db64a2f8f58458f",
+        "afterLfSha256": "98ef4a44c4ff59dc2bda5199fa968c5a0834389cc1465674aca5a75b032ff332",
+        "wholeBeforeFileReconstructed": true
+      }
+    ],
+    "retainedDistinctProviders": "Counting, successful acquisition, missing-source and asynchronous-failure providers remain separate. No static provider singleton, cache or change to per-call construction."
+  },
+  "coverage": {
+    "caseJoins": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "routineCases": 89,
+        "completeCases": 96,
+        "allOriginalIdentitiesAndMultiplicityPreserved": true
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "routineCases": 150,
+        "completeCases": 150,
+        "allOriginalIdentitiesAndMultiplicityPreserved": true
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "routineCases": 89,
+        "completeCases": 96,
+        "allOriginalIdentitiesAndMultiplicityPreserved": true
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "routineCases": 150,
+        "completeCases": 150,
+        "allOriginalIdentitiesAndMultiplicityPreserved": true
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "routineCases": 89,
+        "completeCases": 96,
+        "allOriginalIdentitiesAndMultiplicityPreserved": true
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "routineCases": 150,
+        "completeCases": 150,
+        "allOriginalIdentitiesAndMultiplicityPreserved": true
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "routineCases": 89,
+        "completeCases": 96,
+        "allOriginalIdentitiesAndMultiplicityPreserved": true
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "routineCases": 150,
+        "completeCases": 150,
+        "allOriginalIdentitiesAndMultiplicityPreserved": true
+      }
+    ],
+    "routineCoreCasesUnchanged": 89,
+    "fullCoreCasesUnchanged": 96,
+    "nativeCasesUnchanged": 150,
+    "directGuardCasesAdded": 2,
+    "fullCoreCases": 47699,
+    "fullVisualCases": 73566,
+    "inventory": {
+      "declaredMethods": 5109,
+      "sourceFiles": 724,
+      "layers": {
+        "Lokad.Svg.Tests": {
+          "Unclassified": 1806,
+          "Mechanism": 1317,
+          "Contract": 552,
+          "Rendering": 985,
+          "Integrity": 1
+        },
+        "Lokad.Svg.VisualTests": {
+          "Unclassified": 277,
+          "Contract": 34,
+          "Integrity": 21,
+          "Rendering": 115,
+          "Mechanism": 1
+        }
+      }
+    },
+    "responsibility": "Rendering keeps native/platform and raw/prepared interactions. Existing ownership tests keep their original refusal/cancellation/retry sequences; shared sentinel behavior is tested independently."
+  },
+  "validation": {
+    "checks": [
+      {
+        "phase": "before-routine",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "88b449c324cdf71b433bd3fd1a1e240ba3053a82cc641b76d3f30e17bad081c7",
+        "selection": "(FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.074544299859554,
+        "counters": {
+          "executed": "89",
+          "passed": "89",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "88b449c324cdf71b433bd3fd1a1e240ba3053a82cc641b76d3f30e17bad081c7",
+        "selection": "(FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 13.060606999788433,
+        "counters": {
+          "executed": "89",
+          "passed": "89",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "5379f964493fb3530f1360b2b28d379e1c115e3c0efa0ad38ead7342cd6134c7",
+        "selection": "(FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.91452580015175,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "5379f964493fb3530f1360b2b28d379e1c115e3c0efa0ad38ead7342cd6134c7",
+        "selection": "(FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.985677199903876,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "e81f0b126e5e3f87bfde666f82e3c6685ac8926930587cdb35d7d50c802b97e5",
+        "selection": "(FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 12.075456399936229,
+        "counters": {
+          "executed": "89",
+          "passed": "89",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "e81f0b126e5e3f87bfde666f82e3c6685ac8926930587cdb35d7d50c802b97e5",
+        "selection": "(FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 13.677909200079739,
+        "counters": {
+          "executed": "89",
+          "passed": "89",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "ae049f0f477432e10206c46058a72369ce727b3007dbe7b5f366f10696b82604",
+        "selection": "(FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 12.453867399832234,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "ae049f0f477432e10206c46058a72369ce727b3007dbe7b5f366f10696b82604",
+        "selection": "(FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.278241199906915,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "e81f0b126e5e3f87bfde666f82e3c6685ac8926930587cdb35d7d50c802b97e5",
+        "selection": "FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests",
+        "exitCode": 0,
+        "seconds": 9.33404179988429,
+        "counters": {
+          "executed": "96",
+          "passed": "96",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "e81f0b126e5e3f87bfde666f82e3c6685ac8926930587cdb35d7d50c802b97e5",
+        "selection": "FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests",
+        "exitCode": 0,
+        "seconds": 9.444715300109237,
+        "counters": {
+          "executed": "96",
+          "passed": "96",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "ae049f0f477432e10206c46058a72369ce727b3007dbe7b5f366f10696b82604",
+        "selection": "FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests",
+        "exitCode": 0,
+        "seconds": 10.886918399948627,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "ae049f0f477432e10206c46058a72369ce727b3007dbe7b5f366f10696b82604",
+        "selection": "FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests",
+        "exitCode": 0,
+        "seconds": 9.789881400065497,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "guard",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "e81f0b126e5e3f87bfde666f82e3c6685ac8926930587cdb35d7d50c802b97e5",
+        "selection": "FullyQualifiedName~RejectFontProgramSourceProviderTests",
+        "exitCode": 0,
+        "seconds": 8.185773700010031,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "guard",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+        "testAssemblySha256": "e81f0b126e5e3f87bfde666f82e3c6685ac8926930587cdb35d7d50c802b97e5",
+        "selection": "FullyQualifiedName~RejectFontProgramSourceProviderTests",
+        "exitCode": 0,
+        "seconds": 8.385249700164422,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "453ac9477913f0c16d66ac78b0a222bfaef6eca93c7c0eb1155e116ea3849f00",
+        "selection": "(FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.622527699917555,
+        "counters": {
+          "executed": "89",
+          "passed": "89",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "453ac9477913f0c16d66ac78b0a222bfaef6eca93c7c0eb1155e116ea3849f00",
+        "selection": "(FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.5102232999634,
+        "counters": {
+          "executed": "89",
+          "passed": "89",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "3e67bf8e806bebb527639166d9677ade758f8e0f2edf87d1725c71a498f407e2",
+        "selection": "(FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.19932399992831,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "before-routine",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "3e67bf8e806bebb527639166d9677ade758f8e0f2edf87d1725c71a498f407e2",
+        "selection": "(FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 9.855504599865526,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "ed233f02b5da68f40ce24232408e0b3fb0be591beab26932561fd1ddfa71fde7",
+        "selection": "(FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 11.23738000006415,
+        "counters": {
+          "executed": "89",
+          "passed": "89",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "ed233f02b5da68f40ce24232408e0b3fb0be591beab26932561fd1ddfa71fde7",
+        "selection": "(FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.268873599823564,
+        "counters": {
+          "executed": "89",
+          "passed": "89",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "a073a9df4e4a02ac292f55123edc5e59ea5909bc18dc52ce4a682378ebdcef61",
+        "selection": "(FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 11.814135099994019,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-routine",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "a073a9df4e4a02ac292f55123edc5e59ea5909bc18dc52ce4a682378ebdcef61",
+        "selection": "(FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.488343300065026,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "ed233f02b5da68f40ce24232408e0b3fb0be591beab26932561fd1ddfa71fde7",
+        "selection": "FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests",
+        "exitCode": 0,
+        "seconds": 8.710320000071079,
+        "counters": {
+          "executed": "96",
+          "passed": "96",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "ed233f02b5da68f40ce24232408e0b3fb0be591beab26932561fd1ddfa71fde7",
+        "selection": "FullyQualifiedName~SvgEmptyFilterGroupTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPatternDeviceTests",
+        "exitCode": 0,
+        "seconds": 10.259676600107923,
+        "counters": {
+          "executed": "96",
+          "passed": "96",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "a073a9df4e4a02ac292f55123edc5e59ea5909bc18dc52ce4a682378ebdcef61",
+        "selection": "FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests",
+        "exitCode": 0,
+        "seconds": 10.225331299938262,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "after-complete",
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "a073a9df4e4a02ac292f55123edc5e59ea5909bc18dc52ce4a682378ebdcef61",
+        "selection": "FullyQualifiedName~SvgContainedMaskClipReferenceTests|FullyQualifiedName~SvgEmptyContourReferenceTests|FullyQualifiedName~SvgFractionalMaskRegionReferenceTests|FullyQualifiedName~SvgInheritedClipReferenceTests|FullyQualifiedName~SvgLineMarkerReferenceTests|FullyQualifiedName~SvgMarkerPaintBindingReferenceTests|FullyQualifiedName~SvgMaskClipReferenceTests|FullyQualifiedName~SvgOwnClipReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgSourceVisibilityReferenceTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests",
+        "exitCode": 0,
+        "seconds": 10.151625100057572,
+        "counters": {
+          "executed": "150",
+          "passed": "150",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "guard",
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "ed233f02b5da68f40ce24232408e0b3fb0be591beab26932561fd1ddfa71fde7",
+        "selection": "FullyQualifiedName~RejectFontProgramSourceProviderTests",
+        "exitCode": 0,
+        "seconds": 7.591444100020453,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "phase": "guard",
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d",
+        "testAssemblySha256": "ed233f02b5da68f40ce24232408e0b3fb0be591beab26932561fd1ddfa71fde7",
+        "selection": "FullyQualifiedName~RejectFontProgramSourceProviderTests",
+        "exitCode": 0,
+        "seconds": 11.703269699821249,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "routineBeforeAfter": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforeProjectProcessSeconds": 19.989070100011304,
+        "afterProjectProcessSeconds": 24.529323799768463
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforeProjectProcessSeconds": 23.04628419969231,
+        "afterProjectProcessSeconds": 23.956150399986655
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "beforeProjectProcessSeconds": 19.821851699845865,
+        "afterProjectProcessSeconds": 23.051515100058168
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "beforeProjectProcessSeconds": 19.365727899828926,
+        "afterProjectProcessSeconds": 20.75721689988859
+      }
+    ],
+    "timingScope": "Sum of core/visual process wall times, including discovery and TRX. Concurrent host/runtime work and single observations; this cleanup establishes no development or renderer speedup.",
+    "policy": "Routine/full affected cases and two semantic guards run on Windows/Linux and both supported runtimes against exact renderer assets, followed by full primary CI. All old case identities and multiplicity join; no new test framework or assertion batching."
+  },
+  "productionQualification": {
+    "evidence": "filter-input-demand.json",
+    "runtimeSourceCommit": "8f50e149946af76ff69ba42dfdd983d78abeee9b",
+    "librarySha256": {
+      "net11.0": "7b7246c154973dc2b528a5df1ece5466ace3644dde5de5f8b9a73c7b8042d5e8",
+      "net10.0": "4d82ddc295fe097fb185d72b3cf8502f039541d3e1bdfe39d76d11c531965e0d"
+    },
+    "packagesRegenerated": false,
+    "originalsReplayedAgain": false,
+    "reason": "Test-only setup extraction retains exact qualified libraries. Production and original SVG outcomes/context replay remain bound by originals.currentReview and the existing renderer qualification."
+  },
+  "ci": {
+    "runId": 41993429128,
+    "sourceCommit": "9f103885666472a1cb676dfa102b792ccb96d5a6",
+    "terminalClosed": true,
+    "jobs": {
+      "linux": {
+        "jobId": 127130827512,
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47699,
+            "total": 47699
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73566,
+            "total": 73566
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12884,
+            "total": 12884
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "fae8f4e1b6db7ec96429d4a3851e50e97d618bd2c71d1f182cf70fa30c7a2706"
+      },
+      "windows": {
+        "jobId": 127130827667,
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47699,
+            "total": 47699
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73565,
+            "total": 73566
+          }
+        ],
+        "logSha256": "e7efd3b1f40db1f1c1b403b20b90d865bae47f103e3ea4a766e1bf06e90949a7"
+      }
+    },
+    "boundary": "Ubuntu full/compatibility/tools/package gates pass. Windows retains solely the unchanged frozen DejaVu discrepancy; preserve its reference and assertion."
+  },
+  "remaining": "Remaining ownership/font setup, responsibility classification, color/filter consumer matrices, scene/layer work, original static admission, historical provenance and quiet-VM performance."
+}

@@ -50,6 +50,10 @@ All backgrounds, direct kernels, original assertion bodies and exact targets rem
 37 native rendering inputs from seven routine and 30 extended output matrices.
 [Raster ownership setup](raster-ownership.json) shares the parse-once lifetime
 across 28 contracts while retaining all 42 affected cases and distinct allowances.
+[Font-free setup](font-free-setup.json) shares 19 stateless rejection providers
+at 21 construction sites while preserving each message, synchronous failure and
+cancellation policy. All 246 original affected cases remain; two direct guards
+protect the helper's two policies independently of rendering fixtures.
 [Test selection](test-selection.json) separates Research from responsibility layers
 and preserves the relocated background witness, full cases and .NET 10 selection.
 [Filter/mask responsibilities](filter-test-responsibilities.json) classifies 22 mixed
