@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgClipPolygonTests
 {
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Triangle_clip_trims_stroked_path()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><clipPath id='t'><path d='M0,0 L16,8 L0,16 Z'/></clipPath></defs><path d='M0,8 L16,8' fill='none' stroke='red' stroke-width='4' clip-path='url(#t)'/></svg>", out int width, out int height);
@@ -20,6 +21,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Translated_triangle_clip_trims_stroked_path()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><clipPath id='t'><path d='M0,0 L16,8 L0,16 Z' transform='translate(-4,0)'/></clipPath></defs><path d='M0,8 L16,8' fill='none' stroke='red' stroke-width='4' clip-path='url(#t)'/></svg>", out _, out _);
@@ -29,6 +31,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Two_triangle_clip_unites_disjoint_halves()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V4 H0 Z M0,4 H8 V8 H0 Z'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -39,6 +42,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Overlapping_clips_paint_opaque_nonzero_union()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V4 H0 Z M0,2 H8 V6 H0 Z'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -50,6 +54,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Evenodd_disjoint_clips_keep_holes()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><path d='M0,0 L10,0 L0,10 Z M0,32 L0,22 L10,32 Z'/></clipPath></defs><path d='M0,0 L32,0 L0,32 Z M12,12 L18,12 L12,18 Z' fill='red' fill-rule='evenodd' clip-path='url(#c)'/></svg>", out _, out _);
@@ -60,6 +65,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rect_path_clip_matches_rect_element_clip()
     {
         byte[] element = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -69,6 +75,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Triangle_clip_keeps_viewbox_mapping()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='t'><path d='M0,0 L16,8 L0,16 Z'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#t)'/></svg>", out _, out _);
@@ -78,6 +85,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Unreferenced_multi_contour_clip_parses()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H4 V4 H0 Z M5,5 H8 V8 H5 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", out _, out _);
@@ -85,6 +93,7 @@ public sealed class SvgClipPolygonTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Unreferenced_mixed_rectangle_path_clip_preserves_ordinary_paint()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='1' y='1' width='2' height='2'/><path d='M0,0 H8 V8 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", out int width, out int height);
@@ -93,6 +102,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Unreferenced_normalized_path_clip_preserves_ordinary_paint()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><path d='M0,0 H1 V1 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", out int width, out int height);
@@ -101,6 +111,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("", false)]
     [InlineData("M0,0 H8 V4 H0 Z M1,1 Z", false)]
     [InlineData("M0,0 H8 V4 H0 Z M0,0 H8 V8 H4 V4 H0 Z", false)]
@@ -114,6 +125,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("")]
     [InlineData("M1 1")]
     [InlineData("M0 0L8 8")]
@@ -125,6 +137,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Clip_path_source_stroke_is_constructed_only_for_an_ordinary_use()
     {
         string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path id='p' d='M0 0H4V8H0' stroke='url(#missing)'/></clipPath></defs>";
@@ -136,6 +149,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(true)]
     [InlineData(false)]
     public void Clip_child_path_ids_share_ordinary_definition_uniqueness(bool clipFirst)
@@ -147,6 +161,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("M0 0H8V8H4V4H0Z", false)]
     [InlineData("M0 0L8 0L16 0Z", true)]
     public void Single_native_contours_preserve_concave_coverage_and_collinear_empty_coverage(string path, bool empty)
@@ -158,6 +173,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Translated_group_shares_clip_space()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='t'><path d='M0,0 L8,4 L0,8 Z'/></clipPath></defs><g transform='translate(1,0)'><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#t)'/></g></svg>", out _, out _);
@@ -167,6 +183,7 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Shape_use_leaves_polygon_clip_intact()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='t'><path d='M0,0 L8,4 L0,8 Z'/></clipPath><rect id='r' width='2' height='2' fill='red'/></defs><use href='#r'/><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#t)'/></svg>", out _, out _);

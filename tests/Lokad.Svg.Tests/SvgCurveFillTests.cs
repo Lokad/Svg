@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCurveFillTests
 {
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Quadratic_arch_fills_below_curve()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4,-8 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -19,6 +20,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Implicit_close_matches_explicit_close()
     {
         byte[] closed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4,-8 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -28,6 +30,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Cubic_smooth_command_renders()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 S4,0 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -37,6 +40,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Twin_arc_full_circle_renders()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 A8,8 0 1 1 16,8 A8,8 0 1 1 0,8 Z' fill='red'/></svg>", out _, out _);
@@ -47,6 +51,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Arc_under_anisotropic_transform_retains_the_source_ellipse()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><g transform='scale(2,1)'><path d='M0,4 A4,4 0 1 1 8,4 A4,4 0 1 1 0,4 Z' fill='red'/></g></svg>");
@@ -59,6 +64,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Integral_decimal_cubic_matches_integer_spelling()
     {
         byte[] integer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 C3,0 6,0 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -68,6 +74,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Integral_exponent_quadratic_matches_integer_spelling()
     {
         byte[] integer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -77,6 +84,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_quadratic_side_control_fills_sliver()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4.5,0 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -88,6 +96,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Exponent_quadratic_outside_control_fills_triangle()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q10,0 1e-1,8 Z' fill='red'/></svg>", out _, out _);
@@ -97,6 +106,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_cubic_arch_fills_below_curve()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 C3.5,0 6,0 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -106,6 +116,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Curve_under_nonuniform_output_mapping_renders_from_retained_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>");
@@ -117,6 +128,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Nonuniform_curve_fallback_requires_source_commands_and_preserves_scene_ownership()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>"u8.ToArray();
@@ -139,6 +151,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Curve_under_skew_transform_renders()
     {
         // Arc-free curve fills map through the general device transform, so a skewed quad renders instead of denying on uniformity.
@@ -150,6 +163,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Straight_triangle_renders_under_nonuniform_output_mapping()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out int width, out int height);
@@ -162,6 +176,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_curve_fill_paints_nothing()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C0,0 0,0 0,0 Z' fill='red'/></svg>", out _, out _);
@@ -170,6 +185,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_open_dash_matches_direct_dash()
     {
         byte[] fractional = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,4 L8,4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2 2'/></svg>", out _, out _);
@@ -179,6 +195,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Mixed_curve_degenerate_drops_line_untouched()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4,0 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -189,6 +206,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Curve_command_count_exceeds_small_limit()
     {
         SvgRenderLimits limits = new(16777216, 16384, 16777216, 134217728, 100000, 3);
@@ -201,6 +219,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Flattened_expansion_beyond_capacity_stays_bounded()
     {
         SvgRenderLimits limits = new(16777216, 16384, 16777216, 134217728, 100000, 3000);
@@ -214,6 +233,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_circle_fill_matches_direct_circle()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='red'/></svg>", out _, out _);
@@ -223,6 +243,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_arc_path_matches_direct_arc_path()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><path d='M1,4 A3,3 0 1 1 7,4 A3,3 0 1 1 1,4 Z' fill='red'/></svg>", out _, out _);
@@ -232,6 +253,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_quadratic_fill_matches_direct_quadratic()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -241,6 +263,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_cubic_fill_matches_direct_cubic()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><path d='M0,8 C3,0 6,0 8,8 Z' fill='red'/></svg>", out _, out _);
@@ -250,6 +273,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_viewBox_curve_matches_direct_rendering()
     {
         SvgRenderOptions magnified = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default, null);
@@ -260,6 +284,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_viewport_curve_matches_direct_rendering()
     {
         byte[] nested = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><svg x='32' y='32' width='64' height='64' viewBox='0 0 8 8'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg></svg>", out _, out _);
@@ -268,6 +293,7 @@ public sealed class SvgCurveFillTests
         Assert.Equal(direct, nested);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_circle_stroke_matches_direct_stroke()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='none' stroke='red' stroke-width='1'/></svg>", out _, out _);
@@ -276,6 +302,7 @@ public sealed class SvgCurveFillTests
         Assert.Equal(direct, scaled);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_circle_fill_under_nonuniform_output_mapping_renders_from_retained_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 32 64' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><circle cx='16' cy='32' r='12' fill='url(#g)'/></svg>");
@@ -287,6 +314,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_circle_fill_under_nonuniform_output_mapping_renders_from_retained_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 32 64' preserveAspectRatio='none'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><circle cx='16' cy='32' r='12' fill='url(#g)'/></svg>");
@@ -298,6 +326,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Curved_bowtie_keeps_authored_crossing_coverage()
     {
         // Fresh pinned Chrome 153.0.8010.52 captures record alpha 130 at (3,3)
@@ -318,6 +347,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_self_intersecting_path_paints_union()
     {
         // Authored self-crossings retain their directed winding through clipping.
@@ -332,6 +362,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_path_inline_width_matches_direct_attribute()
     {
         // Inline stroke widths and presentation attributes use the same cascade
@@ -343,6 +374,7 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotated_fractional_triangle_paints_union()
     {
         // Rotation maps vertices through the general affine carrier while

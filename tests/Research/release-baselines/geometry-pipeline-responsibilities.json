@@ -1,0 +1,502 @@
+{
+  "status": "Complete191-method geometry-pipeline cohort classified without changing a body,input,provider or assertion. All238 cases retain128 direct mechanisms,50 API/ownership contracts and60 document rendering cases. Full CI pending.",
+  "source": {
+    "baseCommit": "7405c17dea579db1121077a61ebbb130dd480a7f",
+    "files": [
+      {
+        "path": "../../Lokad.Svg.Tests/SvgAffineTransformTests.cs",
+        "beforeLfSha256": "7fc3ff38ba153b49fbaa8a313813be59cb9623417c71eac3f5904579143645b5",
+        "afterLfSha256": "93b0c218c9c9097426b1e545f2bbb9a9cab2ebacba21379a05cf099725a6650c",
+        "onlyAssignedLayerLabelsChanged": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgEllipticalArcTests.cs",
+        "beforeLfSha256": "2c26248896068f8e6bc45b1c64da9c3ad9425189e95153d95f8af529cb901556",
+        "afterLfSha256": "28dcb9d339641a7766a504f16760c70b1666f3ca41cb7822c6b905d4166473de",
+        "onlyAssignedLayerLabelsChanged": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgCurveFlattenTests.cs",
+        "beforeLfSha256": "014f7d750918da33dc9fb09d6aa96a548f7ae60e368a6e4a77e67ad26438f619",
+        "afterLfSha256": "f0d300450324cc2b88beacc6d25b3c8543db7bccc799c4823e15ba0feb2ea7fd",
+        "onlyAssignedLayerLabelsChanged": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgStrokeOutlineTests.cs",
+        "beforeLfSha256": "bc343ab3dfa8bfe1e622a67ca146dde9ee2831f1dfcdecbf41cc3a534f3e82ca",
+        "afterLfSha256": "d953a7a5a8eacbcea17a515e2a30ce7bb225aa732f51249caebb8866791e7537",
+        "onlyAssignedLayerLabelsChanged": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgAuthoredPathTests.cs",
+        "beforeLfSha256": "7bc2241c72c0f3a24e278058632270263c70b09f71707a4373ab953c5327ad7a",
+        "afterLfSha256": "6baf024bab312ad4009bc6ff4ef5c44b282f62ebd241175b322cb948af483af5",
+        "onlyAssignedLayerLabelsChanged": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgClipPolygonTests.cs",
+        "beforeLfSha256": "e76932ec0da38fd97f331436d0e80e64e9dd41b21bab5066b1d3ced719559fbd",
+        "afterLfSha256": "bee6a6d36739719cbb5daf7f3302d365ad86e5ae9103583b6a8c20c542c7ea78",
+        "onlyAssignedLayerLabelsChanged": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgCubicSpanRetentionTests.cs",
+        "beforeLfSha256": "815ff7e0f995eecd0fef38c1164d82a9fdf9b5a361c57d00c2917ff9ef3e353b",
+        "afterLfSha256": "ca50b0fc3cd6f801a79c7626635eaffc4244252b311473742a1f914d5bb2a2e1",
+        "onlyAssignedLayerLabelsChanged": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgCubicSpanWalkerTests.cs",
+        "beforeLfSha256": "2a0dcac8229b95f78243e51cb7cc5af7608396615d9813069e821d6c22af0254",
+        "afterLfSha256": "2e5c645dfa9723f5984a5e60f8dd96be75ce13b76cddb6c103b58d9447fab24a",
+        "onlyAssignedLayerLabelsChanged": true
+      },
+      {
+        "path": "../../Lokad.Svg.Tests/SvgCurveFillTests.cs",
+        "beforeLfSha256": "9aa6b172474f93815c4c92af227db4ab12de53a7c6864723ba68941a439f0197",
+        "afterLfSha256": "8944bb151acfc0b7f53c15e59462c2f31fae1ea91401b0fcd9171601e1877fb5",
+        "onlyAssignedLayerLabelsChanged": true
+      }
+    ],
+    "only191MethodLayerLabelsChanged": true,
+    "productionProvidersFixturesReferencesLicensesUnchanged": true
+  },
+  "groups": [
+    {
+      "type": "Lokad.Svg.Tests.SvgAffineTransformTests",
+      "roles": {
+        "Mechanism": 25
+      },
+      "contractMethods": []
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgEllipticalArcTests",
+      "roles": {
+        "Mechanism": 25,
+        "Contract": 1
+      },
+      "contractMethods": [
+        "SampleFull_precancelled_token_throws"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgCurveFlattenTests",
+      "roles": {
+        "Mechanism": 21,
+        "Contract": 1
+      },
+      "contractMethods": [
+        "Precancelled_token_throws"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgStrokeOutlineTests",
+      "roles": {
+        "Mechanism": 26,
+        "Contract": 1
+      },
+      "contractMethods": [
+        "Cancelled_strokes_throw"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgAuthoredPathTests",
+      "roles": {
+        "Contract": 12,
+        "Rendering": 4,
+        "Mechanism": 3
+      },
+      "contractMethods": [
+        "Bitmap_border_curves_preserve_all_six_outputs",
+        "Contained_bitmap_curves_preserve_all_six_outputs",
+        "Contained_bitmap_mapping_denial_releases_scratch_and_preserves_source_curves",
+        "Denied_bitmap_curve_construction_releases_scratch_and_preserves_borrowed_sources",
+        "Integer_contact_replay_preserves_contours_with_a_small_scratch_budget",
+        "Directed_contacts_render_through_six_public_outputs",
+        "Directed_contact_admission_releases_partial_storage_after_memory_denial",
+        "Cancelled_even_odd_replay_releases_storage_and_preserves_the_token",
+        "Denied_crossing_replay_keeps_its_authored_owner_and_releases_scratch",
+        "Repeated_instances_keep_independent_authored_storage_and_release_it",
+        "Denied_authored_copy_releases_its_replacement_and_preserves_the_source",
+        "Denied_endpoint_arc_replay_releases_scratch_and_can_retry"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgClipPolygonTests",
+      "roles": {
+        "Rendering": 15,
+        "Contract": 2
+      },
+      "contractMethods": [
+        "Clip_path_source_stroke_is_constructed_only_for_an_ordinary_use",
+        "Clip_child_path_ids_share_ordinary_definition_uniqueness"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgCubicSpanRetentionTests",
+      "roles": {
+        "Mechanism": 13
+      },
+      "contractMethods": []
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgCubicSpanWalkerTests",
+      "roles": {
+        "Contract": 2,
+        "Mechanism": 8
+      },
+      "contractMethods": [
+        "Convex_cubic_reserves_both_live_monotonic_edges_before_allocation",
+        "Convex_cubic_denial_releases_storage_and_allows_retry"
+      ]
+    },
+    {
+      "type": "Lokad.Svg.Tests.SvgCurveFillTests",
+      "roles": {
+        "Rendering": 29,
+        "Contract": 3
+      },
+      "contractMethods": [
+        "Nonuniform_curve_fallback_requires_source_commands_and_preserves_scene_ownership",
+        "Curve_command_count_exceeds_small_limit",
+        "Flattened_expansion_beyond_capacity_stays_bounded"
+      ]
+    }
+  ],
+  "inventory": {
+    "methods": 5128,
+    "sourceFiles": 731,
+    "coreMethods": 4678,
+    "visualMethods": 450,
+    "coreRoles": {
+      "Unclassified": 1207,
+      "Mechanism": 1728,
+      "Contract": 685,
+      "Rendering": 1057,
+      "Integrity": 1
+    },
+    "visualUnclassified": 277,
+    "assignedMethods": 191,
+    "methodRoles": {
+      "Mechanism": 121,
+      "Contract": 22,
+      "Rendering": 48
+    },
+    "caseRoles": {
+      "Mechanism": 128,
+      "Contract": 50,
+      "Rendering": 60
+    },
+    "fastCasesAdded": 178,
+    "fastCasesRemoved": 0,
+    "fastEligibility": 20622
+  },
+  "compiledBodies": [
+    {
+      "framework": "net11.0",
+      "methods": 13263,
+      "identicalBodies": true,
+      "methodBodyIdentitySha256": "1b91dc93f02226eef91cdc7b3750d82f9bf9553416467651467b032b00f9d26d"
+    },
+    {
+      "framework": "net10.0",
+      "methods": 13263,
+      "identicalBodies": true,
+      "methodBodyIdentitySha256": "1b91dc93f02226eef91cdc7b3750d82f9bf9553416467651467b032b00f9d26d"
+    }
+  ],
+  "identities": {
+    "cohort": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "cases": 238,
+        "beforeAfterIdentitySha256": "eb2f56e572af2cf9a17a51d084b2cf31adaf09643c9a0faa86b54823b1cc4a64",
+        "allIdentitiesAndMultiplicitiesRetained": true
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "cases": 238,
+        "beforeAfterIdentitySha256": "eadfc1231b4ff64536f4ae6c78687b4184d5f52ea38acbb9266bd97c9fa6345c",
+        "allIdentitiesAndMultiplicitiesRetained": true
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "cases": 238,
+        "beforeAfterIdentitySha256": "eb2f56e572af2cf9a17a51d084b2cf31adaf09643c9a0faa86b54823b1cc4a64",
+        "allIdentitiesAndMultiplicitiesRetained": true
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "cases": 238,
+        "beforeAfterIdentitySha256": "eadfc1231b4ff64536f4ae6c78687b4184d5f52ea38acbb9266bd97c9fa6345c",
+        "allIdentitiesAndMultiplicitiesRetained": true
+      }
+    ],
+    "fast": [
+      {
+        "host": "windows",
+        "beforeCases": 20444,
+        "afterCases": 20622,
+        "addedCases": 178,
+        "lostCases": 0,
+        "beforeIdentitySha256": "76487944370ea92a8babbbcb24b4a53d6103b57f35cb431d86f53b7fff23c413",
+        "afterIdentitySha256": "78c2d946573b586448a2b57b00f80f87cc7fbee8069a053d80417d4c09025106"
+      },
+      {
+        "host": "linux",
+        "beforeCases": 20444,
+        "afterCases": 20622,
+        "addedCases": 178,
+        "lostCases": 0,
+        "beforeIdentitySha256": "3434a49b8e45b5a5dae37da04a2c8a63a692266cff6bc11d365d0688a4d02381",
+        "afterIdentitySha256": "767598504673b43948b36847c3bf7697247f71e90294e6ace87953ee70de0549"
+      }
+    ]
+  },
+  "validation": [
+    {
+      "stage": "before-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "033baba1ade727f817a2a23281840415d1bfe8d97ae76c2eb63a49a035d6badb",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 10.976274100132287,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "033baba1ade727f817a2a23281840415d1bfe8d97ae76c2eb63a49a035d6badb",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 11.629056500038132,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "80acb41ae8ef894e15611bd511bb9c175653f80dc032ae7ae7ae5229c0003041",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 18.591626799898222,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "80acb41ae8ef894e15611bd511bb9c175653f80dc032ae7ae7ae5229c0003041",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 31.092756900005043,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "c62e5747d4102400fa0b09fc281d5518ac186f9aa060b3864f56e335b7f9db05",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 10.081488899886608,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "before-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "c62e5747d4102400fa0b09fc281d5518ac186f9aa060b3864f56e335b7f9db05",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 11.784097300143912,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "acc88efb7fc4d161b1b208d73aa25027d63b43afa1245c645713b4b858731d52",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 18.49901849986054,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "after-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0",
+      "testAssemblySha256": "acc88efb7fc4d161b1b208d73aa25027d63b43afa1245c645713b4b858731d52",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 31.306675400119275,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "repeat-before-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "033baba1ade727f817a2a23281840415d1bfe8d97ae76c2eb63a49a035d6badb",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 19.023204599972814,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "repeat-before-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "033baba1ade727f817a2a23281840415d1bfe8d97ae76c2eb63a49a035d6badb",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 36.06691289995797,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "repeat-after-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "80acb41ae8ef894e15611bd511bb9c175653f80dc032ae7ae7ae5229c0003041",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 13.204679899848998,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "repeat-after-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "80acb41ae8ef894e15611bd511bb9c175653f80dc032ae7ae7ae5229c0003041",
+      "selection": "FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgEllipticalArcTests|FullyQualifiedName~SvgCurveFlattenTests|FullyQualifiedName~SvgStrokeOutlineTests|FullyQualifiedName~SvgAuthoredPathTests|FullyQualifiedName~SvgClipPolygonTests|FullyQualifiedName~SvgCubicSpanRetentionTests|FullyQualifiedName~SvgCubicSpanWalkerTests|FullyQualifiedName~SvgCurveFillTests",
+      "exitCode": 0,
+      "seconds": 16.14510089997202,
+      "counters": {
+        "executed": "238",
+        "passed": "238",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "fast-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "80acb41ae8ef894e15611bd511bb9c175653f80dc032ae7ae7ae5229c0003041",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 38.94760089996271,
+      "counters": {
+        "executed": "20622",
+        "passed": "20622",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "fast-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "testAssemblySha256": "80acb41ae8ef894e15611bd511bb9c175653f80dc032ae7ae7ae5229c0003041",
+      "selection": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 46.92032829998061,
+      "counters": {
+        "executed": "20622",
+        "passed": "20622",
+        "failed": "0"
+      }
+    }
+  ],
+  "responsibilities": {
+    "mechanisms": "Direct affine composition/inversion, arc normalization/sampling, curve subdivision, cap/join outlines, retained cubic verbs, authored contour preparation and analytic row reset. Numeric limits and capacity returns stay exhaustive at their own kernels.",
+    "contracts": "Actual scratch admission/refusal, source owners, partial cleanup/retry, original cancellation tokens, scene-preservation admission and the existing six-output authored-replay interactions. Cases are retained because their paths differ.",
+    "rendering": "Complete SVG curve/clip/instance placement, scaled paint and sibling composition through existing canonical conversion and explicit controls. Independent browser-backed visual banks and platform targets remain separate and unchanged.",
+    "mixedCases": "Authored contour kernels that start from parsed scenes remain mechanisms when they directly inspect prepared contours/coverage. Unreferenced clip cases render documents and remain Rendering. Mixed clip-stroke admission and rejection retain their existing contract assertions. No assertion splitting or batching."
+  },
+  "measurementScope": "Functional wall times include discovery/host/TRX and exclude build. The first.NET11 cohort changed10.98/18.59s on Windows and11.63/31.09s on Linux. A sequential repeat using saved before/current after assemblies changed19.02/13.20s and36.07/16.15s respectively. The initial slowdown did not reproduce; host/cache variation prevents a throughput claim. All original measurements remain above.",
+  "renderer": {
+    "qualification": "font-source-await.json",
+    "sourceCommit": "9f9720f02aec86fa5f81a8d2ff2886567df219c6",
+    "librarySha256": {
+      "net11": "dc65e1eeb1afcc3a4f21e1d05ea27aef7de76814274baa69303ca6e186afab56",
+      "net10": "c7bef91e40b3c349143aaea54a79abf357a757580f064b3b1860bf0614f7eed0"
+    },
+    "originalReplay": "Not repeated for label-only changes. Source code, exact qualified production assets and ../svgweb/originals.json#/currentReview remain unchanged."
+  }
+}

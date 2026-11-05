@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCurveFlattenTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Straight_quadratic_emits_single_end_segment()
     {
         SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(8, 0), 0.5);
@@ -13,6 +14,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quadratic_one_subdivision_pins_midpoint()
     {
         SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), 2.0);
@@ -21,6 +23,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quadratic_full_flatness_emits_end_only()
     {
         SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), 8.0);
@@ -29,6 +32,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quadratic_finer_flatness_never_shrinks_output()
     {
         SvgDevicePoint end = new(8, 0);
@@ -45,6 +49,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quadratic_point_curve_emits_end()
     {
         SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(3, 7), new SvgDevicePoint(3, 7), new SvgDevicePoint(3, 7), 0.5);
@@ -53,6 +58,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quadratic_loop_subdivides_and_ends_exactly()
     {
         SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0), 1.0);
@@ -61,6 +67,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Straight_cubic_emits_single_end_segment()
     {
         SvgDevicePoint[] flattened = FlattenCube(new SvgDevicePoint(0, 0), new SvgDevicePoint(2, 0), new SvgDevicePoint(6, 0), new SvgDevicePoint(8, 0), 0.5);
@@ -69,6 +76,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_one_subdivision_pins_midpoint()
     {
         SvgDevicePoint[] flattened = FlattenCube(new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), 3.0);
@@ -77,6 +85,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_full_flatness_emits_end_only()
     {
         SvgDevicePoint[] flattened = FlattenCube(new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), 8.0);
@@ -85,6 +94,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_loop_terminates_with_exact_end()
     {
         SvgDevicePoint[] flattened = FlattenCube(new SvgDevicePoint(0, 0), new SvgDevicePoint(2, 4), new SvgDevicePoint(2, -4), new SvgDevicePoint(4, 0), 0.5);
@@ -94,6 +104,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Straight_quadratic_accepts_tiny_flatness()
     {
         SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(8, 0), double.Epsilon);
@@ -102,6 +113,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Policy_rejects_invalid_bounds()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new SvgFlattenPolicy(double.NaN, 64, 16));
@@ -114,6 +126,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Flatten_rejects_default_policy()
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[16];
@@ -123,6 +136,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Segment_cap_throws_LimitExceeded()
     {
         SvgFlattenPolicy policy = new(0.5, 64, 1);
@@ -132,6 +146,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Buffer_capacity_returns_false()
     {
         SvgFlattenPolicy policy = new(0.5, 64, 256);
@@ -142,6 +157,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Depth_cap_throws_LimitExceeded()
     {
         SvgFlattenPolicy policy = new(0.5, 1, 256);
@@ -151,6 +167,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nonfinite_control_throws_ArgumentOutOfRange()
     {
         SvgFlattenPolicy policy = new(0.5, 64, 256);
@@ -161,6 +178,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Overflowed_deviation_throws_LimitExceeded()
     {
         SvgFlattenPolicy policy = new(0.5, 64, 256);
@@ -170,6 +188,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Degenerate_overflow_throws_LimitExceeded()
     {
         SvgFlattenPolicy policy = new(0.5, 64, 256);
@@ -179,6 +198,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Precancelled_token_throws()
     {
         SvgFlattenPolicy policy = new(0.5, 64, 256);
@@ -190,6 +210,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quadratic_collinear_overshoot_captures_excursion()
     {
         SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 4), new SvgDevicePoint(20, 4), new SvgDevicePoint(8, 4), 0.25);
@@ -199,6 +220,7 @@ public sealed class SvgCurveFlattenTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_collinear_overshoot_captures_excursion()
     {
         SvgDevicePoint[] flattened = FlattenCube(new SvgDevicePoint(0, 4), new SvgDevicePoint(16, 4), new SvgDevicePoint(20, 4), new SvgDevicePoint(8, 4), 0.25);

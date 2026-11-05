@@ -11,6 +11,7 @@ public sealed class SvgAuthoredPathTests
     private const string Retraced = "M4 4 C4 1 20 1 20 4 L20 20 L4 20 L4 4 C4 1 20 1 20 4 L4 20 Z";
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("solid")]
     [InlineData("linear")]
     [InlineData("radial")]
@@ -45,6 +46,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("solid")]
     [InlineData("linear")]
     [InlineData("radial")]
@@ -82,6 +84,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Contained_bitmap_mapping_denial_releases_scratch_and_preserves_source_curves()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
@@ -132,6 +135,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Denied_bitmap_curve_construction_releases_scratch_and_preserves_borrowed_sources()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
@@ -192,6 +196,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false)]
     [InlineData(true)]
     public void Integer_contact_replay_preserves_contours_with_a_small_scratch_budget(bool isEvenOdd)
@@ -216,6 +221,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_joined_rectangle_instances_match_direct_strokes()
     {
         const string definition = "<rect id='p' width='16' height='16'/>";
@@ -226,6 +232,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Authored_stroke_paint_wins_when_the_instance_supplies_join_mechanics()
     {
         string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>";
@@ -235,6 +242,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(".5", "miter")]
     [InlineData(".5", "round")]
     [InlineData("4", "miter")]
@@ -261,6 +269,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(false, false, 255)]
     [InlineData(true, false, 0)]
     [InlineData(false, true, 0)]
@@ -282,6 +291,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<path fill='red' d='" + Contact + "'/>")]
     [InlineData("<path fill='red' fill-rule='evenodd' d='" + Contact + "'/>")]
     [InlineData("<defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><path fill='url(#g)' d='" + Contact + "'/>")]
@@ -318,6 +328,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false, false)]
     [InlineData(true, false)]
     [InlineData(false, true)]
@@ -346,6 +357,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public void Crossing_replay_keeps_original_curves_without_scene_surgery(bool isEvenOdd)
@@ -372,6 +384,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public void Even_odd_replay_keeps_all_authored_contours_including_crossings(bool isEvenOdd)
@@ -397,6 +410,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Cancelled_even_odd_replay_releases_storage_and_preserves_the_token()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
@@ -416,6 +430,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Denied_crossing_replay_keeps_its_authored_owner_and_releases_scratch()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
@@ -439,6 +454,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<defs><path id='p' d='M1.137 2.319 C3.913 1.137 6.619 2.137 7.813 5.319 L2.137 7.619 Z'/></defs><use href='#p' fill='red'/><use href='#p' x='1' fill='blue'/>")]
     [InlineData("<defs><symbol id='p' viewBox='0 0 16 16'>" + Path + "</symbol></defs><use href='#p' width='16' height='16' fill='red'/><use href='#p' width='16' height='16' x='1' fill='blue'/>")]
     [InlineData("<defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><symbol id='p' viewBox='0 0 16 16'><path fill='url(#g)' d='M1.137 2.319 C3.913 1.137 6.619 2.137 7.813 5.319 L2.137 7.619 Z'/></symbol></defs><use href='#p' width='16' height='16'/><use href='#p' width='16' height='16' x='1'/>")]
@@ -460,6 +476,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Object_bounding_box_paint_keeps_scene_coordinates_during_authored_replay()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
@@ -479,6 +496,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Denied_authored_copy_releases_its_replacement_and_preserves_the_source()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));
@@ -500,6 +518,7 @@ public sealed class SvgAuthoredPathTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Denied_endpoint_arc_replay_releases_scratch_and_can_retry()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(268_435_456L));

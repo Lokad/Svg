@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCubicSpanRetentionTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_records_both_controls_with_slice_indices()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -26,6 +27,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_spans_stay_empty_without_retention_with_flattened_points_unchanged()
     {
         SvgContourBuilder plain = new(256, 4);
@@ -44,6 +46,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_path_retains_controls_through_device_transform()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='translate(1,2)'><path d='M0,8 C3,0 6,0 8,8 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -59,6 +62,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Mixed_quad_cubic_path_retains_both_channels()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 Q4,0 8,8 Z M0,0 C2,-4 6,-4 8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -69,6 +73,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Duplicate_cubic_contours_retain_both_directed_spans()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 C3,0 6,0 8,8 Z M0,8 C3,0 6,0 8,8 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -87,6 +92,7 @@ public sealed class SvgCubicSpanRetentionTests
         }
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Dusty_multi_contour_path_retains_both_channels_and_authored_joints()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 Q4,0 8,8 Z M0,0 L0.0000000004,0 C2,-4 6,-4 8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -102,6 +108,7 @@ public sealed class SvgCubicSpanRetentionTests
         Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[cubic.EndIndex]);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Closing_dust_keeps_final_span_and_authored_endpoint()
     {
         // Retaining the directed path keeps the tiny closing joint and its curve;
@@ -124,6 +131,7 @@ public sealed class SvgCubicSpanRetentionTests
         Assert.InRange(geometry.Polygon.Points[closing.EndIndex].Y, double.Epsilon, 1e-9);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quarter_arc_records_kappa_controls_with_slice_indices()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -145,6 +153,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Arc_spans_stay_empty_without_retention_with_sampled_points_unchanged()
     {
         SvgContourBuilder plain = new(256, 4);
@@ -163,6 +172,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Wide_arc_records_no_span_with_sampling_unchanged()
     {
         SvgContourBuilder builder = new(256, 4);
@@ -176,6 +186,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rounded_rect_retains_four_arc_spans_with_tiled_endpoints()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='3' y='3' width='10' height='10' rx='3' fill='black'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -196,6 +207,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Degenerate_rounded_rect_retains_no_arc_spans()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='3' y='3' width='10' height='10' rx='5' fill='black'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -207,6 +219,7 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_controls_map_exactly_through_quarter_turn_matrix()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='matrix(0,1,-1,0,0,0)'><path d='M8,48 C24,8 40,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

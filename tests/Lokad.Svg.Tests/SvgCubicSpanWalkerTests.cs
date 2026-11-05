@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCubicSpanWalkerTests
 {
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Convex_cubic_reserves_both_live_monotonic_edges_before_allocation()
     {
         SvgDevicePoint[] points = [new(8, 48), new(32, 8), new(56, 48)];
@@ -21,6 +22,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false)]
     [InlineData(true, false)]
     [InlineData(true, true)]
@@ -63,6 +65,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("storage")]
     [InlineData("cancel")]
     public void Convex_cubic_denial_releases_storage_and_allows_retry(string deniedPhase)
@@ -132,6 +135,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cubic_spans_substitute_analytic_edges_on_clean_arch()
     {
         using SvgRoot scene = ParseCubicArch(false);
@@ -149,6 +153,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Overlapping_cubic_spans_decline_to_flattened_rows()
     {
         using SvgRoot scene = ParseCubicArch(false);
@@ -165,6 +170,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Evenodd_cubic_spans_decline_to_flattened_rows()
     {
         using SvgRoot scene = ParseCubicArch(true);
@@ -181,6 +187,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Flat_cubic_span_falls_back_to_flattened_rows()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C2,0 6,0 8,0 L8,8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -196,6 +203,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Multi_quad_and_cubic_substitute_per_contour()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -215,6 +223,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Multi_invalid_spans_fall_back_per_contour()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -234,6 +243,7 @@ public sealed class SvgCubicSpanWalkerTests
         Assert.NotEqual(flatHigh, partialHigh);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Multi_cubic_spans_substitute_per_contour()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,30 C20,4 44,4 56,30 Z M8,60 C20,34 44,34 56,60 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

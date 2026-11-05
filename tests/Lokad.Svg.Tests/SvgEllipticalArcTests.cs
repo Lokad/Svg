@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgEllipticalArcTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Zero_radius_falls_back_to_line()
     {
         SvgDevicePoint start = new(1, 2);
@@ -15,6 +16,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Negative_radii_match_positive_radii()
     {
         SvgDevicePoint start = new(0, 0);
@@ -24,6 +26,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Identical_endpoints_omit_arc()
     {
         SvgDevicePoint point = new(3, 5);
@@ -33,6 +36,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Small_radii_scale_up_exactly()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(0, 0), 2, 2, 0, false, true, new SvgDevicePoint(8, 0));
@@ -47,6 +51,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Large_radii_keep_values_on_small_arc()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(0, 0), 8, 8, 0, false, true, new SvgDevicePoint(8, 0));
@@ -59,6 +64,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Large_arc_selects_far_center()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(0, 0), 8, 8, 0, true, true, new SvgDevicePoint(8, 0));
@@ -69,6 +75,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Semicircle_positive_sweep_is_exact()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, true, true, new SvgDevicePoint(-8, 0));
@@ -80,6 +87,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Semicircle_negative_sweep_is_exact()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, true, false, new SvgDevicePoint(-8, 0));
@@ -90,6 +98,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quarter_arc_positive_sweep_is_exact()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
@@ -100,6 +109,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quarter_arc_negative_sweep_wraps()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, false, new SvgDevicePoint(0, 8));
@@ -110,6 +120,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Quarter_turn_rotation_clamps_and_centers()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(0, 0), 8, 4, 90, false, false, new SvgDevicePoint(8, 0));
@@ -121,6 +132,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nonfinite_inputs_are_rejected()
     {
         SvgDevicePoint point = new(1, 2);
@@ -132,18 +144,21 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Extreme_span_overflows_LimitExceeded()
     {
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Arc(new SvgDevicePoint(1e308, 0), 8, 8, 0, false, true, new SvgDevicePoint(-1e308, 0))).ErrorCode);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Huge_endpoint_overflows_correction_LimitExceeded()
     {
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Arc(new SvgDevicePoint(0, 0), 8, 8, 0, false, true, new SvgDevicePoint(1e308, 0))).ErrorCode);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sample_line_appends_end()
     {
         SvgNormalizedArc line = SvgNormalizedArc.CreateLine(new SvgDevicePoint(1, 2), new SvgDevicePoint(7, 8));
@@ -156,6 +171,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sample_quarter_arc_brackets_exact_endpoints()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
@@ -172,6 +188,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sample_finer_flatness_never_shrinks_output()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
@@ -184,6 +201,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sample_segment_cap_throws_LimitExceeded()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
@@ -193,6 +211,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sample_buffer_cap_returns_false()
     {
         SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
@@ -203,6 +222,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void SampleFull_coarse_flatness_yields_cardinals()
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[16];
@@ -217,6 +237,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void SampleFull_fine_flatness_grows_loop()
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];
@@ -232,6 +253,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void SampleFull_rotated_loop_closes()
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];
@@ -244,6 +266,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void SampleFull_rejects_invalid_shapes()
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[16];
@@ -255,6 +278,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void SampleFull_buffer_cap_returns_false()
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[2];
@@ -264,6 +288,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void SampleFull_segment_cap_throws_LimitExceeded()
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[3];
@@ -272,6 +297,7 @@ public sealed class SvgEllipticalArcTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void SampleFull_precancelled_token_throws()
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];

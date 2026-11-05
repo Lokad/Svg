@@ -106,6 +106,10 @@ retaining 669 cases and every compiled body. Fast eligibility gains 616 cases.
 with one local continuation, preserving source/integrity diagnostic origin and
 borrowed bytes. Pending-result controls retain cancellation and snapshot cleanup;
 catalog/source responsibility labels preserve all existing output paths.
+[Geometry pipeline responsibilities](geometry-pipeline-responsibilities.json)
+separates 238 retained mechanism, ownership/API and document rendering cases across
+nine classes, with unchanged bodies and exact identities. Timing repeats retain
+their observed variability; fast eligibility gains 178 cases without removals.
 [Color/filter responsibilities](color-filter-responsibilities.json) retains every
 native input and substantive font-recipe assertion while removing 34 empty recipe
 partitions. It maps numerical, ownership and rendering duties to focused edit

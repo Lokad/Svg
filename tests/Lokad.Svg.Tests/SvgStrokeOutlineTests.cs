@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStrokeOutlineTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Horizontal_band_has_butt_caps()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
@@ -17,6 +18,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Explicit_chord_tangents_match_default_caps()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
@@ -31,6 +33,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Explicit_end_tangent_tilts_butt_cap()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
@@ -43,6 +46,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Horizontal_band_has_square_caps()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
@@ -55,6 +59,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Vertical_band_has_butt_caps()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(0, 8)];
@@ -67,6 +72,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Left_turn_butts_inner_and_ears_outer()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
@@ -79,6 +85,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Reversed_turn_mirrors_the_forward_outline()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0)];
@@ -91,6 +98,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Spike_reversal_bevels_and_retraces_both_chains()
     {
         SvgDevicePoint[] spike = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0)];
@@ -103,6 +111,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sharp_turn_bevels_at_limit_one()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(5, 0), new SvgDevicePoint(1, 3)];
@@ -121,6 +130,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sharp_turn_bevels_with_bevel_join()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(5, 0), new SvgDevicePoint(1, 3)];
@@ -139,6 +149,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sharp_turn_miters_within_limit_four()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(5, 0), new SvgDevicePoint(1, 3)];
@@ -160,6 +171,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Sharp_turn_bevels_at_limit_two()
     {
         // The (0,0)->(5,0)->(1,3) turn has a true miter ratio of sqrt(10) (about 3.16).
@@ -180,6 +192,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Closed_square_emits_opposite_wound_outlines()
     {
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];
@@ -210,6 +223,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Closed_square_with_explicit_closure_matches()
     {
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0)];
@@ -223,6 +237,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Closed_two_point_path_emits_the_outer_sliver_only()
     {
         SvgDevicePoint[] sliver = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
@@ -235,6 +250,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Zero_length_segments_are_skipped()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
@@ -247,6 +263,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Degenerate_input_draws_nothing()
     {
         SvgDevicePoint[] point = [new SvgDevicePoint(3, 3)];
@@ -263,6 +280,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Invalid_arguments_are_rejected()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
@@ -279,6 +297,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Round_cap_extends_half_width_past_tips()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
@@ -294,6 +313,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Round_join_replaces_spike_with_arc()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
@@ -321,6 +341,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Spike_reversal_rounds_tip()
     {
         SvgDevicePoint[] spike = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0)];
@@ -332,6 +353,7 @@ public sealed class SvgStrokeOutlineTests
         Assert.InRange(builder.GetContour(0).ToArray().Select(point => point.X).Max(), 8.75, 9);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Butt_dot_draws_nothing()
     {
         SvgDevicePoint[] dot = [new SvgDevicePoint(4, 6)];
@@ -343,6 +365,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Round_dot_makes_disc_on_half_width_circle()
     {
         SvgDevicePoint center = new(4, 6);
@@ -365,6 +388,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Square_dot_makes_axis_aligned_square()
     {
         SvgDevicePoint[] dot = [new SvgDevicePoint(4, 6)];
@@ -377,6 +401,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Repeated_point_collapses_to_round_dot()
     {
         SvgDevicePoint[] dot = [new SvgDevicePoint(4, 6), new SvgDevicePoint(4, 6), new SvgDevicePoint(4, 6)];
@@ -394,6 +419,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Closed_singleton_draws_nothing()
     {
         SvgDevicePoint[] dot = [new SvgDevicePoint(4, 6)];
@@ -406,6 +432,7 @@ public sealed class SvgStrokeOutlineTests
 
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Cancelled_strokes_throw()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];

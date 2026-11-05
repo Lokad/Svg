@@ -550,6 +550,10 @@ separates direct analytic/contour/conic/bounds checks from their allocation,
 cancellation and output contracts. For paint arithmetic, select
 `FullyQualifiedName~SvgAnalyticPaintTests&Layer=Mechanism`; include its contract
 siblings for preparation/replay changes and affected native images for integration.
+The [geometry pipeline map](Research/release-baselines/geometry-pipeline-responsibilities.json)
+retains all 238 affine/arc/subdivision/outline, authored-replay and curve/clip cases.
+Its direct mechanisms, allocation/API contracts and complete document rendering
+checks remain separately selectable; six-output interactions and native targets stay.
 The [hinting and glyph-coverage map](Research/release-baselines/hinting-test-responsibilities.json)
 retains all 669 direct numerical and lifetime cases across TrueType, Latin-light
 and LCD coverage. Select the affected class with `Layer=Mechanism`, include its

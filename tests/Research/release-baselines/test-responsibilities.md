@@ -52,6 +52,26 @@ integration. During paint arithmetic work, for example, select
 records complete affected selections and observed validation times, without a
 renderer performance claim.
 
+## Geometry pipeline and document integration
+
+The [pipeline responsibility audit](geometry-pipeline-responsibilities.json)
+classifies 191 methods across nine existing classes, retaining all 238 cases:
+128 direct mechanisms, 50 API/ownership contracts and 60 document rendering checks.
+Every compiled core body remains identical on both runtimes; no provider, numeric
+boundary, assertion, source, image or tolerance changes.
+
+Affine/arc/subdivision/outline kernels and retained cubic spans are mechanisms.
+Authored contour preparation and analytic row reset stay direct even when their
+input scene is parsed. Scratch refusal, cancellation, preserved owners and the
+six-output replay interactions remain contracts. Full SVG curve/clip/instance
+placement and sibling composition stay Rendering; their native visual banks remain.
+
+Start a numerical edit with the affected class and `Layer=Mechanism`; include
+`Layer=Contract` for allocation/replay changes and `Layer=Rendering` plus independent
+native references for integration. Fast eligibility adds 178 cases and loses none.
+The first after-run was slower; a saved-assembly repeat reversed that result.
+The qualification retains every observation and makes no throughput claim.
+
 ## Font catalogs and program acquisition
 
 The [source-await qualification](font-source-await.json) keeps all 73 module
