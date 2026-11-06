@@ -1,0 +1,463 @@
+{
+  "status": "51 failing-before inputs are exact without regressing accepted cases or the independent source-context bank. Full primary suites pass except the unchanged frozen Windows DejaVu conflict; affected secondary checks pass.",
+  "sourceBaseCommit": "310ad58839a6c295f55875f774c1c501b83c8819",
+  "causes": {
+    "geometry": "Geometric paint clips were classified within cropped capture storage. Their incoming device domain is distinct from the source-picture viewport domain.",
+    "thinLines": "Scalar rectangle clipping happened after line endpoints had been converted to fixed point. That changes the coverage generated at clipped edges; AA clip wrappers also retain scalar paint rounding."
+  },
+  "correction": "Retain the incoming geometric clip domain on the existing borrowed raster frame, resetting at owned isolation. Keep source-picture viewport classification unchanged. Intersect thin-line construction with the integer rectangle before fixed-point conversion while preserving the bitmap origin; classify its AA paint consumer once per walker.",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/SvgConverter.cs",
+      "sha256": "b7d99dfac14ae6ebcc62125616a3ca19a01d81945b6517c649e465261d943ffc"
+    },
+    {
+      "path": "src/Lokad.Svg/SvgConverter.PolygonRaster.cs",
+      "sha256": "a70c59254fa4d73d10c2e01f97bfd6920b2c8c4957935d33ef989910ff6036af"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgHairlineCoverage.cs",
+      "sha256": "b96ccd8df841e0af37628a57393cbae2676442644b31d33f65efef352e71fa1b"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgAnalyticPaintClipTests.cs",
+      "sha256": "7a4af75af5f233d94a7fdc11ee60c982c077b66ca7dd50b61ac36b918d08c2af"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgHairlineCoverageTests.cs",
+      "sha256": "2f602c0432e5c0511a4edbb69bbee7244d828fe5d545a7eae9ff08737c434c46"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterCaptureStorageTests.cs",
+      "sha256": "aa13408c5f266bc37696211404623be3f2f8d322fea2d08c65280380ea47201c"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/PaintReferenceBank.cs",
+      "sha256": "2c8bd3b4720d78af2d45fde09a851848180385d75089d8f2a814aabb6caf4509"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+      "sha256": "76a46d5694b5aa2f9570d65c93ce40a243a3df754020f3234ff117363d8cfc39"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgFilterSourceContextReferenceTests.cs",
+      "sha256": "4ab546406fb5e83b29b93886b8f6adbcc1daba73c862140b7f3ebb0c446d8262"
+    }
+  ],
+  "nativeMechanism": {
+    "pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "source": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_Antihair.cpp",
+    "sha256": "0ebcb5a161d9d0a1bede8d6b518e9d63803cfce25f51d46b380e4490323ffdd2",
+    "behavior": "AntiHairLineRgn intersects scalar endpoints with the outset integer clip before FDot6 conversion and region dispatch."
+  },
+  "responsibilities": {
+    "mechanisms": "Retain pinned rectangle classification vectors and native line/curve/clip vectors, origin and interior checks, reversal, subdivision and numerical boundaries directly.",
+    "contracts": "Existing filter capture, raster scope and shared scene contracts retain separate execution/allocation paths, budget refusal, cancellation, cleanup and retry. This correction adds no pixel owner.",
+    "rendering": "All 51 failing-before sources retain their own independent browser references and run individually through the existing canonical conversion path. The separate 9230-case source-context bank, including Research, protects viewport and rectangle/path interactions."
+  },
+  "capture": {
+    "path": "../gradient-factory-colors/capture.json",
+    "sha256": "ffc24be6957d2446bfa3c66c229da9887cb9e37b01029aba1db3ea949b076717"
+  },
+  "selection": {
+    "path": "../gradient-factory-colors/resolved-known-differences.json",
+    "sha256": "9c0ba4727bea311a70072bd9f56dec104fd9a2df11896da4bb9c65b94b216624",
+    "resolved": 466,
+    "routine": 199,
+    "research": 267,
+    "open": 33,
+    "admissionBoundaries": 432
+  },
+  "newlyResolvedIds": [
+    "changed-24-candidate-1",
+    "changed-25-candidate-1",
+    "changed-26-candidate-1",
+    "changed-39-control-1",
+    "changed-40-control-1",
+    "changed-43-control-1",
+    "changed-44-control-1",
+    "changed-47-control-1",
+    "changed-48-control-1",
+    "changed-49-candidate-1",
+    "changed-50-candidate-1",
+    "changed-51-candidate-1",
+    "changed-52-candidate-1",
+    "changed-53-control-1",
+    "changed-54-control-1",
+    "changed-67-control-1",
+    "changed-73-control-1",
+    "changed-79-control-1",
+    "changed-82-candidate-1",
+    "changed-83-candidate-1",
+    "changed-84-candidate-1",
+    "changed-85-control-1",
+    "changed-113-candidate-1",
+    "changed-113-control-1",
+    "changed-114-candidate-1",
+    "changed-114-control-1",
+    "changed-115-candidate-1",
+    "changed-115-control-1",
+    "changed-116-candidate-1",
+    "changed-116-control-1",
+    "changed-117-candidate-1",
+    "changed-117-control-1",
+    "changed-142-candidate-1",
+    "changed-142-control-1",
+    "changed-143-candidate-1",
+    "changed-143-control-1",
+    "changed-144-candidate-1",
+    "changed-144-control-1",
+    "changed-145-candidate-1",
+    "changed-145-control-1",
+    "changed-146-candidate-1",
+    "changed-146-control-1",
+    "changed-177-candidate-1",
+    "changed-178-control-1",
+    "changed-179-control-1",
+    "changed-180-candidate-1",
+    "changed-180-control-1",
+    "changed-181-candidate-1",
+    "changed-181-control-1",
+    "changed-182-candidate-1",
+    "changed-182-control-1"
+  ],
+  "historicalReplays": [
+    {
+      "host": "windows",
+      "beforeLibrarySha256": "594d519417737f4ef9d70538f686e304d83140c7f175e5074807fb73f2be016b",
+      "afterLibrarySha256": "97bdba1144b42034e7669e1a8bd3a9fa4b1276f4bd47c5d1a4fb0f4e0c4ae243",
+      "beforeCounts": {
+        "rejected": 432,
+        "exact": 415,
+        "rendered": 84
+      },
+      "afterCounts": {
+        "rejected": 432,
+        "exact": 466,
+        "rendered": 33
+      },
+      "newCaseBeforePixelDifferences": {
+        "changed-24-candidate-1": 78,
+        "changed-25-candidate-1": 54,
+        "changed-26-candidate-1": 53,
+        "changed-39-control-1": 27,
+        "changed-40-control-1": 17,
+        "changed-43-control-1": 27,
+        "changed-44-control-1": 17,
+        "changed-47-control-1": 16,
+        "changed-48-control-1": 9,
+        "changed-49-candidate-1": 38,
+        "changed-50-candidate-1": 37,
+        "changed-51-candidate-1": 35,
+        "changed-52-candidate-1": 35,
+        "changed-53-control-1": 11,
+        "changed-54-control-1": 8,
+        "changed-67-control-1": 20,
+        "changed-73-control-1": 20,
+        "changed-79-control-1": 20,
+        "changed-82-candidate-1": 18,
+        "changed-83-candidate-1": 36,
+        "changed-84-candidate-1": 17,
+        "changed-85-control-1": 16,
+        "changed-113-candidate-1": 78,
+        "changed-113-control-1": 78,
+        "changed-114-candidate-1": 78,
+        "changed-114-control-1": 78,
+        "changed-115-candidate-1": 54,
+        "changed-115-control-1": 54,
+        "changed-116-candidate-1": 53,
+        "changed-116-control-1": 53,
+        "changed-117-candidate-1": 54,
+        "changed-117-control-1": 54,
+        "changed-142-candidate-1": 38,
+        "changed-142-control-1": 38,
+        "changed-143-candidate-1": 37,
+        "changed-143-control-1": 37,
+        "changed-144-candidate-1": 35,
+        "changed-144-control-1": 35,
+        "changed-145-candidate-1": 35,
+        "changed-145-control-1": 35,
+        "changed-146-candidate-1": 36,
+        "changed-146-control-1": 36,
+        "changed-177-candidate-1": 38,
+        "changed-178-control-1": 18,
+        "changed-179-control-1": 31,
+        "changed-180-candidate-1": 36,
+        "changed-180-control-1": 36,
+        "changed-181-candidate-1": 17,
+        "changed-181-control-1": 17,
+        "changed-182-candidate-1": 36,
+        "changed-182-control-1": 36
+      },
+      "retainedExactCases": 415,
+      "afterReceiptSha256": "198044805b2efa2d3c7b00afbe09308726f5d1eb3ca4fbe83948fe6e4dfeed73"
+    },
+    {
+      "host": "linux",
+      "beforeLibrarySha256": "594d519417737f4ef9d70538f686e304d83140c7f175e5074807fb73f2be016b",
+      "afterLibrarySha256": "97bdba1144b42034e7669e1a8bd3a9fa4b1276f4bd47c5d1a4fb0f4e0c4ae243",
+      "beforeCounts": {
+        "rejected": 432,
+        "exact": 415,
+        "rendered": 84
+      },
+      "afterCounts": {
+        "rejected": 432,
+        "exact": 466,
+        "rendered": 33
+      },
+      "newCaseBeforePixelDifferences": {
+        "changed-24-candidate-1": 78,
+        "changed-25-candidate-1": 54,
+        "changed-26-candidate-1": 53,
+        "changed-39-control-1": 27,
+        "changed-40-control-1": 17,
+        "changed-43-control-1": 27,
+        "changed-44-control-1": 17,
+        "changed-47-control-1": 16,
+        "changed-48-control-1": 9,
+        "changed-49-candidate-1": 38,
+        "changed-50-candidate-1": 37,
+        "changed-51-candidate-1": 35,
+        "changed-52-candidate-1": 35,
+        "changed-53-control-1": 11,
+        "changed-54-control-1": 8,
+        "changed-67-control-1": 20,
+        "changed-73-control-1": 20,
+        "changed-79-control-1": 20,
+        "changed-82-candidate-1": 18,
+        "changed-83-candidate-1": 36,
+        "changed-84-candidate-1": 17,
+        "changed-85-control-1": 16,
+        "changed-113-candidate-1": 78,
+        "changed-113-control-1": 78,
+        "changed-114-candidate-1": 78,
+        "changed-114-control-1": 78,
+        "changed-115-candidate-1": 54,
+        "changed-115-control-1": 54,
+        "changed-116-candidate-1": 53,
+        "changed-116-control-1": 53,
+        "changed-117-candidate-1": 54,
+        "changed-117-control-1": 54,
+        "changed-142-candidate-1": 38,
+        "changed-142-control-1": 38,
+        "changed-143-candidate-1": 37,
+        "changed-143-control-1": 37,
+        "changed-144-candidate-1": 35,
+        "changed-144-control-1": 35,
+        "changed-145-candidate-1": 35,
+        "changed-145-control-1": 35,
+        "changed-146-candidate-1": 36,
+        "changed-146-control-1": 36,
+        "changed-177-candidate-1": 38,
+        "changed-178-control-1": 18,
+        "changed-179-control-1": 31,
+        "changed-180-candidate-1": 36,
+        "changed-180-control-1": 36,
+        "changed-181-candidate-1": 17,
+        "changed-181-control-1": 17,
+        "changed-182-candidate-1": 36,
+        "changed-182-control-1": 36
+      },
+      "retainedExactCases": 415,
+      "afterReceiptSha256": "08ccf82d3f80f1cbb488fbdd84e84b22c24eed8027431fc945a633ed4769d243"
+    }
+  ],
+  "beforeSecondaryRendering": [
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "31748f0e2dc800812be45c6e43b4849f79a8c5d54094847a85bafde34452ff11",
+      "testAssemblySha256": "df2ff96055e80708234ed81914f968f6e8407b6ec43f06a0036fd954e33e7da4",
+      "exitCode": 1,
+      "seconds": 22.395360599970445,
+      "counters": {
+        "executed": "9281",
+        "passed": "9230",
+        "failed": "51"
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "31748f0e2dc800812be45c6e43b4849f79a8c5d54094847a85bafde34452ff11",
+      "testAssemblySha256": "df2ff96055e80708234ed81914f968f6e8407b6ec43f06a0036fd954e33e7da4",
+      "exitCode": 1,
+      "seconds": 21.58788020000793,
+      "counters": {
+        "executed": "9281",
+        "passed": "9230",
+        "failed": "51"
+      }
+    }
+  ],
+  "beforeTestBinding": "The first secondary run exposed stale assemblies. Its renderer hash matches the separately qualified restored baseline, providing 51 failing-before assertions per host. Core results from that stale run are excluded. Explicitly rebuilt secondary assemblies own the passing results below.",
+  "fullPrimary": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "7742b27d2793b78f3143ab6a2e16971c1dd20c85a512a9117a77277153f33412",
+      "testAssemblySha256": "5efc2c5bac6e12a44b6fb259c76f82bf6a5484b4b4620b41a8d7b759ede7ee41",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 72.32383510004729,
+      "counters": {
+        "executed": "47991",
+        "passed": "47991",
+        "failed": "0"
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "7742b27d2793b78f3143ab6a2e16971c1dd20c85a512a9117a77277153f33412",
+      "testAssemblySha256": "5efc2c5bac6e12a44b6fb259c76f82bf6a5484b4b4620b41a8d7b759ede7ee41",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 77.7927544999402,
+      "counters": {
+        "executed": "47991",
+        "passed": "47991",
+        "failed": "0"
+      }
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "7742b27d2793b78f3143ab6a2e16971c1dd20c85a512a9117a77277153f33412",
+      "testAssemblySha256": "9820a0107c987b860d2f044a9a8d1969881f48c1106d8d2678a31362c3ea97c9",
+      "selection": "Unfiltered",
+      "exitCode": 1,
+      "seconds": 302.63466360000893,
+      "counters": {
+        "executed": "78841",
+        "passed": "78840",
+        "failed": "1"
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "7742b27d2793b78f3143ab6a2e16971c1dd20c85a512a9117a77277153f33412",
+      "testAssemblySha256": "9820a0107c987b860d2f044a9a8d1969881f48c1106d8d2678a31362c3ea97c9",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 318.87807249999605,
+      "counters": {
+        "executed": "78841",
+        "passed": "78841",
+        "failed": "0"
+      }
+    },
+    {
+      "host": "windows",
+      "kind": "font",
+      "framework": "net11.0",
+      "librarySha256": "7742b27d2793b78f3143ab6a2e16971c1dd20c85a512a9117a77277153f33412",
+      "testAssemblySha256": "e46a291e357d8bd7d546865b9df7faaa70d5eef856ab8188ec23f2a1e7a01e62",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 2.459535100031644,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "font",
+      "framework": "net11.0",
+      "librarySha256": "7742b27d2793b78f3143ab6a2e16971c1dd20c85a512a9117a77277153f33412",
+      "testAssemblySha256": "e46a291e357d8bd7d546865b9df7faaa70d5eef856ab8188ec23f2a1e7a01e62",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 1.208884400082752,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      }
+    }
+  ],
+  "affectedSecondary": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "0a3f435aa1c94ff273fb09492bbf885723d59b46b48d316944bf2f87e71473db",
+      "testAssemblySha256": "c5d04ec316f779e1de5dcc21812fc71337beaff36b55b2f501bd39fc5a0f9627",
+      "selection": "(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgRasterScope|FullyQualifiedName~SvgCapturedCanvas|FullyQualifiedName~SvgAnalyticStorage|FullyQualifiedName~SvgHairline|FullyQualifiedName~SvgAnalyticPaintClip)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 9.099526300095022,
+      "counters": {
+        "executed": "705",
+        "passed": "705",
+        "failed": "0"
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "0a3f435aa1c94ff273fb09492bbf885723d59b46b48d316944bf2f87e71473db",
+      "testAssemblySha256": "c5d04ec316f779e1de5dcc21812fc71337beaff36b55b2f501bd39fc5a0f9627",
+      "selection": "(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgRasterScope|FullyQualifiedName~SvgCapturedCanvas|FullyQualifiedName~SvgAnalyticStorage|FullyQualifiedName~SvgHairline|FullyQualifiedName~SvgAnalyticPaintClip)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 13.98454499989748,
+      "counters": {
+        "executed": "705",
+        "passed": "705",
+        "failed": "0"
+      }
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "0a3f435aa1c94ff273fb09492bbf885723d59b46b48d316944bf2f87e71473db",
+      "testAssemblySha256": "4d19735fd7bf9173a4166aeb71f8b22280f003303ce2185ef89e567453550c2d",
+      "selection": "Full independent source-context class plus 51 individually discovered canonical native cases listed in newlyResolvedIds.",
+      "exitCode": 0,
+      "seconds": 19.33225360000506,
+      "counters": {
+        "executed": "9281",
+        "passed": "9281",
+        "failed": "0"
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "0a3f435aa1c94ff273fb09492bbf885723d59b46b48d316944bf2f87e71473db",
+      "testAssemblySha256": "4d19735fd7bf9173a4166aeb71f8b22280f003303ce2185ef89e567453550c2d",
+      "selection": "Full independent source-context class plus 51 individually discovered canonical native cases listed in newlyResolvedIds.",
+      "exitCode": 0,
+      "seconds": 20.097375800134614,
+      "counters": {
+        "executed": "9281",
+        "passed": "9281",
+        "failed": "0"
+      }
+    }
+  ],
+  "initialReplayBinding": "The historical replay precedes only an explanatory C# comment. Complete primary tests and affected secondary tests bind the final source above.",
+  "broaderQualification": "Matching full CI, deterministic packages/installed consumers, complete secondary suites and SVGWeb original/context replay follow the coherent source commit. Existing broader source bindings remain explicit until then.",
+  "remaining": {
+    "inputs": 33,
+    "evidence": "sampling-symbol-clip-investigation.json",
+    "scope": "Nine instanced-viewport fill interactions and 24 shader/placement interactions require separate investigation. Common quarter-pixel strokes do not establish the cause."
+  },
+  "limits": [
+    "No source SVG, native target, comparison rule, tolerance, public API or text-layout implementation changed.",
+    "Validation times include startup, discovery and concurrent work; they are not renderer-performance or suite-speedup measurements.",
+    "Frozen Windows DejaVu authority remains open."
+  ]
+}

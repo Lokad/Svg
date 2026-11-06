@@ -1,0 +1,392 @@
+{
+  "status": "Open investigation; no sampling-request change or symbol-viewport correction is promoted.",
+  "controls": [
+    {
+      "source": "../gradient-factory-colors/changed-65-candidate-1.svg",
+      "sourceSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+      "reconstruction": "Remove only the outer clip, filter, both, stroke binding, or red fill.",
+      "librarySha256": "d3bea8e60b212a1e90df725b7a06db50cef7d40fc838fdec6a5486a0d8d8bc7c",
+      "chromeToolSha256": "82c672eeb1db607e39cec20d863282518d423c498fbf5195d5e9c6fcac804804",
+      "observations": [
+        {
+          "host": "windows",
+          "name": "original",
+          "inputSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+          "libraryPngSha256": "f6bcdfe85d0c56212f408008a6f2dad259e4cfea263edefe06fc12dbd8a90cd3",
+          "nativePngSha256": "72e0815fb6b926f894c7f8fcc112195e9bb2fd4cdfa315604cd56a99ddcc7cc6",
+          "changedPixels": 39,
+          "alphaChangedPixels": 0,
+          "maximumError": 4,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Frozen original reference."
+        },
+        {
+          "host": "windows",
+          "name": "no-clip",
+          "inputSha256": "930d274dd9f36bb23109366ee5cfbb821824fe0455a28f512bf0ea5ef8b9065e",
+          "libraryPngSha256": "667d08c4ee9e9a2dd63922269c444f26ee684be595db265ef43b1d80a3864673",
+          "nativePngSha256": "a90ccac699e977093759e8568d1d4133abfc94448e4bcbb5555e85a936029118",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "no-filter",
+          "inputSha256": "059b0aee712ce0a1af81ca46b20589e4598b4fd068c7e474c97401909ace654c",
+          "libraryPngSha256": "111e1ed99cdcdb239394cf984d438932f972790d2452cfe6e36e2bd27a3c1e9a",
+          "nativePngSha256": "6e3e92ce14e2d73dee03adfc1a2da9b68598c434a3955c4d81974ccdd6d7ce58",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "neither",
+          "inputSha256": "148b5d7f7957eca813088b41e313fda8277c964f784a371aa71bc3ec3a86327d",
+          "libraryPngSha256": "87144c209b789294497d422d83c4cde8c10fefcf65d9bde103bad34e203aac08",
+          "nativePngSha256": "5e85e18762e56a22e48828fa69a8043e8ea1606d2c86e7c015e2d8698c7d0d4d",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "no-stroke",
+          "inputSha256": "dfd935dc84c479f9d87ee392a44cdb077a5b023762398210c78107a2f9fa4d0d",
+          "libraryPngSha256": "045a9772c094332d6d7fe6895668b3172d3ccac32295abd30c02b327012382f9",
+          "nativePngSha256": "0cf5fa567b4d5acf64ce03d577b3bc60e90acaa4476f119ed2f5e9efbf03b474",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "stroke-only",
+          "inputSha256": "00495c97d8fbbb5f36366bd06f6656e60874caf685c81d6cf00e71b9d9530f90",
+          "libraryPngSha256": "593d59770a359d296400a440fce3315302154b384d269ea057e8a041bbe0d066",
+          "nativePngSha256": "3788e6ddcf4dcf82441a482dba0b9b0ddc91107d4c5be9aa70d4ddc44ac9e42e",
+          "changedPixels": 39,
+          "alphaChangedPixels": 0,
+          "maximumError": 22,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "original",
+          "inputSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+          "libraryPngSha256": "f6bcdfe85d0c56212f408008a6f2dad259e4cfea263edefe06fc12dbd8a90cd3",
+          "nativePngSha256": "72e0815fb6b926f894c7f8fcc112195e9bb2fd4cdfa315604cd56a99ddcc7cc6",
+          "changedPixels": 39,
+          "alphaChangedPixels": 0,
+          "maximumError": 4,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Frozen original reference."
+        },
+        {
+          "host": "linux",
+          "name": "no-clip",
+          "inputSha256": "930d274dd9f36bb23109366ee5cfbb821824fe0455a28f512bf0ea5ef8b9065e",
+          "libraryPngSha256": "667d08c4ee9e9a2dd63922269c444f26ee684be595db265ef43b1d80a3864673",
+          "nativePngSha256": "a90ccac699e977093759e8568d1d4133abfc94448e4bcbb5555e85a936029118",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "no-filter",
+          "inputSha256": "059b0aee712ce0a1af81ca46b20589e4598b4fd068c7e474c97401909ace654c",
+          "libraryPngSha256": "111e1ed99cdcdb239394cf984d438932f972790d2452cfe6e36e2bd27a3c1e9a",
+          "nativePngSha256": "6e3e92ce14e2d73dee03adfc1a2da9b68598c434a3955c4d81974ccdd6d7ce58",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "neither",
+          "inputSha256": "148b5d7f7957eca813088b41e313fda8277c964f784a371aa71bc3ec3a86327d",
+          "libraryPngSha256": "87144c209b789294497d422d83c4cde8c10fefcf65d9bde103bad34e203aac08",
+          "nativePngSha256": "5e85e18762e56a22e48828fa69a8043e8ea1606d2c86e7c015e2d8698c7d0d4d",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "no-stroke",
+          "inputSha256": "dfd935dc84c479f9d87ee392a44cdb077a5b023762398210c78107a2f9fa4d0d",
+          "libraryPngSha256": "045a9772c094332d6d7fe6895668b3172d3ccac32295abd30c02b327012382f9",
+          "nativePngSha256": "0cf5fa567b4d5acf64ce03d577b3bc60e90acaa4476f119ed2f5e9efbf03b474",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "stroke-only",
+          "inputSha256": "00495c97d8fbbb5f36366bd06f6656e60874caf685c81d6cf00e71b9d9530f90",
+          "libraryPngSha256": "593d59770a359d296400a440fce3315302154b384d269ea057e8a041bbe0d066",
+          "nativePngSha256": "3788e6ddcf4dcf82441a482dba0b9b0ddc91107d4c5be9aa70d4ddc44ac9e42e",
+          "changedPixels": 39,
+          "alphaChangedPixels": 0,
+          "maximumError": 22,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        }
+      ]
+    },
+    {
+      "source": "../gradient-factory-colors/changed-46-candidate-1.svg",
+      "sourceSha256": "53be89e0a1bf43ee4231da0da32880aa05979135262dac5f3d3afe6e123e77b6",
+      "reconstruction": "The same controls, plus replace only the symbol declaration with an ordinary group instance; keep its geometry and placement.",
+      "librarySha256": "7742b27d2793b78f3143ab6a2e16971c1dd20c85a512a9117a77277153f33412",
+      "chromeToolSha256": "82c672eeb1db607e39cec20d863282518d423c498fbf5195d5e9c6fcac804804",
+      "observations": [
+        {
+          "host": "windows",
+          "name": "original",
+          "inputSha256": "53be89e0a1bf43ee4231da0da32880aa05979135262dac5f3d3afe6e123e77b6",
+          "libraryPngSha256": "cd02d2a2f1f0306faaf1b4b19b7b76cd570a390ff71244321a6d06c78795aa71",
+          "nativePngSha256": "67f7a78014301ddc6145e38a25a823567d81547612214fce1145029ddf146eba",
+          "changedPixels": 38,
+          "alphaChangedPixels": 37,
+          "maximumError": 3,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Frozen original reference."
+        },
+        {
+          "host": "windows",
+          "name": "no-clip",
+          "inputSha256": "3ce5d1e26f4c77cad560a0f6cc4aa808efe4ca85ac902555409fd1e76c4c04ff",
+          "libraryPngSha256": "fb28073dda3fee564c3966619c0d3b1000b745601fa33ef325a48932ded4ab3b",
+          "nativePngSha256": "dbe0790328fa5ca07da0b372d1cb83a52a079dc876a967faffd9400503202e74",
+          "changedPixels": 58,
+          "alphaChangedPixels": 57,
+          "maximumError": 3,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "no-filter",
+          "inputSha256": "3597adb4a96763933580034df1a86e68effc57ac3917028e1a1702854b681fb0",
+          "libraryPngSha256": "bab04f28c3fe7d478a417fc3114e670e14048261f681df64f0c286fca968ae5a",
+          "nativePngSha256": "b80f9f034cf19d4cff4bd9870440edeb23df9cd3f5e35e4580d0b28376b43ba7",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "neither",
+          "inputSha256": "fa21944852368f2d7b9f59e0aa604aeb8c3fbdc6484488b3e775e909bb004560",
+          "libraryPngSha256": "2a14391bdd7a8799cb1227857c25076e73c77c5abb3554766e98b373a9cca172",
+          "nativePngSha256": "9e70ab1298607cde44edd0e2af7b9253b350ca602ce07b22f6f08038c063edd0",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "no-stroke",
+          "inputSha256": "a80cf68fa537c745cf50c340a95866b0d7ec6a97c5558009ba7b22010e542450",
+          "libraryPngSha256": "045a9772c094332d6d7fe6895668b3172d3ccac32295abd30c02b327012382f9",
+          "nativePngSha256": "d475ce10bc9e8aad6ef8acd1b9d60c909ccd080d6d11c57b104b6b6d9bf55e3a",
+          "changedPixels": 38,
+          "alphaChangedPixels": 38,
+          "maximumError": 1,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "stroke-only",
+          "inputSha256": "743a1fd86a0ba6ff48712f02d9b088f8d95b463ee5550ecd34e802f197e7f4bf",
+          "libraryPngSha256": "898a47bf0871230369e7faecf2f03a78d580e4aae2984edef32466c74fe2a558",
+          "nativePngSha256": "2e3e53b3355587368b9c3a16a5106c0592916b19a980296b7a9b274865360f8d",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "windows",
+          "name": "group-instance",
+          "inputSha256": "243dd1c75eac8c138217c91d47b8b4ecc74a5979cf89d841cff0658d66af148f",
+          "libraryPngSha256": "cd02d2a2f1f0306faaf1b4b19b7b76cd570a390ff71244321a6d06c78795aa71",
+          "nativePngSha256": "f6c55424a7565c3254821356edbed59e92a25ed493a05ac5c0fa91c7ffab299a",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "original",
+          "inputSha256": "53be89e0a1bf43ee4231da0da32880aa05979135262dac5f3d3afe6e123e77b6",
+          "libraryPngSha256": "cd02d2a2f1f0306faaf1b4b19b7b76cd570a390ff71244321a6d06c78795aa71",
+          "nativePngSha256": "67f7a78014301ddc6145e38a25a823567d81547612214fce1145029ddf146eba",
+          "changedPixels": 38,
+          "alphaChangedPixels": 37,
+          "maximumError": 3,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Frozen original reference."
+        },
+        {
+          "host": "linux",
+          "name": "no-clip",
+          "inputSha256": "3ce5d1e26f4c77cad560a0f6cc4aa808efe4ca85ac902555409fd1e76c4c04ff",
+          "libraryPngSha256": "fb28073dda3fee564c3966619c0d3b1000b745601fa33ef325a48932ded4ab3b",
+          "nativePngSha256": "dbe0790328fa5ca07da0b372d1cb83a52a079dc876a967faffd9400503202e74",
+          "changedPixels": 58,
+          "alphaChangedPixels": 57,
+          "maximumError": 3,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "no-filter",
+          "inputSha256": "3597adb4a96763933580034df1a86e68effc57ac3917028e1a1702854b681fb0",
+          "libraryPngSha256": "bab04f28c3fe7d478a417fc3114e670e14048261f681df64f0c286fca968ae5a",
+          "nativePngSha256": "b80f9f034cf19d4cff4bd9870440edeb23df9cd3f5e35e4580d0b28376b43ba7",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "neither",
+          "inputSha256": "fa21944852368f2d7b9f59e0aa604aeb8c3fbdc6484488b3e775e909bb004560",
+          "libraryPngSha256": "2a14391bdd7a8799cb1227857c25076e73c77c5abb3554766e98b373a9cca172",
+          "nativePngSha256": "9e70ab1298607cde44edd0e2af7b9253b350ca602ce07b22f6f08038c063edd0",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "no-stroke",
+          "inputSha256": "a80cf68fa537c745cf50c340a95866b0d7ec6a97c5558009ba7b22010e542450",
+          "libraryPngSha256": "045a9772c094332d6d7fe6895668b3172d3ccac32295abd30c02b327012382f9",
+          "nativePngSha256": "d475ce10bc9e8aad6ef8acd1b9d60c909ccd080d6d11c57b104b6b6d9bf55e3a",
+          "changedPixels": 38,
+          "alphaChangedPixels": 38,
+          "maximumError": 1,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "stroke-only",
+          "inputSha256": "743a1fd86a0ba6ff48712f02d9b088f8d95b463ee5550ecd34e802f197e7f4bf",
+          "libraryPngSha256": "898a47bf0871230369e7faecf2f03a78d580e4aae2984edef32466c74fe2a558",
+          "nativePngSha256": "2e3e53b3355587368b9c3a16a5106c0592916b19a980296b7a9b274865360f8d",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        },
+        {
+          "host": "linux",
+          "name": "group-instance",
+          "inputSha256": "243dd1c75eac8c138217c91d47b8b4ecc74a5979cf89d841cff0658d66af148f",
+          "libraryPngSha256": "cd02d2a2f1f0306faaf1b4b19b7b76cd570a390ff71244321a6d06c78795aa71",
+          "nativePngSha256": "f6c55424a7565c3254821356edbed59e92a25ed493a05ac5c0fa91c7ffab299a",
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "nativeCaptureCount": 3,
+          "nativeAuthority": "Three fresh healthy agreeing image-element captures."
+        }
+      ]
+    }
+  ],
+  "conclusions": {
+    "shader": "The gradient witness differs in color only with both clip and filter; removing either or removing the stroke is exact. Stroke-only retains the color difference with identical alpha. A bounded dither-phase diagnostic reproduces its native pixels, establishing a phase interaction without justifying a phase offset in production.",
+    "symbol": "The symbol witness still differs without its stroke, while stroke-only is exact. Removing the filter or changing only the symbol declaration to an ordinary group instance is exact. Its mere quarter-pixel-stroke commonality did not establish a hairline cause.",
+    "model": "Keep source-picture viewport classification, incoming geometric paint clipping, owned layer bounds, source-image requests and compact ink storage distinct. Both independent banks must remain exact."
+  },
+  "phaseDiagnostic": {
+    "source": "../gradient-factory-colors/changed-65-candidate-1.svg",
+    "sourceSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+    "referenceSha256": "72e0815fb6b926f894c7f8fcc112195e9bb2fd4cdfa315604cd56a99ddcc7cc6",
+    "baseline": {
+      "phase": "0-0",
+      "changedPixels": 39
+    },
+    "best": {
+      "phase": "0-1",
+      "changedPixels": 0
+    },
+    "purpose": "Finite diagnostic only; no environment switch or fixed phase adjustment remains in production."
+  },
+  "rejectedSamplingExperiment": {
+    "change": "Use the complete retained clip tape, rather than its shortened paint window, to seed source-image requests; keep geometry capture unchanged.",
+    "baselineLibrarySha256": "97bdba1144b42034e7669e1a8bd3a9fa4b1276f4bd47c5d1a4fb0f4e0c4ae243",
+    "candidateLibrarySha256": "277fb1540f872d0b23d620ee56ecad6384b40249ff0954e00571b74cbba3099b",
+    "gained": [
+      "changed-153-control-1",
+      "changed-162-control-1",
+      "changed-177-control-1",
+      "changed-65-candidate-1",
+      "changed-71-candidate-1",
+      "changed-81-candidate-1"
+    ],
+    "lost": [
+      "changed-154-control-1",
+      "changed-155-control-1",
+      "changed-163-control-1",
+      "changed-164-control-1",
+      "changed-178-control-1",
+      "changed-179-control-1",
+      "changed-66-candidate-1",
+      "changed-72-candidate-1",
+      "changed-82-candidate-1"
+    ],
+    "verdict": "The opaque witness becomes exact but previously exact opacity cases regress. A content-origin-only follow-up does not resolve those losses. Preserve this boundary for the next shared-model review; do not widen every request."
+  },
+  "remaining": {
+    "inputs": 33,
+    "scope": "Nine instanced-viewport fill cases and 24 shader/placement cases. Sources keep independent targets and all known interactions; no equality-based deduplication."
+  },
+  "nextActions": [
+    "Trace complete native source-picture and owned-layer clip domains independently of their compact addresses, retaining the existing frame and raster-scope owners.",
+    "Trace source-image sampling requests across filter opacity and isolation; qualify all accepted historical inputs and the complete source-context bank before promotion."
+  ],
+  "limits": [
+    "All sources are existing repository-authored fixtures; counterfactuals are recomposed in memory. No SVG or reference PNG collection is added.",
+    "The two banks add 66 fresh native captures across both hosts. Original sources retain their frozen references.",
+    "No native target, comparison, tolerance or text-layout implementation is changed."
+  ]
+}

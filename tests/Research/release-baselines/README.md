@@ -30,21 +30,18 @@ their separate supplied/static contexts to the packaged reflection correction.
 Both Linux math-profile outputs for `svg.svg` retain independent native authority.
 The [offset-source request](offset-source-request.json) correction aligns specialized
 playback with the ordinary graph's capture request, closing 128 more historical
-inputs with 177,908 affected passing executions. The remaining 84 placement/viewport/
-stroke inputs retain their own frozen targets and focused next actions.
+inputs with 177,908 affected passing executions.
 [Its original/context replay](offset-source-request-svgweb.json) preserves all
 previous output and both Linux scalar-math profiles. [Chrome scratch ownership](chrome-native-scratch.json)
 fixes the separate native temporary-file leak observed after exact Ubuntu CI captures.
-The [parent-picture clip-domain candidate](parent-picture-clip-domain.json) was
-withdrawn: it improves 48 historical inputs but regresses 164 independent
-filter-source contexts per host. Its witnesses remain research evidence; the
-accepted renderer and selection retain 415 resolved / 84 open historical cases.
-The [thin-stroke controls](thin-stroke-clip-investigation.json) separate one
-witness from filter playback: it still differs without the filter and becomes
-exact without either its clip or stroke. Thirty fresh native captures preserve
-that distinction on both hosts; the shared cause remains under investigation.
-The saved stroke prototype depends on the withdrawn candidate and is also
-unpromoted. Both source-context and historical banks must pass before promotion.
+The [geometry clip correction](geometry-paint-clip-domain.json) separates incoming
+geometric clips from source-picture viewport masks and clips thin lines before
+fixed-point conversion. Its 51 failing-before inputs retain their native targets:
+466 historical inputs are exact and 33 remain open. The
+[withdrawn candidate](parent-picture-clip-domain.json) records why both independent
+banks must guard this boundary. [Remaining controls](sampling-symbol-clip-investigation.json)
+separate symbol-viewport fill rounding from shader sampling/opacity; unqualified
+experiments remain research.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

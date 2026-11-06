@@ -19,13 +19,18 @@ source/image hashes and reconstruct the embedded
 [Noto font](../supplied-font-labels/fonts/NotoSans-Regular.ttf) input from the
 [catalog](../static-css-document/font-pack.json).
 
-The [status audit](resolved-known-differences.json) selects another 415 historical
-inputs now exact on both hosts/runtimes: 148 routine controls and 267 individual
-research cases. It separately tracks 84 admitted differences and 432 documented
+The [status audit](resolved-known-differences.json) selects another 466 historical
+inputs now exact on both hosts: 199 routine controls and 267 individual
+research cases. It separately tracks 33 admitted differences and 432 documented
 admission boundaries (144 direct mask-text children and 288 outside focal circles).
 These categories do not turn historical rejections into permanent contracts.
 [The initial audit](../release-baselines/paint-claim-trace.json) and
 [reflection correction](../release-baselines/gradient-reflection.json) bind the results
 and unchanged native authority. The [source-request correction](../release-baselines/offset-source-request.json)
-closes 128 clip/offset interactions through shared capture bounds. Candidate/control images can differ; every tested
-source keeps its own target. No reference or tolerance was rewritten.
+closes 128 clip/offset interactions through shared capture bounds. The
+[geometry clip correction](../release-baselines/geometry-paint-clip-domain.json)
+keeps incoming geometric paint clips separate from source-picture viewport clips
+and constructs thin lines within their integer clip before fixed-point conversion.
+It closes 51 further inputs while preserving the independently referenced source-context
+bank. Candidate/control images can differ; every source keeps its own target.
+No reference or tolerance was rewritten.
