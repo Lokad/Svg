@@ -49,7 +49,7 @@ internal sealed class PaintReferenceBank
         foreach (CaseIdentity? row in cases)
             AddId(row?.Id ?? throw new InvalidDataException("Missing native case id."));
 
-        if (Name is "filter-uniform-precision" or "gradient-color-alpha")
+        if (Name is "filter-uniform-precision" or "gradient-color-alpha" or "gradient-factory-colors")
         {
             using JsonDocument status = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder, "resolved-known-differences.json")));
             string captureText = TextEncoding.UTF8.GetString(bytes).Replace("\r\n", "\n", StringComparison.Ordinal);
@@ -123,7 +123,7 @@ internal sealed class PaintReferenceBank
         Dictionary<string, JsonElement> rows = new(StringComparer.Ordinal);
         foreach (JsonElement row in root.GetProperty("cases").EnumerateArray())
             rows.Add(RequiredId(row), row);
-        if (Name is "filter-uniform-precision" or "gradient-color-alpha")
+        if (Name is "filter-uniform-precision" or "gradient-color-alpha" or "gradient-factory-colors")
             foreach (JsonElement row in root.GetProperty("knownDifferences").EnumerateArray())
             {
                 string id = RequiredId(row);

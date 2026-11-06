@@ -32,7 +32,8 @@ All 512 declarations pass with the current implementation.
 | Visible descendant overrides and sources used outside suppressed parents | The native bank's `source-visible-descendant` and `source-source-outside-opacity-parent` cases; the original corpus also retains both earlier live modes. |
 | Child-content replacement, late references and source validation | [Pattern overrides](../../Lokad.Svg.Tests/OpenTypeFontTests.PatternOverrides.cs), including inherited-font and active-filter interactions. |
 | Actual acquisition, borrowed storage, refusal, cancellation and retry | [Ownership contracts](../../Lokad.Svg.Tests/SvgPatternFontReachabilityTests.cs), retaining all original cases and assertions. |
-| Nested pattern paints, singular sources and retained nested SVG | [Categorized pattern rejection](../../Lokad.Svg.Tests/SvgPatternDeferredPaintTests.cs) and [the native-backed C04 exclusion](../../Lokad.Svg.VisualTests/SvgTextInstanceCompositionReferenceTests.cs). |
+| Nested pattern content, sharing and graph boundaries | [Depth/cycle mechanisms](../../Lokad.Svg.Tests/SvgNestedPatternTests.cs) and [independent nested-tile references](../nested-patterns/capture.json). Template alias chains remain separate from content depth. |
+| Missing tile paints, singular pattern maps and retained nested SVG | [Missing-paint rejection](../../Lokad.Svg.Tests/SvgPatternDeferredPaintTests.cs), [singular-map contracts](../../Lokad.Svg.Tests/SvgPatternTemplateTests.cs) and [the native-backed C04 exclusion](../../Lokad.Svg.VisualTests/SvgTextInstanceCompositionReferenceTests.cs). |
 
 Native images and platform differences remain unchanged. Candidate/control images
 are never used to infer dependency equivalence. New selection checks complement

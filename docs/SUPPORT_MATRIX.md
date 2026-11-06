@@ -187,9 +187,9 @@ independent strokes, markers and effects remain active.
 
 Fill and stroke accept local `url(#id)` with an explicit color, `currentColor`
 or `none` fallback. Available servers retain their paint; missing/wrong-kind
-targets and unavailable pattern tiles use the fallback. A valid empty gradient
-or a pattern with empty drawing content paints transparently instead. Invalid
-syntax, unsupported servers and missing targets without fallback still reject.
+targets, unavailable tiles and childless patterns without inherited content use
+the fallback. Empty gradients and nonpainting pattern children stay transparent.
+Invalid syntax, unsupported servers and missing targets without fallback still reject.
 Quoted URLs and adjacent color functions are accepted. Effect/marker URLs do
 not accept paint fallbacks.
 

@@ -1,0 +1,850 @@
+{
+  "status": "P2-P7 reviewed within recorded platform scope. P1 remains open: 216 admitted historical cases differ from unchanged native targets.",
+  "sourceBaseCommit": "66858fff505f73bfbef5e1cb040d13a1426c0336",
+  "renderingMilestoneCommit": "ca222b22b0390e9b4175cb4fcc8c4d4f73b7b6ff",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgGradientCoordinates.cs",
+      "sha256": "a66530ec4d8821dd030c20aafd2852b34b23be206058876c17a30e3824fa1d3e",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Authored coordinate units, float percentage order and per-axis/default inheritance."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgGradientSyntax.cs",
+      "sha256": "334137629b633ee6cd36a646e534f86a7ebd7bce2a95c3dfb9ea326edab9c689",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Literal units, transforms, stops, spread and separate gradient source maps."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+      "sha256": "a476d643d3a2a8067e62e85b9d61a227e23b0a844defeb397d67217de2fa4520",
+      "unchangedFromRenderingMilestone": false,
+      "difference": "Only unrelated clip exponent diagnostic literal changed; all paint/gradient/pattern bodies are identical.",
+      "owner": "Iterative typed gradient graph, borrowed stops, independent focal fields and containment."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPaintReference.cs",
+      "sha256": "33ee3ec1a77a4ab10f19971e36ed94883994569dd3475d75d37fb45090a6f5b7",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Local paint URLs and explicit color/currentColor/none fallback syntax."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPaintResolver.cs",
+      "sha256": "293a8fd5c0fdd618383dba73966229d64878e2cb678bca779c6542b5ec2c5d96",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Availability selection and independent empty channels; fallback does not swallow failures."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPaintResourceSelection.cs",
+      "sha256": "3c362bc6c876d7d423a6625b72645a2c902c652e73b4a5ad58482224efa9c676",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Header availability and local pattern child/content roles precede actual drawing."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPatternTemplate.cs",
+      "sha256": "1998c56c1fb6527ab4785b690c701d03a739b9b866493e94cc6e213fff29bda8",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Independent template attributes, local child selection and replay source sharing."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPatternSyntax.cs",
+      "sha256": "c9a61c3525338fde35919eaeace37b5fb60ff88a0d21f4bf4b925d74e2e9f5aa",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Tile units, finite invertible maps and fixed-length admission."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPatternReferenceResolver.cs",
+      "sha256": "d29374e94c860b62d5b32ce2a102789db2a7804fed31351267c63732dbeedea6",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Iterative aliases, shared scene owners and cancellation/refund."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPatternCoordinates.cs",
+      "sha256": "6f6469a01beeafa346b7a22f1cf0c2a8e64990162fd53326ab10f4f7d3c5fdba",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Unclipped object boxes, tile/content bases and placement."
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPatternUseReplay.cs",
+      "sha256": "2e9aefe6adbc0825b30900c6f9fbf994b6b6a761f59f077c3f297845d2832034",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Original emission order and iterative content-cycle/depth checks separate from alias depth."
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgGradientStops.cs",
+      "sha256": "18d682226f39db0587a29d721e9515208fb7c08de854ac0a095c342d33e47555",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Bounded source stops, coincident boundaries and source alpha."
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgGradientRamp.cs",
+      "sha256": "b9c7d23aa750c7227f0aa7818a1b8c2f5523ef169e9dca0ae6c4441ab7ddbb8a",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Inline constant pairs, reserved segments and straight-color interpolation."
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgShaderCoordinates.cs",
+      "sha256": "3c626deb157981d5daf09b41805e2eba4963c3cebfcfaed19b3612360ad6df10",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Definition-coordinate constant classification and float threshold."
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgShaderSampler.cs",
+      "sha256": "a60b7bf25e62e5053f77f27bedc8c386120be5d366dd5004abfb3ee9a99b3e76",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Shared linear/radial/pattern sampling."
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgShaderSamplingContext.cs",
+      "sha256": "c8ce088807ea423638499d13cdb6e658d3833f7af41d26c7d9e4aab9d48a49ba",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Draw-local borrowed sampling state."
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgPatternTileCache.cs",
+      "sha256": "f7772f6fda8c556ac287883bbf8782a00521672b4f6e8fbfa7edc865f78a2c2b",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Bounded tile storage and cache ownership."
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgPatternSample.cs",
+      "sha256": "5c2f646ec487e649257b2bf1f175dcf6834d76608d6b627507b22b760f64d59a",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Float repeat per tap before gather and independent interpolation weights."
+    },
+    {
+      "path": "src/Lokad.Svg/SvgConverter.cs",
+      "sha256": "5ef4a4eea923ec6bc68ce444febcfbab1732af0825011c8789c846245ca51905",
+      "unchangedFromRenderingMilestone": true,
+      "difference": null,
+      "owner": "Shared constant-gradient factory and straight RGBA interval integration before premultiplication."
+    }
+  ],
+  "testBindings": [
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs",
+      "sha256": "8b6f9a54145e558b7a46ebdfea55ca151c9cab6f2b39f7f730f06974a8bfc18a"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.PaintFallback.cs",
+      "sha256": "b9b62a1c340319043e1ebf08557d38c40d9f8627fc453ca362a21bee9239bc79"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.PatternDiscovery.cs",
+      "sha256": "96ed7c00528e29c7fe7b02b9bd281379dec01a7d45af64b6ed9921e90cd32dc2"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.PatternOverrides.cs",
+      "sha256": "dc97c67b5765c05c12e331ebb45682eb875e00406d0b7dc05240369a682991ae"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.PatternResourceDisplay.cs",
+      "sha256": "3773043f8b7dca77c837d0f7a4f4411f2dd52854c8a96a387ab62f56c2635583"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.PatternTemplates.cs",
+      "sha256": "b571fd1c2074a51c1edd59da38dc3eded437a098b4b494d3280c5db3f22a2d2c"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgAttributeApplicabilityTests.cs",
+      "sha256": "3e53252c03720bcdd8f6dd06d632e2a7f06230b8e1a8aff0be1fa17e15092949"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientCoordinateTests.cs",
+      "sha256": "28b31ca0485ffee24b38467de535c665918c24a44c9ad8b0fbece4261b4ca814"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientDefaultTests.cs",
+      "sha256": "f40be28e3c1b7d4caf78acbd69fc9f2cc089e57d87cca089eb2cf7b728aa0c2b"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientIdentityTests.cs",
+      "sha256": "7a83cac097e397b442b20a7cea5dddba84867ee20cf73e4b2e56033e73512dc2"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientLengthTests.cs",
+      "sha256": "d3adebcd6afbd9ab570201bbdab8c3731678314aa4c73bd0055e83f304763212"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientRampTests.cs",
+      "sha256": "d15a72dc26dfe05fb971e3fbca22327bb7d904f95690a4d4ba223020cd2186d4"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientRegistrationTests.cs",
+      "sha256": "aeb7f81ae5187b0c23c61c2e1d6864edf0eca17ef3ba98ccbcb8f7952b80e6ab"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientResolutionTests.cs",
+      "sha256": "fe3b0c188ee11352cd4c7d7862cdd693358c1168c4d87be600feb1fcbd63eec0"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientStopPrecisionTests.cs",
+      "sha256": "be6be421e855441bc7cdd9f63271413794aceab456159cf8331bc5def12b9fef"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientStopRangeTests.cs",
+      "sha256": "d44896a77ad4932061adc0950ba55ace9d678676b275f2a72da8514235b81fcd"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientStopStyleTests.cs",
+      "sha256": "cb74949b038a3794b762bb717c56456a33f289967a9626587b24dda8ad94405d"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientTemplateAttributeTests.cs",
+      "sha256": "dab1804d86e55708a6b867de8a20b8c5350ecb229107eaf857318f410e20ea4c"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientTemplateUnitTests.cs",
+      "sha256": "1a4d5c2846bb8277ab0adb0bce58b75784dc805131d7776a0e4cf11e2224f49b"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGradientViewportTests.cs",
+      "sha256": "d2505626009eda021c2256d5056c9ea536427f538bc7bac4b2f30e74b03d0ab2"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgInertPaintTests.cs",
+      "sha256": "1f3b668f734b62eb6421221be30d89286c10dd9522db699126a124877eb25f79"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgNestedPatternOwnershipTests.cs",
+      "sha256": "9002ea3358b48736c7d637192543ee7c0cf9a7ceec9a8738498d7a5a871ca567"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgNestedPatternTests.cs",
+      "sha256": "a7270f31b7470bf7828f730827320ef48cf33ec09f68c4067c63d0f242503efb"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPaintFallbackTests.cs",
+      "sha256": "617149306892ad1d731af1f54173b77a414dba611baf579de8bb3d1e5cab8a9c"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternContentTests.cs",
+      "sha256": "20f795cabb6e4029a432030f5772e1fffefda2a7c67806c3439897603fd539ac"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternCoordinateTests.cs",
+      "sha256": "dc2ade9f1dae3be16124e509c675213fb4f01cc8c5ccde1daf3863c6e1378308"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternDeferredPaintTests.cs",
+      "sha256": "72ad7e39a1c5f6746525a8a2d72ae68fa2dacbbf5cc7990468a1379735c5b5e8"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternDefinitionLocationTests.cs",
+      "sha256": "d7a5cf67f3ebff8975753d3ea275693a5941c84b93927b9e30717caaf1cd3e7c"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternDisplayTests.cs",
+      "sha256": "5004f693b73b92c7453bab7237b7be46cd6dd25ad0768672a96b45c36b927c69"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternRepeatAddressTests.cs",
+      "sha256": "f8a844a7c758709f5257be3208b0bacd0d69702e2071b26b74d6e2b64c8b3fe6"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternResolutionTests.cs",
+      "sha256": "2fdff2b7fb918fe02277db574ac229c390b5df3911570a20413a5b0c7fc25784"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternScopeBindingTests.cs",
+      "sha256": "364e588a063fd4949c07720755906c70194d60cce7ced5a27c7bd82eb6724d4f"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs",
+      "sha256": "c05c8c91e500357d837823dbab7a48ad2c4ff03d4f8c55bd4f67b1356118fbe5"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPatternViewBoxTests.cs",
+      "sha256": "dc1a996d555f2a5d80693c401128c5121326496e5cec69796678dacce8223281"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgRootParserTests.cs",
+      "sha256": "f4f3a75f8fb3d78d31c39cc9da870585c81f5b3b87b30cdc0afe21dcebb2e562"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgSingleStopGradientTests.cs",
+      "sha256": "c0c34295656723e1639e071fb4e553508ed6c1abf32638b574bc166c1dd8c28d"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/PaintReferenceBank.cs",
+      "sha256": "2c8bd3b4720d78af2d45fde09a851848180385d75089d8f2a814aabb6caf4509"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+      "sha256": "76a46d5694b5aa2f9570d65c93ce40a243a3df754020f3234ff117363d8cfc39"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/FixtureManifestTests.cs",
+      "sha256": "8390ce2383889f2bc2eb22bc656ed1191d2db9c515fb543e3966950859907180"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgNestedPatternReferenceTests.cs",
+      "sha256": "ecd575011eb05f52da85afcbca33dc15b57321761f0bd9ebe8b354f5907ef1d3"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgPatternRepeatReferenceTests.cs",
+      "sha256": "dadeec366bc7d0a7a83d5d909dff1b1fda79059c57b926ad1022d18cf1d67d42"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgSymbolInstanceReferenceTests.cs",
+      "sha256": "6e271227517a4cc97a672964d777306f9fe6f34c026932a0024d15ad9931f2f8"
+    }
+  ],
+  "trace": [
+    {
+      "id": "P1",
+      "status": "Open",
+      "owner": "Shared gradient syntax, typed template graph, constant factory, ramps and sampling above.",
+      "checks": "Default/empty/constant paints, exact stop/ramp arithmetic, native spread/alpha/shader banks, independent channels and ownership remain. The historical factory audit exposes 216 admitted residuals; do not claim this group closed."
+    },
+    {
+      "id": "P2",
+      "status": "Reviewed",
+      "owner": "SvgPaintReference, SvgPaintResolver and header SvgPaintResourceSelection.",
+      "checks": "SvgPaintFallbackTests, inert paint and font fallback checks retain missing/wrong-kind/valid-empty distinctions, independent channels, syntax, source/instance paths and errors. The eight-state original pattern-validity fixture distinguishes childless fallback from nonpainting children."
+    },
+    {
+      "id": "P3",
+      "status": "Reviewed",
+      "owner": "SvgGradientCoordinates, SvgGradientSyntax and typed iterative registration in SvgDefinitionParser.",
+      "checks": "GradientLength/Viewport/TemplateUnit/TemplateAttribute/Registration tests pin multiply-before-divide, per-axis inheritance, child definition/alias bases, cross-kind defaults, transform replacement and literal explicit units. Four viewport and template-unit fixtures retain independent native targets."
+    },
+    {
+      "id": "P4",
+      "status": "Reviewed",
+      "owner": "Independent radial override inheritance and ValidateRadialFocalCircle in SvgDefinitionParser.",
+      "checks": "Root/parser and template unit/attribute checks retain inside/tangent/escaping/zero-radius circles and focal defaults. Two unchanged inputs resolve percentages against the default 300x150 viewport, then fail containment; renamed tests now assert that actual reason. Native radial-axis and 192 exact historical alias inputs retain separate source/target identities."
+    },
+    {
+      "id": "P5",
+      "status": "Reviewed",
+      "owner": "Stop syntax/cascade and element attribute policy; prepared stop storage and ramp.",
+      "checks": "Stop style/precision/range/identity tests retain importance/source order, source-alpha/byte-color lanes, 256/257 stops, duplicate offsets, metadata bounds, reserved ownership and explicit unsupported style/unit/color locations. Stop-preparation and stop-range native banks protect pixels."
+    },
+    {
+      "id": "P6",
+      "status": "Reviewed",
+      "owner": "Pattern syntax/coordinates, shared alias resolver/content replay and tile sampling.",
+      "checks": "PatternContent/Coordinate/ViewBox/DefinitionLocation/DeferredPaint/ScopeBinding tests cover actual source owners and placement; repeat-address tests pin native float vectors. NestedPattern and ownership checks separate content depth/cycles from alias chains, including masks and shared DAG paths. Native pattern placement/content/viewBox/nesting/repeat controls retain their documented host authority."
+    },
+    {
+      "id": "P7",
+      "status": "Reviewed",
+      "owner": "Header child selection, SvgPatternTemplate.Inherit and shared replay resolution.",
+      "checks": "Pattern template/display and supplied-font override/resource/reachability checks distinguish local element roles from comments/text, repaired dimensions from effective zero, and hidden template from hidden alias. Pattern inheritance/source-selection and original fallback-validity native controls preserve those graphs."
+    }
+  ],
+  "nativeManifests": [
+    {
+      "path": "../gradient-stop-preparation/capture.json",
+      "sha256": "301dfa01d97e1bacdde9fba728080487f2355f0a1d7fd73677b9b49942f84de4",
+      "cases": 7242,
+      "nativeAuthority": "Per-row Windows/Linux native captures; font-dependent targets remain separate."
+    },
+    {
+      "path": "../gradient-spread-stages/capture.json",
+      "sha256": "417271277d8dd3c4fac27aed022a80ae975d5b95f148206edce8b96e84510bf5",
+      "cases": 387,
+      "nativeAuthority": "Per-row Windows/Linux native captures; font-dependent targets remain separate."
+    },
+    {
+      "path": "../radial-axis-source-maps/capture.json",
+      "sha256": "444e0ac470a2f0970a5b76681e7b523529e2991c2355d795268b47e5fa878d3b",
+      "cases": 1003,
+      "nativeAuthority": "Per-row Windows/Linux native captures; font-dependent targets remain separate."
+    },
+    {
+      "path": "../gradient-color-alpha/capture.json",
+      "sha256": "31a95968da1c0a4df475b359351c9ed4198b8c3ca287dd325548fcbf82f78288",
+      "cases": 10060,
+      "nativeAuthority": "Per-row Windows/Linux native captures; font-dependent targets remain separate."
+    },
+    {
+      "path": "../pattern-inheritance/manifest.json",
+      "sha256": "5aa2815a1460ae9a06a74d77a309ae82f939e176d6aa2abe3ffdfd7303b7b6ac",
+      "cases": 17,
+      "nativeAuthority": "Windows native captures. Replay on Linux does not establish Linux browser authority."
+    },
+    {
+      "path": "../pattern-viewbox/manifest.json",
+      "sha256": "a4742b0b449a0df3c835b31b8b09b5e664818e83b4ec57ce1b5339bce7353829",
+      "cases": 6,
+      "nativeAuthority": "Windows native captures. Separate healthy Linux captures qualified the same frozen target."
+    },
+    {
+      "path": "../pattern-vector-content/manifest.json",
+      "sha256": "7b1203a987eb58859a1247fcd763ea7c483fde2f260260462dcd3ad06a93de23",
+      "cases": 22,
+      "nativeAuthority": "Windows native captures. Replay on Linux does not establish Linux browser authority."
+    },
+    {
+      "path": "../pattern-affine-placement/manifest.json",
+      "sha256": "4247a4b44467cc8d55d2f11d788ec59022cf146013fcdc420991dd5091c696d3",
+      "cases": 18,
+      "nativeAuthority": "Windows native captures. Separate healthy Linux captures qualified the same frozen target."
+    },
+    {
+      "path": "../pattern-general-placement/manifest.json",
+      "sha256": "2a989d1759724c06b29db360b3f17a7e027f1bb3fefc3db52ca33ba7b6f393b4",
+      "cases": 15,
+      "nativeAuthority": "Windows native captures. Separate healthy Linux captures qualified the same frozen target."
+    },
+    {
+      "path": "../pattern-source-selection/capture.json",
+      "sha256": "b5a4089a6877e5b971b6dd05bcd9c353e6deef6a96198901005e96914125536b",
+      "cases": 54,
+      "nativeAuthority": "Per-row Windows/Linux native captures; font-dependent targets remain separate."
+    },
+    {
+      "path": "../nested-patterns/capture.json",
+      "sha256": "c3dfce0d81c8a4fa85c80b183478dad6b9ca4dad0f650b342b8a39b0073a1617",
+      "cases": 2,
+      "nativeAuthority": "Per-row Windows/Linux native captures; font-dependent targets remain separate."
+    },
+    {
+      "path": "../pattern-repeat/capture.json",
+      "sha256": "850e2305cb0fd0c53eac100bee6f56b9fb08b9d3e959b639fe3ac55724bf51df",
+      "cases": 1,
+      "nativeAuthority": "Per-row Windows/Linux native captures; font-dependent targets remain separate."
+    },
+    {
+      "path": "../gradient-stop-ranges/manifest.json",
+      "sha256": "c3479512ad8a47ff7387382d1b5a25ade88d3a9ab17ab9d142092e1da07e0490",
+      "cases": 6,
+      "nativeAuthority": "Windows native captures. Separate healthy Linux captures qualified the same frozen target."
+    }
+  ],
+  "existingNet10QualificationReused": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "qualification": "native-line-source.json",
+      "trxSha256": "6bddb64b4573035424c4eed2e7cdad34427518fe2b188fb411b90aac6276cbaf",
+      "passedCases": {
+        "SvgInertPaintTests.": 3560,
+        "SvgGradientTemplateUnitTests.": 31,
+        "SvgGradientTemplateAttributeTests.": 24,
+        "SvgGradientResolutionTests.": 15,
+        "SvgPatternViewBoxTests.": 9,
+        "SvgGradientStopRangeTests.": 10,
+        "SvgPatternRepeatAddressTests.": 15,
+        "SvgPatternDisplayTests.": 28,
+        "SvgPatternResolutionTests.": 22,
+        "SvgGradientRampTests.": 7,
+        "SvgGradientDefaultTests.": 16,
+        "SvgPatternCoordinateTests.": 12,
+        "SvgGradientStopPrecisionTests.": 29,
+        "SvgGradientViewportTests.": 9,
+        "SvgGradientCoordinateTests.": 13,
+        "SvgGradientLengthTests.": 16,
+        "SvgSingleStopGradientTests.": 12,
+        "SvgPatternDefinitionLocationTests.": 8,
+        "SvgNestedPatternTests.": 9,
+        "SvgPatternContentTests.": 34,
+        "SvgPatternDeferredPaintTests.": 24,
+        "SvgPatternTemplateTests.": 39,
+        "SvgPaintFallbackTests.": 19,
+        "SvgGradientStopStyleTests.": 15,
+        "SvgGradientRegistrationTests.": 6,
+        "SvgPatternScopeBindingTests.": 11,
+        "SvgNestedPatternOwnershipTests.": 1,
+        "SvgGradientIdentityTests.": 3
+      }
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "qualification": "native-line-source.json",
+      "trxSha256": "73bc48a52672e70f82f81ebee80c51df226621377fc7e0abb0486eadae77b309",
+      "passedCases": {
+        "family: \"pattern-inheritance\"": 17,
+        "family: \"pattern-vector-content\"": 22,
+        "family: \"pattern-general-placement\"": 15,
+        "family: \"pattern-viewbox\"": 6,
+        "family: \"pattern-affine-placement\"": 18,
+        "family: \"gradient-stop-ranges\"": 6
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "qualification": "native-line-source.json",
+      "trxSha256": "b782435f61d4fc7af162a0531b290624a6c7fc6ec3a0f70d4995156f7695cd9c",
+      "passedCases": {
+        "SvgInertPaintTests.": 3560,
+        "SvgPatternViewBoxTests.": 9,
+        "SvgGradientRampTests.": 7,
+        "SvgGradientTemplateUnitTests.": 31,
+        "SvgGradientViewportTests.": 9,
+        "SvgGradientTemplateAttributeTests.": 24,
+        "SvgGradientResolutionTests.": 15,
+        "SvgGradientDefaultTests.": 16,
+        "SvgPatternDisplayTests.": 28,
+        "SvgGradientStopStyleTests.": 15,
+        "SvgGradientRegistrationTests.": 6,
+        "SvgPatternTemplateTests.": 39,
+        "SvgPatternDeferredPaintTests.": 24,
+        "SvgGradientIdentityTests.": 3,
+        "SvgPatternResolutionTests.": 22,
+        "SvgPatternContentTests.": 34,
+        "SvgGradientStopPrecisionTests.": 29,
+        "SvgGradientStopRangeTests.": 10,
+        "SvgPatternRepeatAddressTests.": 15,
+        "SvgPatternCoordinateTests.": 12,
+        "SvgPatternScopeBindingTests.": 11,
+        "SvgPaintFallbackTests.": 19,
+        "SvgGradientLengthTests.": 16,
+        "SvgNestedPatternTests.": 9,
+        "SvgGradientCoordinateTests.": 13,
+        "SvgSingleStopGradientTests.": 12,
+        "SvgPatternDefinitionLocationTests.": 8,
+        "SvgNestedPatternOwnershipTests.": 1
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "qualification": "native-line-source.json",
+      "trxSha256": "eb2829e14fd009b46af8079bc6af9977744f6174a80cf9ab1ad6e7b4c918a012",
+      "passedCases": {
+        "family: \"pattern-vector-content\"": 22,
+        "family: \"pattern-inheritance\"": 17,
+        "family: \"pattern-affine-placement\"": 18,
+        "family: \"gradient-stop-ranges\"": 6,
+        "family: \"pattern-viewbox\"": 6,
+        "family: \"pattern-general-placement\"": 15
+      }
+    }
+  ],
+  "focusedChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "4a40d0257eb4aa059c25124135f870344e707e19041fef2a969e8e7abd18604c",
+      "selection": "FullyQualifiedName~Percentage_user_space_focal_|FullyQualifiedName~SvgGradientTemplateUnitTests|FullyQualifiedName~SvgGradientViewportTests|FullyQualifiedName~SvgGradientLengthTests|FullyQualifiedName~Gradient_unit_fallback_keeps_explicitness_for_template_inheritance|FullyQualifiedName~SvgNestedPatternTests",
+      "exitCode": 0,
+      "seconds": 7.540951200062409,
+      "counters": {
+        "executed": "81",
+        "passed": "81",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "c3467f48ca51847efbf3d55b1a80eededbdaa7605da951f9267a143d4c778767",
+      "selectionGroup": "core-final"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "4a40d0257eb4aa059c25124135f870344e707e19041fef2a969e8e7abd18604c",
+      "selection": "FullyQualifiedName~Percentage_user_space_focal_|FullyQualifiedName~SvgGradientTemplateUnitTests|FullyQualifiedName~SvgGradientViewportTests|FullyQualifiedName~SvgGradientLengthTests|FullyQualifiedName~Gradient_unit_fallback_keeps_explicitness_for_template_inheritance|FullyQualifiedName~SvgNestedPatternTests",
+      "exitCode": 0,
+      "seconds": 11.526207699906081,
+      "counters": {
+        "executed": "81",
+        "passed": "81",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "544cbce62620b5e9186467d9d3a7fc52dfc80eb272d8d080241332eaddc26033",
+      "selectionGroup": "core-final"
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "fa1299e46f7fd3878430eeaf781762e60ef660b984c78609e9422246b568e42d",
+      "selection": "FullyQualifiedName~Percentage_user_space_focal_|FullyQualifiedName~SvgGradientTemplateUnitTests|FullyQualifiedName~SvgGradientViewportTests|FullyQualifiedName~SvgGradientLengthTests|FullyQualifiedName~Gradient_unit_fallback_keeps_explicitness_for_template_inheritance|FullyQualifiedName~SvgNestedPatternTests",
+      "exitCode": 0,
+      "seconds": 6.610735299997032,
+      "counters": {
+        "executed": "81",
+        "passed": "81",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "3db5e592ed3f7f05589282e1b94ca18aaf2580fa8bf652ef7c94193fc19aea04",
+      "selectionGroup": "core-final"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "fa1299e46f7fd3878430eeaf781762e60ef660b984c78609e9422246b568e42d",
+      "selection": "FullyQualifiedName~Percentage_user_space_focal_|FullyQualifiedName~SvgGradientTemplateUnitTests|FullyQualifiedName~SvgGradientViewportTests|FullyQualifiedName~SvgGradientLengthTests|FullyQualifiedName~Gradient_unit_fallback_keeps_explicitness_for_template_inheritance|FullyQualifiedName~SvgNestedPatternTests",
+      "exitCode": 0,
+      "seconds": 8.850411499850452,
+      "counters": {
+        "executed": "81",
+        "passed": "81",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "998eca36403f78d53bc449dffaceb4f5a18da06c9da33a2f5a566c60a2b4b379",
+      "selectionGroup": "core-final"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "f1ee56e8fa107de2bfe6c7c6488afdc80351eb54718624ef4b81b515ab67d602",
+      "selection": "FullyQualifiedName~FixtureManifestTests.Rendered_fixture_preserves_its_declared_pixels&(DisplayName~original-paint-fallback|DisplayName~original-gradient-template-units|DisplayName~original-linear-gradient-definition-viewport|DisplayName~original-radial-gradient-definition-viewport|DisplayName~original-linear-gradient-alias-viewport|DisplayName~original-radial-gradient-alias-viewport|DisplayName~original-gradient-stop-identities)",
+      "exitCode": 0,
+      "seconds": 8.485271899960935,
+      "counters": {
+        "executed": "9",
+        "passed": "9",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "6ab17e68b46d0f1a82a03f9680b2b7094f6b499f7db707a9139e22d189d5526c",
+      "selectionGroup": "focused"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "f1ee56e8fa107de2bfe6c7c6488afdc80351eb54718624ef4b81b515ab67d602",
+      "selection": "FullyQualifiedName~FixtureManifestTests.Rendered_fixture_preserves_its_declared_pixels&(DisplayName~original-paint-fallback|DisplayName~original-gradient-template-units|DisplayName~original-linear-gradient-definition-viewport|DisplayName~original-radial-gradient-definition-viewport|DisplayName~original-linear-gradient-alias-viewport|DisplayName~original-radial-gradient-alias-viewport|DisplayName~original-gradient-stop-identities)",
+      "exitCode": 0,
+      "seconds": 11.825982399983332,
+      "counters": {
+        "executed": "9",
+        "passed": "9",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "48ed18c9bd473c9ce7ce7b554c38b4ca6342bc796644ced542cf541876779277",
+      "selectionGroup": "focused"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "9ca48c66064416ad196bf5d1676c61a36a2f000ae77da156781f45fef11075e0",
+      "selection": "FullyQualifiedName~FixtureManifestTests.Rendered_fixture_preserves_its_declared_pixels&(DisplayName~original-paint-fallback|DisplayName~original-gradient-template-units|DisplayName~original-linear-gradient-definition-viewport|DisplayName~original-radial-gradient-definition-viewport|DisplayName~original-linear-gradient-alias-viewport|DisplayName~original-radial-gradient-alias-viewport|DisplayName~original-gradient-stop-identities)",
+      "exitCode": 0,
+      "seconds": 8.231159599963576,
+      "counters": {
+        "executed": "9",
+        "passed": "9",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "8b99e5422658832ec432b3364601818a54632b2b7480fb556ca13424fd007734",
+      "selectionGroup": "focused"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "9ca48c66064416ad196bf5d1676c61a36a2f000ae77da156781f45fef11075e0",
+      "selection": "FullyQualifiedName~FixtureManifestTests.Rendered_fixture_preserves_its_declared_pixels&(DisplayName~original-paint-fallback|DisplayName~original-gradient-template-units|DisplayName~original-linear-gradient-definition-viewport|DisplayName~original-radial-gradient-definition-viewport|DisplayName~original-linear-gradient-alias-viewport|DisplayName~original-radial-gradient-alias-viewport|DisplayName~original-gradient-stop-identities)",
+      "exitCode": 0,
+      "seconds": 11.795665400102735,
+      "counters": {
+        "executed": "9",
+        "passed": "9",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "9f92134d9cc07fd8a3251ae700ec5dc9ef5a74e03ab412c39cd71f34fcef49ed",
+      "selectionGroup": "focused"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "4b9c014b189dd65c11db67bbf7c2aaa681c03e2089f00750b9328c4387293aa2",
+      "selection": "(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~gradient-factory-colors|FullyQualifiedName~Routine_and_research_cases_partition_the_resolved_capture_corpus))",
+      "exitCode": 0,
+      "seconds": 34.13116719992831,
+      "counters": {
+        "executed": "5486",
+        "passed": "5486",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "262d343d8add4688f9c14679f6929cb7990170831dd7caa9bd2f8a4bb210a775",
+      "selectionGroup": "factory-selected"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "4b9c014b189dd65c11db67bbf7c2aaa681c03e2089f00750b9328c4387293aa2",
+      "selection": "(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~gradient-factory-colors|FullyQualifiedName~Routine_and_research_cases_partition_the_resolved_capture_corpus))",
+      "exitCode": 0,
+      "seconds": 38.4899661000818,
+      "counters": {
+        "executed": "5486",
+        "passed": "5486",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "6d1112a044196a8f0df38e72f68c70e6f77cac1d3c2fe1fc7d5bcc9134ec195a",
+      "selectionGroup": "factory-selected"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "ea6ee5accc286bb67a7711a0c6ebbc28114073ec3f05523a41634ae060c05f84",
+      "selection": "(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~gradient-factory-colors|FullyQualifiedName~Routine_and_research_cases_partition_the_resolved_capture_corpus))",
+      "exitCode": 0,
+      "seconds": 17.83435759996064,
+      "counters": {
+        "executed": "5486",
+        "passed": "5486",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "35c5917414a0f5365761a29784835bbf9c8a908a2a8ce9e66abd23173ee6419a",
+      "selectionGroup": "factory-selected"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "ea6ee5accc286bb67a7711a0c6ebbc28114073ec3f05523a41634ae060c05f84",
+      "selection": "(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~gradient-factory-colors|FullyQualifiedName~Routine_and_research_cases_partition_the_resolved_capture_corpus))",
+      "exitCode": 0,
+      "seconds": 30.329632699955255,
+      "counters": {
+        "executed": "5486",
+        "passed": "5486",
+        "failed": "0"
+      },
+      "failures": [],
+      "trxSha256": "bac06c5bcf7219449f5433a9393e61fcdc8307a63d99049e2adf74b7ca4fc115",
+      "selectionGroup": "factory-selected"
+    }
+  ],
+  "historicalFactoryAudit": {
+    "historicalCases": 931,
+    "comparedNeighborBanks": [
+      "linear-periodic-stops",
+      "gradient-color-alpha",
+      "gradient-stop-preparation",
+      "gradient-spread-stages",
+      "gradient-paint-replay",
+      "radial-axis-source-maps",
+      "linear-shape-source-maps",
+      "filter-uniform-precision",
+      "solid-paint-alpha"
+    ],
+    "exactSourceScaleFontAndNativeTargetMatches": 0,
+    "resolved": 283,
+    "routine": 16,
+    "research": 267,
+    "admittedDifferences": 216,
+    "openGroups": [
+      {
+        "group": "Near-threshold reflected object-box repeating/reflecting circle gradients",
+        "count": 4,
+        "ids": [
+          "spatial-227-candidate-1",
+          "spatial-231-candidate-1p5",
+          "spatial-259-candidate-1",
+          "spatial-263-candidate-1p5"
+        ]
+      },
+      {
+        "group": "Ancestor clip/filter/opacity composition with placement and nested viewport/source graphs",
+        "count": 212,
+        "idPrefix": "changed-"
+      }
+    ],
+    "declaredBoundaries": [
+      {
+        "group": "Direct text child of mask; grouped/instanced text has separate supported paths",
+        "count": 144
+      },
+      {
+        "group": "Radial focal circle outside the documented containment domain",
+        "count": 288
+      }
+    ],
+    "status": "../gradient-factory-colors/resolved-known-differences.json",
+    "statusSha256": "762b80aaa29f37be1a26f4757565263b0190d752a7856b1e561a26ce7c7a5745",
+    "captureSha256": "ffc24be6957d2446bfa3c66c229da9887cb9e37b01029aba1db3ea949b076717",
+    "replays": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+        "probeSha256": "9fc7ef789b7e69b1a9faf33805d4b57b9234da077568139983d67d573278ed44",
+        "seconds": 2.0217412000056356,
+        "exitCode": 0,
+        "counts": {
+          "rejected": 432,
+          "different": 216,
+          "exact": 283
+        },
+        "resultSha256": "0a3b7015a02f7824fa0ab0d866542773468a6d30f117b67102bceaf39d1a5cc9"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+        "probeSha256": "9fc7ef789b7e69b1a9faf33805d4b57b9234da077568139983d67d573278ed44",
+        "seconds": 11.989161000121385,
+        "exitCode": 0,
+        "counts": {
+          "rejected": 432,
+          "different": 216,
+          "exact": 283
+        },
+        "resultSha256": "1b756e961d7c9df4045197d97c5620c90b5edf5017794602d67db4b2f2471bb3"
+      }
+    ]
+  },
+  "documentationCorrections": [
+    "Childless patterns without inherited content use fallback; nonpainting local child elements are available transparent content.",
+    "Nested pattern content is supported; alias graph, content cycle/depth and resource-source boundaries remain distinct.",
+    "Percentage user-space focal regression names/assertions now describe resolved focal-circle containment; original input bytes are unchanged."
+  ],
+  "limits": [
+    "No production rendering code, frozen SVG/native PNG or comparison tolerance changed.",
+    "Native capture recipes, platform differences and existing failing-before contracts remain authoritative.",
+    "Focused wall times include discovery/startup and overlap between host jobs. No before/after speedup or renderer benchmark was measured.",
+    "Initial edits asserted an incorrect reason for two existing rejection tests; their failures corrected test naming/assertions, not production behavior.",
+    "Full package/original/context qualification remains bound to native-line-source.json; this test/documentation milestone does not promote those receipts.",
+    "Frozen Windows DejaVu authority remains separately open."
+  ]
+}

@@ -19,6 +19,8 @@ diagnostic. Its source hashes and focused checks remain separate from promotion
 of the earlier complete rendering/package milestone.
 The [stroke trace][stroke-record] completes G1 against existing geometric/native
 checks and corrects the inherited-vector-effect restriction without changing rendering.
+The [paint trace][paint-record] reviews P2-P7 and keeps P1 open against 216 admitted
+historical factory differences. It retains documented admission boundaries separately.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -106,13 +108,13 @@ Scope: [gradients and patterns][contract-paints].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Pending. |
-| P2 | Paint URL fallback, missing/wrong-kind/unavailable servers, valid transparent servers and invalid/effect URLs | Pending. |
-| P3 | Definition-local percentage bases, cross-kind template defaults, transform replacement and literal gradientUnits rules | Pending. |
-| P4 | Radial focal-circle containment and independently inherited center/radius/focal overrides | Pending. |
-| P5 | Stop metadata/inline cascade and explicit stop/gradient color/unit/stylesheet exclusions | Pending. |
-| P6 | Pattern units/maps/contents/locations, fixed tile lengths, opacity/overflow and 32-level content graph/cycle rules | Pending. |
-| P7 | Pattern alias child roles, inherited/zero dimensions and hidden template/alias behavior | Pending. |
+| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Open: [shared owner/check trace][paint-record] and [historical status][factory-status]. Of 931 omitted historical cases, 283 are now exact, 432 hit documented admission boundaries, and 216 admitted inputs still differ on both hosts: four near-threshold reflected gradients and 212 clip/filter compositions. Investigate shared sampling/composition causes; preserve targets. |
+| P2 | Paint URL fallback, missing/wrong-kind/unavailable servers, valid transparent servers and invalid/effect URLs | Reviewed: [paint selection][paint-index] → [fallback checks][fallback-tests] and independent empty-channel/font contracts → [eight-state native pattern validity][fallback-native]. [Bindings and qualification][paint-record] correct the childless/nonpainting-child distinction. |
+| P3 | Definition-local percentage bases, cross-kind template defaults, transform replacement and literal gradientUnits rules | Reviewed: [coordinate units][gradient-coordinates] / [typed registration][definition-parser] → direct length/viewport/template/unit checks → independent definition/alias viewport fixtures. [Current bindings, case identities and qualification][paint-record]. |
+| P4 | Radial focal-circle containment and independently inherited center/radius/focal overrides | Reviewed: [typed registration][definition-parser] → root/template focal checks → [native radial maps][radial-native] and 192 exact historical alias inputs. [Trace][paint-record] pins the actual percentage containment rejection; original inputs stay unchanged. |
+| P5 | Stop metadata/inline cascade and explicit stop/gradient color/unit/stylesheet exclusions | Reviewed: [gradient/stop syntax][gradient-syntax] → style, precision, range, identity and ownership checks → [native prepared-stop controls][stop-native] and stop ranges. [Current source and direct/native bindings][paint-record]. |
+| P6 | Pattern units/maps/contents/locations, fixed tile lengths, opacity/overflow and 32-level content graph/cycle rules | Reviewed: [pattern replay][pattern-replay] / [placement][pattern-coordinates] → content, location, deferred-paint, graph/depth, ownership and native repeat-address checks → placement/content/viewBox/nested/repeat controls. [Trace and explicit platform authority][paint-record]. |
+| P7 | Pattern alias child roles, inherited/zero dimensions and hidden template/alias behavior | Reviewed: [header selection][paint-index] / [template inheritance][pattern-template] → template/display and supplied-font override/reachability checks → inheritance/source-selection/fallback native controls. [Source/check/reference trace][paint-record]. |
 
 ## Clips, masks and composition
 
@@ -338,3 +340,14 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [png-rows]: png-row-storage.json
 [png-color]: png-color-admission.json
 [w1-context]: ../svgweb/context-boundaries.json
+[paint-record]: paint-claim-trace.json
+[factory-status]: ../gradient-factory-colors/resolved-known-differences.json
+[fallback-tests]: ../../Lokad.Svg.Tests/SvgPaintFallbackTests.cs
+[fallback-native]: ../../Fixtures/original/paint-fallback-pattern-validity.svg
+[gradient-coordinates]: ../../../src/Lokad.Svg/Parsing/SvgGradientCoordinates.cs
+[gradient-syntax]: ../../../src/Lokad.Svg/Parsing/SvgGradientSyntax.cs
+[radial-native]: ../radial-axis-source-maps/capture.json
+[stop-native]: ../gradient-stop-preparation/capture.json
+[pattern-replay]: ../../../src/Lokad.Svg/Parsing/SvgPatternUseReplay.cs
+[pattern-coordinates]: ../../../src/Lokad.Svg/Parsing/SvgPatternCoordinates.cs
+[pattern-template]: ../../../src/Lokad.Svg/Parsing/SvgPatternTemplate.cs

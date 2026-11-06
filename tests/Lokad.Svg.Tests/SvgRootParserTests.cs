@@ -4107,11 +4107,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_percentage_userspace_radial_focal()
+    public void Percentage_user_space_focal_coordinate_outside_the_circle_is_unsupported()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4' fx='50%'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("outside the gradient circle", rejected.Message);
     }
 
     [Fact]
@@ -4202,11 +4203,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_percentage_userspace_focal_radius()
+    public void Percentage_user_space_focal_radius_covering_the_circle_is_unsupported()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4' fr='50%'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("outside the gradient circle", rejected.Message);
     }
     [Fact]
     public void Lowers_translated_radial_gradients()
