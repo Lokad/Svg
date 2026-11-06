@@ -1,6 +1,13 @@
 # SVG fixtures are byte-sensitive manifest inputs: their hashes must survive
 # checkout and archive materialization on any core.autocrlf setting.
 *.svg text eol=lf
+# Preserve workload and input-descriptor bytes frozen before capture, including CRLF.
+tests/Research/benchmark-workloads/chart.svg -text whitespace=cr-at-eol
+tests/Research/benchmark-workloads/icon-sheet.svg -text whitespace=cr-at-eol
+tests/Research/benchmark-workloads/wordmark.svg -text whitespace=cr-at-eol
+tests/Research/benchmark-workloads/*.json -text whitespace=cr-at-eol
+# The native comparison qualification hashes the exact dependency lock bytes.
+tools/resvg-comparison/Cargo.lock text eol=lf
 # Preserve the byte identities of the original native color-matrix captures.
 tests/Research/filter-color-matrix/*.svg -text whitespace=cr-at-eol
 # Native replay captures retain their original input bytes, including line endings.

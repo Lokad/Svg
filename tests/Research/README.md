@@ -18,3 +18,7 @@ rather than treating historical rejections as a current support boundary.
 [Hosted SVGWeb review](svgweb/README.md) keeps per-original metadata and outcomes
 without importing the remote SVG collection. Its initial diagnostic ledger is
 separate from accepted offline rendering regressions.
+
+[Authored benchmark candidates](benchmark-workloads/README.md) retain larger
+icons, wordmark and chart inputs with frozen platform captures. The chart's
+translated rounded-shadow discrepancy blocks benchmark integration.

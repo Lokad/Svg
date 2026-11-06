@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "selectionStatus": "Frozen before browser capture or renderer screening.",
+  "purpose": "Authored application-sized benchmark workloads; separate from the finite upstream document gate and focused regression banks.",
+  "fontCatalog": "../upstream-static-documents/font-pack.json",
+  "fontPackId": "upstream-noto-sans",
+  "fontPrograms": [
+    {
+      "file": "../upstream-static-documents/fonts/NotoSans-Regular.ttf",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Regular.ttf",
+      "sha256": "6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9",
+      "license": "OFL-1.1",
+      "family": "Noto Sans",
+      "weight": 400,
+      "italic": false
+    },
+    {
+      "file": "../upstream-static-documents/fonts/NotoSans-Italic.ttf",
+      "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Italic.ttf",
+      "sha256": "35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b",
+      "license": "OFL-1.1",
+      "family": "Noto Sans",
+      "weight": 400,
+      "italic": true
+    }
+  ],
+  "cases": [
+    {
+      "id": "icon-sheet",
+      "input": "icon-sheet.svg",
+      "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+      "width": 512,
+      "height": 384,
+      "viewport": {
+        "width": 512,
+        "height": 384
+      },
+      "scale": 1,
+      "background": "transparent",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated by its SPDX declaration.",
+      "fonts": [
+        "NotoSans-Regular.ttf"
+      ],
+      "features": [
+        "paths",
+        "local-use",
+        "symbol-viewbox",
+        "gradient-stroke",
+        "supplied-labels"
+      ]
+    },
+    {
+      "id": "wordmark",
+      "input": "wordmark.svg",
+      "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+      "width": 768,
+      "height": 192,
+      "viewport": {
+        "width": 768,
+        "height": 192
+      },
+      "scale": 1,
+      "background": "transparent",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated by its SPDX declaration.",
+      "fonts": [
+        "NotoSans-Regular.ttf",
+        "NotoSans-Italic.ttf"
+      ],
+      "features": [
+        "curves",
+        "gradient",
+        "luminance-mask",
+        "drop-shadow",
+        "supplied-wordmark",
+        "real-italic"
+      ]
+    },
+    {
+      "id": "chart",
+      "input": "chart.svg",
+      "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+      "width": 1024,
+      "height": 640,
+      "viewport": {
+        "width": 1024,
+        "height": 640
+      },
+      "scale": 1,
+      "background": "transparent",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated by its SPDX declaration.",
+      "fonts": [
+        "NotoSans-Regular.ttf"
+      ],
+      "features": [
+        "paths",
+        "local-use",
+        "patterns",
+        "alpha-mask",
+        "clip",
+        "drop-shadow",
+        "embedded-png",
+        "supplied-labels"
+      ]
+    }
+  ]
+}

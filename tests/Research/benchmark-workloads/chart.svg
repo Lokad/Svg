@@ -1,0 +1,64 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="640" viewBox="0 0 1024 640" font-family="Noto Sans" font-size="14">
+<defs>
+<filter id="panel-shadow" filterUnits="userSpaceOnUse" x="0" y="0" width="1024" height="640" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#163750" flood-opacity=".18"/></filter>
+<pattern id="grid" patternUnits="userSpaceOnUse" x="80" y="140" width="72" height="72"><path d="M0 0H72M0 0V72" fill="none" stroke="#dce6ee" stroke-width="1"/></pattern>
+<linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#21a792" stop-opacity=".5"/><stop offset="1" stop-color="#21a792" stop-opacity=".05"/></linearGradient>
+<linearGradient id="fade"><stop stop-color="white" stop-opacity=".4"/><stop offset=".2" stop-color="white"/><stop offset=".8" stop-color="white"/><stop offset="1" stop-color="white" stop-opacity=".4"/></linearGradient>
+<mask id="series-mask" maskUnits="userSpaceOnUse" x="80" y="140" width="864" height="360" mask-type="alpha"><rect x="80" y="140" width="864" height="360" fill="url(#fade)"/></mask>
+<clipPath id="plot"><rect x="80" y="140" width="864" height="360"/></clipPath>
+<symbol id="point" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4" fill="white" stroke="#157c77" stroke-width="2"/></symbol>
+</defs>
+<rect x="12" y="12" width="1000" height="616" rx="16" fill="white" filter="url(#panel-shadow)"/>
+<text x="40" y="61" font-size="28" fill="#193b54">Monthly operations</text>
+<text x="40" y="91" font-size="14" fill="#627d91">An authored workload with labels, instances and composed paint</text>
+<image x="908" y="36" width="72" height="48" preserveAspectRatio="none" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAMCAYAAABvEu28AAAAQklEQVR42mOQjVvwH4aVJy+FY7NtvXD8frc9HL8us4TjA67+B2CYYfAZRIlmZEcMQoMo0YzsiEFoECWakR0x+AwCAL+sCkOSAjltAAAAAElFTkSuQmCC"/>
+<rect x="80" y="140" width="864" height="360" fill="#f5f9fc"/><rect x="80" y="140" width="864" height="360" fill="url(#grid)"/>
+<g clip-path="url(#plot)">
+<rect x="97" y="352" width="30" height="148" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="169" y="316" width="30" height="184" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="241" y="340" width="30" height="160" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="313" y="253" width="30" height="247" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="385" y="280" width="30" height="220" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="457" y="212" width="30" height="288" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="529" y="236" width="30" height="264" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="601" y="178" width="30" height="322" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="673" y="194" width="30" height="306" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="745" y="226" width="30" height="274" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="817" y="152" width="30" height="348" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<rect x="889" y="166" width="30" height="334" rx="3" fill="#4c87ba" fill-opacity=".35"/>
+<path d="M112 324 L184 288 L256 312 L328 225 L400 252 L472 184 L544 208 L616 150 L688 166 L760 198 L832 124 L904 138L904 500H112Z" fill="url(#area)" mask="url(#series-mask)"/><path d="M112 324 L184 288 L256 312 L328 225 L400 252 L472 184 L544 208 L616 150 L688 166 L760 198 L832 124 L904 138" fill="none" stroke="#157c77" stroke-width="3" stroke-linejoin="round"/>
+<use href="#point" x="106" y="318" width="12" height="12"/>
+<use href="#point" x="178" y="282" width="12" height="12"/>
+<use href="#point" x="250" y="306" width="12" height="12"/>
+<use href="#point" x="322" y="219" width="12" height="12"/>
+<use href="#point" x="394" y="246" width="12" height="12"/>
+<use href="#point" x="466" y="178" width="12" height="12"/>
+<use href="#point" x="538" y="202" width="12" height="12"/>
+<use href="#point" x="610" y="144" width="12" height="12"/>
+<use href="#point" x="682" y="160" width="12" height="12"/>
+<use href="#point" x="754" y="192" width="12" height="12"/>
+<use href="#point" x="826" y="118" width="12" height="12"/>
+<use href="#point" x="898" y="132" width="12" height="12"/>
+</g>
+<path d="M80 140V500H944" fill="none" stroke="#6d879a" stroke-width="1"/>
+<text x="32" y="505" font-size="13" fill="#627d91">0</text>
+<text x="32" y="433" font-size="13" fill="#627d91">20</text>
+<text x="32" y="361" font-size="13" fill="#627d91">40</text>
+<text x="32" y="289" font-size="13" fill="#627d91">60</text>
+<text x="32" y="217" font-size="13" fill="#627d91">80</text>
+<text x="32" y="145" font-size="13" fill="#627d91">100</text>
+<text x="100" y="526" font-size="12" fill="#627d91">Jan</text>
+<text x="172" y="526" font-size="12" fill="#627d91">Feb</text>
+<text x="244" y="526" font-size="12" fill="#627d91">Mar</text>
+<text x="316" y="526" font-size="12" fill="#627d91">Apr</text>
+<text x="388" y="526" font-size="12" fill="#627d91">May</text>
+<text x="460" y="526" font-size="12" fill="#627d91">Jun</text>
+<text x="532" y="526" font-size="12" fill="#627d91">Jul</text>
+<text x="604" y="526" font-size="12" fill="#627d91">Aug</text>
+<text x="676" y="526" font-size="12" fill="#627d91">Sep</text>
+<text x="748" y="526" font-size="12" fill="#627d91">Oct</text>
+<text x="820" y="526" font-size="12" fill="#627d91">Nov</text>
+<text x="892" y="526" font-size="12" fill="#627d91">Dec</text>
+<circle cx="88" cy="570" r="5" fill="#157c77"/><text x="102" y="575" fill="#3c5b72">Trend</text><rect x="210" y="565" width="10" height="10" fill="#4c87ba" fill-opacity=".5"/><text x="232" y="575" fill="#3c5b72">Volume</text><text x="730" y="598" font-size="12" fill="#7d929f">Unit-scale transparent SVG image</text>
+</svg>

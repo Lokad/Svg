@@ -1,0 +1,647 @@
+{
+  "purpose": "Orthogonal controls derived from the frozen chart panel; original workload geometry and references remain unchanged.",
+  "license": "CC0-1.0",
+  "sourceChartSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+  "cases": [
+    {
+      "id": "panel-shadow",
+      "input": "panel-controls/panel-shadow.svg",
+      "sourceSha256": "bdbf979d81215b7b0a24ad1d3be4cc566b025040569f0c79dbab9441747dc4e0",
+      "width": 1024,
+      "height": 640,
+      "viewport": {
+        "width": 1024,
+        "height": 640
+      },
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "platforms": {
+        "windows": {
+          "reference": "panel-controls/references/windows/panel-shadow.png",
+          "referenceSha256": "db276ea50cb19b659015e1c42bdf691c7f95ce31e0b5b1a57e5f489dfef74bfc",
+          "rgbaSha256": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+          "captureInputSha256": "b9c9b0554484811a250db23167117937889b7faaa6f470f9943a20d4520a01b4",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "db276ea50cb19b659015e1c42bdf691c7f95ce31e0b5b1a57e5f489dfef74bfc",
+              "rgbaSha256": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 529,
+                "debuggerReadyMilliseconds": 133,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "db276ea50cb19b659015e1c42bdf691c7f95ce31e0b5b1a57e5f489dfef74bfc",
+              "rgbaSha256": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 594,
+                "debuggerReadyMilliseconds": 154,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "db276ea50cb19b659015e1c42bdf691c7f95ce31e0b5b1a57e5f489dfef74bfc",
+              "rgbaSha256": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 566,
+                "debuggerReadyMilliseconds": 170,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "panel-controls/references/linux/panel-shadow.png",
+          "referenceSha256": "db276ea50cb19b659015e1c42bdf691c7f95ce31e0b5b1a57e5f489dfef74bfc",
+          "rgbaSha256": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+          "captureInputSha256": "b9c9b0554484811a250db23167117937889b7faaa6f470f9943a20d4520a01b4",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "db276ea50cb19b659015e1c42bdf691c7f95ce31e0b5b1a57e5f489dfef74bfc",
+              "rgbaSha256": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 4098,
+                "debuggerReadyMilliseconds": 2942,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "db276ea50cb19b659015e1c42bdf691c7f95ce31e0b5b1a57e5f489dfef74bfc",
+              "rgbaSha256": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 5225,
+                "debuggerReadyMilliseconds": 3564,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "db276ea50cb19b659015e1c42bdf691c7f95ce31e0b5b1a57e5f489dfef74bfc",
+              "rgbaSha256": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 4393,
+                "debuggerReadyMilliseconds": 2797,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "panel-source",
+      "input": "panel-controls/panel-source.svg",
+      "sourceSha256": "f3165f4c2420344b57a5d20b7f8007ac59c5ef8187230d69f5d205f725609a6b",
+      "width": 1024,
+      "height": 640,
+      "viewport": {
+        "width": 1024,
+        "height": 640
+      },
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "platforms": {
+        "windows": {
+          "reference": "panel-controls/references/windows/panel-source.png",
+          "referenceSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+          "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+          "captureInputSha256": "bd6e0280c853fd9821916c4ed23c34053fe933d40a02af7f3ca131a97c1c76c2",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 539,
+                "debuggerReadyMilliseconds": 134,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 554,
+                "debuggerReadyMilliseconds": 155,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 607,
+                "debuggerReadyMilliseconds": 132,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "panel-controls/references/linux/panel-source.png",
+          "referenceSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+          "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+          "captureInputSha256": "bd6e0280c853fd9821916c4ed23c34053fe933d40a02af7f3ca131a97c1c76c2",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 3961,
+                "debuggerReadyMilliseconds": 2505,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 4218,
+                "debuggerReadyMilliseconds": 2981,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 4025,
+                "debuggerReadyMilliseconds": 2563,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sharp-shadow",
+      "input": "panel-controls/sharp-shadow.svg",
+      "sourceSha256": "e09f8e39816a8d4e5b304b6026e8166e46ed36b29dd7cde8f89edc9786324bc0",
+      "width": 1024,
+      "height": 640,
+      "viewport": {
+        "width": 1024,
+        "height": 640
+      },
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "platforms": {
+        "windows": {
+          "reference": "panel-controls/references/windows/sharp-shadow.png",
+          "referenceSha256": "a36eab35a5799a69ba26926687c1cbe07df739ccda713e4301235af723a8cd28",
+          "rgbaSha256": "270c180ad727b91d3b0bbaa9b016ac77879b6fb8a8c47096ee8c0518154cd8cf",
+          "captureInputSha256": "d3cc9a8002401a159d7f6e5a2931abefb8b20824164a78eeb86750b281f89c69",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "a36eab35a5799a69ba26926687c1cbe07df739ccda713e4301235af723a8cd28",
+              "rgbaSha256": "270c180ad727b91d3b0bbaa9b016ac77879b6fb8a8c47096ee8c0518154cd8cf",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 521,
+                "debuggerReadyMilliseconds": 140,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "a36eab35a5799a69ba26926687c1cbe07df739ccda713e4301235af723a8cd28",
+              "rgbaSha256": "270c180ad727b91d3b0bbaa9b016ac77879b6fb8a8c47096ee8c0518154cd8cf",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 575,
+                "debuggerReadyMilliseconds": 155,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "a36eab35a5799a69ba26926687c1cbe07df739ccda713e4301235af723a8cd28",
+              "rgbaSha256": "270c180ad727b91d3b0bbaa9b016ac77879b6fb8a8c47096ee8c0518154cd8cf",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 931,
+                "debuggerReadyMilliseconds": 195,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "panel-controls/references/linux/sharp-shadow.png",
+          "referenceSha256": "a36eab35a5799a69ba26926687c1cbe07df739ccda713e4301235af723a8cd28",
+          "rgbaSha256": "270c180ad727b91d3b0bbaa9b016ac77879b6fb8a8c47096ee8c0518154cd8cf",
+          "captureInputSha256": "d3cc9a8002401a159d7f6e5a2931abefb8b20824164a78eeb86750b281f89c69",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "a36eab35a5799a69ba26926687c1cbe07df739ccda713e4301235af723a8cd28",
+              "rgbaSha256": "270c180ad727b91d3b0bbaa9b016ac77879b6fb8a8c47096ee8c0518154cd8cf",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 3893,
+                "debuggerReadyMilliseconds": 2677,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "a36eab35a5799a69ba26926687c1cbe07df739ccda713e4301235af723a8cd28",
+              "rgbaSha256": "270c180ad727b91d3b0bbaa9b016ac77879b6fb8a8c47096ee8c0518154cd8cf",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 3340,
+                "debuggerReadyMilliseconds": 2184,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "a36eab35a5799a69ba26926687c1cbe07df739ccda713e4301235af723a8cd28",
+              "rgbaSha256": "270c180ad727b91d3b0bbaa9b016ac77879b6fb8a8c47096ee8c0518154cd8cf",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 3885,
+                "debuggerReadyMilliseconds": 2647,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "origin-shadow",
+      "input": "panel-controls/origin-shadow.svg",
+      "sourceSha256": "9d43acf6c405fe50620699d27a7af1f5b54a2d52cc1dc809e94bc49fa0c10466",
+      "width": 1024,
+      "height": 640,
+      "viewport": {
+        "width": 1024,
+        "height": 640
+      },
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "platforms": {
+        "windows": {
+          "reference": "panel-controls/references/windows/origin-shadow.png",
+          "referenceSha256": "ec516dbb32755c7cd02d2ce2d116e7cd7ad6f39c40d44b5df15ca3b8ba647a8c",
+          "rgbaSha256": "2bb33d8b5443c332e6db0aba520426bbb084fe19744b30040d90f9e6efc537ef",
+          "captureInputSha256": "d15663c14531ea60c12fb5ee9b54adc7729b2d590005c450932143fe6233b323",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "ec516dbb32755c7cd02d2ce2d116e7cd7ad6f39c40d44b5df15ca3b8ba647a8c",
+              "rgbaSha256": "2bb33d8b5443c332e6db0aba520426bbb084fe19744b30040d90f9e6efc537ef",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 10425,
+                "debuggerReadyMilliseconds": 130,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "ec516dbb32755c7cd02d2ce2d116e7cd7ad6f39c40d44b5df15ca3b8ba647a8c",
+              "rgbaSha256": "2bb33d8b5443c332e6db0aba520426bbb084fe19744b30040d90f9e6efc537ef",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 628,
+                "debuggerReadyMilliseconds": 191,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "ec516dbb32755c7cd02d2ce2d116e7cd7ad6f39c40d44b5df15ca3b8ba647a8c",
+              "rgbaSha256": "2bb33d8b5443c332e6db0aba520426bbb084fe19744b30040d90f9e6efc537ef",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 603,
+                "debuggerReadyMilliseconds": 155,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "panel-controls/references/linux/origin-shadow.png",
+          "referenceSha256": "ec516dbb32755c7cd02d2ce2d116e7cd7ad6f39c40d44b5df15ca3b8ba647a8c",
+          "rgbaSha256": "2bb33d8b5443c332e6db0aba520426bbb084fe19744b30040d90f9e6efc537ef",
+          "captureInputSha256": "d15663c14531ea60c12fb5ee9b54adc7729b2d590005c450932143fe6233b323",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "ec516dbb32755c7cd02d2ce2d116e7cd7ad6f39c40d44b5df15ca3b8ba647a8c",
+              "rgbaSha256": "2bb33d8b5443c332e6db0aba520426bbb084fe19744b30040d90f9e6efc537ef",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 4007,
+                "debuggerReadyMilliseconds": 2556,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "ec516dbb32755c7cd02d2ce2d116e7cd7ad6f39c40d44b5df15ca3b8ba647a8c",
+              "rgbaSha256": "2bb33d8b5443c332e6db0aba520426bbb084fe19744b30040d90f9e6efc537ef",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 3628,
+                "debuggerReadyMilliseconds": 2514,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "ec516dbb32755c7cd02d2ce2d116e7cd7ad6f39c40d44b5df15ca3b8ba647a8c",
+              "rgbaSha256": "2bb33d8b5443c332e6db0aba520426bbb084fe19744b30040d90f9e6efc537ef",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 4222,
+                "debuggerReadyMilliseconds": 2889,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "zero-shadow",
+      "input": "panel-controls/zero-shadow.svg",
+      "sourceSha256": "475abc6bcb198a7fcb29c78b91f77adca2058a6c490899cea0fc9fdcac685969",
+      "width": 1024,
+      "height": 640,
+      "viewport": {
+        "width": 1024,
+        "height": 640
+      },
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "platforms": {
+        "windows": {
+          "reference": "panel-controls/references/windows/zero-shadow.png",
+          "referenceSha256": "0c5110ba83e21cbe2f529d76ae26f94a807cf24902d53bc753aabc06c7143aa8",
+          "rgbaSha256": "b384aacd4d12bab3e79944ba274cc9c0969c9847c7fea1ed24cf9962dfbb5639",
+          "captureInputSha256": "9c9fe6607a7b70d36040ff5af238fad86a75257f38886d9e2e94a591a2974c6f",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "0c5110ba83e21cbe2f529d76ae26f94a807cf24902d53bc753aabc06c7143aa8",
+              "rgbaSha256": "b384aacd4d12bab3e79944ba274cc9c0969c9847c7fea1ed24cf9962dfbb5639",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 548,
+                "debuggerReadyMilliseconds": 158,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "0c5110ba83e21cbe2f529d76ae26f94a807cf24902d53bc753aabc06c7143aa8",
+              "rgbaSha256": "b384aacd4d12bab3e79944ba274cc9c0969c9847c7fea1ed24cf9962dfbb5639",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 570,
+                "debuggerReadyMilliseconds": 159,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "0c5110ba83e21cbe2f529d76ae26f94a807cf24902d53bc753aabc06c7143aa8",
+              "rgbaSha256": "b384aacd4d12bab3e79944ba274cc9c0969c9847c7fea1ed24cf9962dfbb5639",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome.exe",
+                "elapsedMilliseconds": 750,
+                "debuggerReadyMilliseconds": 164,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "panel-controls/references/linux/zero-shadow.png",
+          "referenceSha256": "0c5110ba83e21cbe2f529d76ae26f94a807cf24902d53bc753aabc06c7143aa8",
+          "rgbaSha256": "b384aacd4d12bab3e79944ba274cc9c0969c9847c7fea1ed24cf9962dfbb5639",
+          "captureInputSha256": "9c9fe6607a7b70d36040ff5af238fad86a75257f38886d9e2e94a591a2974c6f",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "toolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+          "freshProcessCaptures": 3,
+          "captures": [
+            {
+              "pngSha256": "0c5110ba83e21cbe2f529d76ae26f94a807cf24902d53bc753aabc06c7143aa8",
+              "rgbaSha256": "b384aacd4d12bab3e79944ba274cc9c0969c9847c7fea1ed24cf9962dfbb5639",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 4174,
+                "debuggerReadyMilliseconds": 2785,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "0c5110ba83e21cbe2f529d76ae26f94a807cf24902d53bc753aabc06c7143aa8",
+              "rgbaSha256": "b384aacd4d12bab3e79944ba274cc9c0969c9847c7fea1ed24cf9962dfbb5639",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 3907,
+                "debuggerReadyMilliseconds": 2525,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            },
+            {
+              "pngSha256": "0c5110ba83e21cbe2f529d76ae26f94a807cf24902d53bc753aabc06c7143aa8",
+              "rgbaSha256": "b384aacd4d12bab3e79944ba274cc9c0969c9847c7fea1ed24cf9962dfbb5639",
+              "health": {
+                "schemaVersion": 1,
+                "executableName": "chrome",
+                "elapsedMilliseconds": 4670,
+                "debuggerReadyMilliseconds": 3241,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false,
+                "profileCleaned": true,
+                "startupHealth": "healthy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

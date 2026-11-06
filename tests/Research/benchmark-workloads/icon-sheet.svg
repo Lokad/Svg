@@ -1,0 +1,43 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="384" viewBox="0 0 512 384" font-family="Noto Sans" font-size="14">
+<defs><linearGradient id="ink"><stop stop-color="#1266a8"/><stop offset="1" stop-color="#20a58c"/></linearGradient>
+<symbol id="home" viewBox="0 0 24 24"><path d="M3 10 12 3 21 10M5 9v12h5v-7h4v7h5V9"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><path d="M16 16 21 21M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="M3 12 9 18 21 5"/></symbol>
+<symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V3M6 9l6-6 6 6M3 15v6h18v-6"/></symbol>
+<symbol id="folder" viewBox="0 0 24 24"><path d="M2 6h7l2 3h11v12H2Z"/></symbol>
+<symbol id="chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 16V9M12 16V5M17 16v-5"/></symbol>
+<symbol id="sun" viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2M17 12a5 5 0 1 1-10 0 5 5 0 0 1 10 0"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><path d="M12 5v7l4 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0"/></symbol>
+<symbol id="mail" viewBox="0 0 24 24"><path d="M2 5h20v14H2ZM2 5l10 8L22 5"/></symbol>
+<symbol id="heart" viewBox="0 0 24 24"><path d="M12 21 3 12C-3 4 7-2 12 5 17-2 27 4 21 12Z"/></symbol>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M3 12h18M14 5l7 7-7 7"/></symbol>
+<symbol id="grid" viewBox="0 0 24 24"><path d="M2 2h8v8H2ZM14 2h8v8h-8ZM2 14h8v8H2ZM14 14h8v8h-8Z"/></symbol>
+</defs>
+<rect width="512" height="384" fill="#f5f8fc"/><text x="24" y="32" font-size="20" fill="#16324a">Static SVG / icon library</text>
+<g><rect x="16" y="48" width="72" height="72" rx="8" fill="white"/><use href="#home" x="36" y="58" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="22" y="108" font-size="10" fill="#456075">home</text></g>
+<g><rect x="96" y="48" width="72" height="72" rx="8" fill="white"/><use href="#search" x="116" y="58" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="102" y="108" font-size="10" fill="#456075">search</text></g>
+<g><rect x="176" y="48" width="72" height="72" rx="8" fill="white"/><use href="#check" x="196" y="58" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="182" y="108" font-size="10" fill="#456075">check</text></g>
+<g><rect x="256" y="48" width="72" height="72" rx="8" fill="white"/><use href="#upload" x="276" y="58" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="262" y="108" font-size="10" fill="#456075">upload</text></g>
+<g><rect x="336" y="48" width="72" height="72" rx="8" fill="white"/><use href="#folder" x="356" y="58" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="342" y="108" font-size="10" fill="#456075">folder</text></g>
+<g><rect x="416" y="48" width="72" height="72" rx="8" fill="white"/><use href="#chart" x="436" y="58" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="422" y="108" font-size="10" fill="#456075">chart</text></g>
+<g><rect x="16" y="128" width="72" height="72" rx="8" fill="white"/><use href="#sun" x="36" y="138" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="22" y="188" font-size="10" fill="#456075">sun</text></g>
+<g><rect x="96" y="128" width="72" height="72" rx="8" fill="white"/><use href="#clock" x="116" y="138" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="102" y="188" font-size="10" fill="#456075">clock</text></g>
+<g><rect x="176" y="128" width="72" height="72" rx="8" fill="white"/><use href="#mail" x="196" y="138" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="182" y="188" font-size="10" fill="#456075">mail</text></g>
+<g><rect x="256" y="128" width="72" height="72" rx="8" fill="white"/><use href="#heart" x="276" y="138" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="262" y="188" font-size="10" fill="#456075">heart</text></g>
+<g><rect x="336" y="128" width="72" height="72" rx="8" fill="white"/><use href="#arrow" x="356" y="138" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="342" y="188" font-size="10" fill="#456075">arrow</text></g>
+<g><rect x="416" y="128" width="72" height="72" rx="8" fill="white"/><use href="#grid" x="436" y="138" width="32" height="32" fill="none" stroke="#214d73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="422" y="188" font-size="10" fill="#456075">grid</text></g>
+<g><rect x="16" y="208" width="72" height="72" rx="8" fill="white"/><use href="#home" x="36" y="218" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="22" y="268" font-size="10" fill="#456075">home</text></g>
+<g><rect x="96" y="208" width="72" height="72" rx="8" fill="white"/><use href="#search" x="116" y="218" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="102" y="268" font-size="10" fill="#456075">search</text></g>
+<g><rect x="176" y="208" width="72" height="72" rx="8" fill="white"/><use href="#check" x="196" y="218" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="182" y="268" font-size="10" fill="#456075">check</text></g>
+<g><rect x="256" y="208" width="72" height="72" rx="8" fill="white"/><use href="#upload" x="276" y="218" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="262" y="268" font-size="10" fill="#456075">upload</text></g>
+<g><rect x="336" y="208" width="72" height="72" rx="8" fill="white"/><use href="#folder" x="356" y="218" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="342" y="268" font-size="10" fill="#456075">folder</text></g>
+<g><rect x="416" y="208" width="72" height="72" rx="8" fill="white"/><use href="#chart" x="436" y="218" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="422" y="268" font-size="10" fill="#456075">chart</text></g>
+<g><rect x="16" y="288" width="72" height="72" rx="8" fill="white"/><use href="#sun" x="36" y="298" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="22" y="348" font-size="10" fill="#456075">sun</text></g>
+<g><rect x="96" y="288" width="72" height="72" rx="8" fill="white"/><use href="#clock" x="116" y="298" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="102" y="348" font-size="10" fill="#456075">clock</text></g>
+<g><rect x="176" y="288" width="72" height="72" rx="8" fill="white"/><use href="#mail" x="196" y="298" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="182" y="348" font-size="10" fill="#456075">mail</text></g>
+<g><rect x="256" y="288" width="72" height="72" rx="8" fill="white"/><use href="#heart" x="276" y="298" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="262" y="348" font-size="10" fill="#456075">heart</text></g>
+<g><rect x="336" y="288" width="72" height="72" rx="8" fill="white"/><use href="#arrow" x="356" y="298" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="342" y="348" font-size="10" fill="#456075">arrow</text></g>
+<g><rect x="416" y="288" width="72" height="72" rx="8" fill="white"/><use href="#grid" x="436" y="298" width="32" height="32" fill="none" stroke="url(#ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="422" y="348" font-size="10" fill="#456075">grid</text></g>
+
+</svg>

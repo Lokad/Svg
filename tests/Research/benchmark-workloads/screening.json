@@ -1,0 +1,270 @@
+{
+  "status": "Known supported rendering discrepancy; benchmark integration pending. Input selection and six workload targets were frozen before screening. No shipping code or reference was changed to accommodate the renderer.",
+  "sourceBaseCommit": "0d1872ca536b012b8f9f11e30f3048ec108fadcf",
+  "runtimeQualification": "../release-baselines/png-row-storage.json",
+  "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+  "framework": "net11.0",
+  "inputManifestSha256": "a723451bd15d1fe8d88c0b8b4693b8ebfc7772a9fa50a4ffff711f7d1e0845a3",
+  "capture": "capture.json",
+  "panelControls": "panel-controls.json",
+  "workloadResults": [
+    {
+      "host": "windows",
+      "id": "icon-sheet",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "windows",
+      "id": "wordmark",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "windows",
+      "id": "chart",
+      "outcome": "rendered",
+      "changedPixels": 7,
+      "maximumChannelError": 21,
+      "maximumAlphaError": 3
+    },
+    {
+      "host": "linux",
+      "id": "icon-sheet",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "linux",
+      "id": "wordmark",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "linux",
+      "id": "chart",
+      "outcome": "rendered",
+      "changedPixels": 7,
+      "maximumChannelError": 21,
+      "maximumAlphaError": 3
+    }
+  ],
+  "controlResults": [
+    {
+      "host": "windows",
+      "id": "panel-shadow",
+      "outcome": "rendered",
+      "changedPixels": 7,
+      "maximumChannelError": 21,
+      "maximumAlphaError": 3
+    },
+    {
+      "host": "windows",
+      "id": "panel-source",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "windows",
+      "id": "sharp-shadow",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "windows",
+      "id": "origin-shadow",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "windows",
+      "id": "zero-shadow",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "linux",
+      "id": "panel-shadow",
+      "outcome": "rendered",
+      "changedPixels": 7,
+      "maximumChannelError": 21,
+      "maximumAlphaError": 3
+    },
+    {
+      "host": "linux",
+      "id": "panel-source",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "linux",
+      "id": "sharp-shadow",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "linux",
+      "id": "origin-shadow",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    },
+    {
+      "host": "linux",
+      "id": "zero-shadow",
+      "outcome": "rendered",
+      "changedPixels": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0
+    }
+  ],
+  "finding": "Seven pixels at the lower-right corner of the 1000x616 rounded panel translated by (12,12), with rx=16 and a nonzero drop-shadow blur. Maximum channel/alpha error 21/3, identical on Windows/Linux. Standalone rounded source, sharp shadow, origin-aligned rounded shadow and zero-blur shadow are exact. This establishes an interaction without identifying the responsible production stage.",
+  "differingPixels": [
+    {
+      "x": 1008,
+      "y": 621,
+      "current": [
+        248,
+        249,
+        249,
+        207
+      ],
+      "reference": [
+        248,
+        249,
+        250,
+        205
+      ]
+    },
+    {
+      "x": 1009,
+      "y": 621,
+      "current": [
+        94,
+        121,
+        134,
+        38
+      ],
+      "reference": [
+        73,
+        102,
+        117,
+        35
+      ]
+    },
+    {
+      "x": 1007,
+      "y": 622,
+      "current": [
+        250,
+        250,
+        252,
+        224
+      ],
+      "reference": [
+        250,
+        252,
+        252,
+        223
+      ]
+    },
+    {
+      "x": 1008,
+      "y": 622,
+      "current": [
+        113,
+        136,
+        153,
+        45
+      ],
+      "reference": [
+        116,
+        139,
+        155,
+        46
+      ]
+    },
+    {
+      "x": 1006,
+      "y": 623,
+      "current": [
+        253,
+        253,
+        253,
+        238
+      ],
+      "reference": [
+        253,
+        253,
+        253,
+        237
+      ]
+    },
+    {
+      "x": 1007,
+      "y": 623,
+      "current": [
+        157,
+        174,
+        178,
+        60
+      ],
+      "reference": [
+        159,
+        176,
+        180,
+        61
+      ]
+    },
+    {
+      "x": 1010,
+      "y": 623,
+      "current": [
+        15,
+        60,
+        75,
+        17
+      ],
+      "reference": [
+        16,
+        64,
+        80,
+        16
+      ]
+    }
+  ],
+  "validation": {
+    "workloadDeclaredNativeCaptures": 18,
+    "controlDeclaredNativeCaptures": 30,
+    "unequalFontControls": 8,
+    "allDeclaredTriplesHealthyAndPixelStable": true,
+    "comparisonImages": 16,
+    "exactImages": 12,
+    "knownUnequalImages": 4,
+    "shippingChanges": 0,
+    "newBenchmarksIntegrated": 0,
+    "timedExecutions": 0
+  },
+  "next": "Investigate shared bitmap placement, retained rounded-conic construction and filter source sampling/alpha. Preserve all sources/options/targets and positive controls; implement a shared cause fix, retain failing-before coverage, then qualify before adding benchmark cases."
+}
