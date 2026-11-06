@@ -52,6 +52,10 @@ The [sampling destination correction](filter-sampling-device.json) closes those
 24 interactions through complete retained clips and the current output-layer
 enclosure. All 499 admitted historical inputs are exact. Two independent opacity
 placement fixtures guard source isolation and destination clipping.
+[Its packaged SVGWeb replay](filter-sampling-device-svgweb.json) preserves every
+original outcome and all supplied/static contexts. The separate [empty-region
+validation finding](filter-empty-region-validation.json) keeps graph admission
+independent of pixel culling; its repair remains open.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

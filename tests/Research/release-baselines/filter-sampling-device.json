@@ -1,5 +1,5 @@
 {
-  "status": "All 24 admitted shader/placement differences are exact on both hosts; all 475 earlier exact historical cases and every independent source-context row remain exact. Broader source/package/SVGWeb promotion follows the coherent source commit.",
+  "status": "The admitted historical paint residuals are closed: all 499 inputs, including the final 24 sampling interactions, are exact with complete primary/secondary/package/SVGWeb qualification. Independent inner/outer opacity controls preserve the owner boundary. Frozen Windows DejaVu and other support-claim work remain separately open.",
   "sourceBaseCommit": "1e1857c7382d972908a2489c6b17d039c83f539b",
   "sourceBindings": [
     {
@@ -857,7 +857,7 @@
       "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
     }
   ],
-  "broaderQualification": "Matching full primary CI, complete secondary suites, deterministic packages/installed consumers and every SVGWeb original/context replay follow this source commit. The current SVGWeb ledger remains bound to fd9564069 until the new replay passes.",
+  "broaderQualification": "Matching Ubuntu CI passes every gate. Windows primary CI and explicitly rebuilt complete secondary suites retain only frozen DejaVu; downstream Windows CI gates are skipped, while local installed consumers pass. Deterministic packages and all four installed host/runtime consumers pass. All 204 unchanged SVGWeb originals preserve identities/outcomes; all 168 rendered defaults per host are byte-identical to the preceding qualified output. Every supplied/static context and both independently qualified Linux math profiles are preserved.",
   "limits": [
     "No existing source SVG, native PNG, tolerance, exact assertion, text-layout implementation or public API changed. Two minimal authored CC0 fixtures are added.",
     "The 432 historical rejections retain the same documented admission outcomes; they are separate from the now-closed admitted differences.",
@@ -865,5 +865,185 @@
     "All hosted SVG bodies/fragments/raw attributes remain RAM-only. Counterfactual inputs here derive from repository-authored sources.",
     "Validation elapsed time includes process startup, discovery and concurrent work; no renderer-performance or suite-speedup claim.",
     "Frozen Windows DejaVu authority remains open and asserted."
-  ]
+  ],
+  "qualifiedSourceCommit": "c32cf69111312b924e7cab592e14607469fe155a",
+  "matchingCi": {
+    "runId": "42224536277",
+    "status": "CLOSED",
+    "headSha": "c32cf69111312b924e7cab592e14607469fe155a",
+    "jobs": [
+      {
+        "job": "build-and-test (windows-latest)",
+        "jobId": 127914588522,
+        "conclusion": "failure",
+        "logSha256": "095b6d1561bf8e9d150dd1be813265d10a148df6680460f8637a66d836e9f9bf",
+        "failedCases": [
+          "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+        ],
+        "suiteSummaries": [
+          "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T13:21:50.0097876Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 524 ms - Lokad.Svg.FontProbe.Tests.dll (net11.0)",
+          "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T13:24:46.7953994Z Passed!  - Failed:     0, Passed: 47992, Skipped:     0, Total: 47992, Duration: 2 m 38 s - Lokad.Svg.Tests.dll (net11.0)",
+          "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T13:25:13.6176671Z Failed!  - Failed:     1, Passed: 78876, Skipped:     0, Total: 78877, Duration: 2 m 54 s - Lokad.Svg.VisualTests.dll (net11.0)"
+        ]
+      },
+      {
+        "job": "build-and-test (ubuntu-latest)",
+        "jobId": 127914589144,
+        "conclusion": "success",
+        "logSha256": "d75aaf0c5150b6ade78b5df3a7dde5ba3cd38635f7e7a0ccf78ab8de4d0bd605",
+        "failedCases": [],
+        "suiteSummaries": [
+          "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T13:20:35.5796003Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 438 ms - Lokad.Svg.FontProbe.Tests.dll (net11.0)",
+          "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T13:22:20.1544263Z Passed!  - Failed:     0, Passed: 47992, Skipped:     0, Total: 47992, Duration: 1 m 29 s - Lokad.Svg.Tests.dll (net11.0)",
+          "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T13:22:29.7367539Z Passed!  - Failed:     0, Passed: 78877, Skipped:     0, Total: 78877, Duration: 1 m 30 s - Lokad.Svg.VisualTests.dll (net11.0)",
+          "build-and-test (ubuntu-latest)\t.NET 10 API, ownership and numerical compatibility\t2026-11-06T13:23:15.0575568Z Passed!  - Failed:     0, Passed: 12252, Skipped:     0, Total: 12252, Duration: 22 s - Lokad.Svg.Tests.dll (net10.0)",
+          "build-and-test (ubuntu-latest)\t.NET 10 representative native rendering compatibility\t2026-11-06T13:23:42.3431612Z Passed!  - Failed:     0, Passed:  2678, Skipped:     0, Total:  2678, Duration: 14 s - Lokad.Svg.VisualTests.dll (net10.0)",
+          "build-and-test (ubuntu-latest)\t.NET 10 font host compatibility\t2026-11-06T13:23:45.5760560Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 131 ms - Lokad.Svg.FontProbe.Tests.dll (net10.0)"
+        ]
+      }
+    ]
+  },
+  "packageMilestone": {
+    "sourceCommit": "c32cf69111312b924e7cab592e14607469fe155a",
+    "deterministic": true,
+    "hashes": {
+      "Lokad.Svg.0.4.0-dev.1.nupkg": "667aad0d2913c002ba7099498799fdc968c8c02093a87dfac9c8abdfd1a929f0",
+      "Lokad.Svg.0.4.0-dev.1.snupkg": "dd634eb1951d426c474f5a41f72a97c7d299ad0546c2470d807275f2aa705880"
+    },
+    "assets": [
+      {
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 8.198075600201264,
+        "librarySha256": "b30c1a3acbcd83041e04710d587041de31ce2893914d581ce15ce1833d2c14de"
+      },
+      {
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 8.303115299902856,
+        "librarySha256": "564961b504f8e9ddf228d30da676683fd99ed360847d0c2c0cde22e1ff12ec1b"
+      }
+    ],
+    "checks": [
+      {
+        "kind": "full-net10",
+        "exitCode": 0,
+        "seconds": 552.2950967999641
+      },
+      {
+        "kind": "package-windows",
+        "exitCode": 0,
+        "seconds": 9.627634600037709
+      },
+      {
+        "kind": "package-linux",
+        "exitCode": 0,
+        "seconds": 213.2472586000804
+      }
+    ],
+    "completeSecondarySuites": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "564961b504f8e9ddf228d30da676683fd99ed360847d0c2c0cde22e1ff12ec1b",
+        "testAssemblySha256": "b16874147401caa50e85064ec8d2dc45ea6f1e831c8d6f2b2b033ebf6f1d1136",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 79.9740131997969,
+        "counters": {
+          "executed": "47992",
+          "passed": "47992",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "564961b504f8e9ddf228d30da676683fd99ed360847d0c2c0cde22e1ff12ec1b",
+        "testAssemblySha256": "b16874147401caa50e85064ec8d2dc45ea6f1e831c8d6f2b2b033ebf6f1d1136",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 192.91338689997792,
+        "counters": {
+          "executed": "47992",
+          "passed": "47992",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "564961b504f8e9ddf228d30da676683fd99ed360847d0c2c0cde22e1ff12ec1b",
+        "testAssemblySha256": "fb6abb631d2978df79a91ab479e9c8e78e1c96cdc523fe6054eddb867ac9c1b2",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 454.18880150001496,
+        "counters": {
+          "executed": "78877",
+          "passed": "78876",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "564961b504f8e9ddf228d30da676683fd99ed360847d0c2c0cde22e1ff12ec1b",
+        "testAssemblySha256": "fb6abb631d2978df79a91ab479e9c8e78e1c96cdc523fe6054eddb867ac9c1b2",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 359.013767400058,
+        "counters": {
+          "executed": "78877",
+          "passed": "78877",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "564961b504f8e9ddf228d30da676683fd99ed360847d0c2c0cde22e1ff12ec1b",
+        "testAssemblySha256": "552e4909b395e7556009f46b121a50176df40b3d5640ad0a122bedc5c6097479",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 3.0155466001015157,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "564961b504f8e9ddf228d30da676683fd99ed360847d0c2c0cde22e1ff12ec1b",
+        "testAssemblySha256": "552e4909b395e7556009f46b121a50176df40b3d5640ad0a122bedc5c6097479",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.2869601000566036,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "svgwebMilestone": "filter-sampling-device-svgweb.json"
 }

@@ -1,0 +1,78 @@
+{
+  "status": "Open F3 validation inconsistency; the separate sampling-destination milestone is fully qualified. Private repair prototype is not promoted.",
+  "qualifiedSourceCommit": "c32cf69111312b924e7cab592e14607469fe155a",
+  "librarySha256": "b30c1a3acbcd83041e04710d587041de31ce2893914d581ce15ce1833d2c14de",
+  "framework": "net11.0",
+  "host": "windows",
+  "publicCall": "SvgConverter.ConvertToPng(source, SvgRenderOptions.Default, CancellationToken.None)",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+      "sha256": "4b2d60db1fe1186b5702221800b3c01710c92cdeb9d6a04b1f4c48023ef383e4"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs",
+      "sha256": "0c963ccbe255b08e113bbff764eb4a94a819683444819f0c4f0bca320cc56718"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs",
+      "sha256": "8fc1f5199ab5b422693d9722ef2c40ae464c489987181662252bf83eaac9ba1a"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterCaptureDemandTests.cs",
+      "sha256": "237b713f3a80fc1eda373f1f9b194a693f8de1923834163cb7ae741d4b67207e"
+    }
+  ],
+  "contract": "Live filter graphs retain reference and mapped-scalar validation independently of final-result pixel demand. A drop-shadow deviation above 135 mapped device pixels is unsupported; culling its pixel region must not bypass that validation.",
+  "reproduction": {
+    "sourceTemplate": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><feDropShadow in='SourceAlpha' stdDeviation='136' result='unread'{region}/><feFlood flood-color='red'/></filter></defs><rect width='8' height='8' filter='url(#f)'/></svg>",
+    "substitution": "Replace {region} literally with the listed regionAttributes; encode UTF-8 with no added newline.",
+    "observations": [
+      {
+        "name": "nonempty",
+        "regionAttributes": "",
+        "sourceSha256": "8bf605c2ae0c57feef848abf1c2e3709a94e976ffdeb61aea1104a63789e8c8b",
+        "outcome": "UnsupportedFeature",
+        "message": "Drop-shadow deviations above 135 device pixels per axis are not implemented.",
+        "pngSha256": null
+      },
+      {
+        "name": "outside",
+        "regionAttributes": " x='64' y='64' width='1' height='1'",
+        "sourceSha256": "849905c7e2a3753c75aaddbd6a6e9767a561f5811a75f3a729b57b56498ea792",
+        "outcome": "rendered",
+        "message": null,
+        "pngSha256": "b201e2de7fd1a6eee7faf6b18a27ff99e0816f951b5d826f2c0b8436e0b60320"
+      },
+      {
+        "name": "zero",
+        "regionAttributes": " width='0' height='0'",
+        "sourceSha256": "5121a02e9b262cea32a93b612f1c0475c850c84331497ed32ad1f99cac5a4bf7",
+        "outcome": "rendered",
+        "message": null,
+        "pngSha256": "b201e2de7fd1a6eee7faf6b18a27ff99e0816f951b5d826f2c0b8436e0b60320"
+      }
+    ]
+  },
+  "cause": "ApplyCore continues past empty placed regions before invoking its pixel-free validation path. A final live flood keeps this a live graph even though the invalid shadow is unread.",
+  "existingCoverage": "Graph-demand tests cover malformed primary/secondary/merge references and mapped shadow/offset limits for unread nodes, but their regions are nonempty. Capture-demand tests preserve unused halo and deviation validation. They do not cover this culling interaction.",
+  "nextActions": [
+    "Add individually discoverable failing-before mechanism cases for selected/unread culled nodes, numeric limits and reference roles; add representative public admission checks.",
+    "Share the existing local validation path before skipping empty regions, without materializing pixel planes or adding owners.",
+    "Preserve valid empty-region output, dormant definitions/empty-element eligibility, cancellation, cleanup and exact references. Run focused affected checks; promote broader qualification at a coherent milestone."
+  ],
+  "prototype": {
+    "scope": "Private source copy only.",
+    "change": "Merge empty-region and unread-node dispatch; invoke the existing pixel-free validation path before either continue.",
+    "publicOutcomes": [
+      "UnsupportedFeature",
+      "UnsupportedFeature",
+      "UnsupportedFeature"
+    ],
+    "productionCodeChanged": false
+  },
+  "limits": [
+    "All reproduction bytes are newly authored; no hosted SVG bodies/fragments/raw attributes are retained.",
+    "This is an admission/validation contract, not a browser pixel claim. No new image reference or tolerance is needed."
+  ]
+}

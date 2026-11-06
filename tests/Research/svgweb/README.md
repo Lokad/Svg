@@ -12,7 +12,7 @@ exact**, with 35 UnsupportedFeature and 1 MalformedInput outcome. The
 the inventory retains historical observations separately.
 `originals.json.currentReview` owns the current renderer and replay qualification;
 stage records retain their source identities and link back to that ledger.
-The [native-device replay](../release-baselines/native-clip-device-domains-svgweb.json)
+The [sampling-destination replay](../release-baselines/filter-sampling-device-svgweb.json)
 preserves every original outcome and all declared contexts. For `svg.svg`, the CSV
 keeps the original Linux glibc 2.39 PNG hash; the current replay's glibc 2.43 output
 has its own independently recaptured authority. Both match their browser profile.
