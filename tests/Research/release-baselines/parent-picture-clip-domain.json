@@ -803,7 +803,7 @@
     "restoredSourceBase": "c87556612cd557dc9362cbe25041ae874db62719",
     "currentResolvedHistorical": 415,
     "currentOpenHistorical": 84,
-    "reason": "A globally enlarged picture domain is not a consistent replacement for the existing source/layer model. An isolation-only trial trades old failures for new ones and is also rejected.",
+    "reason": "A globally enlarged picture domain regresses 164 source-context cases. An isolation-only trial removes 96 without adding failures in that bank, but leaves 68 and remains unqualified for promotion.",
     "affectedSelectionCorrection": "Include SvgFilterSourceContextReferenceTests, with routine and Research rows, whenever changing source capture/clip-classification semantics. Its independent rectangle/path references protect distinct execution routes despite similar images.",
     "closure": "All 931 historical outcomes, the 9230 source-context rows, affected ownership/numerical checks and matching full primary CI must pass; retain exactness and frozen Windows DejaVu separately.",
     "affectedChecks": [
@@ -883,7 +883,226 @@
         "sha256": "8ab8bf70ef2107a468a940426477c376e4452bc12dc1ca0720c76840b474d322"
       }
     ],
-    "matchingCi": "Pending matching-source full primary CI; the previous matching c87556612 Ubuntu run passed every gate. Windows frozen DejaVu remains asserted."
+    "matchingCi": {
+      "runId": 42206486673,
+      "sourceCommit": "75bbf928050fa39e8300f9c134c2780a00686fdf",
+      "status": "CLOSED",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "job": "build-and-test (ubuntu-latest)",
+          "jobId": 127854326926,
+          "conclusion": "success",
+          "logSha256": "d6f9f6f62c9385061b5c6c00636a3ab7b1ba59f68daa845eb6a97799bd1754ad",
+          "failedCases": [],
+          "suiteSummaries": [
+            "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:58:19.9569078Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 499 ms - Lokad.Svg.FontProbe.Tests.dll (net11.0)",
+            "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T11:00:36.7993266Z Passed!  - Failed:     0, Passed: 47991, Skipped:     0, Total: 47991, Duration: 1 m 56 s - Lokad.Svg.Tests.dll (net11.0)",
+            "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T11:00:51.2175218Z Passed!  - Failed:     0, Passed: 78790, Skipped:     0, Total: 78790, Duration: 1 m 58 s - Lokad.Svg.VisualTests.dll (net11.0)",
+            "build-and-test (ubuntu-latest)\t.NET 10 API, ownership and numerical compatibility\t2026-11-06T11:01:44.0763829Z Passed!  - Failed:     0, Passed: 12251, Skipped:     0, Total: 12251, Duration: 28 s - Lokad.Svg.Tests.dll (net10.0)",
+            "build-and-test (ubuntu-latest)\t.NET 10 representative native rendering compatibility\t2026-11-06T11:02:17.2631689Z Passed!  - Failed:     0, Passed:  2675, Skipped:     0, Total:  2675, Duration: 16 s - Lokad.Svg.VisualTests.dll (net10.0)",
+            "build-and-test (ubuntu-latest)\t.NET 10 font host compatibility\t2026-11-06T11:02:21.0687981Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 168 ms - Lokad.Svg.FontProbe.Tests.dll (net10.0)"
+          ],
+          "skippedSteps": [
+            "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+            "Run actions/upload-artifact@v4"
+          ]
+        },
+        {
+          "job": "build-and-test (windows-latest)",
+          "jobId": 127854327304,
+          "conclusion": "failure",
+          "logSha256": "b0fb1451a4e472aa9ff47e59dfdb84249732a280b5d72dff6942b9a4125150c2",
+          "failedCases": [
+            "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+          ],
+          "suiteSummaries": [
+            "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:59:07.4060102Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 400 ms - Lokad.Svg.FontProbe.Tests.dll (net11.0)",
+            "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T11:01:44.4206071Z Passed!  - Failed:     0, Passed: 47991, Skipped:     0, Total: 47991, Duration: 2 m 16 s - Lokad.Svg.Tests.dll (net11.0)",
+            "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T11:02:13.4795471Z Failed!  - Failed:     1, Passed: 78789, Skipped:     0, Total: 78790, Duration: 2 m 32 s - Lokad.Svg.VisualTests.dll (net11.0)"
+          ],
+          "skippedSteps": [
+            ".NET 10 API, ownership and numerical compatibility",
+            ".NET 10 representative native rendering compatibility",
+            ".NET 10 font host compatibility",
+            "Run tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe",
+            "Run tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests",
+            "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+            "Allow the pinned Chrome executable to create its sandbox",
+            "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json",
+            "Run tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe",
+            "Run tools/validate-ci-artifacts.ps1 -Platform Windows -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe -RequireCurrentHost",
+            "Run tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/validator-selftest -Platform Windows",
+            "Run dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build",
+            "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "Post Run actions/setup-dotnet@v4",
+            "Post Run actions/setup-dotnet@v4"
+          ]
+        }
+      ]
+    },
+    "failureAxes": {
+      "isolationComparison": {
+        "retainedFailures": 68,
+        "newFailures": 0,
+        "removedFailures": 96
+      },
+      "parentDomain": {
+        "total": 164,
+        "axes": {
+          "role": {
+            "candidate": 100,
+            "control": 64
+          },
+          "variant": {
+            "original": 160,
+            "opaque-group": 1,
+            "fill-only": 1,
+            "blur-copy": 1,
+            "offset-pixel": 1
+          },
+          "paint": {
+            "2": 40,
+            "0": 44,
+            "3": 40,
+            "1": 40
+          },
+          "corners": {
+            "1": 80,
+            "0": 84
+          },
+          "width": {
+            "2": 68,
+            "0": 64,
+            "1": 32
+          },
+          "pose": {
+            "2": 68,
+            "1": 96
+          },
+          "consumer": {
+            "2": 164
+          },
+          "effect": {
+            "3": 164
+          },
+          "outputScale": {
+            "1": 82,
+            "1.5": 82
+          }
+        }
+      },
+      "isolationOnly": {
+        "total": 68,
+        "axes": {
+          "role": {
+            "control": 32,
+            "candidate": 36
+          },
+          "variant": {
+            "original": 64,
+            "offset-pixel": 1,
+            "blur-copy": 1,
+            "opaque-group": 1,
+            "fill-only": 1
+          },
+          "paint": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "0": 20
+          },
+          "corners": {
+            "0": 36,
+            "1": 32
+          },
+          "width": {
+            "2": 68
+          },
+          "pose": {
+            "2": 68
+          },
+          "consumer": {
+            "2": 68
+          },
+          "effect": {
+            "3": 68
+          },
+          "outputScale": {
+            "1.5": 34,
+            "1": 34
+          }
+        }
+      },
+      "legend": {
+        "paint": [
+          "solid",
+          "linear",
+          "radial",
+          "pattern"
+        ],
+        "corners": [
+          "rx=0, ry=4",
+          "rx=4, ry=0"
+        ],
+        "width": [
+          ".5",
+          "2",
+          "24"
+        ],
+        "pose": [
+          "identity",
+          "translated",
+          "nonuniform scale",
+          "rotated"
+        ],
+        "consumer": [
+          "direct",
+          "use",
+          "symbol"
+        ],
+        "effect": [
+          "none",
+          "clip",
+          "mask",
+          "filter"
+        ]
+      }
+    },
+    "isolationTrialChecks": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "ae6fc477b12272df10d60f861afab7d3f03da52021c20a9e9ea6c3af9ab3840a",
+        "testAssemblySha256": "a2f4ea55d76a9f7e12bbf7518b92c5aa011957cbd443d0410566ffb06c41d030",
+        "selection": "FullyQualifiedName~SvgFilterSourceContextReferenceTests",
+        "exitCode": 1,
+        "seconds": 26.64335749996826,
+        "counters": {
+          "executed": "9230",
+          "passed": "9162",
+          "failed": "68"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "ae6fc477b12272df10d60f861afab7d3f03da52021c20a9e9ea6c3af9ab3840a",
+        "testAssemblySha256": "a2f4ea55d76a9f7e12bbf7518b92c5aa011957cbd443d0410566ffb06c41d030",
+        "selection": "FullyQualifiedName~SvgFilterSourceContextReferenceTests",
+        "exitCode": 1,
+        "seconds": 24.890251599950716,
+        "counters": {
+          "executed": "9230",
+          "passed": "9162",
+          "failed": "68"
+        }
+      }
+    ],
+    "nextModelBoundary": "All 164 failed contexts are filtered symbols: 96 translated and 68 nonuniformly scaled. The isolation trial retains only the 68 nonuniform wide-stroke cases. Trace when symbol viewport clipping applies relative to source recording, isolation and image sampling; preserve all source/reference pairs instead of special-casing SVG element names.",
+    "qualification": "Restoration verified: 36920 source-context passes across both hosts/runtimes; matching Ubuntu CI passes every gate, including complete primary suites, secondary compatibility, native cleanup and installed package consumers. Windows retains only the frozen DejaVu failure and skips downstream steps."
   },
   "candidateSourceCommit": "22366f4022732f1d45ac9e7b7c0789b3c578c855"
 }
