@@ -2024,6 +2024,26 @@ public static partial class SvgConverter
                         left = Math.Min(left, x1); top = Math.Min(top, y1); right = Math.Max(right, x2); bottom = Math.Max(bottom, y2);
                     }
                     if (active == 0) continue;
+                    bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
+                    SvgAffineTransform coordinates = objectSourceUnits
+                        ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
+                            binding.ObjectBounds.Left * horizontalScale + horizontalOffset, binding.ObjectBounds.Top * verticalScale + verticalOffset)
+                        : MapFilterParameterTransform(binding.Transform);
+                    SvgFilterRegionContext sourceContext = new(coordinates,
+                        objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
+                    SvgPaintBounds requestedSource = new(MathF.Max(requested.Left, tile.BitmapClip.Left), MathF.Max(requested.Top, tile.BitmapClip.Top),
+                        MathF.Min(requested.Right, tile.BitmapClip.Right), MathF.Min(requested.Bottom, tile.BitmapClip.Bottom));
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (activeViewport.Coverage is {} clipCoverage && clipCoverage.TryGetBounds(tile.BitmapClip, out SvgAnalyticClipBounds bitmapClip))
+                        requestedSource = new(MathF.Max(requestedSource.Left, bitmapClip.Left), MathF.Max(requestedSource.Top, bitmapClip.Top),
+                            MathF.Min(requestedSource.Right, bitmapClip.Right), MathF.Min(requestedSource.Bottom, bitmapClip.Bottom));
+                    if (requestedSource.Right <= requestedSource.Left || requestedSource.Bottom <= requestedSource.Top) continue;
+                    SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext, requestedSource, cancellationToken);
+                    // Use the propagated request for capture as well as shader origins,
+                    // matching ordinary graph playback. Extra ink changes curve construction.
+                    left = Math.Max(left, needed.Left); top = Math.Max(top, needed.Top);
+                    right = Math.Min(right, needed.Right); bottom = Math.Min(bottom, needed.Bottom);
+                    if (right <= left || bottom <= top) continue;
                     left = Math.Floor(left) - 1; top = Math.Floor(top) - 1; right = Math.Ceiling(right) + 1; bottom = Math.Ceiling(bottom) + 1;
                     if (frame is { FilterBinding: {} nativeCaptureOwner, NativeSourceBounds: {} captureExtent } && nativeCaptureOwner.Index == command.MaskContentIndex)
                     {
@@ -2041,22 +2061,6 @@ public static partial class SvgConverter
                         throw new SvgException(SvgErrorCode.LimitExceeded, "Offset source capture exceeds the configured surface limits.");
                     SvgRenderLimits captureLimits = limits;
                     SvgRenderOptions captureOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, captureLimits, options.FontSnapshot);
-                    bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
-                    SvgAffineTransform coordinates = objectSourceUnits
-                        ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
-                            binding.ObjectBounds.Left * horizontalScale + horizontalOffset, binding.ObjectBounds.Top * verticalScale + verticalOffset)
-                        : MapFilterParameterTransform(binding.Transform);
-                    SvgFilterRegionContext sourceContext = new(coordinates,
-                        objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
-                    SvgPaintBounds requestedSource = new(MathF.Max(requested.Left, tile.BitmapClip.Left), MathF.Max(requested.Top, tile.BitmapClip.Top),
-                        MathF.Min(requested.Right, tile.BitmapClip.Right), MathF.Min(requested.Bottom, tile.BitmapClip.Bottom));
-                    // Each compositor bitmap owns its clipped request and image origin.
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if (activeViewport.Coverage is {} clipCoverage && clipCoverage.TryGetBounds(tile.BitmapClip, out SvgAnalyticClipBounds bitmapClip))
-                        requestedSource = new(MathF.Max(requestedSource.Left, bitmapClip.Left), MathF.Max(requestedSource.Top, bitmapClip.Top),
-                            MathF.Min(requestedSource.Right, bitmapClip.Right), MathF.Min(requestedSource.Bottom, bitmapClip.Bottom));
-                    if (requestedSource.Right <= requestedSource.Left || requestedSource.Bottom <= requestedSource.Top) continue;
-                    SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext, requestedSource, cancellationToken);
                     SvgPaintBounds painted = new((float)(imageVisual.Left * horizontalScale + horizontalOffset), (float)(imageVisual.Top * verticalScale + verticalOffset),
                         (float)(imageVisual.Right * horizontalScale + horizontalOffset), (float)(imageVisual.Bottom * verticalScale + verticalOffset));
                     SvgPaintBounds outputHint = MapParameterSourceBounds(elementVisual, SvgFilterBoundsKind.Output,
