@@ -1,4 +1,4 @@
-# Authored benchmark workload candidates
+# Authored benchmark workloads
 
 The [input manifest](manifest.json) freezes three original CC0 SVGs before browser
 capture and renderer screening: a 512×384 icon sheet, 768×192 wordmark and
@@ -42,5 +42,11 @@ The [foreground qualification](../release-baselines/shadow-foreground.json) clos
 the identity color-matrix panel's 110 differing pixels through the existing merge
 compositor. The [one-pixel counterparts](foreground-mechanisms.json) retain packed
 versus deferred-program rounding, with independent native triples. All eighteen
-inputs match their own targets across both hosts/runtime assets. Benchmark
-integration is the next step after the qualified combined correctness milestone.
+inputs match their own targets across both hosts/runtime assets.
+
+The [benchmark integration](../release-baselines/benchmark-authored-documents.json)
+adds the three original workloads to the existing conversion/raster benchmark
+owner, sharing its setup, cleanup and font catalog. All 80 earlier workload
+identities remain. The resulting 86 generated workloads compile on both hosts and
+runtime targets; functional checks retain native pixels and resource lifetimes.
+Timed performance measurements require a dedicated quiet host.

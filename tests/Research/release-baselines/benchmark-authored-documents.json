@@ -1,0 +1,312 @@
+{
+  "status": "Three frozen authored workloads qualified through the existing conversion/raster owner. All80 prior workload identities and52 timed method bodies remain; all86 generated workloads compile on both hosts/runtime targets. Native pixels, fonts and lifecycle pass. No timed renderer benchmark ran.",
+  "sourceBaseCommit": "c119abfed1787f32d088b76d4c2d7d79b9b9c62b",
+  "productionSourceTreeGitId": "67990783bbf19d84f1135c9063dfbea8d00755fc",
+  "runtimeQualification": "shadow-foreground.json",
+  "priorBenchmarkQualification": "benchmark-reference-documents.json",
+  "builderQualification": "benchmark-net11-qualification.json",
+  "source": {
+    "file": "../../../benchmarks/Lokad.Svg.Benchmarks/SvgReferenceDocumentBenchmarks.cs",
+    "beforeLfSha256": "b5aa65645a5e0f9c41a3bf09866cba2525445b0542edbc8f61cd52b8bcfeb721",
+    "afterLfSha256": "15677c3b35531ec22b21ff14dfc13e11931532c75b97edbceccf703abf5a981c",
+    "all52TimedMethodBodiesByteExact": true,
+    "timedMethodMapSha256": "538a61639b007d2c5a9866a63b394d9ca9e1a6b246d9e8ec684bd39d854bcc3b",
+    "unchanged": "Production, runtime tests, fixtures, references, packages/locks and CI. Original enum members keep their order; only IconSheet, Wordmark and Chart are appended.",
+    "ownership": "Existing targeted setup loads source/options and exact declared fonts outside timing; raster setup additionally owns one parsed root. Existing cleanup releases root before font snapshot and clears options/input. No additional benchmark class, resolver, public API, font copy or framework."
+  },
+  "corpus": {
+    "manifest": "../benchmark-workloads/manifest.json",
+    "manifestSha256": "a723451bd15d1fe8d88c0b8b4693b8ebfc7772a9fa50a4ffff711f7d1e0845a3",
+    "nativeCapture": "../benchmark-workloads/capture.json",
+    "nativeCaptureSha256": "acea6bb23f4f99bd638aae08aded4b987928aadf2de5d7367911e2c2d4e4dd82",
+    "fontCatalog": "../upstream-static-documents/font-pack.json",
+    "fontCatalogSha256": "3ba4fb9c2c7b40df7b9f3c060ba1e5c98e461894e102684585da9effb80ce990",
+    "fontPackId": "upstream-noto-sans",
+    "fontPrograms": [
+      {
+        "file": "../upstream-static-documents/fonts/NotoSans-Regular.ttf",
+        "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Regular.ttf",
+        "sha256": "6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9",
+        "license": "OFL-1.1",
+        "family": "Noto Sans",
+        "weight": 400,
+        "italic": false
+      },
+      {
+        "file": "../upstream-static-documents/fonts/NotoSans-Italic.ttf",
+        "sourceUrl": "https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Italic.ttf",
+        "sha256": "35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b",
+        "license": "OFL-1.1",
+        "family": "Noto Sans",
+        "weight": 400,
+        "italic": true
+      }
+    ],
+    "selection": [
+      {
+        "document": "IconSheet",
+        "id": "icon-sheet",
+        "input": "icon-sheet.svg",
+        "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+        "width": 512,
+        "height": 384,
+        "scale": 1,
+        "background": "transparent",
+        "license": "CC0-1.0",
+        "fonts": [
+          "NotoSans-Regular.ttf"
+        ],
+        "platformTargets": [
+          {
+            "host": "windows",
+            "referenceSha256": "0e41950f4476b470d1df3f57bb257b25ffa09138737062d0b45a681ac10197ea",
+            "rgbaSha256": "20030b9b3362882e0d02904fbaf5c93763b76b33a64a97cae029ee54aa002a89"
+          },
+          {
+            "host": "linux",
+            "referenceSha256": "95c9e40bbf77880f6c679bdbcb824a2ece6c13f2bc870a93e698135a3edf135b",
+            "rgbaSha256": "e7088dbbf827442d1d20e89eb8e1208f5f43066621fb810c34f0c3bcf539dd7c"
+          }
+        ]
+      },
+      {
+        "document": "Wordmark",
+        "id": "wordmark",
+        "input": "wordmark.svg",
+        "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+        "width": 768,
+        "height": 192,
+        "scale": 1,
+        "background": "transparent",
+        "license": "CC0-1.0",
+        "fonts": [
+          "NotoSans-Regular.ttf",
+          "NotoSans-Italic.ttf"
+        ],
+        "platformTargets": [
+          {
+            "host": "windows",
+            "referenceSha256": "4f550f74dda433cc0a1fa1e32f603116bc8c52dee09cb5454ee38ab64f581c46",
+            "rgbaSha256": "7da36978e25cdf884cb8287fd6a36e850b2f3d3d2e6385e36935d25f2890c5dc"
+          },
+          {
+            "host": "linux",
+            "referenceSha256": "aed01ce224547b8832db491335f07f9cd87ed2a041b85f6a9e6bc9f268e9615d",
+            "rgbaSha256": "075a5e9d94d49dd4729a39ecc78619274c3e457be0679b522d24665ade7143f7"
+          }
+        ]
+      },
+      {
+        "document": "Chart",
+        "id": "chart",
+        "input": "chart.svg",
+        "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+        "width": 1024,
+        "height": 640,
+        "scale": 1,
+        "background": "transparent",
+        "license": "CC0-1.0",
+        "fonts": [
+          "NotoSans-Regular.ttf"
+        ],
+        "platformTargets": [
+          {
+            "host": "windows",
+            "referenceSha256": "704643ea71c7faca0cc2672d22a14dcc67bcc7e5d1d34bec97c3c49b15160674",
+            "rgbaSha256": "94f67968e0538cd0e5fa6240912c49c38072b8d306e3342b51c274d0694d4fcc"
+          },
+          {
+            "host": "linux",
+            "referenceSha256": "62d97dfb4faae3edd7c7ff6f9ce4bb6b4a2001c0b09da2823bf0f09b070996d8",
+            "rgbaSha256": "9d28d7f2e473146554ce5cc2f9b4d87cf6bd32450377d106729b05a5d9189cc8"
+          }
+        ]
+      }
+    ],
+    "frozenInputCaptureAndReferenceFilesUnchanged": true,
+    "nativeAuthority": "Independent Windows/Linux targets, three fresh healthy stable native processes each, frozen before renderer screening; absent-font and real-italic substitution controls remain in capture metadata."
+  },
+  "partition": {
+    "beforeMethods": 52,
+    "afterMethods": 52,
+    "retainedWorkloadsPerRuntime": 80,
+    "addedWorkloadsPerRuntime": 6,
+    "afterWorkloadsPerRuntime": 86,
+    "discoveryJoins": [
+      {
+        "host": "windows",
+        "targetFramework": "net11.0",
+        "retainedCasesPerRuntime": 80,
+        "addedCasesPerRuntime": 6,
+        "afterCasesPerRuntime": 86
+      },
+      {
+        "host": "linux",
+        "targetFramework": "net11.0",
+        "retainedCasesPerRuntime": 80,
+        "addedCasesPerRuntime": 6,
+        "afterCasesPerRuntime": 86
+      },
+      {
+        "host": "windows",
+        "targetFramework": "net10.0",
+        "retainedCasesPerRuntime": 80,
+        "addedCasesPerRuntime": 6,
+        "afterCasesPerRuntime": 86
+      },
+      {
+        "host": "linux",
+        "targetFramework": "net10.0",
+        "retainedCasesPerRuntime": 80,
+        "addedCasesPerRuntime": 6,
+        "afterCasesPerRuntime": 86
+      }
+    ],
+    "scope": "Whole conversion includes parsing/lowering, rasterization and PNG encoding. Raster-only excludes parsing and PNG encoding. Both retain existing timing boundaries; source/font acquisition remains outside timing."
+  },
+  "functionalValidation": {
+    "hostTargets": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+        "documents": 12,
+        "existingAssetSetupChecks": 2,
+        "cleanupVerified": true
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+        "documents": 12,
+        "existingAssetSetupChecks": 2,
+        "cleanupVerified": true
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077",
+        "documents": 12,
+        "existingAssetSetupChecks": 2,
+        "cleanupVerified": true
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077",
+        "documents": 12,
+        "existingAssetSetupChecks": 2,
+        "cleanupVerified": true
+      }
+    ],
+    "independentPngDecoder": "Pillow 11.1.0",
+    "exactNativeImageJoins": 48,
+    "nativeImageJoinsSha256": "4794cb72968c75b1f4bd633ac7c2bc6ca85fecb10311954d18eea1dd2c9ae7d0",
+    "allNinePriorWorkloadPngsByteExactOnEachHostTarget": true,
+    "platformDifferencesRetained": [
+      {
+        "document": "TextPath",
+        "platformDifferentPixels": 1141
+      },
+      {
+        "document": "RealItalic",
+        "platformDifferentPixels": 478
+      },
+      {
+        "document": "IconSheet",
+        "platformDifferentPixels": 4499
+      },
+      {
+        "document": "Wordmark",
+        "platformDifferentPixels": 7660
+      },
+      {
+        "document": "Chart",
+        "platformDifferentPixels": 7844
+      }
+    ],
+    "checks": [
+      "Raw and parsed-root PNGs are byte-exact; both and direct raster RGBA match full independent host-native images with the existing invisible-RGB canonicalization.",
+      "Seven font-free documents acquire no snapshot. Five supplied-font documents acquire the declared programs; the wordmark selects both regular and real italic.",
+      "One fixture is reused across12 documents. Two repeated raster calls preserve source identity and lengths; direct scratch refunds reach zero.",
+      "Cleanup is idempotent and clears root, snapshot and source; rasterization without setup rejects. Existing gradient/public-label setups also execute."
+    ],
+    "linuxContext": "Existing glibc2.43 bubblewrap native-math environment; no browser recapture or target rewrite."
+  },
+  "generatedCompilation": {
+    "builds": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 13.37915339996107,
+        "cases": 86,
+        "identitySha256": "fd53aa0d0b05f0d54b083f04bf1e9d830fb5ea15d056f70a5e5e5cbc4cf4e029",
+        "driverSha256": "2c08b47a8c837e161a9224a0e96f75e1899f6d81eb071d18586e0d24112d6736",
+        "generated": [
+          {
+            "cases": 86,
+            "executableSha256": "b60bc7f881bfd2e248592dae6c318e74dbafc555abec939b5f5e05bbecbe0cf7",
+            "generatedSourceSha256": "a5911cce4f8a271e03f789677c0811d68cae5b4ac7d6fc226b26db26a3db3c63"
+          }
+        ]
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 12.221327899955213,
+        "cases": 86,
+        "identitySha256": "fd53aa0d0b05f0d54b083f04bf1e9d830fb5ea15d056f70a5e5e5cbc4cf4e029",
+        "driverSha256": "2c08b47a8c837e161a9224a0e96f75e1899f6d81eb071d18586e0d24112d6736",
+        "generated": [
+          {
+            "cases": 86,
+            "executableSha256": "a5c563a0dcb6e055da0e8456c2e8b4d70224923122456ab6402726a335fd3652",
+            "generatedSourceSha256": "a5911cce4f8a271e03f789677c0811d68cae5b4ac7d6fc226b26db26a3db3c63"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 63.987018699990585,
+        "cases": 86,
+        "identitySha256": "fd53aa0d0b05f0d54b083f04bf1e9d830fb5ea15d056f70a5e5e5cbc4cf4e029",
+        "driverSha256": "2c08b47a8c837e161a9224a0e96f75e1899f6d81eb071d18586e0d24112d6736",
+        "generated": [
+          {
+            "cases": 86,
+            "executableSha256": "c0f6f1766e6a3d00d78d25cf6e092a836609d11a139d011bb700636f5cbcc140",
+            "generatedSourceSha256": "b8f8c7532e9589b93af56d693582d1f1ff4f13e94b01757122f4810521da3c7c"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 64.3423023999203,
+        "cases": 86,
+        "identitySha256": "fd53aa0d0b05f0d54b083f04bf1e9d830fb5ea15d056f70a5e5e5cbc4cf4e029",
+        "driverSha256": "2c08b47a8c837e161a9224a0e96f75e1899f6d81eb071d18586e0d24112d6736",
+        "generated": [
+          {
+            "cases": 86,
+            "executableSha256": "b05b3fc4d1b31ab96d76b80d257b2dc2bd452af9f48aceb07859cf314ab84f3f",
+            "generatedSourceSha256": "b8f8c7532e9589b93af56d693582d1f1ff4f13e94b01757122f4810521da3c7c"
+          }
+        ]
+      }
+    ],
+    "allFourIdentityDigestsAgree": true,
+    "all24DocumentLifecycleDescriptorsVerifiedPerHostTarget": true,
+    "retainedSyntheticSceneDescriptorsAlsoVerified": true,
+    "executorCalls": 0,
+    "timedBenchmarkExecutions": 0,
+    "scope": "Pinned public CsProjBuilder generation/compilation only; wall times describe compilation, not renderer performance."
+  },
+  "inheritedQualification": "The unchanged shipping renderer retains the combined shadow milestone source/package/runtime/W1 qualification. Exact qualified DLL/PDB/XML assets were restored after generated builds and used in all functional checks. Full CI/package gates were not repeated for this benchmark/documentation-only change.",
+  "remaining": "Direct mechanism coverage, purpose-based retention, current support/provenance audits and quiet-VM installed/native timing and allocation comparison remain open. No throughput, allocation-speed or native-heap claim is established."
+}

@@ -7,14 +7,15 @@ using System.Text.Json;
 
 namespace Lokad.Svg.Benchmarks;
 
-/// <summary>Measures original licensed reference documents with input/font acquisition outside timing.</summary>
+/// <summary>Measures licensed reference and authored documents with input/font acquisition outside timing.</summary>
 [MemoryDiagnoser]
 public class SvgReferenceDocumentBenchmarks
 {
     public enum ReferenceDocument
     {
         Blur, BlendMultiply, CompositeIn, MergeColorSpaces, FilterMaskClip,
-        PatternAffine, EmbeddedPng, TextPath, RealItalic
+        PatternAffine, EmbeddedPng, TextPath, RealItalic,
+        IconSheet, Wordmark, Chart
     }
 
     [ParamsAllValues]
@@ -31,7 +32,10 @@ public class SvgReferenceDocumentBenchmarks
         CleanUp();
         try
         {
-            string directory = Path.Combine(BenchmarkCorpus.FindRepository(), "tests", "Research", "upstream-static-documents");
+            string research = Path.Combine(BenchmarkCorpus.FindRepository(), "tests", "Research");
+            string directory = Path.Combine(research,
+                Document is ReferenceDocument.IconSheet or ReferenceDocument.Wordmark or ReferenceDocument.Chart
+                    ? "benchmark-workloads" : "upstream-static-documents");
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
             string id = Document switch
             {
@@ -44,6 +48,9 @@ public class SvgReferenceDocumentBenchmarks
                 ReferenceDocument.EmbeddedPng => "embedded-png",
                 ReferenceDocument.TextPath => "text-path",
                 ReferenceDocument.RealItalic => "text-real-italic",
+                ReferenceDocument.IconSheet => "icon-sheet",
+                ReferenceDocument.Wordmark => "wordmark",
+                ReferenceDocument.Chart => "chart",
                 _ => throw new InvalidOperationException("Unknown benchmark document.")
             };
             JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray()
@@ -58,7 +65,7 @@ public class SvgReferenceDocumentBenchmarks
             _options = new(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default);
             if (item.GetProperty("fonts").GetArrayLength() != 0)
             {
-                SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), "upstream-noto-sans");
+                SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(research, "upstream-static-documents", "font-pack.json")), "upstream-noto-sans");
                 List<SvgFontProgramResolution> resolutions = [];
                 foreach (JsonElement font in item.GetProperty("fonts").EnumerateArray())
                 {

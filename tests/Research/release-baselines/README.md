@@ -8,6 +8,12 @@ Reference images remain beside their existing licensed source collections.
 The [API migration audit](api-migration.json) accounts for every removed published
 declaration and verifies equivalent current API surfaces on both target frameworks.
 
+[Authored document benchmarks](benchmark-authored-documents.json) add the frozen
+icon sheet, wordmark and chart through the existing conversion/raster owner and
+shared font catalog. All 80 prior workload identities and 52 timed method bodies
+remain. Generated compilation, native pixels and cleanup pass on both hosts and
+runtime targets; no renderer performance measurement is claimed.
+
 [Shadow sampling demand](shadow-sampling-guard.json) retains the linear transform's
 input guard separately from nearest SVG offsets and painted result bounds. Six
 mechanisms, one ownership contract and eight native rendering cases preserve the

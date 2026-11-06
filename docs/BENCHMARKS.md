@@ -5,10 +5,10 @@ from the [correctness qualification](../tests/README.md) and approximate
 [live-memory budget](SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
 
 BenchmarkDotNet `0.16.0-preview.2` is pinned for explicit .NET 11 runtime support.
-The [reference-document qualification](../tests/Research/release-baselines/benchmark-reference-documents.json)
-checks discovery, frozen platform pixels and compilation of all 80 generated
-workloads per runtime on Windows/Linux. It preserves the 62 workloads from the
-[scope qualification](../tests/Research/release-baselines/benchmark-scopes.json).
+The [document qualification](../tests/Research/release-baselines/benchmark-authored-documents.json)
+checks discovery, frozen platform pixels and compilation of all 86 generated
+workloads per runtime on Windows/Linux. It preserves the 80 workloads from the
+[reference-document qualification](../tests/Research/release-baselines/benchmark-reference-documents.json).
 Storage observations are untimed; scene rasterization excludes preparation and PNG
 encoding. The [builder qualification](../tests/Research/release-baselines/benchmark-net11-qualification.json)
 owns the pinned toolchain setup. Neither establishes measured renderer performance.
@@ -20,7 +20,7 @@ owns the pinned toolchain setup. Neither establishes measured renderer performan
 | Repeating tiles | [SvgPatternBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/SvgPatternBenchmarks.cs) |
 | Supplied-font labels | [SvgSuppliedLabelBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/SvgTextBenchmarks.cs) |
 | PNG encoding across entropy and destination types | [PngBufferBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/PngBufferBenchmarks.cs) |
-| Active reference documents: filters, patterns, embedded PNG and supplied-font text, conversion and rasterization separately | [SvgReferenceDocumentBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/SvgReferenceDocumentBenchmarks.cs) |
+| Reference documents and authored icon sheet, wordmark and chart; conversion and rasterization separately | [SvgReferenceDocumentBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/SvgReferenceDocumentBenchmarks.cs) |
 
 List parameterized jobs without executing benchmarks:
 
@@ -58,11 +58,13 @@ only input bytes in setup. Reference-document conversions additionally retain th
 declared font snapshot; font-free cases acquire none. Raster setups prepare one
 root, released before fonts in cleanup. The PNG cases use separate fixed 512×512 inputs.
 
-Reference documents use the [active upstream selection](../tests/Research/upstream-static-documents/README.md),
-with its original source hashes, viewport, scale, background and supplied regular/
-real-italic font programs. Input I/O, catalog binding and acquisition stay outside
-both timings. These focused documents complement the synthetic mechanisms;
-larger icon/logo/chart workload coverage remains separate work.
+Document workloads use nine sources from the
+[upstream selection](../tests/Research/upstream-static-documents/README.md) and the
+[authored workload bank](../tests/Research/benchmark-workloads/README.md): a 512×384
+icon sheet, 768×192 wordmark and 1024×640 chart. Both banks retain their frozen
+source hashes, viewport, scale, background and independent platform references,
+sharing the supplied regular/real-italic font programs. Input I/O, catalog binding
+and acquisition stay outside both timings.
 
 The [installed/native preflight](../tests/Research/release-baselines/installed-version-comparison.json)
 qualifies package/asset identities and frozen pixels on one fixed runtime. Follow
