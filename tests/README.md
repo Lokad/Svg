@@ -6,6 +6,10 @@ Windows/Linux/package qualification at coherent milestones. The
 package and reference evidence; the [support matrix](../docs/SUPPORT_MATRIX.md)
 defines supported behavior.
 
+The [claim trace](Research/release-baselines/support-claim-map.md) links current
+claims to implementation, direct checks and native evidence, keeping unfinished
+reviews and unresolved authority explicit.
+
 [Native math profiles](Research/native-math-profiles/README.md) preserve exact
 legacy and CORE-MATH references for the same affected cases. Independent native
 functions and healthy browser triples establish each companion; a fixed BCL scalar

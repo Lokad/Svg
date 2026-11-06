@@ -1,0 +1,258 @@
+# Support-claim trace
+
+Scope: every feature and limit section of the current [support contract][contract].
+The overview table is indexed by the detailed rows below; it adds no separate
+conformance promise. Labels summarize claims without duplicating the contract.
+
+Evidence base: `9f4e66439`. Contract LF SHA-256:
+`940246099e74c54ff2d26a2756ddc98b1a87d2567138bc18b3b7f86b44cdf533`.
+Production source is unchanged since `c13ac322c`; the [diagnostic qualification][diag-record]
+records full .NET 11 CI and affected Windows/Linux .NET 10 checks. The
+[rendering milestone][render-record] owns full cross-runtime rendering/package
+evidence. Their source/runtime/platform boundaries remain distinct.
+
+Integrity inspection checked all 58 relative targets/anchors and 46 cited native
+case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
+current source/reference byte hashes. This is an evidence audit; runtime outcomes
+remain bound to the qualifications above.
+
+**Reviewed** means the named implementation and direct checks were inspected for
+that row, with independent references where pixels are involved. It does not mean
+all possible combinations match a browser. **Pending** means the trace has not
+been completed. **Open** identifies specific missing or contradictory evidence.
+An admission-only or numerical mechanism does not need another rendering matrix.
+
+Closure: inspect every Pending row; retain a source-bound witness and a concrete
+next action for each Open row. Fix witnessed defects through the shared owner,
+preserving failing-before cases and reference authority. This map adds no tests,
+changes no support boundary, and does not close W1, performance or release gates.
+
+## XML and static admission
+
+Scope: [prolog and supported subset][contract].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| X1 | One DOCTYPE; internal general entities; expansion/reader ownership and cancellation; other declarations reject | Reviewed: [XML policy][xml-policy] → [DOCTYPE][doctype-tests] / [entity mechanisms][entity-tests] → [literal/encoded native controls][entity-native]. |
+| X2 | Structural vocabulary/static subset, unsupported visible content and distinct error categories | Pending: trace the exclusion paths, rather than inferring admission from the error enum. |
+| X3 | Inert foreign descriptions; SVG descendants reject; XLink namespace metadata and structural counts | Reviewed: [traversal][traversal] / [structural admission][structural] / [attribute policy][attributes] → [foreign metadata][foreign-tests] → [metadata references][metadata-native]. |
+| X4 | Literal, case-sensitive attribute applicability; unknown unqualified names inert; reserved namespaces retained | Reviewed: [attribute policy][attributes] → [applicability tests][attribute-tests] → [native applicability control][attribute-native]. |
+| X5 | Inert event attributes and character-data scripts; lexical boundaries/counts; no paint/font/resource activation | Reviewed: [attribute policy][attributes] / [structural admission][structural] → [event][event-tests] / [script][script-tests] cases → [native metadata controls][metadata-native]. |
+
+## Diagnostics
+
+Scope: [diagnostics][contract-diag].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| D1 | Bounded source/attribute/instance context; whole surrogate pairs; XML positions; first failure and duplicate ID | Reviewed: [source capture][source-context] / [shared prefix][diag-text] → [source diagnostics][diag-tests] → [failing-before and cross-runtime evidence][diag-record]. Metadata, not a pixel claim. |
+| D2 | Font selection context; missing-glyph Unicode scalar/index semantics | Reviewed: [font diagnostics][font-diag] → [font diagnostic tests][font-diag-tests] / [field contracts][diag-tests] → [qualification][diag-record]. Layout/shaping pixels belong to T rows. |
+
+## Sizing and inspection
+
+Scope: [document sizing][contract-sizing].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| S1 | Root units/defaults/aspect derivation, supplied viewport and late CSS/auto sizing | Reviewed: [shared sizing][sizing] → [dimension/provenance tests][dimension-tests]. Numerical sizing; projection pixels are S6. |
+| S2 | Logical/viewBox percentage bases, nested aspect maps and physical clips independent of raster density | Pending: finish the nested/percentage native-reference chain separately from root rounding. |
+| S3 | Outer canvas background, currentColor/keywords, root opacity/visibility independence and inapplicable backgrounds | Reviewed: [canvas playback][converter] → [background mechanisms][background-tests] → [canvas controls][background-native]. |
+| S4 | Root padding syntax/priority, containing-width percentages, fixed box/content clipping and inapplicable padding | Reviewed: [box syntax][box-syntax] / [image map][image-map] → [box mechanisms][box-tests] → [padding controls][padding-native]. |
+| S5 | Root border widths/styles/colors/priority, box-sizing and border-style exclusions | Reviewed: [box syntax][box-syntax] / [canvas playback][converter] → [border mechanisms][border-tests] → [box/border][border-native] and [alpha/miter controls][border-paint-native]. |
+| S6 | Natural-image rounding, output density/padding and tiny/large numeric fallback | Reviewed: [image map][image-map] → [matrix/boundary mechanisms][image-map-tests] → [independent density controls][density-native]. |
+| S7 | Bounded inspection without fonts/geometry/image preparation; sizing provenance and shared raster planning | Reviewed: [inspection/sizing][sizing] → [dimension/ownership cases][dimension-tests] and [raster plans][raster-tests]. API and numerical contract. |
+| S8 | Positive optional caps, uniform fitting, conservative integer/pixel rounding, one-pixel minimum and explicit limits/refusal | Reviewed: [raster sizing][raster-sizing] / [bounds contract][raster-bounds] → [fit/range/ownership cases][raster-tests] / [prepared-font fitting][bounded-font-tests]. Fitting preserves the same explicit-scale pixels; S6 owns density references. |
+| S9 | Root filter/clip exclusions and winning CSS no-effect declarations | Pending: shared attribute/computed-style gates are traced; identify the direct root-location rejection/override witnesses. |
+
+## Geometry and strokes
+
+Scope: [geometry and strokes][contract-geometry].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| G1 | Shape/path families, winding, caps/joins/miter, dashes/pathLength, stroke paints/units and non-scaling restrictions | Pending. |
+| G2 | Retained rectangle/path/point-list source geometry, visibility and finite singular maps | Pending. |
+| G3 | Nonuniform symbol viewBox source fills/outlines and lowered-polygon exclusion | Pending. |
+| G4 | Zero/degenerate dash/shape/path/point-list behavior and authored endpoint order | Pending. |
+| G5 | Fixed geometry units, numeric/sign admission, viewport percentage bases and excluded length domains | Pending. |
+| G6 | Bare point/transform numbers, whole-list native overflow, path recovery, comma/whitespace grammar and ancestor effects | Pending. |
+
+## Documents and instances
+
+Scope: [documents and instances][contract-instances].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| I1 | Local reference inheritance excludes source ancestors | Pending. |
+| I2 | Local switch selection, empty locale set and required feature/extension rejection | Pending. |
+| I3 | Missing/cyclic/empty references, href precedence, generated filters and zero use/symbol viewport behavior | Pending. |
+| I4 | Root/nested/symbol overflow, styles and retained-content restrictions; referenced group opacity/filter and named-use placement | Pending. |
+
+## Gradients and patterns
+
+Scope: [gradients and patterns][contract-paints].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Pending. |
+| P2 | Paint URL fallback, missing/wrong-kind/unavailable servers, valid transparent servers and invalid/effect URLs | Pending. |
+| P3 | Definition-local percentage bases, cross-kind template defaults, transform replacement and literal gradientUnits rules | Pending. |
+| P4 | Radial focal-circle containment and independently inherited center/radius/focal overrides | Pending. |
+| P5 | Stop metadata/inline cascade and explicit stop/gradient color/unit/stylesheet exclusions | Pending. |
+| P6 | Pattern units/maps/contents/locations, fixed tile lengths, opacity/overflow and 32-level content graph/cycle rules | Pending. |
+| P7 | Pattern alias child roles, inherited/zero dimensions and hidden template/alias behavior | Pending. |
+
+## Clips, masks and composition
+
+Scope: [clips and masks][contract-composition].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| C1 | Direct geometric/text clip children, ordered unions/winding, shaping/paint roles and group-child exclusion | Pending. |
+| C2 | Restricted clip uses, later definitions, resource units/percentages and referenced clip rejection | Pending. |
+| C3 | Clip visual stroke enclosure independent of silhouette and ignored stroke server resolution | Pending. |
+| C4 | Ordered alpha/luminance mask content, text/uses, regions and spatial/object-box restrictions | Pending. |
+| C5 | Filter → mask → clip → opacity; source/object/visual bounds; resource-context mask fonts | Pending. |
+| C6 | Masks on symbol/live/retained/text instances and placement restrictions | Pending. |
+| C7 | Attribute-only clip/mask bindings, none/inheritance, nested clips, compound unions and short point lists | Pending. |
+| C8 | Resource display versus empty/hidden content, aliases, visibility inheritance and balanced leaf child roles | Pending. |
+
+## Embedded PNGs
+
+Scope: [embedded images][contract-images].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| E1 | Base64/noninterlaced 8-bit formats, transparency/significance, chunk/CRC/inflate rules and explicit color/format exclusions | Reviewed: [decoder][png-decoder] → [decoder mechanisms/ownership][png-tests] → [row-storage invariants][png-rows] and [color-admission regression][png-color]. Literal byte/pixel oracles; placement is separate. |
+| E2 | Percentage/affine/aspect placement, missing/intrinsic dimensions, href precedence and fill/stroke applicability | Pending. |
+| E3 | Image opacity/clips/masks/source filters, pattern/mask content locations and affine-filter replay exclusion | Pending. |
+
+The three external-image originals remain a separate W1 [binding problem][w1-context].
+An archived or replacement raster does not establish their unchanged-original pixels.
+
+## Static CSS
+
+Scope: [static CSS][contract-css].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| A1 | Selector grammar, attribute selectors, specificity/cascade, comments and strict property/error admission | Pending. |
+| A2 | Inactive interaction states/specificity, mixed lists and bounded inactive declarations; inert float | Pending. |
+| A3 | Property/location boundaries, XML-only pathLength and filter-space contexts | Pending. |
+| A4 | Paint order, cumulative display, root viewport under display:none and explicit display inheritance | Pending. |
+| A5 | Element-local currentColor, RGB/HSL syntax/units and syntax-dependent alpha precision | Pending. |
+| A6 | ASCII whitespace, contiguous length tokens, list commas, transform case and token-size limits | Pending. |
+| A7 | Once-decoded UTF-8 local fragments, escape/whitespace rejection and URL/filter-name case rules | Pending. |
+| A8 | Imports/rules/pseudo/sibling/layout/variable/web-font exclusions | Pending. |
+
+## Markers and filters
+
+Scope: [markers and filters][contract-effects].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| F1 | Marker units/metrics/orientation/viewBox/overflow, inherited paints, display and collapsed bounds | Pending. |
+| F2 | Primitive/input/unit/region/color-space subset and straight-channel color-matrix forms/defaults/alpha generation | Pending. |
+| F3 | Exact result names, dependency validation/evaluation, unread branches and capture demand | Pending. |
+| F4 | Flood/offset/crop/alpha stages, offscreen/empty/paintless source eligibility, suppression and ancestor effects | Pending. |
+| F5 | Materialized crops, rotated/empty/alias restoration, sampling phase/transfer, opacity and output/source bounds | Pending. |
+| F6 | Mapped blur/shadow thresholds/rescaling and unsupported primitive/input/blend/filter-list forms | Pending. |
+
+## Text and fonts
+
+Scope: [text and fonts][contract-text].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| T1 | Explicit host font acquisition/cache, static TrueType face 0/composites/hinting and required-program/glyph failures | Pending. |
+| T2 | Dormant legacy SVG font declarations without acquisition or text-request effects | Pending. |
+| T3 | LTR character/shaping subset, finite Latin/DFLT ligature table and unsupported script/font/layout forms | Pending. |
+| T4 | Affine text paints/strokes/dashes/non-scaling widths/order and solid decoration | Pending. |
+| T5 | Position-list units/declaration bases, inherited/replayed cursors and unitless rotation | Pending. |
+| T6 | Separate textLength/spacing/path-offset length domains and malformed percentages | Pending. |
+| T7 | Inert text-align/line-height, legacy whitespace and explicit-line layout | Pending. |
+| T8 | Anchor chunks/cascade, path/span styles, mixed ranges and excluded text-path positioning/effects | Pending. |
+| T9 | Unicode 17 case/title/word/language rules, expansions/context, source ownership and font coverage | Pending. |
+| T10 | Canonical decomposition/order/recomposition and finite ccmp substitution | Pending. |
+| T11 | Mark/ligature-component/mark-to-mark attachment, GDEF/filter sets and contextual kerning | Pending. |
+| T12 | CSS family identity/policy/directional fallback, lazy scalar coverage, request-only/raw snapshots and face boundaries | Pending. |
+| T13 | Family/name/list/weight bounds, size source contexts/global keywords and inert typography on geometry | Pending. |
+| T14 | Ligature barriers, fragment metrics, relative cursors, inert descriptive text and shared paint/object boxes | Pending. |
+| T15 | Path geometry/transforms/tangents/spacing, continuation cursor, anchors and textLength degeneracies | Pending. |
+| T16 | Latin/DFLT GPOS/kern precedence, extension lookup order, supported flags and invalid metadata | Pending. |
+| T17 | Live resource-context font demand, inactive-source exceptions, fitting/filter/baseline stages and Courier policy | Pending. |
+| T18 | Windows/Linux native font pixel authority | Open: the frozen Windows DejaVu target still fails full CI; its assertion remains intact and reference authority is unresolved ([CI/source evidence][diag-record]). Other font/platform claims still need T-row trace. |
+| T19 | Alphabetic/middle/hanging baselines and their explicit-line/anchor interactions | Pending. |
+
+## Limits, ownership and qualification
+
+Scope: [resource limits][contract-limits] and [qualification][contract-qualification].
+
+| ID | Claim group | Trace |
+| --- | --- | --- |
+| R1 | Input/output/dimension/pixel/structural/path limits, intermediate surfaces and no synthetic work quotas | Pending. |
+| R2 | Borrowed shared allowance, admission before allocation, capacity/growth peaks and approximate coverage limits | Pending. |
+| R3 | Cancellation/cleanup across discovery through encoding; borrowed stream and caller transaction responsibility | Pending. |
+| R4 | Immutable program/readers, one-attempt prepared documents and independently owned PNG output | Pending. |
+| R5 | Governed output forms, retained metadata/cache scopes, HTTP root association and no refusal fallback/retry | Pending. |
+| Q1 | Current .NET 10/11 Windows/Linux targets, pinned RC and no runtime package dependency | Reviewed: [project][project] / [SDK pin][sdk] → [cross-runtime/CI evidence][diag-record], [rendering/package milestone][render-record]. Future release qualification remains P7. |
+| Q2 | Declared exactness/exclusions/source provenance; correctness distinct from performance | Pending: join the current tests/provenance contract without treating inherited or source-unqualified targets as new authority. |
+
+[contract]: ../../../docs/SUPPORT_MATRIX.md
+[contract-diag]: ../../../docs/SUPPORT_MATRIX.md#diagnostics
+[contract-sizing]: ../../../docs/SUPPORT_MATRIX.md#document-sizing-and-inspection
+[contract-geometry]: ../../../docs/SUPPORT_MATRIX.md#geometry-and-strokes
+[contract-instances]: ../../../docs/SUPPORT_MATRIX.md#documents-and-instances
+[contract-paints]: ../../../docs/SUPPORT_MATRIX.md#gradients-and-patterns
+[contract-composition]: ../../../docs/SUPPORT_MATRIX.md#clips-masks-and-composition
+[contract-images]: ../../../docs/SUPPORT_MATRIX.md#embedded-pngs
+[contract-css]: ../../../docs/SUPPORT_MATRIX.md#static-css
+[contract-effects]: ../../../docs/SUPPORT_MATRIX.md#markers-and-filters
+[contract-text]: ../../../docs/SUPPORT_MATRIX.md#text-and-fonts
+[contract-limits]: ../../../docs/SUPPORT_MATRIX.md#resource-limits-and-memory-accounting
+[contract-qualification]: ../../../docs/SUPPORT_MATRIX.md#qualification
+[xml-policy]: ../../../src/Lokad.Svg/Parsing/SvgXmlReaderPolicy.cs
+[traversal]: ../../../src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs
+[structural]: ../../../src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs
+[attributes]: ../../../src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs
+[source-context]: ../../../src/Lokad.Svg/Parsing/SvgSourceContext.cs
+[diag-text]: ../../../src/Lokad.Svg/SvgDiagnosticText.cs
+[font-diag]: ../../../src/Lokad.Svg/Fonts/SvgFontDiagnostic.cs
+[sizing]: ../../../src/Lokad.Svg/Parsing/SvgDocumentSizing.cs
+[converter]: ../../../src/Lokad.Svg/SvgConverter.cs
+[box-syntax]: ../../../src/Lokad.Svg/Parsing/SvgRootBoxSyntax.cs
+[image-map]: ../../../src/Lokad.Svg/Rendering/SvgRootImageMap.cs
+[raster-sizing]: ../../../src/Lokad.Svg/Rendering/SvgRasterSizing.cs
+[raster-bounds]: ../../../src/Lokad.Svg/SvgRasterBounds.cs
+[png-decoder]: ../../../src/Lokad.Svg/Encoding/PngImageDecoder.cs
+[project]: ../../../src/Lokad.Svg/Lokad.Svg.csproj
+[sdk]: ../../../global.json
+[doctype-tests]: ../../Lokad.Svg.Tests/SvgDoctypeTests.cs
+[entity-tests]: ../../Lokad.Svg.Tests/SvgInternalEntityTests.cs
+[foreign-tests]: ../../Lokad.Svg.Tests/SvgForeignMetadataTests.cs
+[attribute-tests]: ../../Lokad.Svg.Tests/SvgAttributeApplicabilityTests.cs
+[event-tests]: ../../Lokad.Svg.Tests/SvgEventAttributeTests.cs
+[script-tests]: ../../Lokad.Svg.Tests/SvgStaticScriptTests.cs
+[diag-tests]: ../../Lokad.Svg.Tests/SvgSourceDiagnosticTests.cs
+[font-diag-tests]: ../../Lokad.Svg.Tests/OpenTypeFontTests.Diagnostics.cs
+[dimension-tests]: ../../Lokad.Svg.Tests/SvgDocumentDimensionsTests.cs
+[background-tests]: ../../Lokad.Svg.Tests/SvgCanvasBackgroundTests.cs
+[box-tests]: ../../Lokad.Svg.Tests/SvgRootBoxLayoutTests.cs
+[border-tests]: ../../Lokad.Svg.Tests/SvgRootBorderLayoutTests.cs
+[image-map-tests]: ../../Lokad.Svg.Tests/SvgRootImageMapTests.cs
+[raster-tests]: ../../Lokad.Svg.Tests/SvgRasterSizingTests.cs
+[bounded-font-tests]: ../../Lokad.Svg.Tests/OpenTypeFontTests.BoundedRasterSizing.cs
+[png-tests]: ../../Lokad.Svg.Tests/PngImageDecoderTests.cs
+[entity-native]: ../xml-entities/capture.json
+[metadata-native]: ../metadata-attributes/capture.json
+[attribute-native]: ../attribute-applicability/capture.json
+[background-native]: ../root-css-box/capture.json
+[padding-native]: ../root-padding/capture.json
+[border-native]: ../root-box-layout/capture.json
+[border-paint-native]: ../root-border/capture.json
+[density-native]: ../root-image-density/capture.json
+[diag-record]: diagnostic-unicode-prefix.json
+[render-record]: shadow-foreground.json
+[png-rows]: png-row-storage.json
+[png-color]: png-color-admission.json
+[w1-context]: ../svgweb/context-boundaries.json

@@ -1,5 +1,8 @@
 # Release baselines
 
+The [support-claim trace](support-claim-map.md) gives the current contract a finite
+review index. Reviewed claims, pending traces and unresolved authority stay distinct.
+
 [Diagnostic text boundaries](diagnostic-unicode-prefix.json) replace three cuts
 with one bounded prefix operation that preserves surrogate pairs. Direct boundary
 and field checks complement immediate/deferred parser regressions; image references
