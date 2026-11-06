@@ -1,0 +1,842 @@
+{
+  "schemaVersion": 1,
+  "status": "Source/capture discrepancy remains open. Evidence only; no production change, reference rewrite, tolerance change, or benchmark integration.",
+  "sourceBaseCommit": "c2d5a36a1a72b797f8edd5fdfb0c373ae4635647",
+  "runtimeQualification": "../release-baselines/png-row-storage.json",
+  "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+  "framework": "net11.0",
+  "recipe": "Unchanged authored UTF-8 source bytes, intrinsic 1024x640 canvas, unit scale, transparent background, no fonts. Each declared browser capture uses a fresh pinned process. Managed inputs render twice identically through the existing installed-package comparison consumer.",
+  "nativeToolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+  "cases": [
+    {
+      "id": "transparent-shadow",
+      "input": "stage-controls/transparent-shadow.svg",
+      "sourceSha256": "6b7f19e2372bbb3c1f4f544add4c8ecb0472165655eb99f02695d388056b46ee",
+      "width": 1024,
+      "height": 640,
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "qualification": "Three fresh healthy stable native captures per host.",
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/transparent-shadow.png",
+          "referenceSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+          "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 6,
+            "maximumChannelError": 4,
+            "maximumAlphaError": 4
+          },
+          "changedPixels": [
+            {
+              "x": 1008,
+              "y": 621,
+              "actual": [
+                255,
+                255,
+                255,
+                201
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                199
+              ]
+            },
+            {
+              "x": 1009,
+              "y": 621,
+              "actual": [
+                255,
+                255,
+                255,
+                13
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                9
+              ]
+            },
+            {
+              "x": 1007,
+              "y": 622,
+              "actual": [
+                255,
+                255,
+                255,
+                220
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                219
+              ]
+            },
+            {
+              "x": 1008,
+              "y": 622,
+              "actual": [
+                255,
+                255,
+                255,
+                19
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                20
+              ]
+            },
+            {
+              "x": 1006,
+              "y": 623,
+              "actual": [
+                255,
+                255,
+                255,
+                236
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                235
+              ]
+            },
+            {
+              "x": 1007,
+              "y": 623,
+              "actual": [
+                255,
+                255,
+                255,
+                35
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                36
+              ]
+            }
+          ]
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/transparent-shadow.png",
+          "referenceSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+          "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 6,
+            "maximumChannelError": 4,
+            "maximumAlphaError": 4
+          },
+          "changedPixels": [
+            {
+              "x": 1008,
+              "y": 621,
+              "actual": [
+                255,
+                255,
+                255,
+                201
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                199
+              ]
+            },
+            {
+              "x": 1009,
+              "y": 621,
+              "actual": [
+                255,
+                255,
+                255,
+                13
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                9
+              ]
+            },
+            {
+              "x": 1007,
+              "y": 622,
+              "actual": [
+                255,
+                255,
+                255,
+                220
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                219
+              ]
+            },
+            {
+              "x": 1008,
+              "y": 622,
+              "actual": [
+                255,
+                255,
+                255,
+                19
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                20
+              ]
+            },
+            {
+              "x": 1006,
+              "y": 623,
+              "actual": [
+                255,
+                255,
+                255,
+                236
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                235
+              ]
+            },
+            {
+              "x": 1007,
+              "y": 623,
+              "actual": [
+                255,
+                255,
+                255,
+                35
+              ],
+              "expected": [
+                255,
+                255,
+                255,
+                36
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "blur-alpha",
+      "input": "stage-controls/blur-alpha.svg",
+      "sourceSha256": "f9f7635cdb293713509414d6320393ab0f41ddaa7e024ea48e12c23b91cc2d9f",
+      "width": 1024,
+      "height": 640,
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "qualification": "Three fresh healthy stable native captures per host.",
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/blur-alpha.png",
+          "referenceSha256": "dae4f8190de27ec8fbff69c52270a9bac327cb8fd45d4c81dff28d38e8a3f4bd",
+          "rgbaSha256": "404a5dc50de9ad6fe2f1411689afe9e0dcfce18b2053e51c355d4afce8aacec7",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "dae4f8190de27ec8fbff69c52270a9bac327cb8fd45d4c81dff28d38e8a3f4bd",
+              "rgbaSha256": "404a5dc50de9ad6fe2f1411689afe9e0dcfce18b2053e51c355d4afce8aacec7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "dae4f8190de27ec8fbff69c52270a9bac327cb8fd45d4c81dff28d38e8a3f4bd",
+              "rgbaSha256": "404a5dc50de9ad6fe2f1411689afe9e0dcfce18b2053e51c355d4afce8aacec7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "dae4f8190de27ec8fbff69c52270a9bac327cb8fd45d4c81dff28d38e8a3f4bd",
+              "rgbaSha256": "404a5dc50de9ad6fe2f1411689afe9e0dcfce18b2053e51c355d4afce8aacec7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/blur-alpha.png",
+          "referenceSha256": "dae4f8190de27ec8fbff69c52270a9bac327cb8fd45d4c81dff28d38e8a3f4bd",
+          "rgbaSha256": "404a5dc50de9ad6fe2f1411689afe9e0dcfce18b2053e51c355d4afce8aacec7",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "dae4f8190de27ec8fbff69c52270a9bac327cb8fd45d4c81dff28d38e8a3f4bd",
+              "rgbaSha256": "404a5dc50de9ad6fe2f1411689afe9e0dcfce18b2053e51c355d4afce8aacec7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "dae4f8190de27ec8fbff69c52270a9bac327cb8fd45d4c81dff28d38e8a3f4bd",
+              "rgbaSha256": "404a5dc50de9ad6fe2f1411689afe9e0dcfce18b2053e51c355d4afce8aacec7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "dae4f8190de27ec8fbff69c52270a9bac327cb8fd45d4c81dff28d38e8a3f4bd",
+              "rgbaSha256": "404a5dc50de9ad6fe2f1411689afe9e0dcfce18b2053e51c355d4afce8aacec7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        }
+      }
+    },
+    {
+      "id": "blur-graphic",
+      "input": "stage-controls/blur-graphic.svg",
+      "sourceSha256": "4225b2e3bbd2af686d539816fa856e286ec538794f3fee48d3ce1dc720ccb311",
+      "width": 1024,
+      "height": 640,
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "qualification": "Exploratory: one healthy native capture per host; not a promoted acceptance case.",
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/blur-graphic.png",
+          "referenceSha256": "0578ee5c0f0c0f6dfc5055f492f0e65973e38ad220fa8dff6e087790cd8f6eb4",
+          "rgbaSha256": "e2ae74536cd3e649fb0d0bb354be908ff6529ffb27c2ff0afc33489deb4e449a",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "0578ee5c0f0c0f6dfc5055f492f0e65973e38ad220fa8dff6e087790cd8f6eb4",
+              "rgbaSha256": "e2ae74536cd3e649fb0d0bb354be908ff6529ffb27c2ff0afc33489deb4e449a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/blur-graphic.png",
+          "referenceSha256": "0578ee5c0f0c0f6dfc5055f492f0e65973e38ad220fa8dff6e087790cd8f6eb4",
+          "rgbaSha256": "e2ae74536cd3e649fb0d0bb354be908ff6529ffb27c2ff0afc33489deb4e449a",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "0578ee5c0f0c0f6dfc5055f492f0e65973e38ad220fa8dff6e087790cd8f6eb4",
+              "rgbaSha256": "e2ae74536cd3e649fb0d0bb354be908ff6529ffb27c2ff0afc33489deb4e449a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        }
+      }
+    },
+    {
+      "id": "offset-zero",
+      "input": "stage-controls/offset-zero.svg",
+      "sourceSha256": "6bf1f2c3dd6af86131bb61087a01fd32a8f660dda6d6ec33a91ff8f4a77f26dd",
+      "width": 1024,
+      "height": 640,
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "qualification": "Exploratory: one healthy native capture per host; not a promoted acceptance case.",
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/offset-zero.png",
+          "referenceSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+          "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/offset-zero.png",
+          "referenceSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+          "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "ae04b42b7f54bd12a9254fd5bb7aa6c57a9cc7b8f1099ae0734f9eaeaaa7a0f4",
+              "rgbaSha256": "dd17493cb677dd868ed2d173e779a4a999d199428724aadc8f387fff9d56f9cc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        }
+      }
+    },
+    {
+      "id": "blur-merge",
+      "input": "stage-controls/blur-merge.svg",
+      "sourceSha256": "b7a9f5403ffbd2e3a735d9be38f096bd33fac367d533e023456e4d27fb267c1f",
+      "width": 1024,
+      "height": 640,
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "qualification": "Exploratory: one healthy native capture per host; not a promoted acceptance case.",
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/blur-merge.png",
+          "referenceSha256": "c2adde001b98b5fab96cfc480c12f706623d40eac5f9a47989dde2446e18dda1",
+          "rgbaSha256": "76db81419c32bdefb6b9e4d26a3c929a609842a0881a113dc9a6dd8e496c86b1",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "c2adde001b98b5fab96cfc480c12f706623d40eac5f9a47989dde2446e18dda1",
+              "rgbaSha256": "76db81419c32bdefb6b9e4d26a3c929a609842a0881a113dc9a6dd8e496c86b1",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/blur-merge.png",
+          "referenceSha256": "c2adde001b98b5fab96cfc480c12f706623d40eac5f9a47989dde2446e18dda1",
+          "rgbaSha256": "76db81419c32bdefb6b9e4d26a3c929a609842a0881a113dc9a6dd8e496c86b1",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "c2adde001b98b5fab96cfc480c12f706623d40eac5f9a47989dde2446e18dda1",
+              "rgbaSha256": "76db81419c32bdefb6b9e4d26a3c929a609842a0881a113dc9a6dd8e496c86b1",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        }
+      }
+    },
+    {
+      "id": "blur-merge-transparent",
+      "input": "stage-controls/blur-merge-transparent.svg",
+      "sourceSha256": "9e8a925afa0684ab5ab5406bf9929d7a1edad2d7f8110d4e4b4ac92de09e6325",
+      "width": 1024,
+      "height": 640,
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "qualification": "Exploratory: one healthy native capture per host; not a promoted acceptance case.",
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/blur-merge-transparent.png",
+          "referenceSha256": "82c6f2f9c076f9750c27c18ea8888c8468f490343f6d53a3b44985279ebfe562",
+          "rgbaSha256": "35dd3bb0d16fd06ab7220dd426b3996b7881de63884a87f81abe7e8586838188",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "82c6f2f9c076f9750c27c18ea8888c8468f490343f6d53a3b44985279ebfe562",
+              "rgbaSha256": "35dd3bb0d16fd06ab7220dd426b3996b7881de63884a87f81abe7e8586838188",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/blur-merge-transparent.png",
+          "referenceSha256": "82c6f2f9c076f9750c27c18ea8888c8468f490343f6d53a3b44985279ebfe562",
+          "rgbaSha256": "35dd3bb0d16fd06ab7220dd426b3996b7881de63884a87f81abe7e8586838188",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "82c6f2f9c076f9750c27c18ea8888c8468f490343f6d53a3b44985279ebfe562",
+              "rgbaSha256": "35dd3bb0d16fd06ab7220dd426b3996b7881de63884a87f81abe7e8586838188",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        }
+      }
+    },
+    {
+      "id": "expanded-shadow",
+      "input": "stage-controls/expanded-shadow.svg",
+      "sourceSha256": "11171c5cf94688b76fe7f572907726fe6a5a3aff6f11cae2b55e986798a6a073",
+      "width": 1024,
+      "height": 640,
+      "scale": 1,
+      "background": "transparent",
+      "fonts": [],
+      "qualification": "Three fresh healthy stable native captures per host.",
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/expanded-shadow.png",
+          "referenceSha256": "f4056317efa55ad97f67d4b05d13c8e4a91e85d282a1efd5ebafcd7f288e5265",
+          "rgbaSha256": "3680afdc805ad45cddd6c9305077ce35ee3f466cd367cfe89b18ce2c56606e3e",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "f4056317efa55ad97f67d4b05d13c8e4a91e85d282a1efd5ebafcd7f288e5265",
+              "rgbaSha256": "3680afdc805ad45cddd6c9305077ce35ee3f466cd367cfe89b18ce2c56606e3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "f4056317efa55ad97f67d4b05d13c8e4a91e85d282a1efd5ebafcd7f288e5265",
+              "rgbaSha256": "3680afdc805ad45cddd6c9305077ce35ee3f466cd367cfe89b18ce2c56606e3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "f4056317efa55ad97f67d4b05d13c8e4a91e85d282a1efd5ebafcd7f288e5265",
+              "rgbaSha256": "3680afdc805ad45cddd6c9305077ce35ee3f466cd367cfe89b18ce2c56606e3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/expanded-shadow.png",
+          "referenceSha256": "f4056317efa55ad97f67d4b05d13c8e4a91e85d282a1efd5ebafcd7f288e5265",
+          "rgbaSha256": "3680afdc805ad45cddd6c9305077ce35ee3f466cd367cfe89b18ce2c56606e3e",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "f4056317efa55ad97f67d4b05d13c8e4a91e85d282a1efd5ebafcd7f288e5265",
+              "rgbaSha256": "3680afdc805ad45cddd6c9305077ce35ee3f466cd367cfe89b18ce2c56606e3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "f4056317efa55ad97f67d4b05d13c8e4a91e85d282a1efd5ebafcd7f288e5265",
+              "rgbaSha256": "3680afdc805ad45cddd6c9305077ce35ee3f466cd367cfe89b18ce2c56606e3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "f4056317efa55ad97f67d4b05d13c8e4a91e85d282a1efd5ebafcd7f288e5265",
+              "rgbaSha256": "3680afdc805ad45cddd6c9305077ce35ee3f466cd367cfe89b18ce2c56606e3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ],
+          "rendererComparison": {
+            "changedPixels": 0,
+            "maximumChannelError": 0,
+            "maximumAlphaError": 0
+          },
+          "changedPixels": []
+        }
+      }
+    }
+  ],
+  "crossInputObservations": [
+    {
+      "host": "windows",
+      "first": "native panel-shadow",
+      "second": "native expanded-shadow",
+      "comparison": {
+        "changedPixels": 7,
+        "maximumChannelError": 21,
+        "maximumAlphaError": 3
+      }
+    },
+    {
+      "host": "windows",
+      "first": "native panel-source",
+      "second": "native transparent-shadow",
+      "comparison": {
+        "changedPixels": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0
+      }
+    },
+    {
+      "host": "windows",
+      "first": "C7 panel-shadow",
+      "second": "native expanded-shadow",
+      "comparison": {
+        "changedPixels": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0
+      }
+    },
+    {
+      "host": "linux",
+      "first": "native panel-shadow",
+      "second": "native expanded-shadow",
+      "comparison": {
+        "changedPixels": 7,
+        "maximumChannelError": 21,
+        "maximumAlphaError": 3
+      }
+    },
+    {
+      "host": "linux",
+      "first": "native panel-source",
+      "second": "native transparent-shadow",
+      "comparison": {
+        "changedPixels": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0
+      }
+    },
+    {
+      "host": "linux",
+      "first": "C7 panel-shadow",
+      "second": "native expanded-shadow",
+      "comparison": {
+        "changedPixels": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0
+      }
+    }
+  ],
+  "interpretation": [
+    "A transparent fused shadow retains six source-edge alpha differences, maximum error four, on both hosts. The corresponding native pixels equal the independent unfiltered source.",
+    "Gaussian SourceAlpha and graphic blur controls are exact. This does not prove their pre-blur captures have identical pixels: blur can conceal coverage differences.",
+    "The expanded graph and all four exploratory controls render exactly, but native fused and expanded shadows differ at seven pixels. Preserve their distinct target identities; the expanded SVG graph is not a substitute for the failing fused operation.",
+    "Source inspection and isolated tracing point to request/crop-dependent source construction. Per-consumer source-picture bounds and bitmap placement are the next shared-model question; the responsible production change is not yet established."
+  ],
+  "nextAction": "Trace the fused foreground and blur source requests against the native picture/crop path. Reuse existing source/scene owners; preserve both fused and expanded native behavior. Require failing-before mechanism/ownership evidence and exact original chart plus controls before closing or integrating benchmarks.",
+  "primarySources": [
+    {
+      "purpose": "Pinned Chromium constructs shadow and foreground from its input filter.",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/platform/graphics/filters/fe_drop_shadow.cc"
+    },
+    {
+      "purpose": "Pinned Skia composes blur, color filter, translated sampling and foreground; merge draws children independently.",
+      "url": "https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/effects/imagefilters/SkDropShadowImageFilter.cpp"
+    },
+    {
+      "purpose": "Native picture construction intersects picture bounds with desired output before drawing into its surface.",
+      "url": "https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp"
+    }
+  ],
+  "limits": [
+    "Three selected controls have native stability triples; four exploratory controls retain one capture per host and are not promoted acceptance tests.",
+    "Diagnostic copies build separately with zero warnings/errors; shipping sources and previously qualified assets remain unchanged.",
+    "One repeat launcher failed before Chrome started because its private bubblewrap argument list lacked a destination. Its terminal failure was preserved; six completed Windows repeats were reused and Linux captures ran only after correcting the launcher.",
+    "No timed renderer benchmark or new full-suite qualification was run."
+  ]
+}

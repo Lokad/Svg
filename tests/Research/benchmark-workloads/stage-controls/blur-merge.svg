@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="640" viewBox="0 0 1024 640" font-family="Noto Sans" font-size="14"><defs><filter id="panel-shadow" filterUnits="userSpaceOnUse" x="0" y="0" width="1024" height="640" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs><rect x="12" y="12" width="1000" height="616" rx="16" fill="white" filter="url(#panel-shadow)" />
+</svg>

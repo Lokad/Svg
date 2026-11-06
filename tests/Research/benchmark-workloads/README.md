@@ -32,3 +32,9 @@ Each control retains three independent healthy captures per host. The finding
 does not identify the responsible production stage. Inspect bitmap placement,
 retained conic construction and filter sampling/alpha together; preserve these
 positive boundaries and the original chart while correcting a shared cause.
+
+[Stage diagnostics](stage-controls.json) narrow the failure further. A transparent
+shadow retains six source-edge alpha differences; independent blur controls match.
+The expanded SVG shadow graph also matches, while its native result differs from
+the fused shadow at seven pixels. Keep both target identities. Three selected
+diagnostics have native stability triples; four others remain exploratory.
