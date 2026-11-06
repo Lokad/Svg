@@ -1,0 +1,451 @@
+{
+  "status": "Nine failing-before viewport fill cases are closed; 24 shader/placement cases remain. The separate contained-line rounding regression and existing SVGWeb static projection are exact.",
+  "sourceBaseCommit": "ca9ca4a64858b7d74314f9bab2acbdb878422854",
+  "causes": {
+    "viewports": "A source picture and an isolated layer used cropped addressable bounds to classify their logical native clips. The complete incoming picture/source extent and the owned layer enclosure are distinct from storage.",
+    "hairline": "Blanket AA-to-direct paint routing changed source-over rounding even when a fractional clip fully contained a hairline. Integer construction clipping does not require that routing override."
+  },
+  "correction": "Retain source-picture native bounds from the incoming device and complete source extent; retain owned-layer native clips on the existing raster scope. Viewport and paint classification consult their current owner. Bind exposes only addressable storage/interior. Remove the blanket hairline routing field/override while retaining integer construction clipping and bitmap origin.",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/SvgConverter.cs",
+      "sha256": "2e0a9f7d944934419cb4d0b730dfc438260ee7037594a2f1b2336ff97b83c3ce"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgCpuRasterGrid.cs",
+      "sha256": "d1ace98922843dd1a35cf435d05ab94e139838355fa0c7bac22ee79ad34f831f"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgHairlineCoverage.cs",
+      "sha256": "d796983c0bea1f03075b4c3d36ab77aa615393ad62f210179a18c1caf787120a"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgRasterScopeTests.cs",
+      "sha256": "ccbfada0771dc8dcd5d2bc059ceb21d2ca12f26ad59a84ca4b1e2f5c3fa511eb"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgFilterSourceContextReferenceTests.cs",
+      "sha256": "4ab546406fb5e83b29b93886b8f6adbcc1daba73c862140b7f3ebb0c446d8262"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/PaintReferenceBank.cs",
+      "sha256": "2c8bd3b4720d78af2d45fde09a851848180385d75089d8f2a814aabb6caf4509"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/FixtureManifestTests.cs",
+      "sha256": "8390ce2383889f2bc2eb22bc656ed1191d2db9c515fb543e3966950859907180"
+    }
+  ],
+  "selection": {
+    "path": "../gradient-factory-colors/resolved-known-differences.json",
+    "sha256": "6f8fa5ef836282f7ce72f46cab12d99966eea8be205de45423d4b5a94fd29407",
+    "resolved": 475,
+    "routine": 208,
+    "research": 267,
+    "open": 24,
+    "admissionBoundaries": 432
+  },
+  "newlyResolvedIds": [
+    "changed-46-candidate-1",
+    "changed-78-candidate-1",
+    "changed-137-candidate-1",
+    "changed-137-control-1",
+    "changed-138-candidate-1",
+    "changed-138-control-1",
+    "changed-171-candidate-1",
+    "changed-172-control-1",
+    "changed-173-control-1"
+  ],
+  "historicalReplays": [
+    {
+      "host": "windows",
+      "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "counts": {
+        "rejected": 432,
+        "exact": 475,
+        "rendered": 24
+      },
+      "newCaseBeforePixelDifferences": {
+        "changed-46-candidate-1": 38,
+        "changed-78-candidate-1": 24,
+        "changed-137-candidate-1": 38,
+        "changed-137-control-1": 38,
+        "changed-138-candidate-1": 37,
+        "changed-138-control-1": 37,
+        "changed-171-candidate-1": 33,
+        "changed-172-control-1": 24,
+        "changed-173-control-1": 28
+      },
+      "retainedExactCases": 466,
+      "receiptSha256": "429b99485c5199e421537986b92cbf96cabfbc8e78b87a79b5648bdcdee84522"
+    },
+    {
+      "host": "linux",
+      "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "counts": {
+        "rejected": 432,
+        "exact": 475,
+        "rendered": 24
+      },
+      "newCaseBeforePixelDifferences": {
+        "changed-46-candidate-1": 38,
+        "changed-78-candidate-1": 24,
+        "changed-137-candidate-1": 38,
+        "changed-137-control-1": 38,
+        "changed-138-candidate-1": 37,
+        "changed-138-control-1": 37,
+        "changed-171-candidate-1": 33,
+        "changed-172-control-1": 24,
+        "changed-173-control-1": 28
+      },
+      "retainedExactCases": 466,
+      "receiptSha256": "2fc5e268c82ec1e40dd31675e853d6a9917b52e6b891c9de7c6e611c987d8025"
+    }
+  ],
+  "responsibilities": {
+    "mechanisms": "The direct raster-scope check proves logical clip classification can differ without expanding addressable storage or its owned interior. Existing clip, hairline, numerical, filter, cancellation, budget and ownership checks remain.",
+    "rendering": "Nine historical failures remain individually discoverable through the existing canonical conversion. The complete independent source-context bank, including Research, protects distinct viewport/rectangle/path interactions. The authored contained-line fixture protects contained fractional clips and translucent compositing independently of SVGWeb.",
+    "contracts": "No new pixel owner, public API or allocation path is introduced. Existing representative API/ownership tests are retained without multiplying them by the nine fixtures."
+  },
+  "authoredControl": {
+    "source": "../../Fixtures/original/contained-hairline-clip.svg",
+    "metadata": "../../References/original-contained-hairline-clip.json",
+    "reference": "../../References/original-contained-hairline-clip.png",
+    "license": "CC0-1.0",
+    "native": [
+      {
+        "host": "windows",
+        "inputSha256": "b6cc51ee5363049ac3b688be546d858ff2d43336b73d84bd5a7d1fff3e484f76",
+        "nativePngSha256": "9c311886249c5dc6bb4ac268fcee6705f8a7868bce4771f9882178a543d1050f",
+        "results": [
+          {
+            "label": "before",
+            "librarySha256": "a7411d997a963887adb9ae9b31a7359f97645ed72206c61fe1e12526631f2995",
+            "changedPixels": 32
+          },
+          {
+            "label": "candidate",
+            "librarySha256": "d160a24683a743d9b625fe75ec34579000148c28f25020c1e8df59909d386600",
+            "changedPixels": 0
+          }
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "inputSha256": "b6cc51ee5363049ac3b688be546d858ff2d43336b73d84bd5a7d1fff3e484f76",
+        "nativePngSha256": "9c311886249c5dc6bb4ac268fcee6705f8a7868bce4771f9882178a543d1050f",
+        "results": [
+          {
+            "label": "before",
+            "librarySha256": "a7411d997a963887adb9ae9b31a7359f97645ed72206c61fe1e12526631f2995",
+            "changedPixels": 32
+          },
+          {
+            "label": "candidate",
+            "librarySha256": "d160a24683a743d9b625fe75ec34579000148c28f25020c1e8df59909d386600",
+            "changedPixels": 0
+          }
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      }
+    ]
+  },
+  "svgwebContext": {
+    "name": "displayWebStats.svg",
+    "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
+    "diagnosticInputSha256": "eee3a71669f060293f50a2ad5e18df3a1bd4c0a61bcdded4ffb01609829d7668",
+    "nativeInputSha256": "5097794849ca64f51701af6684abbee2ca1a4da302a76658202f420e1e7d3765",
+    "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "hosts": [
+      {
+        "host": "windows",
+        "seconds": 2.2336032998282462,
+        "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+        "libraryPngSha256": "a5d57028415487baa68574cf7708b2ef279260863c815d923028b729dfdc1deb",
+        "nativePngSha256": "8fc5f8e01b41bbc17a42565b4f42202211db2b06f1f06f837fd02aaaa5b763f4",
+        "rgbaSha256": "6f21efb966af4c0821c0de89a4e8e1fdc3558a70794dfb6956ff6ea3cdbb4171",
+        "width": 300,
+        "height": 150,
+        "changedPixels": 0,
+        "unchangedQualifiedLibraryPng": true
+      },
+      {
+        "host": "linux",
+        "seconds": 2.7860273998230696,
+        "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+        "libraryPngSha256": "7aa04163714793daeefc751b7498782d385a942016cfafb20e63bc094b242e8d",
+        "nativePngSha256": "5c460f80227e66b72fdbb66bee2b763c20033a6545db015bea8d3a5e3bda7ff9",
+        "rgbaSha256": "63e283ffc915fd08c043bd185daaa91ab177f0e10c40349cd5d4fa04736bf12c",
+        "width": 300,
+        "height": 150,
+        "changedPixels": 0,
+        "unchangedQualifiedLibraryPng": true
+      }
+    ],
+    "sourceBodiesRetained": 0,
+    "rawAttributeValuesRetained": 0
+  },
+  "fullPrimary": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "testAssemblySha256": "3cbdfdc0d93fe5f85280765f1c7407a2fb5f23b419774e977cda812ea6d6cacf",
+      "exitCode": 0,
+      "seconds": 77.89266470004804,
+      "counters": {
+        "executed": "47992",
+        "passed": "47992",
+        "failed": "0"
+      },
+      "failures": [],
+      "selection": "Unfiltered"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "testAssemblySha256": "3cbdfdc0d93fe5f85280765f1c7407a2fb5f23b419774e977cda812ea6d6cacf",
+      "exitCode": 0,
+      "seconds": 81.9426982998848,
+      "counters": {
+        "executed": "47992",
+        "passed": "47992",
+        "failed": "0"
+      },
+      "failures": [],
+      "selection": "Unfiltered"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "testAssemblySha256": "d7c2c56fa2ede0c3e22b34c3e24b0cbf1001b3a9ba93bfcef407883aca753c87",
+      "exitCode": 1,
+      "seconds": 363.48540799994953,
+      "counters": {
+        "executed": "78851",
+        "passed": "78849",
+        "failed": "2"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.FixtureManifestTests.Every_fixture_has_valid_source_and_reference_metadata",
+          "message": "Missing CC0 SPDX declaration: original-contained-hairline-clip"
+        }
+      ],
+      "selection": "Unfiltered"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "testAssemblySha256": "d7c2c56fa2ede0c3e22b34c3e24b0cbf1001b3a9ba93bfcef407883aca753c87",
+      "exitCode": 1,
+      "seconds": 383.92965710000135,
+      "counters": {
+        "executed": "78851",
+        "passed": "78850",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.FixtureManifestTests.Every_fixture_has_valid_source_and_reference_metadata",
+          "message": "Missing CC0 SPDX declaration: original-contained-hairline-clip"
+        }
+      ],
+      "selection": "Unfiltered"
+    },
+    {
+      "host": "windows",
+      "kind": "font",
+      "framework": "net11.0",
+      "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "testAssemblySha256": "26cbb27c55eebe08cb69bf4b4a2b11828225c4e58aad29977f9e0cb3e49b4361",
+      "exitCode": 0,
+      "seconds": 2.20927709992975,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": [],
+      "selection": "Unfiltered"
+    },
+    {
+      "host": "linux",
+      "kind": "font",
+      "framework": "net11.0",
+      "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "testAssemblySha256": "26cbb27c55eebe08cb69bf4b4a2b11828225c4e58aad29977f9e0cb3e49b4361",
+      "exitCode": 0,
+      "seconds": 1.3636719000060111,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": [],
+      "selection": "Unfiltered"
+    }
+  ],
+  "fixtureCorrection": {
+    "cause": "The initial new authored fixture omitted its required CC0 SPDX declaration. Added the declaration, refreshed independent native source identities, and retained the byte-identical reference PNG.",
+    "scope": "Only the authored source declaration and metadata changed after the complete primary run. All four host/runtime metadata+fixture selections were explicitly rebuilt and pass below. The complete primary suite was not rerun merely for this correction.",
+    "checks": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+        "testAssemblySha256": "d7c2c56fa2ede0c3e22b34c3e24b0cbf1001b3a9ba93bfcef407883aca753c87",
+        "exitCode": 0,
+        "seconds": 13.229541099863127,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        "failures": [],
+        "selection": "Focused scope/filter mechanisms, full source-context bank, nine individually selected native cases, and authored fixture/metadata as applicable."
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+        "testAssemblySha256": "d7c2c56fa2ede0c3e22b34c3e24b0cbf1001b3a9ba93bfcef407883aca753c87",
+        "exitCode": 0,
+        "seconds": 33.522150499979034,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        "failures": [],
+        "selection": "Focused scope/filter mechanisms, full source-context bank, nine individually selected native cases, and authored fixture/metadata as applicable."
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "b39cee065f1204c79d902a787bcab5167fd8f624baa29177ca87cdf554afb7a5",
+        "testAssemblySha256": "20049930bcd2cddfe9f122e03486247d27b80d12d0a2776d20a5933231fc3955",
+        "exitCode": 0,
+        "seconds": 12.229059900157154,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        "failures": [],
+        "selection": "Focused scope/filter mechanisms, full source-context bank, nine individually selected native cases, and authored fixture/metadata as applicable."
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "b39cee065f1204c79d902a787bcab5167fd8f624baa29177ca87cdf554afb7a5",
+        "testAssemblySha256": "20049930bcd2cddfe9f122e03486247d27b80d12d0a2776d20a5933231fc3955",
+        "exitCode": 0,
+        "seconds": 26.045429799938574,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        },
+        "failures": [],
+        "selection": "Focused scope/filter mechanisms, full source-context bank, nine individually selected native cases, and authored fixture/metadata as applicable."
+      }
+    ]
+  },
+  "affectedSecondary": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "b39cee065f1204c79d902a787bcab5167fd8f624baa29177ca87cdf554afb7a5",
+      "testAssemblySha256": "04bd66485a2881eec5b31ee92812023d359134126498615bbd582bc5f22686c4",
+      "exitCode": 0,
+      "seconds": 11.92953269998543,
+      "counters": {
+        "executed": "706",
+        "passed": "706",
+        "failed": "0"
+      },
+      "failures": [],
+      "selection": "Focused scope/filter mechanisms, full source-context bank, nine individually selected native cases, and authored fixture/metadata as applicable."
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "b39cee065f1204c79d902a787bcab5167fd8f624baa29177ca87cdf554afb7a5",
+      "testAssemblySha256": "04bd66485a2881eec5b31ee92812023d359134126498615bbd582bc5f22686c4",
+      "exitCode": 0,
+      "seconds": 13.559392400085926,
+      "counters": {
+        "executed": "706",
+        "passed": "706",
+        "failed": "0"
+      },
+      "failures": [],
+      "selection": "Focused scope/filter mechanisms, full source-context bank, nine individually selected native cases, and authored fixture/metadata as applicable."
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "b39cee065f1204c79d902a787bcab5167fd8f624baa29177ca87cdf554afb7a5",
+      "testAssemblySha256": "20049930bcd2cddfe9f122e03486247d27b80d12d0a2776d20a5933231fc3955",
+      "exitCode": 0,
+      "seconds": 28.017853899858892,
+      "counters": {
+        "executed": "9241",
+        "passed": "9241",
+        "failed": "0"
+      },
+      "failures": [],
+      "selection": "Focused scope/filter mechanisms, full source-context bank, nine individually selected native cases, and authored fixture/metadata as applicable."
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "b39cee065f1204c79d902a787bcab5167fd8f624baa29177ca87cdf554afb7a5",
+      "testAssemblySha256": "20049930bcd2cddfe9f122e03486247d27b80d12d0a2776d20a5933231fc3955",
+      "exitCode": 0,
+      "seconds": 38.54854890005663,
+      "counters": {
+        "executed": "9241",
+        "passed": "9241",
+        "failed": "0"
+      },
+      "failures": [],
+      "selection": "Focused scope/filter mechanisms, full source-context bank, nine individually selected native cases, and authored fixture/metadata as applicable."
+    }
+  ],
+  "broaderQualification": "Matching CI, deterministic packages/installed consumers, complete secondary suites and every SVGWeb original/context replay follow this coherent source commit. The earlier source bindings remain explicit until those replays complete.",
+  "remaining": {
+    "inputs": 24,
+    "evidence": "sampling-symbol-clip-investigation.json",
+    "nextAction": "Trace source-image sampling requests and native device origins across filter opacity/isolation. The full-clip request experiment regressed accepted opacity cases and remains rejected."
+  },
+  "limits": [
+    "No existing SVG source, frozen target, exact comparison, tolerance or text-layout implementation changed. One independently captured authored orthogonal fixture is added.",
+    "Hosted SVG bodies, fragments and raw attributes remain in RAM only; none are retained. The static supplied-font diagnostic does not qualify its unchanged original.",
+    "Elapsed validation time includes discovery and concurrent work; it is not a renderer-performance or suite-speedup measurement.",
+    "Frozen Windows DejaVu authority remains open; the assertion and target remain intact."
+  ]
+}

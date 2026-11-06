@@ -22,7 +22,6 @@ internal ref struct SvgHairlineCoverage
     private SvgAnalyticClipBounds? _binaryBounds;
     private readonly (double Left, double Top, double Right, double Bottom)? _clip;
     private readonly SvgClipAntialiasing _antialiasing;
-    private readonly SvgAnalyticPaintClip _rectanglePaintClip;
     private readonly SvgRasterClipMask _viewportMask;
     private readonly CancellationToken _token;
 
@@ -66,9 +65,6 @@ CancellationToken cancellationToken)
         _destination = destination; _width = width; _height = height; _paint = paint;
         _shaders = Span<SvgShaderSampler>.Empty;
         _clip = clip; _antialiasing = antialiasing; _token = cancellationToken;
-        _rectanglePaintClip = clip is {} rectangle
-            ? SvgAnalyticRectangleClip.Classify(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom, context.BitmapClip, antialiasing)
-            : SvgAnalyticPaintClip.Binary;
         if (clip is {} construction)
         {
             // Native hairlines clip to the integer rectangle before fixed-point
@@ -210,7 +206,7 @@ CancellationToken cancellationToken)
         {
             SvgAnalyticClipCoverage coverage = SvgAnalyticRectangleClip.GetCoverage(clip, _antialiasing, x, y);
             byte clipped = coverage.Apply(alpha);
-            if (clipped != alpha || _rectanglePaintClip == SvgAnalyticPaintClip.Antialiased) kind = SvgAnalyticPaintKind.Direct;
+            if (clipped != alpha) kind = SvgAnalyticPaintKind.Direct;
             alpha = clipped;
         }
         if (!_viewportMask.IsEmpty)

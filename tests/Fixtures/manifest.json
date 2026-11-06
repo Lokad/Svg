@@ -19214,6 +19214,7 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-foreign-test-description.json",
       "referenceSha256": "e6343cc964efa7ec0f1e4a4eeef400330deffd025a4807723c9e3f01ab98f782"
-    }
+    },
+    {"id":"original-contained-hairline-clip","path":"original/contained-hairline-clip.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-11-06","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"b6cc51ee5363049ac3b688be546d858ff2d43336b73d84bd5a7d1fff3e484f76","materializedSha256":"b6cc51ee5363049ac3b688be546d858ff2d43336b73d84bd5a7d1fff3e484f76","featureTags":["clip","hairline","source-over","transparency"],"width":32,"height":32,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-contained-hairline-clip.json","referenceSha256":"9c311886249c5dc6bb4ac268fcee6705f8a7868bce4771f9882178a543d1050f"}
   ]
 }

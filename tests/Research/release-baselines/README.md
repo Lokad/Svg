@@ -36,12 +36,16 @@ previous output and both Linux scalar-math profiles. [Chrome scratch ownership](
 fixes the separate native temporary-file leak observed after exact Ubuntu CI captures.
 The [geometry clip correction](geometry-paint-clip-domain.json) separates incoming
 geometric clips from source-picture viewport masks and clips thin lines before
-fixed-point conversion. Its 51 failing-before inputs retain their native targets:
-466 historical inputs are exact and 33 remain open. The
-[withdrawn candidate](parent-picture-clip-domain.json) records why both independent
+fixed-point conversion. Its 51 failing-before inputs retain their native targets.
+The [withdrawn candidate](parent-picture-clip-domain.json) records why both independent
 banks must guard this boundary. [Remaining controls](sampling-symbol-clip-investigation.json)
 separate symbol-viewport fill rounding from shader sampling/opacity; unqualified
 experiments remain research.
+The [native device correction](native-clip-device-domains.json) closes the nine
+viewport fill cases by retaining logical picture/layer clips independently of
+addressable storage. It removes unnecessary AA routing and retains a new independent
+contained-line control, preserving the SVGWeb static diagnostic projection.
+475 historical inputs are exact; 24 shader/placement inputs remain open.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

@@ -20,6 +20,9 @@ internal readonly record struct SvgCpuRasterScope(SvgAnalyticClipBounds Bounds, 
 {
     /// <summary>Retains a captured bitmap's logical origin independently of its compact storage window.</summary>
     internal SvgCpuBitmapOrigin? NativeOrigin { get; init; }
+    /// <summary>Retains the complete native device clip for classification when storage omits its transparent extent.</summary>
+    /// <remarks>Borrowed metadata owns no pixels. Bind continues to expose only addressable storage and its owned interior.</remarks>
+    internal SvgAnalyticClipBounds? NativeClipBounds { get; init; }
 
     internal SvgCpuRasterContext Bind(SvgCpuRasterContext tile)
     {

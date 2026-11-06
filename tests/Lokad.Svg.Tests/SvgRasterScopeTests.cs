@@ -1,3 +1,4 @@
+using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
@@ -17,6 +18,23 @@ public sealed class SvgRasterScopeTests
         Assert.Equal(scope.Bounds, bound.BitmapClip);
         Assert.Equal(scope.Bounds, bound.Interior);
         Assert.Equal(new SvgCpuBitmapOrigin(x, y), bound.Origin);
+    }
+
+    [Fact]
+    public void Native_clip_classification_does_not_expand_addressable_storage()
+    {
+        SvgCpuRasterContext tile = new(new(0, 0, 8, 8), new(0, 0, 8, 8));
+        SvgAnalyticClipBounds native = new(-10, -11, 20, 21);
+        SvgCpuRasterScope scope = new(new(2, 3, 6, 7), true)
+        { NativeOrigin = new(-1, 0), NativeClipBounds = native };
+        SvgCpuRasterContext bound = scope.Bind(tile);
+        Assert.Equal(new SvgAnalyticClipBounds(2, 3, 6, 7), bound.BitmapClip);
+        Assert.Equal(bound.BitmapClip, bound.Interior);
+        Assert.Equal(new SvgCpuBitmapOrigin(-1, 0), bound.Origin);
+        Assert.Equal(SvgAnalyticPaintClip.Binary,
+            SvgAnalyticRectangleClip.Classify(.25, .25, 7.75, 7.75, bound.BitmapClip, SvgClipAntialiasing.All));
+        Assert.Equal(SvgAnalyticPaintClip.Antialiased,
+            SvgAnalyticRectangleClip.Classify(.25, .25, 7.75, 7.75, native, SvgClipAntialiasing.All));
     }
 
     [Theory]
