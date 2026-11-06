@@ -526,9 +526,9 @@ original paint/position ownership. Selected GPOS `mark`/`mkmk` supports base,
 actual ligature-component and mark attachment with format-1 anchors and validated
 GDEF classes/filter sets. Contextual kerning admits bounded class contexts calling
 single X-advance adjustments. Marks and default-ignorables keep their context
-through positioning before their advances are zeroed. Known input coverage may
-exclude an unsupported lookup from a run; unknown or covered unsupported forms
-reject. Attached marks on text paths remain unsupported.
+through positioning before their advances are zeroed. Checked inputs that cannot
+match leave an unsupported lookup dormant; potential matches and unknown input
+forms reject. Attached marks on text paths remain unsupported.
 
 `SvgFontFaceRequest.FromCss` preserves family order, quoting, escapes and named/
 generic identity. `SvgFontSelectionPolicy` supplies host generic mappings and

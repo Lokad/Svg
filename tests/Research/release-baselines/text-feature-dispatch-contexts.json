@@ -1,0 +1,1153 @@
+{
+  "status": "Complete-input applicability correction passes focused and affected checks and all 19 supplied native contexts; final runtime/package/W1 promotion pending.",
+  "parentCommit": "a8447d202cbe05c51822a5edfad60c205b3221a5",
+  "precedingMilestone": "text-feature-dispatch.json",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Composition.cs": "505af2840b6fa5feecef0badcb4eba96e6914c171c67b70d1c48caf4f885d0b9",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.FeatureDispatch.cs": "bb070cbb19d9987a78c295e58d334b6c45e29b03d6d26c9fea1f55d0cafc6538",
+    "docs/SUPPORT_MATRIX.md": "b6323483e2adce0a48e471edaf57134ca5a4b4a59604ff27652d0b5de91a975b"
+  },
+  "correction": "Known unsupported format-3 chained contexts remain unexecuted. Bounded backtrack/input/lookahead must have a potential match before the run rejects; first-glyph overlap alone is insufficient.",
+  "representation": {
+    "maximumCheckedGlyphsPerSequence": 8,
+    "maximumPatternLength": 24,
+    "unfiltered": "Contiguous logical-order pattern.",
+    "filtered": "Ordered subsequence conservatively overestimates all glyph-removal filters.",
+    "unknownOrOverBound": "Conservative unsupported outcome retained.",
+    "ownership": "Bounded stack scratch only; no new material owner/cache or public API."
+  },
+  "inference": {
+    "reasoning": "Defined filtering flags remove eligible glyphs from matching. Allowing arbitrary omissions is a superset of every such filter; absence of a subsequence proves no filtered context match. Backtrack coverages are reversed into logical order.",
+    "sources": [
+      "https://learn.microsoft.com/en-us/typography/opentype/spec/chapter2#lookup-table",
+      "https://learn.microsoft.com/en-us/typography/opentype/spec/gsub#lookup-type-6-subtable-chained-contexts-substitution"
+    ]
+  },
+  "mechanisms": {
+    "newRows": 11,
+    "scope": [
+      "backtrack order",
+      "multiple input coverages",
+      "lookahead absence/order",
+      "filtered conservative gaps",
+      "unfiltered contiguous matches",
+      "potential matches still UnsupportedFeature"
+    ]
+  },
+  "before": {
+    "host": "windows",
+    "kind": "core",
+    "framework": "net11.0",
+    "librarySha256": "4191173b541e9b7e2641b0949e665f38973a3074ffbb289ecf173740faf20da8",
+    "testAssemblySha256": "bf5272f92427bdb8f0c76c44ac64be301f9c97a7baf1f31d99e85476f0cd6aff",
+    "selection": "FullyQualifiedName~Unsupported_coverage_context_requires",
+    "exitCode": 1,
+    "seconds": 9.135358999948949,
+    "counters": {
+      "executed": "11",
+      "passed": "5",
+      "failed": "6"
+    },
+    "failures": [
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_coverage_context_requires_its_complete_bounded_input(graph: Backtrack, text: \"AV\", relevant: False, filtered: True)",
+        "message": "Lokad.Svg.SvgException : The run requires an unsupported canonical GSUB lookup."
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_coverage_context_requires_its_complete_bounded_input(graph: Input, text: \"VA\", relevant: False, filtered: True)",
+        "message": "Lokad.Svg.SvgException : The run requires an unsupported canonical GSUB lookup."
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_coverage_context_requires_its_complete_bounded_input(graph: Lookahead, text: \"A\", relevant: False, filtered: True)",
+        "message": "Lokad.Svg.SvgException : The run requires an unsupported canonical GSUB lookup."
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_coverage_context_requires_its_complete_bounded_input(graph: Lookahead, text: \"ATV\", relevant: False, filtered: False)",
+        "message": "Lokad.Svg.SvgException : The run requires an unsupported canonical GSUB lookup."
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_coverage_context_requires_its_complete_bounded_input(graph: Input, text: \"A\", relevant: False, filtered: True)",
+        "message": "Lokad.Svg.SvgException : The run requires an unsupported canonical GSUB lookup."
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_coverage_context_requires_its_complete_bounded_input(graph: Lookahead, text: \"VA\", relevant: False, filtered: True)",
+        "message": "Lokad.Svg.SvgException : The run requires an unsupported canonical GSUB lookup."
+      }
+    ]
+  },
+  "originalPublicSensitivity": {
+    "identicalCandidateTestAssemblies": true,
+    "results": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "46a98bdb761a93ede686068f69ea0361ca00351b1f8f0ce8cd0b16bb258dbea1",
+        "testAssemblySha256": "bf5272f92427bdb8f0c76c44ac64be301f9c97a7baf1f31d99e85476f0cd6aff",
+        "selection": "FullyQualifiedName~Canonical_demand_keeps_the_primary_program|FullyQualifiedName~Unsupported_active_lookup_keeps",
+        "exitCode": 1,
+        "seconds": 10.604021399980411,
+        "counters": {
+          "executed": "3",
+          "passed": "0",
+          "failed": "3"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.OpenTypeFontTests.Canonical_demand_keeps_the_primary_program_and_reuses_the_shared_allowance(coverageCatalog: False)",
+            "message": "Lokad.Svg.SvgException : The selected font has no glyph for U+00C1 at scalar index 0 in the normalized text run."
+          },
+          {
+            "name": "Lokad.Svg.Tests.OpenTypeFontTests.Canonical_demand_keeps_the_primary_program_and_reuses_the_shared_allowance(coverageCatalog: True)",
+            "message": "Assert.Equal() Failure: Collections differ\r\nExpected: [\"primary.ttf\"]\r\nActual:   [\"primary.ttf\", \"fallback.ttf\"]\r\n                          \u2191 (pos 1)"
+          },
+          {
+            "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_active_lookup_keeps_the_stream_and_allowance_reusable",
+            "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+          }
+        ]
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "46a98bdb761a93ede686068f69ea0361ca00351b1f8f0ce8cd0b16bb258dbea1",
+        "testAssemblySha256": "ea5a98545bf7495e3ef0c8601251433205b92689d3265a90080930a5cb982527",
+        "selection": "FullyQualifiedName~SvgTextFeatureDispatchReferenceTests",
+        "exitCode": 1,
+        "seconds": 11.195288100047037,
+        "counters": {
+          "executed": "8",
+          "passed": "4",
+          "failed": "4"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextFeatureDispatchReferenceTests.Selected_features_and_canonical_coverage_match_each_native_role(identity: \"normalization-fallback\", role: \"source\")",
+            "message": "{\"DimensionsMatch\":true,\"ChangedPixelCount\":643,\"MaximumChannelError\":255,\"MeanAbsoluteError\":3.7916395399305554,\"RootMeanSquareError\":30.45076258580878,\"MaximumAlphaError\":255,\"AlphaChangedPixelCount\":643,\"MinimumMismatchX\":14,\"MinimumMismatchY\":0,\"MaximumMismatchX\":41,\"MaximumMismatchY\":51,\"IsExact\":false}"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextFeatureDispatchReferenceTests.Selected_features_and_canonical_coverage_match_each_native_role(identity: \"normalization\", role: \"source\")",
+            "message": "Lokad.Svg.SvgException : The selected font has no glyph for U+00C1 at scalar index 0 in the normalized text run."
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextFeatureDispatchReferenceTests.Selected_features_and_canonical_coverage_match_each_native_role(identity: \"ccmp\", role: \"source\")",
+            "message": "{\"DimensionsMatch\":true,\"ChangedPixelCount\":320,\"MaximumChannelError\":255,\"MeanAbsoluteError\":2.1074761284722223,\"RootMeanSquareError\":22.89619706072932,\"MaximumAlphaError\":255,\"AlphaChangedPixelCount\":320,\"MinimumMismatchX\":14,\"MinimumMismatchY\":22,\"MaximumMismatchX\":39,\"MaximumMismatchY\":51,\"IsExact\":false}"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextFeatureDispatchReferenceTests.Selected_features_and_canonical_coverage_match_each_native_role(identity: \"context\", role: \"source\")",
+            "message": "Lokad.Svg.SvgException : The glyph requires unsupported contextual GPOS positioning."
+          }
+        ]
+      }
+    ]
+  },
+  "affected": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "1de840e6cf4db572c2d2ce5ed7f5e525272c9e49496e3d8d127cd131029e7c69",
+      "testAssemblySha256": "bf5272f92427bdb8f0c76c44ac64be301f9c97a7baf1f31d99e85476f0cd6aff",
+      "selection": "(FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgText|FullyQualifiedName~SvgPatternText|FullyQualifiedName~SvgRetainedText|FullyQualifiedName~SvgDescriptiveText|FullyQualifiedName~SvgLanguageCasing)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 33.847944100154564,
+      "counters": {
+        "executed": "11776",
+        "passed": "11776",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "1de840e6cf4db572c2d2ce5ed7f5e525272c9e49496e3d8d127cd131029e7c69",
+      "testAssemblySha256": "ea5a98545bf7495e3ef0c8601251433205b92689d3265a90080930a5cb982527",
+      "selection": "(FullyQualifiedName~SvgText|FullyQualifiedName~SvgKerning|FullyQualifiedName~SvgShapingInterval|FullyQualifiedName~SvgStaticTrueTypeFont|FullyQualifiedName~SvgPublicFontQualification|FullyQualifiedName~SvgFontLayout|FullyQualifiedName~SvgCurvedFont|FullyQualifiedName~SvgSuppliedFont)&Category!=Research",
+      "exitCode": 1,
+      "seconds": 22.855237000156194,
+      "counters": {
+        "executed": "1252",
+        "passed": "1251",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "1de840e6cf4db572c2d2ce5ed7f5e525272c9e49496e3d8d127cd131029e7c69",
+      "testAssemblySha256": "bf5272f92427bdb8f0c76c44ac64be301f9c97a7baf1f31d99e85476f0cd6aff",
+      "selection": "(FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgText|FullyQualifiedName~SvgPatternText|FullyQualifiedName~SvgRetainedText|FullyQualifiedName~SvgDescriptiveText|FullyQualifiedName~SvgLanguageCasing)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 39.385259200120345,
+      "counters": {
+        "executed": "11776",
+        "passed": "11776",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "1de840e6cf4db572c2d2ce5ed7f5e525272c9e49496e3d8d127cd131029e7c69",
+      "testAssemblySha256": "ea5a98545bf7495e3ef0c8601251433205b92689d3265a90080930a5cb982527",
+      "selection": "(FullyQualifiedName~SvgText|FullyQualifiedName~SvgKerning|FullyQualifiedName~SvgShapingInterval|FullyQualifiedName~SvgStaticTrueTypeFont|FullyQualifiedName~SvgPublicFontQualification|FullyQualifiedName~SvgFontLayout|FullyQualifiedName~SvgCurvedFont|FullyQualifiedName~SvgSuppliedFont)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 24.292716699885204,
+      "counters": {
+        "executed": "1252",
+        "passed": "1252",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "6953964ddfe2eb67364a115597bfd1983d05cb5247e53e71aceee44650ff522d",
+      "testAssemblySha256": "d39decfa3337485712058f469bf8922ee7991f2d72018cf2b369c5cc64068f03",
+      "selection": "(FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgText|FullyQualifiedName~SvgPatternText|FullyQualifiedName~SvgRetainedText|FullyQualifiedName~SvgDescriptiveText|FullyQualifiedName~SvgLanguageCasing)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 41.16816130001098,
+      "counters": {
+        "executed": "11776",
+        "passed": "11776",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "6953964ddfe2eb67364a115597bfd1983d05cb5247e53e71aceee44650ff522d",
+      "testAssemblySha256": "a04f1c20c448f38908c4fcee899b9afc85e9d92507321eaf9b74a972762f270d",
+      "selection": "(FullyQualifiedName~SvgText|FullyQualifiedName~SvgKerning|FullyQualifiedName~SvgShapingInterval|FullyQualifiedName~SvgStaticTrueTypeFont|FullyQualifiedName~SvgPublicFontQualification|FullyQualifiedName~SvgFontLayout|FullyQualifiedName~SvgCurvedFont|FullyQualifiedName~SvgSuppliedFont)&Category!=Research",
+      "exitCode": 1,
+      "seconds": 26.975546299945563,
+      "counters": {
+        "executed": "1252",
+        "passed": "1251",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "6953964ddfe2eb67364a115597bfd1983d05cb5247e53e71aceee44650ff522d",
+      "testAssemblySha256": "d39decfa3337485712058f469bf8922ee7991f2d72018cf2b369c5cc64068f03",
+      "selection": "(FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgText|FullyQualifiedName~SvgPatternText|FullyQualifiedName~SvgRetainedText|FullyQualifiedName~SvgDescriptiveText|FullyQualifiedName~SvgLanguageCasing)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 37.87737480015494,
+      "counters": {
+        "executed": "11776",
+        "passed": "11776",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "6953964ddfe2eb67364a115597bfd1983d05cb5247e53e71aceee44650ff522d",
+      "testAssemblySha256": "a04f1c20c448f38908c4fcee899b9afc85e9d92507321eaf9b74a972762f270d",
+      "selection": "(FullyQualifiedName~SvgText|FullyQualifiedName~SvgKerning|FullyQualifiedName~SvgShapingInterval|FullyQualifiedName~SvgStaticTrueTypeFont|FullyQualifiedName~SvgPublicFontQualification|FullyQualifiedName~SvgFontLayout|FullyQualifiedName~SvgCurvedFont|FullyQualifiedName~SvgSuppliedFont)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 22.761491699842736,
+      "counters": {
+        "executed": "1252",
+        "passed": "1252",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "nativeReplay": {
+    "librarySha256": "1de840e6cf4db572c2d2ce5ed7f5e525272c9e49496e3d8d127cd131029e7c69",
+    "results": [
+      {
+        "host": "windows",
+        "case": "ccmp.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "195",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "ccmp.json",
+        "role": "visual",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "195",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "context/capture.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "209",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "context/capture.json",
+        "role": "control",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "209",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "normalization/capture.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "262",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "normalization/capture.json",
+        "role": "control",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "262",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "normalization-fallback/capture.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "262",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "normalization-fallback/capture.json",
+        "role": "control",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "262",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "normalization-noto/capture.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "617",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "windows",
+        "case": "normalization-noto/capture.json",
+        "role": "control",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "617",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "ccmp.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "195",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "ccmp.json",
+        "role": "visual",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "195",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "context/capture.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "220",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "context/capture.json",
+        "role": "control",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "223",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "normalization/capture.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "250",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "normalization/capture.json",
+        "role": "control",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "250",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "normalization-fallback/capture.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "250",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "normalization-fallback/capture.json",
+        "role": "control",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "250",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "normalization-noto/capture.json",
+        "role": "source",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "664",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      },
+      {
+        "host": "linux",
+        "case": "normalization-noto/capture.json",
+        "role": "control",
+        "exitCode": 0,
+        "fields": {
+          "outcome": "success",
+          "pngBytes": "664",
+          "requestedFontPrograms": "1"
+        },
+        "mismatchPixels": 0
+      }
+    ]
+  },
+  "suppliedContexts": {
+    "inputs": 19,
+    "hostComparisons": 38,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0,
+    "rows": [
+      {
+        "name": "410.svg",
+        "sourceSha256": "5fba6c8c0d7da11542e4a8f9ad9754868000926a7436481115b820900eb0491b",
+        "nativeInputSha256": "24e95deaf6f02f6999354b907e16a061debe7e5a616bd5a6485ea00adab503de",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "a4a571580945e349969a0b8ca6b29385190dff43bd13cd3c22dda73235d76ed9",
+            "nativePngSha256": "02e3bace29f4057835dae153e1ca8746ef2d40cb702bd9c2c0b9412696ef0fe9",
+            "previousLibraryPngSha256": "a4a571580945e349969a0b8ca6b29385190dff43bd13cd3c22dda73235d76ed9",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "00446f6594ef1935fb0450b6cc60e71cb408d087ce8733e5b4e290b7fe9d516b",
+            "nativePngSha256": "cb71c8506fc6c1e397f45e45cc52d47440b26c3fbb62c5bb021d54700e712efd",
+            "previousLibraryPngSha256": "00446f6594ef1935fb0450b6cc60e71cb408d087ce8733e5b4e290b7fe9d516b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSans-Bold.svg",
+        "sourceSha256": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+        "nativeInputSha256": "ea03a2db026943cc1341d1cf19828363e8112af1d0221c3e219d147b4bcaff8b",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "1905506cbcab7313c6012c64d1f80f35f69e7e0cf89839a9ea45cfb1b9176092",
+            "nativePngSha256": "27a1d546b950ade8557671d56a5897eecefc5e1b3dba9e2c71da00009947a4cf",
+            "previousLibraryPngSha256": "1905506cbcab7313c6012c64d1f80f35f69e7e0cf89839a9ea45cfb1b9176092",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "4fe1f73355bb3cb3a1906ab580b5ac5c3e7505c850aced3e96c92460353da471",
+            "nativePngSha256": "1124f2c8a55ebb93844fb1ece7de2ca41332a79c965458fe93c668c873ae5a6f",
+            "previousLibraryPngSha256": "4fe1f73355bb3cb3a1906ab580b5ac5c3e7505c850aced3e96c92460353da471",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSans.svg",
+        "sourceSha256": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+        "nativeInputSha256": "5aea5bc1bc3975fa4b286990e0484c7dc88d0cf191ff7de3ca822aab4fa2dd68",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "0dde9aecc62c64c6b363087a570988d5db9d8d6da9ff3d0e980cde42fc0f2714",
+            "nativePngSha256": "b626b2385dc37d3b796226305d5361b99b352183db0408045cc4e002001424bd",
+            "previousLibraryPngSha256": "0dde9aecc62c64c6b363087a570988d5db9d8d6da9ff3d0e980cde42fc0f2714",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "19e01136bfceba07813396f3d7d3fee9462aaf8b326e520302bdfd9f876c9744",
+            "nativePngSha256": "0f11d0e666dad4e603cc191828cb037678ce6d2e876e064ab20eb1309d9eb7ec",
+            "previousLibraryPngSha256": "19e01136bfceba07813396f3d7d3fee9462aaf8b326e520302bdfd9f876c9744",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSansMono.svg",
+        "sourceSha256": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+        "nativeInputSha256": "81953bf52c7ec3e7e76996060ee380e7ba6eddef1c5ab3c1b210908d54b7366b",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "955dba989ccd56f1516eca8d7b9e2a583fd4d9392150da0a4476e64653dccbe5",
+            "nativePngSha256": "211001fc7ee02c8e6be4b893d5a1c11a50842b580bb1b2e06913c9ee0f940f8e",
+            "previousLibraryPngSha256": "955dba989ccd56f1516eca8d7b9e2a583fd4d9392150da0a4476e64653dccbe5",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "7c09529f0897833e02aa27e9485343d004660ac5f8a636dfc5f1fd8efa1cc756",
+            "nativePngSha256": "2a7959518fad187e60c60db53388c194a6626e73862447f94f778e10b41c622c",
+            "previousLibraryPngSha256": "7c09529f0897833e02aa27e9485343d004660ac5f8a636dfc5f1fd8efa1cc756",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSerif-Bold.svg",
+        "sourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+        "nativeInputSha256": "d94d2d67b70689385feeb0e96b6ba168d98c602834b049e2dde88e37b89bdaa3",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "54e9d6ee0fc7c1dbe2b1d601b0170d3f53b370ea64e960e8902f888b63bd98b0",
+            "nativePngSha256": "ad877cd7fa6fb71f52a31749a3fb383611db2691a859cee71608fd462b3e55e1",
+            "previousLibraryPngSha256": "54e9d6ee0fc7c1dbe2b1d601b0170d3f53b370ea64e960e8902f888b63bd98b0",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "67f115097ea0555bc44b15481721ba4a1fab6f9be0ea34b0e4d659bafa9738c5",
+            "nativePngSha256": "7b1ecbd374dbb7c5c4094526005a6b3cd8c22b3d801f239ff746bb7f345dbf42",
+            "previousLibraryPngSha256": "67f115097ea0555bc44b15481721ba4a1fab6f9be0ea34b0e4d659bafa9738c5",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSerif-BoldItalic.svg",
+        "sourceSha256": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+        "nativeInputSha256": "e3c283af2ad1dd014d5a4f9ba0b2e2ff070e9be8a89bea6a3b2b26c042b1b55c",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "b5f4a89dda303222f349d5387567fc236954cccdb459c6a59ddb87249066ade6",
+            "nativePngSha256": "2ac3c6f4c2c8624cf1e3bb8d6cd4bd777c09a97cc547c2b6e7f318a23f166a4e",
+            "previousLibraryPngSha256": "b5f4a89dda303222f349d5387567fc236954cccdb459c6a59ddb87249066ade6",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "b33d400df43a98950cf7e8645ced094f05f0911dfce92b2c36874625597007cd",
+            "nativePngSha256": "50accb21da1a53d3591c2336264f1b7083e8fcebdff1344217f541f62fc58870",
+            "previousLibraryPngSha256": "b33d400df43a98950cf7e8645ced094f05f0911dfce92b2c36874625597007cd",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSerif-Italic.svg",
+        "sourceSha256": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+        "nativeInputSha256": "5cd70c7dfff94fb3d56280985f7c8475b4165f3cd2cf36cf34c6dafe0e3c8666",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "ab4f6e1c7dd352dbd1bcc9fd931bd3eebe9e784d8f2c3e31a02c99b166ce20ca",
+            "nativePngSha256": "c307b807a93f54ecb5abef13c2ccf30d283c9b01d672ff90a914a4e2208de5ab",
+            "previousLibraryPngSha256": "ab4f6e1c7dd352dbd1bcc9fd931bd3eebe9e784d8f2c3e31a02c99b166ce20ca",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "e6e126c3f66a586378e2a2d0842af88d4c003b6b2da7ac21bf75387d2720f90e",
+            "nativePngSha256": "ce345270482cfc5d8ed9d3c242ce97b178101c862faa0f876a7752437668552f",
+            "previousLibraryPngSha256": "e6e126c3f66a586378e2a2d0842af88d4c003b6b2da7ac21bf75387d2720f90e",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSerif-Regular.svg",
+        "sourceSha256": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+        "nativeInputSha256": "087f1c8929e94e218140d375d9e027a39ecc015e0263a7d61323c33c1a2958cc",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "662e61585560b1ca52f29e08ea7e6a6cc4b4652cb5cfdc69b8f6d63517549358",
+            "nativePngSha256": "77dbea065f37ca44e7cd9a0ee48dee7e33e53eb1df9f64c2681a749108014e49",
+            "previousLibraryPngSha256": "662e61585560b1ca52f29e08ea7e6a6cc4b4652cb5cfdc69b8f6d63517549358",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "eb358b6837ff38ddacb23b23a64c883110109c7554cf7fc75736568203e0a925",
+            "nativePngSha256": "9ab8766ee929db3a35c1b9aba6cb7b2d48880f0e5dc9fd4c2d4d886975807541",
+            "previousLibraryPngSha256": "eb358b6837ff38ddacb23b23a64c883110109c7554cf7fc75736568203e0a925",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "USStates.svg",
+        "sourceSha256": "615f7c8c43e4d7181969496643ed8f35d74fc29fea391c8d8dd219aa6547136b",
+        "nativeInputSha256": "f6b84f18d0445d7685833d1096030c1d5ae026e64146bec6336cfb8a74fcf645",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "200cb1a07f6dd6a1f5180094fbeeea8ff6cc9c9f80f4c472d277353987482f26",
+            "nativePngSha256": "7f061c4c35103313c3c5b309aecfa720a7db8fd5f98e4b21436b6c861e3e7f52",
+            "previousLibraryPngSha256": "200cb1a07f6dd6a1f5180094fbeeea8ff6cc9c9f80f4c472d277353987482f26",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "c7f02d8bf11098d0ec4939fa8830419904036be3644bff6bb17df37ee3c97dea",
+            "nativePngSha256": "87e5488c81f0f1af875c955a90b54a576727ebc13ec5f7741fdfab1f126caead",
+            "previousLibraryPngSha256": "c7f02d8bf11098d0ec4939fa8830419904036be3644bff6bb17df37ee3c97dea",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "blocks_game.svg",
+        "sourceSha256": "4594f838008d371765539a53e53b52706e6afec99bf5fc38347e2a3ee142817c",
+        "nativeInputSha256": "15f564887d50395604e0e2eea34bbc9d1134018bb07f02994f6654aa763c93cf",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "c7dbbec7236439215f95ba8ba01b96384ddfb12f571ffb9af64726183fb226d0",
+            "nativePngSha256": "a68663c41cf1fb3e9bb6e9e97763ae5f80ebd950f345a9ce12156728adb2530d",
+            "previousLibraryPngSha256": "ac652718dabd34678d11163c6f6c6930cc8036c0ae4ba20362814a94e7d022f6",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "a9a12ae61198f82db28d5041d8b8e3d1e2e801b5e2ec399b59a26f39f74dd3d6",
+            "nativePngSha256": "f94a08705f57ff62f7c8e53cf9c9c7f4111366e82a4501c8507ba84c61d1408f",
+            "previousLibraryPngSha256": "a9a12ae61198f82db28d5041d8b8e3d1e2e801b5e2ec399b59a26f39f74dd3d6",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "decimal.svg",
+        "sourceSha256": "d0aba26e5d909c9f3e359a21a0b55b1bdea7c13cb843127bb8ffb8f6fd2b096b",
+        "nativeInputSha256": "4aa8c8623c9fbd1cb5763dbc15f729b2eb826a8cb6414fc685dfd193339bc98e",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "f5ccd3e62719c1e03a005910227552c7b1d8dbdf7603c575b66172ae9cdb1760",
+            "nativePngSha256": "e9858bb333408526c86a8b7d8181a0059d33c12cb722e856a8703ce177ff571f",
+            "previousLibraryPngSha256": "f5ccd3e62719c1e03a005910227552c7b1d8dbdf7603c575b66172ae9cdb1760",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "2ce50e8aa6942b1e47786f221196babc452171fc4a7e94dbb37dc08113573b3e",
+            "nativePngSha256": "ddb24bd6c399049665ab424a989a2d6d44fc6b7af09dce32345d942b47328ae2",
+            "previousLibraryPngSha256": "2ce50e8aa6942b1e47786f221196babc452171fc4a7e94dbb37dc08113573b3e",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "helloworld.svg",
+        "sourceSha256": "7bef17011e3c570fa07f5fe8671917e1df854bb9c0b67d1efbd105773fd5eb08",
+        "nativeInputSha256": "fcea494ca34d2b04de18645cc9df273c35fb573c5caa8ffa9b7872e5b41305e2",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "c47fba77f7903d0a270c3bc810981e46cc310d8f9540a46e4bb615f4395b055b",
+            "nativePngSha256": "9c6d3c81592d84937a343b32e966b167d7819cc7b1ea763f61fab1935e698e28",
+            "previousLibraryPngSha256": "c47fba77f7903d0a270c3bc810981e46cc310d8f9540a46e4bb615f4395b055b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "29886e6393765bbe0461c3ec23b08237ef06d285cc71a254370449b6e31c4bd9",
+            "nativePngSha256": "e191d9fa8023d03688a344099801c7f009f8db6ed82fcc20edb51476a9a550bc",
+            "previousLibraryPngSha256": "29886e6393765bbe0461c3ec23b08237ef06d285cc71a254370449b6e31c4bd9",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "mysvg.svg",
+        "sourceSha256": "3976da5079172c8ea5edea4f2b8a3628b366816361796544fc499b3f8bc2f688",
+        "nativeInputSha256": "372009173917528a6f8bd92723c1c9a59f3b557fb9a6b319be9d850fb05e8943",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "fd1677b35d7fca5d8fd721c6d4c635ef903c6e83c20044cd271112db31a39494",
+            "nativePngSha256": "6de51ed27388bfc9d0bfee4ec24ccb6dd98d32e2fd1f588f98a416641d12246b",
+            "previousLibraryPngSha256": "fd1677b35d7fca5d8fd721c6d4c635ef903c6e83c20044cd271112db31a39494",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "22e1aa2894cf91828e26380c9bc90fdf588306018fb97345492d459f404802f4",
+            "nativePngSha256": "f901e84834ab70e5e4d43592dc27b48678388cdc67e1d44722856e9d896700aa",
+            "previousLibraryPngSha256": "22e1aa2894cf91828e26380c9bc90fdf588306018fb97345492d459f404802f4",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "paths-data-08-t.svg",
+        "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+        "nativeInputSha256": "63650e105ca44df1842b0de671e3b82428eeaee406b838a6e8b9c4010874f2e9",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "544de067f389ce73e5fd3d564f41be77165436b3614bd6199019c192915c4e8a",
+            "nativePngSha256": "1123469440b13349c30e3a635d3fb655ce880054155b1d5a2314b0c912853bc6",
+            "previousLibraryPngSha256": "544de067f389ce73e5fd3d564f41be77165436b3614bd6199019c192915c4e8a",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "f3d10e8f839c27b34f6139874c4be4831486fe0702e4ff200ce018937c20a674",
+            "nativePngSha256": "94c0fc90bd255cc6ea2455ec5bc8860beb17186e1415a9ae494cce0367418f6e",
+            "previousLibraryPngSha256": "f3d10e8f839c27b34f6139874c4be4831486fe0702e4ff200ce018937c20a674",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "paths-data-09-t.svg",
+        "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+        "nativeInputSha256": "82c877eea252382c28bdff152d2b1a4ca0bdc4dbbbf9ebbffbb38b82b979f93b",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "5ffa18fbffafab7906c9a2bf85c1626bfda72dcd64d47c7656db306180548b02",
+            "nativePngSha256": "da6e7cc123747feb77eeb9033ca27a79f564454ff19a0e82e11b9e8164896385",
+            "previousLibraryPngSha256": "5ffa18fbffafab7906c9a2bf85c1626bfda72dcd64d47c7656db306180548b02",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "7b57716f920463ecbf68de915c2fada48964b96f8b5f0d02173b907fa21eba38",
+            "nativePngSha256": "3d8ba14ad160f4e755fe2a08500401a6e93c02d9ced292767040f76da564fddd",
+            "previousLibraryPngSha256": "7b57716f920463ecbf68de915c2fada48964b96f8b5f0d02173b907fa21eba38",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "pservers-grad-03-b.svg",
+        "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+        "nativeInputSha256": "842c1418fc4fa732b9a0709f49b98d25a61d6f19573723c00cae3e868da86bf3",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "08f5761245927cdf723a8e3034d07cbc968b92c374399f1c8498d16af897fc9e",
+            "nativePngSha256": "1dd3f4536e56755d0f3aae7b76acb8f746c2f978a2871d1ad09667aad67a70d0",
+            "previousLibraryPngSha256": "08f5761245927cdf723a8e3034d07cbc968b92c374399f1c8498d16af897fc9e",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "5543cce91e2999c0493ef99bf967514d494b1b801f2b9b4b060a01b823aca603",
+            "nativePngSha256": "665539c98f35d78a0c93ec22c987713525495435e6793f04a4096180cd68d070",
+            "previousLibraryPngSha256": "5543cce91e2999c0493ef99bf967514d494b1b801f2b9b4b060a01b823aca603",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "shapes-polygon-01-t.svg",
+        "sourceSha256": "ba00b071ec66e3b98ac2de924563f69d72e714ab02adbbe1dd1266b418ea144e",
+        "nativeInputSha256": "1e807f557c3523e821c2653fa91f48f5e60f8f223906d1926d9669b6406340bd",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "b1c797ae558ca8d910136295927bcd74c5adecdb65b8d3ed69ec46de35dbe89b",
+            "nativePngSha256": "e4352a45e3a733fcbf086286a6d8219772ed14c779eeee4b2dcf95f115f5955c",
+            "previousLibraryPngSha256": "b1c797ae558ca8d910136295927bcd74c5adecdb65b8d3ed69ec46de35dbe89b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "2ead9b5847f6e9c1e775bab9375d07020568b6438e12ae74e5d0713f8a855cb2",
+            "nativePngSha256": "e616993f425d19ab66480e79128a34d6188d91a7e0eff607138ccaf9c109d9c4",
+            "previousLibraryPngSha256": "2ead9b5847f6e9c1e775bab9375d07020568b6438e12ae74e5d0713f8a855cb2",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "shapes-polyline-01-t.svg",
+        "sourceSha256": "3d636692e459edc01b768cc607b0b1b3fcd06c379616a3771a06ae8dfc8324ca",
+        "nativeInputSha256": "51943e1895758a88aa9615c184e876397e7446549d2aa7d5606f084f5229e260",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "262911d1961bdc29bd065ddc38bc7909f52f5e14856ed3f1fad3f8292c20ef2b",
+            "nativePngSha256": "df80ece6e1639b87fe37a1fba69c6c573ca3802b8c5974e3e9897ccf6f2b930a",
+            "previousLibraryPngSha256": "262911d1961bdc29bd065ddc38bc7909f52f5e14856ed3f1fad3f8292c20ef2b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "7839cc6cb9aad965fa303420e23e4c948b68345f205c82ae023cf31fce906654",
+            "nativePngSha256": "e1c3e7d83be663b71a3c4dec5232cba0cd2c195fafb8deb41fa08cdefe3b1c8b",
+            "previousLibraryPngSha256": "7839cc6cb9aad965fa303420e23e4c948b68345f205c82ae023cf31fce906654",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "snake.svg",
+        "sourceSha256": "52ac4b0c97fdd51ec9a93a618389164f3ebe60bd2cc0caabe781a1e011343072",
+        "nativeInputSha256": "0c64fcffd07cb1a1be46daf41822a9b8ffa59a54a246194686ed65f1bebc7e5a",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "c21463335c53bb48f7309a7929fc77f07e38d53832b19a88e8b25ccd19293d2f",
+            "nativePngSha256": "3227cec10225f313b3adaee4431e8a1e35b1e5212f46b4743fd60700f5b7ee7d",
+            "previousLibraryPngSha256": "05eddfff09c24797aeb38d82580c9656dbdd88c9f2e09ad90435e77ac6417a5c",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "fd5be42b8b8dcd215fc4705ee9e51639799cdef794a64e9ed6c0fef4ae1e775b",
+            "nativePngSha256": "9cce08a9a51e9efc53a552541258eb1805ed51ff8237f2510b226f0d68ac1fd9",
+            "previousLibraryPngSha256": "fd5be42b8b8dcd215fc4705ee9e51639799cdef794a64e9ed6c0fef4ae1e775b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "No format-3 substitution or filtered-context execution was added.",
+    "Frozen Windows DejaVu target/assertion remains unchanged.",
+    "Full qualification for the follow-up source is pending; a8447d202 evidence is retained as withheld promotion.",
+    "Validation timings include startup and overlapping work; no performance improvement is claimed."
+  ]
+}

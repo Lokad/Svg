@@ -1,10 +1,12 @@
 # Shared text feature dispatch
 
-Open review: shaping activation depends on marks/default-ignorables, while
-canonical decomposition and selected font features have independent requirements.
-These controls freeze the resulting gaps before changing that shared model.
+Regression controls for independent scalar normalization, selected font work and
+canonical coverage. The [shared correction](../release-baselines/text-feature-dispatch.json)
+and [complete-context follow-up](../release-baselines/text-feature-dispatch-contexts.json)
+retain source-bound validation; final promotion is still pending. Original inputs,
+programs and native references stay frozen.
 
-| Control | Native authority | Current library outcome |
+| Control | Native authority | Failing-before outcome |
 | --- | --- | --- |
 | [Canonical substitution](ccmp.json) | `AV` matches literal `VV` through one `A → V` ccmp lookup. | Wrong ink: 320/330 differing pixels Windows/Linux; literal control exact. |
 | [Contextual advance](context/capture.json) | A format-2 class context invokes one SinglePos X-advance action; removing the feature changes 500 pixels per host. | `UnsupportedFeature` on an ordinary ASCII run; the font without that lookup is exact. |

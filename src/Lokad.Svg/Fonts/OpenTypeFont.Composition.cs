@@ -119,7 +119,7 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Validates and executes selected ccmp against the current borrowed complete run, in lookup order.</summary>
-    /// <remarks>Unsupported forms may be ignored only when their bounded input coverage excludes every current glyph.
+    /// <remarks>Unsupported forms may be ignored only when their checked input cannot match the current glyph sequence.
     /// Supported definitions retain full validation, including nested actions. Each lookup observes prior substitutions.
     /// Compaction preserves source ownership; the caller owns storage, serialization, cancellation and cleanup on failure.</remarks>
     internal static int ApplyCanonicalSubstitutionsForRun(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, Span<SvgShapingGlyph> glyphs, CancellationToken token)
@@ -149,12 +149,81 @@ internal static partial class OpenTypeFont
                 }
                 int coverage = ReadInputCoverage(data, graph.Range, subtable);
                 ValidateGlyphCoverage(data, graph.Range, coverage, metrics.GlyphCount, token);
-                if (CoverageIntersectsRun(data, coverage, glyphs, token))
+                if (CoverageIntersectsRun(data, coverage, glyphs, token)
+                    && ContextCanAffectRun(data, graph.Range, subtable, flags, glyphs, metrics.GlyphCount, token))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "The run requires an unsupported canonical GSUB lookup.");
             }
             if (flags == 0) ApplyCanonicalLookup(data, graph, lookup, ref glyphs, token);
         }
         return glyphs.Length;
+
+        // Coverage-context execution stays unsupported. Its bounded input can
+        // nevertheless disprove applicability. Defined filtering flags only remove
+        // glyphs, so arbitrary subsequence matching is a safe overestimate.
+        static bool ContextCanAffectRun(ReadOnlySpan<byte> data, OpenTypeTableRange table, GsubSubtable subtable,
+            int flags, ReadOnlySpan<SvgShapingGlyph> glyphs, ushort glyphCount, CancellationToken token)
+        {
+            if (subtable.Type != 6 || ReadUInt16(data, subtable.Offset) != 3 || (flags & 0xE0) != 0) return true;
+            Span<int> coverages = stackalloc int[MaximumContextGlyphs * 3];
+            int cursor = subtable.Offset + 2;
+            int backtrack = ReadSequence(data, table, subtable.Offset, ref cursor, coverages[..MaximumContextGlyphs], glyphCount, token);
+            if (backtrack < 0) return true;
+            int inputs = ReadSequence(data, table, subtable.Offset, ref cursor, coverages.Slice(MaximumContextGlyphs, MaximumContextGlyphs), glyphCount, token);
+            if (inputs < 0) return true;
+            if (inputs == 0) throw InvalidFont("A GSUB context input cannot be empty.");
+            int lookahead = ReadSequence(data, table, subtable.Offset, ref cursor, coverages[(MaximumContextGlyphs * 2)..], glyphCount, token);
+            if (lookahead < 0) return true;
+            // Reverse backtrack into logical order, then compact the three
+            // bounded groups into one pattern. Span copies handle overlap.
+            coverages[..backtrack].Reverse();
+            coverages.Slice(MaximumContextGlyphs, inputs).CopyTo(coverages[backtrack..]);
+            coverages.Slice(MaximumContextGlyphs * 2, lookahead).CopyTo(coverages[(backtrack + inputs)..]);
+            ReadOnlySpan<int> pattern = coverages[..(backtrack + inputs + lookahead)];
+            if (flags != 0)
+            {
+                int matched = 0;
+                foreach (SvgShapingGlyph glyph in glyphs)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (GetGlyphCoverageIndex(data, pattern[matched], glyph.GlyphIndex, token) >= 0 && ++matched == pattern.Length) return true;
+                }
+                return false;
+            }
+            // At most 24 comparisons per start position; filtered matching above
+            // is linear even for a long run with no possible lookahead.
+            for (int start = 0; start <= glyphs.Length - pattern.Length; start++)
+            {
+                int matched = 0;
+                while (matched < pattern.Length)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (GetGlyphCoverageIndex(data, pattern[matched], glyphs[start + matched].GlyphIndex, token) < 0) break;
+                    matched++;
+                }
+                if (matched == pattern.Length) return true;
+            }
+            return false;
+
+            static int ReadSequence(ReadOnlySpan<byte> data, OpenTypeTableRange table, int offset, ref int cursor,
+                Span<int> destination, ushort glyphCount, CancellationToken token)
+            {
+                RequireTableRange(table, cursor, 2, "GSUB coverage context count");
+                int count = ReadUInt16(data, cursor);
+                cursor += 2;
+                RequireTableRange(table, cursor, count * 2, "GSUB coverage context sequence");
+                if (count > destination.Length) return -1;
+                for (int index = 0; index < count; index++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    int coverage = GetTableOffset(table, offset, ReadUInt16(data, cursor + index * 2), 4, "GSUB context coverage");
+                    ValidateGlyphCoverage(data, table, coverage, glyphCount, token);
+                    destination[index] = coverage;
+                }
+                cursor += count * 2;
+                return count;
+            }
+
+        }
 
         static int ReadInputCoverage(ReadOnlySpan<byte> data, OpenTypeTableRange table, GsubSubtable subtable)
         {

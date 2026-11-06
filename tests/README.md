@@ -60,6 +60,10 @@ refusal/partial-cancellation/retry sequence. Strict whole-feature parser checks
 stay independent of complete-run admission. The recipe-only Noto witness remains
 an additional milestone replay, with its exact program rebuilt by the developer
 tool; the ordinary bank stores only the small CC0 programs.
+The [complete-context follow-up](Research/release-baselines/text-feature-dispatch-contexts.json)
+adds eleven direct applicability rows for backtrack/input/lookahead and conservative
+filtering. Potential unsupported matches still reject; no extra rendering matrix
+or format-3 execution is introduced.
 
 [Shadow source demand](Research/release-baselines/shadow-sampling-guard.json) and
 [foreground drawing](Research/release-baselines/shadow-foreground.json) keep eight

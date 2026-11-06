@@ -11,6 +11,38 @@ namespace Lokad.Svg.Tests;
 public sealed partial class OpenTypeFontTests
 {
     public enum TextFeatureProgram { Ccmp, Context, Normalization, Fallback }
+    public enum CanonicalTestGraph { Singles, Multiple, Lookahead, Backtrack, Input }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData(CanonicalTestGraph.Lookahead, "A", false, true)]
+    [InlineData(CanonicalTestGraph.Lookahead, "AV", true, true)]
+    [InlineData(CanonicalTestGraph.Lookahead, "VA", false, true)]
+    [InlineData(CanonicalTestGraph.Lookahead, "ATV", true, true)]
+    [InlineData(CanonicalTestGraph.Backtrack, "VA", true, true)]
+    [InlineData(CanonicalTestGraph.Backtrack, "AV", false, true)]
+    [InlineData(CanonicalTestGraph.Input, "AV", true, true)]
+    [InlineData(CanonicalTestGraph.Input, "A", false, true)]
+    [InlineData(CanonicalTestGraph.Input, "VA", false, true)]
+    [InlineData(CanonicalTestGraph.Lookahead, "ATV", false, false)]
+    [InlineData(CanonicalTestGraph.Lookahead, "AV", true, false)]
+    public async Task Unsupported_coverage_context_requires_its_complete_bounded_input(CanonicalTestGraph graph, string text, bool relevant, bool filtered)
+    {
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CanonicalSequenceProgram(graph, filtered))], CancellationToken.None);
+        SvgPreparedFont font = Assert.Single(fonts.Fonts);
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        if (relevant)
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+                SvgTextShaping.Create(font, 24, text, 0, [], [], [], [], [], null, budget, CancellationToken.None)).ErrorCode);
+        else
+        {
+            using OwnedParserArray<SvgShapingGlyph> shaped = SvgTextShaping.Create(font, 24, text, 0, [], [], [], [], [], null, budget, CancellationToken.None);
+            Assert.Equal(text.Length, shaped.Items.Length);
+            for (int index = 0; index < text.Length; index++)
+                Assert.Equal(OpenTypeFont.GetGlyphIndex(font.Bytes, text[index], font.Metrics, CancellationToken.None), shaped.Items[index].GlyphIndex);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
 
     [Theory]
     [Trait("Layer", "Mechanism")]
@@ -173,7 +205,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData(true)]
     public async Task Canonical_lookup_admission_observes_the_previous_lookups_output(bool unsupported)
     {
-        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(Program(unsupported))], CancellationToken.None);
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CanonicalSequenceProgram(unsupported ? CanonicalTestGraph.Multiple : CanonicalTestGraph.Singles, false))], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(fonts.Fonts);
         RenderBudget budget = new(new HostMemoryBudget(1_000_000));
         if (unsupported)
@@ -186,46 +218,65 @@ public sealed partial class OpenTypeFontTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
-        static byte[] Program(bool unsupported)
+    }
+
+    private static byte[] CanonicalSequenceProgram(CanonicalTestGraph graph, bool filtered)
+    {
+        byte[] bytes = FeatureProgram(TextFeatureProgram.Ccmp);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
+        ushort a = OpenTypeFont.GetGlyphIndex(bytes, 'A', metrics, CancellationToken.None);
+        ushort v = OpenTypeFont.GetGlyphIndex(bytes, 'V', metrics, CancellationToken.None);
+        int table = bytes.Length, entry = 0, count = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(4));
+        for (int index = 0; index < count; index++)
+            if (BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(12 + index * 16)) == 0x47535542) entry = 12 + index * 16;
+        Assert.NotEqual(0, entry);
+        bool context = graph is CanonicalTestGraph.Lookahead or CanonicalTestGraph.Backtrack or CanonicalTestGraph.Input;
+        int length = context ? 110 : 98;
+        Array.Resize(ref bytes, table + length);
+        WriteUInt32(bytes, entry + 8, (uint)table);
+        WriteUInt32(bytes, entry + 12, (uint)length);
+        // One DFLT ccmp feature: A->V, then either V->A or an unsupported
+        // MultipleSubst covering V. Its applicability changes after lookup 0.
+        foreach ((int offset, ushort value) in new (int, ushort)[]
         {
-            byte[] bytes = FeatureProgram(TextFeatureProgram.Ccmp);
-            OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-            ushort a = OpenTypeFont.GetGlyphIndex(bytes, 'A', metrics, CancellationToken.None);
-            ushort v = OpenTypeFont.GetGlyphIndex(bytes, 'V', metrics, CancellationToken.None);
-            int table = bytes.Length, entry = 0, count = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(4));
-            for (int index = 0; index < count; index++)
-                if (BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(12 + index * 16)) == 0x47535542) entry = 12 + index * 16;
-            Assert.NotEqual(0, entry);
-            Array.Resize(ref bytes, table + 98);
-            WriteUInt32(bytes, entry + 8, (uint)table);
-            WriteUInt32(bytes, entry + 12, 98);
-            // One DFLT ccmp feature: A->V, then either V->A or an unsupported
-            // MultipleSubst covering V. Its applicability changes after lookup 0.
+            (0,1),(4,10),(6,30),(8,46),(10,1),(16,8),(18,4),(24,65535),(26,1),
+            (30,1),(36,8),(40,2),(44,1),(46,2),(48,6),(50,26),
+            (52,1),(56,1),(58,8),(60,1),(62,6),(64,1),(66,1),(68,1),(70,1),
+            (72,1),(76,1),(78,8),(80,1),(82,6),(84,65535),(86,1),(88,1),(90,2)
+        }) WriteUInt16(bytes, table + offset, value);
+        WriteUInt32(bytes, table + 12, 0x44464C54);
+        WriteUInt32(bytes, table + 32, 0x63636D70);
+        WriteUInt16(bytes, table + 64, unchecked((ushort)(v - a)));
+        WriteUInt16(bytes, table + 70, a);
+        if (graph == CanonicalTestGraph.Multiple)
+        {
+            WriteUInt16(bytes, table + 72, 2);
+            foreach ((int offset, ushort value) in new (int, ushort)[] { (82,8),(84,1),(86,14),(88,1),(90,1),(92,2),(94,1),(96,1) })
+                WriteUInt16(bytes, table + offset, value);
+            WriteUInt16(bytes, table + 92, v);
+        }
+        else
+        {
+            WriteUInt16(bytes, table + 84, unchecked((ushort)(a - v)));
+            WriteUInt16(bytes, table + 90, v);
+        }
+        if (context)
+        {
+            WriteUInt16(bytes, table + 40, 1);
+            WriteUInt16(bytes, table + 42, 1);
+            WriteUInt16(bytes, table + 72, 6);
+            WriteUInt16(bytes, table + 74, filtered ? (ushort)256 : (ushort)0);
             foreach ((int offset, ushort value) in new (int, ushort)[]
             {
-                (0,1),(4,10),(6,30),(8,46),(10,1),(16,8),(18,4),(24,65535),(26,1),
-                (30,1),(36,8),(40,2),(44,1),(46,2),(48,6),(50,26),
-                (52,1),(56,1),(58,8),(60,1),(62,6),(64,1),(66,1),(68,1),(70,1),
-                (72,1),(76,1),(78,8),(80,1),(82,6),(84,65535),(86,1),(88,1),(90,2)
+                (80,3),(82,0),(84,1),(86,18),(88,1),(90,24),(92,1),(94,0),(96,0),
+                (98,1),(100,1),(102,a),(104,1),(106,1),(108,v)
             }) WriteUInt16(bytes, table + offset, value);
-            WriteUInt32(bytes, table + 12, 0x44464C54);
-            WriteUInt32(bytes, table + 32, 0x63636D70);
-            WriteUInt16(bytes, table + 64, unchecked((ushort)(v - a)));
-            WriteUInt16(bytes, table + 70, a);
-            if (unsupported)
-            {
-                WriteUInt16(bytes, table + 72, 2);
-                foreach ((int offset, ushort value) in new (int, ushort)[] { (82,8),(84,1),(86,14),(88,1),(90,1),(92,2),(94,1),(96,1) })
-                    WriteUInt16(bytes, table + offset, value);
-                WriteUInt16(bytes, table + 92, v);
-            }
-            else
-            {
-                WriteUInt16(bytes, table + 84, unchecked((ushort)(a - v)));
-                WriteUInt16(bytes, table + 90, v);
-            }
-            return bytes;
+            if (graph == CanonicalTestGraph.Backtrack)
+                foreach ((int offset, ushort value) in new (int, ushort)[] { (82,1),(84,24),(86,1),(88,18),(90,0) }) WriteUInt16(bytes, table + offset, value);
+            else if (graph == CanonicalTestGraph.Input)
+                foreach ((int offset, ushort value) in new (int, ushort)[] { (84,2),(88,24),(90,0) }) WriteUInt16(bytes, table + offset, value);
         }
+        return bytes;
     }
 
     private static byte[] FilteredCanonicalProgram()

@@ -50,6 +50,9 @@ contextual positioning, canonical decomposition and fallback work before closure
 The [bounded review](text-feature-dispatch-review.json) keeps their current owners,
 60 healthy capture receipts and selection/execution constraints separate from
 passing renderer qualification.
+The [complete-input refinement](text-feature-dispatch-contexts.json) preserves
+supplied-font contexts whose unsupported lookups cannot match their input;
+potential matches retain the explicit unsupported outcome.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
