@@ -11,23 +11,30 @@ internal static class SvgNativeControlAssertions
         => MatchesCanonicalConversion(bank, identity, expectedBankCases, SvgRenderOptions.Default);
 
     internal static void MatchesCanonicalConversion(string bank, string identity, int expectedBankCases, SvgRenderOptions options)
+        => MatchesCanonicalConversion(bank, "capture.json", identity, expectedBankCases, options);
+
+    internal static void MatchesCanonicalConversion(string bank, string manifestFile, string identity,
+        int expectedBankCases, SvgRenderOptions options)
     {
         string directory = Path.Combine(ResearchCorpus.Root, bank);
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "capture.json")));
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, manifestFile)));
         JsonElement cases = manifest.RootElement.GetProperty("cases");
         Assert.Equal(expectedBankCases, cases.GetArrayLength());
         JsonElement row = cases.EnumerateArray().Single(item => Required(item, "id") == identity);
         if (row.TryGetProperty("outputScale", out JsonElement scale)) Assert.Equal(scale.GetDouble(), options.OutputScale);
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(row, "input")));
-        Assert.Equal(Required(row, "inputSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
+        string inputHash = row.TryGetProperty("inputSha256", out JsonElement hash)
+            ? hash.GetString() ?? throw new InvalidDataException() : Required(row, "sourceSha256");
+        Assert.Equal(inputHash, Convert.ToHexStringLower(SHA256.HashData(input)));
         JsonElement native = row.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
         string digest = Required(native, "referenceSha256");
         Assert.Equal(3, native.GetProperty("captures").GetArrayLength());
         foreach (JsonElement capture in native.GetProperty("captures").EnumerateArray())
         {
             Assert.Equal(digest, Required(capture, "pngSha256"));
-            Assert.Equal("healthy", Required(capture, "startupHealth"));
-            Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
+            JsonElement health = capture.TryGetProperty("health", out JsonElement nested) ? nested : capture;
+            Assert.Equal("healthy", Required(health, "startupHealth"));
+            Assert.True(health.GetProperty("profileCleaned").GetBoolean());
         }
         int width = row.TryGetProperty("width", out JsonElement caseWidth)
             ? caseWidth.GetInt32() : manifest.RootElement.GetProperty("width").GetInt32();

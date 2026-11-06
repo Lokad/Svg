@@ -1,0 +1,330 @@
+{
+  "status": "Open supported color-materialization/alpha-rounding discrepancy, independent of the closed sampling-demand omission.",
+  "priority": "HIGH before broader filter-area closure and benchmark integration.",
+  "input": "stage-controls/color-image.svg",
+  "sourceSha256": "4e0656647135aae990bc8e8fabbf3f4a4a7a7365933695164e526deaf8e8019e",
+  "width": 1024,
+  "height": 640,
+  "scale": 1,
+  "background": "transparent",
+  "fonts": [],
+  "derivation": "Insert an identity saturate color-matrix result before the frozen panel shadow and select it as the shadow input. Original authored geometry and shadow parameters stay unchanged.",
+  "platforms": {
+    "windows": {
+      "reference": "stage-controls/references/windows/color-image.png",
+      "referenceSha256": "190afa280d5ecdc53b6941ec4f17de47c0f70dfcaf1a159237d81a1f9e365f61",
+      "rgbaSha256": "b28ca2510afae43d344df813a890e5219182e9c5b8bc9879111995ec8e313fe7",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "nativeToolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+      "captures": [
+        {
+          "pngSha256": "190afa280d5ecdc53b6941ec4f17de47c0f70dfcaf1a159237d81a1f9e365f61",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "190afa280d5ecdc53b6941ec4f17de47c0f70dfcaf1a159237d81a1f9e365f61",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "190afa280d5ecdc53b6941ec4f17de47c0f70dfcaf1a159237d81a1f9e365f61",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "linux": {
+      "reference": "stage-controls/references/linux/color-image.png",
+      "referenceSha256": "190afa280d5ecdc53b6941ec4f17de47c0f70dfcaf1a159237d81a1f9e365f61",
+      "rgbaSha256": "b28ca2510afae43d344df813a890e5219182e9c5b8bc9879111995ec8e313fe7",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "nativeToolSha256": "04e5aecaaca61bc381d452cbd48cb0d5d4e6a949244c8b19b509228e4db33d88",
+      "captures": [
+        {
+          "pngSha256": "190afa280d5ecdc53b6941ec4f17de47c0f70dfcaf1a159237d81a1f9e365f61",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "190afa280d5ecdc53b6941ec4f17de47c0f70dfcaf1a159237d81a1f9e365f61",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "190afa280d5ecdc53b6941ec4f17de47c0f70dfcaf1a159237d81a1f9e365f61",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "rendererResults": [
+    {
+      "host": "windows",
+      "assetFramework": "net11.0",
+      "runtime": ".NET 11.0.0-rc.3.26522.148",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "changedPixels": 110,
+      "maximumChannelError": 11,
+      "maximumAlphaError": 1
+    },
+    {
+      "host": "linux",
+      "assetFramework": "net11.0",
+      "runtime": ".NET 11.0.0-rc.3.26522.148",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "changedPixels": 110,
+      "maximumChannelError": 11,
+      "maximumAlphaError": 1
+    },
+    {
+      "host": "windows",
+      "assetFramework": "net10.0",
+      "runtime": ".NET 11.0.0-rc.3.26522.148",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "changedPixels": 110,
+      "maximumChannelError": 11,
+      "maximumAlphaError": 1
+    },
+    {
+      "host": "linux",
+      "assetFramework": "net10.0",
+      "runtime": ".NET 11.0.0-rc.3.26522.148",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "changedPixels": 110,
+      "maximumChannelError": 11,
+      "maximumAlphaError": 1
+    }
+  ],
+  "representativeDifferences": [
+    {
+      "x": 23,
+      "y": 12,
+      "actual": [
+        243,
+        243,
+        246,
+        82
+      ],
+      "expected": [
+        243,
+        243,
+        243,
+        83
+      ]
+    },
+    {
+      "x": 24,
+      "y": 12,
+      "actual": [
+        252,
+        252,
+        252,
+        165
+      ],
+      "expected": [
+        250,
+        252,
+        252,
+        166
+      ]
+    },
+    {
+      "x": 25,
+      "y": 12,
+      "actual": [
+        254,
+        254,
+        254,
+        207
+      ],
+      "expected": [
+        253,
+        253,
+        254,
+        208
+      ]
+    },
+    {
+      "x": 998,
+      "y": 12,
+      "actual": [
+        254,
+        254,
+        254,
+        206
+      ],
+      "expected": [
+        253,
+        253,
+        254,
+        207
+      ]
+    },
+    {
+      "x": 999,
+      "y": 12,
+      "actual": [
+        252,
+        252,
+        252,
+        165
+      ],
+      "expected": [
+        250,
+        252,
+        252,
+        166
+      ]
+    },
+    {
+      "x": 1000,
+      "y": 12,
+      "actual": [
+        242,
+        242,
+        246,
+        81
+      ],
+      "expected": [
+        243,
+        243,
+        243,
+        82
+      ]
+    },
+    {
+      "x": 20,
+      "y": 13,
+      "actual": [
+        188,
+        188,
+        200,
+        23
+      ],
+      "expected": [
+        191,
+        191,
+        202,
+        24
+      ]
+    },
+    {
+      "x": 21,
+      "y": 13,
+      "actual": [
+        250,
+        250,
+        250,
+        142
+      ],
+      "expected": [
+        248,
+        250,
+        250,
+        143
+      ]
+    },
+    {
+      "x": 1001,
+      "y": 13,
+      "actual": [
+        255,
+        255,
+        255,
+        240
+      ],
+      "expected": [
+        254,
+        254,
+        254,
+        241
+      ]
+    },
+    {
+      "x": 1002,
+      "y": 13,
+      "actual": [
+        250,
+        250,
+        250,
+        142
+      ],
+      "expected": [
+        248,
+        250,
+        250,
+        143
+      ]
+    },
+    {
+      "x": 1003,
+      "y": 13,
+      "actual": [
+        188,
+        188,
+        200,
+        23
+      ],
+      "expected": [
+        191,
+        191,
+        202,
+        24
+      ]
+    },
+    {
+      "x": 18,
+      "y": 14,
+      "actual": [
+        128,
+        128,
+        149,
+        12
+      ],
+      "expected": [
+        137,
+        137,
+        157,
+        13
+      ]
+    }
+  ],
+  "failingBaseline": {
+    "host": "windows",
+    "framework": "net11.0",
+    "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+    "changedPixels": 111
+  },
+  "evidenceBoundaries": [
+    "Source selection froze before any renderer screening. First Windows target predates the guard fix; independent Linux/Windows triples reproduce the same target pixels.",
+    "No target rewrite, relaxed comparison, source repair or unsupported-feature classification.",
+    "This control remains outside ordinary passing tests until fixed; the unmodified chart and sampling-guard controls are closed separately."
+  ],
+  "nextAction": "Trace deferred color-matrix materialization and source-in/foreground alpha rounding through the existing filter owners. Keep the identity prefix and exact native images; add a direct mechanism witness before changing shared arithmetic."
+}

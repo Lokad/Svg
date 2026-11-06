@@ -500,6 +500,11 @@ internal static class SvgFilterPlayback
                 if (!float.IsFinite(dx) || !float.IsFinite(dy)) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source offset exceeds the coordinate range.");
                 input = new(MathF.Floor(input.Left - dx), MathF.Floor(input.Top - dy), MathF.Ceiling(input.Right - dx), MathF.Ceiling(input.Bottom - dy));
             }
+            // The shadow's internal matrix uses linear sampling even at integer
+            // offsets. Request its guard before expanding the blur input;
+            // explicit SVG offsets retain nearest-neighbor sampling.
+            if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow)
+                input = new(input.Left - 1, input.Top - 1, input.Right + 1, input.Bottom + 1);
             if (primitive.Kind is SvgFilterPrimitiveKind.GaussianBlur or SvgFilterPrimitiveKind.DropShadow)
             {
                 float radiusX = MathF.Ceiling(3f * (float)Math.Min(532, Math.Abs(primitive.SigmaX * map.ScaleX)));

@@ -13,28 +13,32 @@ remain independent. Absent-font controls change every workload; substituting the
 regular program for real italic also changes the wordmark on both hosts. Font
 bindings are appended in memory; source drawing nodes and attributes stay unchanged.
 
-[Screening](screening.json) against the qualified renderer finds exact icons and
-wordmark on both hosts. The chart differs at seven pixels around the rounded
-panel's lower-right corner, with maximum channel/alpha error 21/3. Benchmark
-integration waits for the shared cause fix; sources and references remain frozen.
+[Sampling-guard qualification](../release-baselines/shadow-sampling-guard.json)
+closes the initial chart discrepancy by retaining the linear shadow transform's
+one-pixel input guard. Both runtime assets match all three workloads and twelve
+controls on Windows/Linux. The [initial screening](screening.json), original
+sources and independent references remain frozen.
 
 The [panel controls](panel-controls.json) separate that interaction:
 
 | Control | Current result on both hosts | Responsibility |
 | --- | --- | --- |
-| panel-shadow | Seven differing pixels | Translated rounded source with nonzero blur |
+| panel-shadow | Exact | Translated rounded source with nonzero blur |
 | panel-source | Exact | Same rounded geometry without its filter |
 | sharp-shadow | Exact | Same shadow with sharp source corners |
 | origin-shadow | Exact | Same rounded shadow with the source at the origin |
 | zero-shadow | Exact | Same translated rounded source with zero blur |
 
-Each control retains three independent healthy captures per host. The finding
-does not identify the responsible production stage. Inspect bitmap placement,
-retained conic construction and filter sampling/alpha together; preserve these
-positive boundaries and the original chart while correcting a shared cause.
+Each control retains three independent healthy captures per host. Direct demand
+mechanisms and one representative ownership contract complement canonical native
+rendering; expanded graphs retain their separate nearest-offset behavior.
 
-[Stage diagnostics](stage-controls.json) narrow the failure further. A transparent
-shadow retains six source-edge alpha differences; independent blur controls match.
-The expanded SVG shadow graph also matches, while its native result differs from
-the fused shadow at seven pixels. Keep both target identities. Three selected
+[Stage diagnostics](stage-controls.json) retain the failing-before transparent
+shadow and independent blur/expanded-graph boundaries. Fused and expanded native
+shadows differ at seven pixels; both now match their own targets. Three selected
 diagnostics have native stability triples; four others remain exploratory.
+
+The [color-materialization control](color-materialization.json) remains open:
+an identity color-matrix prefix exposes 110 differing pixels on both hosts and
+both runtime assets. Its independent targets have healthy stability triples.
+Broader filter closure and benchmark integration wait for this separate finding.

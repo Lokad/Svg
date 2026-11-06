@@ -1,0 +1,399 @@
+{
+  "status": "Sampling-demand finding closed by direct failing-before mechanisms, native regressions and affected integration on both hosts and runtime targets. Full milestone CI, package consumers and original SVGWeb replay remain pending; the separately witnessed color-matrix materialization residual stays open.",
+  "sourceBaseCommit": "3b69d783e68d03a8d42c6fcde492f2694400ad63",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs": "32364767c877d12cfe85e7c374b14d7f289c816e12c13403cb10ae1d3d5a7dce",
+    "tests/Lokad.Svg.Tests/SvgFilterSourceHintTests.cs": "d3b27268adef7dbfb46534ca1d33625b540552903b164f430d92d687735ef0e5",
+    "tests/Lokad.Svg.Tests/SvgShadowSamplingOwnershipTests.cs": "fb122bdd3a87c26985f4641b0190d3c8092912fd30afc866a978284ecbf19447",
+    "tests/Lokad.Svg.VisualTests/SvgShadowSamplingReferenceTests.cs": "4a5ccdcd9ec9df1982a9272dabedb887fe92ef6d56e96c8dd2d6fb1cbc1626c3",
+    "tests/Lokad.Svg.VisualTests/SvgNativeControlAssertions.cs": "74bf865fa8348da2e7a386c798a24e2b243f0eccc6f1c3c631fc20786caab107"
+  },
+  "change": "Retain the one-pixel input sampling guard of the fused shadow internal linear matrix transform before back-propagating its Gaussian request. Integer translations and zero deviations keep this guard. Explicit SVG nearest-neighbor offsets, result extents and object bounds keep their existing rules. No new source callback, bitmap owner, scene representation, coordinate framework, renderer or public API.",
+  "primarySource": "https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/effects/imagefilters/SkMatrixTransformImageFilter.cpp",
+  "shadowCompositionSource": "https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/effects/imagefilters/SkDropShadowImageFilter.cpp",
+  "closedFindings": [
+    "The frozen chart and isolated translated rounded shadow match all native pixels, replacing the original seven-pixel discrepancy without changing inputs or targets.",
+    "The transparent shadow retains its native source edge, replacing the six alpha discrepancies.",
+    "All five original positive/interaction controls and seven stage diagnostics remain exact; fused and expanded native graphs retain their seven-pixel difference."
+  ],
+  "mechanisms": {
+    "cases": 6,
+    "coverage": [
+      "Integer and fractional shadow translations",
+      "Zero-deviation shadow sampling",
+      "SourceAlpha and source-alias demand",
+      "Explicit nearest-offset counterpart"
+    ]
+  },
+  "ownership": {
+    "cases": 1,
+    "scope": "One representative translated shadow uses the existing parser/raster refusal, cancellation, cleanup, borrowed-input and retry contract helper. No API matrix repeated across rendering fixtures."
+  },
+  "rendering": {
+    "cases": 8,
+    "scope": "Canonical conversion only: five panel boundaries and three independently stable stage controls. All existing source/options/hash/reference identities and native triples remain frozen."
+  },
+  "failingBefore": [
+    {
+      "project": "Lokad.Svg.Tests",
+      "host": "windows",
+      "framework": "net11.0",
+      "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+      "executed": 6,
+      "passed": 1,
+      "failed": 5,
+      "trxSha256": "d642e47c83cff672c762563367a4f4b0a9a8374172073765cdf713da07db1e15",
+      "failures": [
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterSourceHintTests.Source_demand_keeps_the_linear_shadow_guard_separate_from_nearest_offsets(graph: \"<feOffset dx='0'/><feDropShadow dx='0' dy='3' stdD\"\u00b7\u00b7\u00b7, left: 752, top: 495, right: 1028, bottom: 647)",
+          "message": "Assert.Equal() Failure: Values differ\r\nExpected: SvgPaintBounds { Left = 752, Top = 495, Right = 1028, Bottom = 647 }\r\nActual:   SvgPaintBounds { Left = 753, Top = 496, Right = 1027, Bottom = 646 }"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterSourceHintTests.Source_demand_keeps_the_linear_shadow_guard_separate_from_nearest_offsets(graph: \"<feDropShadow dx='0' dy='0' stdDeviation='0'/>\", left: 761, top: 507, right: 1019, bottom: 641)",
+          "message": "Assert.Equal() Failure: Values differ\r\nExpected: SvgPaintBounds { Left = 761, Top = 507, Right = 1019, Bottom = 641 }\r\nActual:   SvgPaintBounds { Left = 762, Top = 508, Right = 1018, Bottom = 640 }"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterSourceHintTests.Source_demand_keeps_the_linear_shadow_guard_separate_from_nearest_offsets(graph: \"<feDropShadow dx='0' dy='3' stdDeviation='3'/>\", left: 752, top: 495, right: 1028, bottom: 647)",
+          "message": "Assert.Equal() Failure: Values differ\r\nExpected: SvgPaintBounds { Left = 752, Top = 495, Right = 1028, Bottom = 647 }\r\nActual:   SvgPaintBounds { Left = 753, Top = 496, Right = 1027, Bottom = 646 }"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterSourceHintTests.Source_demand_keeps_the_linear_shadow_guard_separate_from_nearest_offsets(graph: \"<feDropShadow in='SourceAlpha' dx='0' dy='3' stdDe\"\u00b7\u00b7\u00b7, left: 752, top: 495, right: 1028, bottom: 647)",
+          "message": "Assert.Equal() Failure: Values differ\r\nExpected: SvgPaintBounds { Left = 752, Top = 495, Right = 1028, Bottom = 647 }\r\nActual:   SvgPaintBounds { Left = 753, Top = 496, Right = 1027, Bottom = 646 }"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterSourceHintTests.Source_demand_keeps_the_linear_shadow_guard_separate_from_nearest_offsets(graph: \"<feDropShadow dx='-.5' dy='2.25' stdDeviation='3'/\"\u00b7\u00b7\u00b7, left: 752, top: 495, right: 1029, bottom: 648)",
+          "message": "Assert.Equal() Failure: Values differ\r\nExpected: SvgPaintBounds { Left = 752, Top = 495, Right = 1029, Bottom = 648 }\r\nActual:   SvgPaintBounds { Left = 753, Top = 496, Right = 1028, Bottom = 647 }"
+        }
+      ]
+    },
+    {
+      "project": "Lokad.Svg.VisualTests",
+      "host": "windows",
+      "framework": "net11.0",
+      "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+      "executed": 8,
+      "passed": 6,
+      "failed": 2,
+      "trxSha256": "eb10b46faee6892f4685051c359594007a72a73df7cfd24377adbfe0e6d477c4",
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgShadowSamplingReferenceTests.Source_capture_respects_shadow_sampling_without_changing_expanded_graphs(manifest: \"panel-controls.json\", identity: \"panel-shadow\", expectedCases: 5)",
+          "message": "{\"DimensionsMatch\":true,\"ChangedPixelCount\":7,\"MaximumChannelError\":21,\"MeanAbsoluteError\":3.5858154296875E-05,\"RootMeanSquareError\":0.02130607834889788,\"MaximumAlphaError\":3,\"AlphaChangedPixelCount\":7,\"MinimumMismatchX\":1006,\"MinimumMismatchY\":621,\"MaximumMismatchX\":1010,\"MaximumMismatchY\":623,\"IsExact\":false}"
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgShadowSamplingReferenceTests.Source_capture_respects_shadow_sampling_without_changing_expanded_graphs(manifest: \"stage-controls.json\", identity: \"transparent-shadow\", expectedCases: 7)",
+          "message": "{\"DimensionsMatch\":true,\"ChangedPixelCount\":6,\"MaximumChannelError\":4,\"MeanAbsoluteError\":3.814697265625E-06,\"RootMeanSquareError\":0.0030257682392245445,\"MaximumAlphaError\":4,\"AlphaChangedPixelCount\":6,\"MinimumMismatchX\":1006,\"MinimumMismatchY\":621,\"MaximumMismatchX\":1009,\"MaximumMismatchY\":623,\"IsExact\":false}"
+        }
+      ]
+    }
+  ],
+  "focused": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "testAssemblySha256": "15226ceaf3ccb8e96fe0c3031d7bdbea592f999955caff770fcddf7d58c2a5d0",
+      "selection": "FullyQualifiedName~Source_demand_keeps_the_linear_shadow_guard|FullyQualifiedName~SvgShadowSamplingOwnershipTests",
+      "exitCode": 0,
+      "seconds": 8.569517000112683,
+      "counters": {
+        "executed": "7",
+        "passed": "7",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "testAssemblySha256": "15226ceaf3ccb8e96fe0c3031d7bdbea592f999955caff770fcddf7d58c2a5d0",
+      "selection": "FullyQualifiedName~Source_demand_keeps_the_linear_shadow_guard|FullyQualifiedName~SvgShadowSamplingOwnershipTests",
+      "exitCode": 0,
+      "seconds": 13.732154699973762,
+      "counters": {
+        "executed": "7",
+        "passed": "7",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "testAssemblySha256": "dfe795c641b1cc9c69249ceb363e0b7f995d89c948b02d6e59c4a29c6c75e595",
+      "selection": "FullyQualifiedName~SvgShadowSamplingReferenceTests",
+      "exitCode": 0,
+      "seconds": 11.098339700140059,
+      "counters": {
+        "executed": "8",
+        "passed": "8",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "testAssemblySha256": "dfe795c641b1cc9c69249ceb363e0b7f995d89c948b02d6e59c4a29c6c75e595",
+      "selection": "FullyQualifiedName~SvgShadowSamplingReferenceTests",
+      "exitCode": 0,
+      "seconds": 11.257515599951148,
+      "counters": {
+        "executed": "8",
+        "passed": "8",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "testAssemblySha256": "d469d34a7aeed6f0c444887b15755278b8c57147adb36af5cda1e621ef79e238",
+      "selection": "FullyQualifiedName~Source_demand_keeps_the_linear_shadow_guard|FullyQualifiedName~SvgShadowSamplingOwnershipTests",
+      "exitCode": 0,
+      "seconds": 10.566858500009403,
+      "counters": {
+        "executed": "7",
+        "passed": "7",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "testAssemblySha256": "d469d34a7aeed6f0c444887b15755278b8c57147adb36af5cda1e621ef79e238",
+      "selection": "FullyQualifiedName~Source_demand_keeps_the_linear_shadow_guard|FullyQualifiedName~SvgShadowSamplingOwnershipTests",
+      "exitCode": 0,
+      "seconds": 11.241956100100651,
+      "counters": {
+        "executed": "7",
+        "passed": "7",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "testAssemblySha256": "4e4e4bf175406335911ff5900a35332fd8319cd576d3e8bda6eb2ea62af1b929",
+      "selection": "FullyQualifiedName~SvgShadowSamplingReferenceTests",
+      "exitCode": 0,
+      "seconds": 12.011674100067466,
+      "counters": {
+        "executed": "8",
+        "passed": "8",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "testAssemblySha256": "4e4e4bf175406335911ff5900a35332fd8319cd576d3e8bda6eb2ea62af1b929",
+      "selection": "FullyQualifiedName~SvgShadowSamplingReferenceTests",
+      "exitCode": 0,
+      "seconds": 13.89276249986142,
+      "counters": {
+        "executed": "8",
+        "passed": "8",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affected": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "testAssemblySha256": "15226ceaf3ccb8e96fe0c3031d7bdbea592f999955caff770fcddf7d58c2a5d0",
+      "selection": "FullyQualifiedName~Filter|FullyQualifiedName~Shadow|FullyQualifiedName~RoundedRect|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 14.501948500052094,
+      "counters": {
+        "executed": "2148",
+        "passed": "2148",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "testAssemblySha256": "15226ceaf3ccb8e96fe0c3031d7bdbea592f999955caff770fcddf7d58c2a5d0",
+      "selection": "FullyQualifiedName~Filter|FullyQualifiedName~Shadow|FullyQualifiedName~RoundedRect|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 16.472708999877796,
+      "counters": {
+        "executed": "2148",
+        "passed": "2148",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "testAssemblySha256": "dfe795c641b1cc9c69249ceb363e0b7f995d89c948b02d6e59c4a29c6c75e595",
+      "selection": "FullyQualifiedName~Filter|FullyQualifiedName~Shadow|FullyQualifiedName~RoundedRect|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~filter|DisplayName~shadow))",
+      "exitCode": 0,
+      "seconds": 89.6201224999968,
+      "counters": {
+        "executed": "23294",
+        "passed": "23294",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+      "testAssemblySha256": "dfe795c641b1cc9c69249ceb363e0b7f995d89c948b02d6e59c4a29c6c75e595",
+      "selection": "FullyQualifiedName~Filter|FullyQualifiedName~Shadow|FullyQualifiedName~RoundedRect|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~filter|DisplayName~shadow))",
+      "exitCode": 0,
+      "seconds": 89.22110529989004,
+      "counters": {
+        "executed": "23294",
+        "passed": "23294",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "testAssemblySha256": "d469d34a7aeed6f0c444887b15755278b8c57147adb36af5cda1e621ef79e238",
+      "selection": "FullyQualifiedName~Filter|FullyQualifiedName~Shadow|FullyQualifiedName~RoundedRect|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 14.695410800166428,
+      "counters": {
+        "executed": "2148",
+        "passed": "2148",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "testAssemblySha256": "d469d34a7aeed6f0c444887b15755278b8c57147adb36af5cda1e621ef79e238",
+      "selection": "FullyQualifiedName~Filter|FullyQualifiedName~Shadow|FullyQualifiedName~RoundedRect|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 15.351850000210106,
+      "counters": {
+        "executed": "2148",
+        "passed": "2148",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "testAssemblySha256": "4e4e4bf175406335911ff5900a35332fd8319cd576d3e8bda6eb2ea62af1b929",
+      "selection": "FullyQualifiedName~Filter|FullyQualifiedName~Shadow|FullyQualifiedName~RoundedRect|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~filter|DisplayName~shadow))",
+      "exitCode": 0,
+      "seconds": 46.96808010013774,
+      "counters": {
+        "executed": "23294",
+        "passed": "23294",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+      "testAssemblySha256": "4e4e4bf175406335911ff5900a35332fd8319cd576d3e8bda6eb2ea62af1b929",
+      "selection": "FullyQualifiedName~Filter|FullyQualifiedName~Shadow|FullyQualifiedName~RoundedRect|FullyQualifiedName~FixtureManifestTests|(FullyQualifiedName~SvgPaintInputReferenceTests&(DisplayName~filter|DisplayName~shadow))",
+      "exitCode": 0,
+      "seconds": 59.51698429998942,
+      "counters": {
+        "executed": "23294",
+        "passed": "23294",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affectedExecutions": 101768,
+  "workloads": {
+    "comparisons": 60,
+    "sourceManifest": "../benchmark-workloads/manifest.json",
+    "panelControls": "../benchmark-workloads/panel-controls.json",
+    "stageControls": "../benchmark-workloads/stage-controls.json",
+    "hosts": [
+      {
+        "host": "windows",
+        "assetFramework": "net11.0",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+        "exactCases": 15
+      },
+      {
+        "host": "linux",
+        "assetFramework": "net11.0",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "librarySha256": "ff8523f062f92caf2ff144c2f1e8a81113b0191d0127f316d98d599974406e47",
+        "exactCases": 15
+      },
+      {
+        "host": "windows",
+        "assetFramework": "net10.0",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+        "exactCases": 15
+      },
+      {
+        "host": "linux",
+        "assetFramework": "net10.0",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "librarySha256": "ec1a2364c8ffda94bf045820848e2d5ced60ed534221f8392ff4eeba921623fb",
+        "exactCases": 15
+      }
+    ],
+    "fontScope": "Original regular and real-italic Noto bytes and catalog bindings; prepared through the existing installed-package comparison consumer. No source/font copy or fallback discovery."
+  },
+  "qualificationLimits": [
+    "The managed workload consumer runs on .NET 11 with each target asset; the core/visual gates separately run on each actual target runtime.",
+    "Existing historical sources, native references, comparison exactness and old acceptance maps remain unchanged.",
+    "Three stage controls have native stability triples; four exploratory controls still retain one capture per host and are not promoted tests.",
+    "No timing/throughput result, new full-suite result or package qualification is claimed here."
+  ],
+  "nextActions": [
+    "Bind committed-source packages and full Windows/Linux milestone qualification.",
+    "Preserve and fix the independent color-matrix prefix residual before calling the broader filter area closed.",
+    "Integrate larger authored benchmark workloads only after the coherent correctness milestone."
+  ]
+}

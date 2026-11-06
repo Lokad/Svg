@@ -25,6 +25,11 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+[Shadow source demand](Research/release-baselines/shadow-sampling-guard.json) keeps
+six direct sampling-boundary cases, one refusal/cancellation/retry contract and
+eight canonical native renderings. Integer linear shadows retain their sampling
+guard; explicit nearest offsets and expanded graphs keep distinct targets.
+
 [Comparison/PNG mechanisms](Lokad.Svg.VisualTests/PixelComparerTests.cs) retain
 26 exact channel, alpha, dimension, chunk and storage-boundary cases. The separate
 [basic rendering class](Lokad.Svg.VisualTests/SvgBasicRenderingTests.cs) retains

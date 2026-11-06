@@ -1,0 +1,8 @@
+{
+  "inputSha256": "bdbf979d81215b7b0a24ad1d3be4cc566b025040569f0c79dbab9441747dc4e0",
+  "rgbaSha256": {
+    "windows": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe",
+    "linux": "1c760c261f56aa529cc50c661480adc0b52cc8e38276b19d1537179d6f25bdbe"
+  },
+  "sourceEvidence": "panel-controls.json"
+}

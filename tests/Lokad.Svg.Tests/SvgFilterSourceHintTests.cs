@@ -7,6 +7,34 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgFilterSourceHintTests
 {
+    [Theory]
+    [InlineData("<feDropShadow dx='0' dy='3' stdDeviation='3'/>", 752, 495, 1028, 647)]
+    [InlineData("<feDropShadow dx='-.5' dy='2.25' stdDeviation='3'/>", 752, 495, 1029, 648)]
+    [InlineData("<feDropShadow dx='0' dy='0' stdDeviation='0'/>", 761, 507, 1019, 641)]
+    [InlineData("<feDropShadow in='SourceAlpha' dx='0' dy='3' stdDeviation='3'/>", 752, 495, 1028, 647)]
+    [InlineData("<feOffset dx='0'/><feDropShadow dx='0' dy='3' stdDeviation='3'/>", 752, 495, 1028, 647)]
+    [InlineData("<feGaussianBlur stdDeviation='3'/><feOffset dy='3'/>", 753, 496, 1027, 646)]
+    public void Source_demand_keeps_the_linear_shadow_guard_separate_from_nearest_offsets(
+        string graph, float left, float top, float right, float bottom)
+    {
+        // Pinned SkMatrixTransformImageFilter::requiredInput requests a one-pixel
+        // bilinear guard even for integer translations. DropShadow uses linear
+        // sampling; the explicit SVG offset uses nearest-neighbor sampling.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>"
+            + "<defs><filter id='f'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/></svg>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.FilterResources ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(1200, 800), new(0, 0, 1200, 800));
+            SvgPaintBounds required = SvgFilterPlayback.RequiredSourceBounds(resource, new(1, 1), context,
+                new(762, 508, 1018, 640), CancellationToken.None);
+            Assert.Equal(new SvgPaintBounds(left, top, right, bottom), required);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Cropped_source_storage_does_not_erase_a_native_viewport_fringe()
     {
