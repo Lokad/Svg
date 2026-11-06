@@ -369,7 +369,11 @@ exclusions. Rendering fixtures do not each need all twelve API forms.
 Shared data factories can have `MemberData` consumers in other partial class
 files; include those consumers when selecting affected checks.
 Filter and clip integration includes `SvgSymbolInstanceReferenceTests`: its
-shared bank contains crop, rescaling and nested-effect regressions.
+shared bank contains crop, rescaling and nested-effect regressions. Select
+`Layer=Rendering` for its 1,625 native-image cases and `Layer=Contract` for four
+storage/refusal/cancellation/retry checks. A class fixture loads each requested
+family manifest once and releases it after all borrowers finish; source/reference
+hashes and image assertions still execute per case.
 
 [Deferred clip coverage](Research/clip-definition-sources/README.md) separates
 ordered child/range/unit and intersection mechanisms, five selected ownership

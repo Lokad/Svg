@@ -21,6 +21,12 @@ The [fixture manifest partition](fixture-manifest-responsibilities.json) preserv
 all 1,487 inputs and 62 original assertion calls. Two collection integrity checks,
 1,482 exact rendering rows and five rejection rows replace the mixed batch;
 individual image selection avoids rendering unrelated fixtures.
+The [symbol/document manifest owner](symbol-manifest-lifetime.json) keeps all
+1,625 native rendering cases and four ownership contracts. Its class fixture
+parses 84 manifests once, replacing 1,625 execution-time reads/parses and linear
+ID searches. Assertions, sources, references and known differences remain.
+Three serial Windows checks measured 20.70/16.16 s median before/after, including
+discovery/startup. Full-suite and renderer performance remain unmeasured.
 The [execution-context contracts](analytic-probe-context.json) keep all twelve
 original probe cases and add four for analytic paint. Nested restoration, awaited
 isolation, inherited child lifetime and suppressed flow run directly; rendering

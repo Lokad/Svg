@@ -1,0 +1,156 @@
+{
+  "status": "All1,629 original cases retained and separately classified:1,625 Rendering and4 Contract. Repeated manifest parsing/index scans move to a class-lifetime owner. Four host/runtime checks pass against unchanged qualified renderer assets; observed focused validation time decreases.",
+  "sourceBaseCommit": "a28737f9235a89fb94d81bfb8e00a67cf7c07f01",
+  "runtimeQualification": "shadow-foreground.json",
+  "source": {
+    "file": "../../Lokad.Svg.VisualTests/SvgSymbolInstanceReferenceTests.cs",
+    "beforeLfSha256": "b7fde7802d1e3453949136e6163099cbed7edb3835d3aaaf1baa1bb175eb936f",
+    "afterLfSha256": "6e271227517a4cc97a672964d777306f9fe6f34c026932a0024d15ad9931f2f8",
+    "existingRenderingAssertionsAndFourOwnershipBodiesUnchanged": true,
+    "providerMembershipAndCaseNamesUnchanged": true,
+    "implementation": "One lazy class fixture owns each requested JsonDocument and ordinal ID index. xUnit serializes callers; disposal follows all borrowers and releases every document. Filtered runs read only selected families. Source/reference bytes and rendering state are not cached.",
+    "tradeoff": "Loaded metadata stays retained until the class completes rather than one case at a time. The current complete bank owns84 manifest documents,1,359,048 raw bytes plus parsed/index storage; no process-global cache or new test framework."
+  },
+  "coverage": {
+    "renderingCases": 1625,
+    "ownershipCases": 4,
+    "manifestFamilies": 84,
+    "originalCaseNamesLfSha256": "2bc732987c740bd3158b63d52c160c1f8cd3c465d7cdbe20842aa48294ff74c7",
+    "allFourHostTargetCaseSetsMatchOriginal": true,
+    "retainedChecks": "Manifest counts/schema/native capture health/license/source/reference hashes and exact native comparisons remain per original case. Known differences, canvas/viewBox capture projections and error cases retain their assertions. All four refusal/cancellation/retry sweep bodies remain byte-exact.",
+    "sourceTargetToleranceOrApiMatrixChanges": 0
+  },
+  "metadata": {
+    "beforeReadsAndParsesPerRenderingSelection": 1625,
+    "afterReadsAndParsesPerRenderingSelection": 84,
+    "beforeRawBytesParsed": 84164864,
+    "afterRawBytesParsed": 1359048,
+    "discoveryUnchanged": "MemberData still reads each manifest once per provider enumeration; these execution counts exclude discovery.",
+    "manifestIdentityMapSha256": "b23453c75dd9254738a7b92db91ce765aff8db06a7b14cc9eaa17d513b9a7d63"
+  },
+  "measurement": {
+    "protocol": "Three fresh serial Windows .NET11 VSTest processes before, then three after, same1,625 rendering cases and qualified renderer DLL. Wall time includes whole-assembly discovery/startup/TRX and excludes build. No other tests/builds overlapped these samples.",
+    "beforeSeconds": [
+      30.22105829999782,
+      18.227318400051445,
+      20.695723799988627
+    ],
+    "afterSeconds": [
+      16.536385500105098,
+      16.16071720002219,
+      15.64070550003089
+    ],
+    "beforeMedianSeconds": 20.695723799988627,
+    "afterMedianSeconds": 16.16071720002219,
+    "limits": "Sequential before/after observations include warm filesystem/process effects; no controlled whole-suite speedup or renderer performance claim. The removed repeated reads/parses and index scans are established directly from source and unchanged manifest identities."
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+      "testAssemblySha256": "21a1bfb6d35f3f714f9ccc2c57f4d5adcb8fb6963631eced5ad4011038f93ef3",
+      "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests",
+      "exitCode": 0,
+      "seconds": 17.735514300176874,
+      "counters": {
+        "executed": "1629",
+        "passed": "1629",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+      "testAssemblySha256": "21a1bfb6d35f3f714f9ccc2c57f4d5adcb8fb6963631eced5ad4011038f93ef3",
+      "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests",
+      "exitCode": 0,
+      "seconds": 28.495885599870235,
+      "counters": {
+        "executed": "1629",
+        "passed": "1629",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077",
+      "testAssemblySha256": "3f8a4143e315f1644ada190f441aaf9d089f6bb35a417d615faf44e2fd59d8b0",
+      "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests",
+      "exitCode": 0,
+      "seconds": 17.13046190002933,
+      "counters": {
+        "executed": "1629",
+        "passed": "1629",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077",
+      "testAssemblySha256": "3f8a4143e315f1644ada190f441aaf9d089f6bb35a417d615faf44e2fd59d8b0",
+      "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests",
+      "exitCode": 0,
+      "seconds": 26.42975900019519,
+      "counters": {
+        "executed": "1629",
+        "passed": "1629",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "inventory": {
+    "compiledMethods": 5158,
+    "sourceFiles": 742,
+    "unchangedOwnershipBodies": [
+      "Shared_maps_and_clip_unions_release_sources_and_rasters_on_denial_cancellation_and_retry",
+      "Primitive_shader_strokes_release_sources_and_rasters_on_denial_cancellation_and_retry",
+      "Stroke_style_exits_release_sources_and_rasters_on_denial_cancellation_and_retry",
+      "Shared_map_exits_release_sources_and_rasters_on_denial_cancellation_and_retry"
+    ],
+    "projects": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1138,
+        "Mechanism": 1782,
+        "Contract": 710,
+        "Rendering": 1065,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 212,
+        "Contract": 39,
+        "Integrity": 27,
+        "Rendering": 166,
+        "Mechanism": 18
+      }
+    }
+  },
+  "inherited": "Production source/packages, text layout, references, exactness and CI selections remain unchanged. Full runtime/package/W1 qualification retains its source binding and separate frozen Windows DejaVu discrepancy. This test-only change uses focused four-context qualification; no new full CI/package run is claimed.",
+  "focusedContractSelection": {
+    "host": "windows",
+    "kind": "visual",
+    "framework": "net11.0",
+    "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+    "testAssemblySha256": "21a1bfb6d35f3f714f9ccc2c57f4d5adcb8fb6963631eced5ad4011038f93ef3",
+    "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests&Layer=Contract",
+    "exitCode": 0,
+    "seconds": 8.818372500129044,
+    "counters": {
+      "executed": "4",
+      "passed": "4",
+      "failed": "0"
+    },
+    "failures": []
+  }
+}
