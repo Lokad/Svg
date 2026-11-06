@@ -1,0 +1,142 @@
+{
+  "status": "Open shared shaping milestone: four connected gaps independently reproduced; implementation/qualification pending.",
+  "sourceBaseline": "f2a15ffb1dfc2499d2c63044c25c7586004b86d6",
+  "evidenceBaseCommit": "20a02cefc9973eaeb2d494abddd2d3ef88806bfa",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceOwners": {
+    "src/Lokad.Svg/Fonts/SvgTextShaping.cs": "093b88889609809282e898afd1b7ece50a09e0230b3a052edf464da326f43664",
+    "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs": "fc712cc2aa282203bdbb16bfc75b72db523ee649214320b4fc33acf8c5853e4b",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.cs": "7345383864ea0201e791dcba4338c91535f9d78ebd01b274e269ce4d11c7e0df",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.Shaping.cs": "0592d1d55813decef9d4b89c6141d68d1c550731be476e4ba30ea3014270a622",
+    "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs": "718c4f7f5bc38fb958c0f0c92fd9f900194e7536d5e89953e082e15439ba16b2",
+    "src/Lokad.Svg/Fonts/SvgFontSnapshot.Coverage.cs": "f1629a2401ac483de0c4fb3c700c2afdb916b84d35af4cb45e1abaa76922ac0b",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Composition.cs": "bd2abca17913bc4276f00c9f2a5a4ef690aebfca6417ac3b0ae7d43e309e0330",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.ContextAdvances.cs": "1e72278f70be9e66e1068797ebd72cde28faf98aacf72a338a643269203adf9b",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Gpos.cs": "aed98512dcb52f50e2a12a28ca2ecf0a5b7372e2e20ee4e5c81a9b6af350e3c3",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Layout.cs": "48aad048197a8a1ee461035e08b9d7730cf3c4471aa0e0e3969a9018cd1fbbc8"
+  },
+  "librarySha256": "46a98bdb761a93ede686068f69ea0361ca00351b1f8f0ce8cd0b16bb258dbea1",
+  "findings": [
+    {
+      "id": "selected-ccmp",
+      "evidence": "../text-feature-dispatch/ccmp.json",
+      "before": "Selected unmarked ccmp substitution skipped.",
+      "mismatchPixels": {
+        "windows": 320,
+        "linux": 330
+      }
+    },
+    {
+      "id": "contextual-kern",
+      "evidence": "../text-feature-dispatch/context/capture.json",
+      "before": "Supported format-2 class context rejected on ordinary ASCII.",
+      "error": "UnsupportedFeature",
+      "nativeFeatureEffectPixels": {
+        "windows": 500,
+        "linux": 500
+      }
+    },
+    {
+      "id": "canonical-components",
+      "evidence": "../text-feature-dispatch/normalization/capture.json",
+      "additionalEvidence": "../text-feature-dispatch/normalization-noto/capture.json",
+      "before": "Precomposed scalar rejected despite covered canonical components.",
+      "error": "UnresolvedResource",
+      "nativeSourceVsDecomposedControl": 0
+    },
+    {
+      "id": "canonical-fallback",
+      "evidence": "../text-feature-dispatch/normalization-fallback/capture.json",
+      "before": "Cmap-only coverage acquires/selects a later face instead of the primary covered canonical form.",
+      "mismatchPixels": {
+        "windows": 643,
+        "linux": 575
+      },
+      "beforeProgramRequests": 2,
+      "requiredProgramRequests": 1
+    }
+  ],
+  "independentAuthority": {
+    "browserPins": "../../../../tools/chrome-for-testing.json and chrome-for-testing.linux64.json relative to case folders",
+    "healthyCaptures": 60,
+    "roleHostCaptures": 3,
+    "referenceChanges": 0,
+    "allSvgInputsAuthored": true,
+    "hostedBodiesRetained": 0
+  },
+  "representationReview": {
+    "dispatch": "Global and partition-level mark/default-ignorable predicates currently gate canonical substitutions and contextual advances.",
+    "normalization": "Pinned decomposition/recomposition primitives already exist; an unmarked precomposed scalar can bypass them.",
+    "coverage": "Both acquisition remaining-scalar tracking and per-scalar prepared-face selection consult direct cmap coverage only.",
+    "contracts": "Direct scalar GPOS validation intentionally rejects contextual glyphs; complete run validation assumes selected contexts have executed.",
+    "ownership": "Reuse existing budgeted glyph/cluster storage, preparation/snapshot leases and source partitions; no new cache, resolver or public API."
+  },
+  "boundedProgramInventory": "../text-feature-dispatch/font-feature-inventory.json",
+  "constraints": [
+    "Preserve exact current targets, admitted text placement, source owners and unsupported matched forms.",
+    "Do not blindly validate/activate every selected ccmp graph for every run: admitted programs combine unsupported irrelevant forms with ASCII-relevant ligatures.",
+    "First-glyph coverage alone cannot decide whether a ligature/context changes a run.",
+    "Align canonical coverage in acquisition, face selection and layout; preserve one-file versus coverage-catalog ownership paths.",
+    "Separate scalar normalization requirements from selected font work; retain no-work cmap paths without skipping required shaping.",
+    "Retain low-level parser/metadata guards; do not conflate their implementor contract with a complete shaped run."
+  ],
+  "staleMaterial": "OpenTypeFont.Gpos.ParseGposPairTable remarks still describe contextual positioning as never implemented and marks as outside the text subset; qualify these as raw scalar guards when revising the shared execution contract.",
+  "next": "Define shared selection/execution validation boundaries, then implement the combined correction with direct mechanisms, representative acquisition/ownership contracts and canonical rendering. Full runtime/package/W1 qualification belongs to that milestone.",
+  "qualificationScope": "These are research/review receipts, not passing renderer qualification. The preceding character-admission milestone remains independently qualified; all four gaps stay open.",
+  "validation": {
+    "fixtureIntegrity": {
+      "host": "windows",
+      "framework": "net11.0",
+      "executed": 1497,
+      "passed": 1497,
+      "failed": 0,
+      "times": {
+        "creation": "2026-11-06T20:05:17.6342102+01:00",
+        "queuing": "2026-11-06T20:05:17.6342107+01:00",
+        "start": "2026-11-06T20:05:08.6048144+01:00",
+        "finish": "2026-11-06T20:05:26.4826806+01:00"
+      }
+    },
+    "healthyCaptureIdentities": 60,
+    "reproducedPrograms": 5,
+    "originalOutlineMetricAndInstructionTablesUnchanged": true,
+    "relativeDocumentationTargetsExist": true
+  },
+  "reproducer": {
+    "path": "../../../tools/build-text-dispatch-controls.py",
+    "sourceLfSha256": "03956bd00cd3687943930424b86429e67d95e47d4bdf2db212c9b4deec9c1cc0",
+    "fontToolsVersion": "4.66.1",
+    "programs": [
+      {
+        "identity": "ccmp",
+        "sourceSha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+        "byteSize": 1556,
+        "sha256": "7c40590d5dbed2e2501b13d487036fdbe0d31e9723ec82805447ce63dae2c319"
+      },
+      {
+        "identity": "context",
+        "sourceSha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+        "byteSize": 1620,
+        "sha256": "161192cab3266aaa0d1933ce49feae0af9e664f41c24f31836a8ba6e640aecb6"
+      },
+      {
+        "identity": "normalization",
+        "sourceSha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+        "byteSize": 1640,
+        "sha256": "476ad09a0b6a3e7568e870f79ac2dc46f77475e47518b152e1c1f4cd579a44ad"
+      },
+      {
+        "identity": "fallback",
+        "sourceSha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+        "byteSize": 1480,
+        "sha256": "921ea8c6e60caee2fd39bd44f8c6af96417d08f236aa94a16dfd8ac42e244909"
+      },
+      {
+        "identity": "normalization-noto",
+        "sourceSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+        "byteSize": 569216,
+        "sha256": "f6cab3179d0bfaf4a24f4d5ee92d474d715b96e393b195fe904163bbc6efa604"
+      }
+    ]
+  }
+}

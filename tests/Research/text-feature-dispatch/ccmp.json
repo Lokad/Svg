@@ -13,7 +13,9 @@
     "sourceSha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
     "license": "../kerning-precedence/LICENSE.txt",
     "procedure": "Load TTFont(BytesIO(source), recalcTimestamp=False). Use fontTools.feaLib.builder.addOpenTypeFeaturesFromString with feature ccmp { sub A by V; } ccmp; using the original cmap glyph names. Save without changing outlines, metrics or instructions.",
-    "fontToolsVersion": "4.66.1"
+    "fontToolsVersion": "4.66.1",
+    "builder": "../../../tools/build-text-dispatch-controls.py",
+    "identity": "ccmp"
   },
   "nativeFontBinding": "Insert one @font-face stylesheet binding CcmpProbe to the exact program as a font/ttf data URL, normal style/400 weight and font-synthesis:none. SVG image capture is transparent 128x72, scale 1.",
   "browserPins": {
@@ -184,6 +186,18 @@
           ]
         }
       }
+    }
+  },
+  "browserIdentities": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "platform": "win64",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "platform": "linux64",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
     }
   }
 }

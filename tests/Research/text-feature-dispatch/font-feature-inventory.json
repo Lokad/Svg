@@ -1,0 +1,757 @@
+{
+  "sourceBaseline": "f2a15ffb1dfc2499d2c63044c25c7586004b86d6",
+  "status": "Bounded inventory of 46 distinct committed programs before the dispatch correction; selected Latin/default features only. This metadata is not pixel qualification.",
+  "programs": [
+    {
+      "path": "tests/Research/windows-stack-vectors/movement/Move.ttf",
+      "sha256": "fc5f499779ef036733727914705cdb8392e34a4ae83bf2b78a949ed23027fffc",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-stack-vectors/fonts/StackVectors.ttf",
+      "sha256": "9998bcd912c2def5aeb205736313b80a26f18a4a91b8c280c660cf8364dbc903",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-small-strikes/fonts/SmallSymmetric.ttf",
+      "sha256": "639bcba85715bde4f3639cbe200625562703fd6be1a7882e7af66260f08e7d02",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/glyph-fallback/fonts/Secondary.ttf",
+      "sha256": "e356f4a340d5e63c97aa29282c48a2449ef63d961d62132c7b90bc363848bb40",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-small-strikes/fonts/SmallNaturalInteger.ttf",
+      "sha256": "1cd497827c38c4e769101abd121423b76a43850b6260618b8c4627fd17eeeceb",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-small-strikes/fonts/SmallNatural.ttf",
+      "sha256": "488bd27049efdc682b6c34fa41abd021a9200c226dc86d3a7afa384e1df7fb52",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-small-strikes/fonts/DefaultSymmetric.ttf",
+      "sha256": "c54f23bfc2e146690dd2003c2c88d82a655a3af8d62004d5a92a2f959ad8a8c3",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-small-strikes/fonts/DefaultNatural.ttf",
+      "sha256": "2554f508129f9e9b32d56b531b544fc578115866e6c8dc62eb78e0fc52a83ffc",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-scan-boundary/fonts/ScanTurn.ttf",
+      "sha256": "b769c71b1d0997220b33c54dcc24d8f5281366b903e01c25bebf661f4cb11696",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/glyph-fallback/fonts/Primary.ttf",
+      "sha256": "94da458b2ee3288c6959e4bdaaf3637da67f01274ce44d99c8e32ff37fc7fb07",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-movement/fonts/WindowsMovement.ttf",
+      "sha256": "b1a364ee7b741f9ec637f2b6f568cb0426a873cf3e70d57fbab666c7349d0b3e",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/glyph-conic-centers/ConicCenters.ttf",
+      "sha256": "e0cc3174b9a833705c8c3ea5b43fc52f7191c355e0129ca3737e35d619e86935",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-font-unit-scaling/fonts/PhantomOrigins.ttf",
+      "sha256": "658df587a3cde6998c9d3d343c6d3ebce0703d05367437d78a462f905268e44c",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-font-unit-scaling/fonts/Half.ttf",
+      "sha256": "e9299672e47e10651e2ed1b24c7edbcd567074ec5fb76a2878ae728376b59390",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-font-unit-scaling/fonts/Fractional.ttf",
+      "sha256": "c42521358c1b0d9153c270775a3cda53ff066c954e41c5a49f0d0ccbf79b6c18",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-font-unit-scaling/fonts/ExpandedPoints.ttf",
+      "sha256": "8cda274698c8e7148ab69bb84b3e628a147bdd00bdc71ab2ce12f859d72c0206",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-font-span-extension/fonts/Original Coverage.ttf",
+      "sha256": "3019b405dd6b04267497a00d7b7dadd98b179ab840b6207b59b6bb1bf024df90",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-font-span-extension/fonts/Courier New.ttf",
+      "sha256": "0df37d0ec255eb54efa4103e58da21d4954199560cf902898ff2fbf193b6164f",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-conditional-targets/fonts/ConditionalTargetsSymmetric.ttf",
+      "sha256": "5c83a569a5f5122e78ac6fbf5696bb4ff40f116d7452f941553e2e66615586e4",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-conditional-targets/fonts/ConditionalTargetsNatural.ttf",
+      "sha256": "067c74b8693001537be6518978adeedb4268fa06957995901f4a24c8f3772cbc",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/windows-conditional-shift/fonts/ConditionalShift.ttf",
+      "sha256": "6b360d11151c0de2614a5457ac9f4d77819948123d2d28b146a4c53309855bc4",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/composite-flag-exit-sheet/fonts/CompositeFlags.ttf",
+      "sha256": "9dd209dcaf3fae7b34a0a54acbeaa5f8f0ca5c1e2aed62fa9990099fd0fc77a8",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/latin-nonbase/fonts/Base.ttf",
+      "sha256": "fac1c957c70202c7cf41bf03b98f3bcf401fa9dc0cbc0f96b074f00903b0b330",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/latin-nonbase/fonts/Alias.ttf",
+      "sha256": "4d75fd07436cee9209a3817d5823744be79b4685234e09fed37467ef76bda5b9",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/kerning-precedence/fonts/ZeroKern.ttf",
+      "sha256": "56f63afdd0036d9cff6ceb569a302158e0ce865dc5583ac3e644f5483f4e7ad3",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 0,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-precedence/fonts/PlainKern.ttf",
+      "sha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/kerning-precedence/fonts/LegacyKern.ttf",
+      "sha256": "efc46b2f71445e01506bcd140c80122e88051a4e90a43478d0b8cf8db81a7285",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/kerning-precedence/fonts/GposKern.ttf",
+      "sha256": "a74efe77b6f3281b74db7a2440e9dbc8a555547b24b0d36970c846ab91a671b1",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 0,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-flags/fonts/GposSkipLig.ttf",
+      "sha256": "247affda68417c387dd3c35d98e5f9d81bf2c7f07b0fb869dd450f3a6971c0ec",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 4,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-flags/fonts/GposSkipBase.ttf",
+      "sha256": "8fa37b1753bb4ae6dd2b0d1a0f926f90843fdfe88f698a7abd113135ac317567",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 2,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-flags/fonts/GposSet.ttf",
+      "sha256": "488e603a60d9d4494b2f50637f6bd0a7bb59bc25606bfc12a34435c574bb9bc1",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 16,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-flags/fonts/GposRtl.ttf",
+      "sha256": "bd2f2fad12355f3c30cb284efbe20826644b6b571273b0529c9d516f908b5466",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 1,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-flags/fonts/GposMarks.ttf",
+      "sha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 8,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-flags/fonts/GposExtension.ttf",
+      "sha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 9,
+          "flags": 8,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-flags/fonts/GposCombined.ttf",
+      "sha256": "b18512f4a4c558e54afd735264edee2fc3ee23fd28d9568624e9dc8041f8620a",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 281,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/kerning-flags/fonts/GposAttach.ttf",
+      "sha256": "ffdb3d305e8205ed850d47c1e37c41f5325babfa91380954a762b5f37e90fb0e",
+      "GSUB": [],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 256,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/upstream-static-documents/fonts/NotoSans-Regular.ttf",
+      "sha256": "6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9",
+      "GSUB": [
+        {
+          "index": 2,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "0"
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            3,
+            3
+          ],
+          "asciiFirstGlyphCoverage": ""
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "AEIOUaeiou"
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            3,
+            3
+          ],
+          "asciiFirstGlyphCoverage": ""
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "AEIOUaeiou"
+        }
+      ],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 8,
+          "formats": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/upstream-static-documents/fonts/NotoSans-Italic.ttf",
+      "sha256": "35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b",
+      "GSUB": [
+        {
+          "index": 2,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "0"
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            3,
+            3
+          ],
+          "asciiFirstGlyphCoverage": ""
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "AEIOUaeiou"
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            3,
+            3
+          ],
+          "asciiFirstGlyphCoverage": ""
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "AEIOUaeiou"
+        }
+      ],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 2,
+          "flags": 8,
+          "formats": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/supplied-font-labels/fonts/NotoSans-Regular.ttf",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "GSUB": [
+        {
+          "index": 2,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "0"
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            2
+          ],
+          "asciiFirstGlyphCoverage": "ij"
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "AEIOUaeiou"
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            2
+          ],
+          "asciiFirstGlyphCoverage": "ij"
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "AEIOUaeiou"
+        }
+      ],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 8,
+          "flags": 0,
+          "formats": [
+            2
+          ]
+        },
+        {
+          "index": 2,
+          "type": 2,
+          "flags": 8,
+          "formats": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/supplied-font-documents/fonts/NotoSansMono-Bold.ttf",
+      "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc",
+      "GSUB": [
+        {
+          "index": 2,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "0"
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            2
+          ],
+          "asciiFirstGlyphCoverage": "ij"
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "AEIOUaeiou"
+        },
+        {
+          "index": 7,
+          "type": 2,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": ""
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            2
+          ],
+          "asciiFirstGlyphCoverage": "ij"
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "AEIOUaeiou"
+        },
+        {
+          "index": 7,
+          "type": 2,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": ""
+        }
+      ],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/public-font-qualification/fonts/NotoSans-Italic.ttf",
+      "sha256": "36cff144df01309dab648bea71baff9bb074026914afe63aeacc8bc90b67a28b",
+      "GSUB": [
+        {
+          "index": 2,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "0"
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            2
+          ],
+          "asciiFirstGlyphCoverage": "ij"
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": ""
+        },
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            2
+          ],
+          "asciiFirstGlyphCoverage": "ij"
+        },
+        {
+          "index": 6,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": ""
+        }
+      ],
+      "GPOS": [
+        {
+          "index": 0,
+          "type": 8,
+          "flags": 0,
+          "formats": [
+            2
+          ]
+        },
+        {
+          "index": 2,
+          "type": 2,
+          "flags": 8,
+          "formats": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/static-truetype-fonts/liberation/LiberationSans-Regular.ttf",
+      "sha256": "76d04c18ea243f426b7de1f3ad208e927008f961dc5945e5aad352d0dfde8ee8",
+      "GSUB": [
+        {
+          "index": 3,
+          "type": 4,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": ""
+        }
+      ],
+      "GPOS": [
+        {
+          "index": 17,
+          "type": 2,
+          "flags": 8,
+          "formats": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/static-truetype-fonts/dejavu/DejaVuSans.ttf",
+      "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954",
+      "GSUB": [
+        {
+          "index": 3,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            2
+          ],
+          "asciiFirstGlyphCoverage": "ij"
+        },
+        {
+          "index": 4,
+          "type": 6,
+          "flags": 0,
+          "formats": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "asciiFirstGlyphCoverage": ""
+        }
+      ],
+      "GPOS": [
+        {
+          "index": 14,
+          "type": 2,
+          "flags": 0,
+          "formats": [
+            2
+          ]
+        },
+        {
+          "index": 15,
+          "type": 2,
+          "flags": 0,
+          "formats": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/Research/text-layout-admission/syllabic/font.ttf",
+      "sha256": "9b3a3c4011159d486ff8b43ef5ec37b3bc3a54d32b0b5d7f610c3d58a1616fea",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/text-layout-admission/rtl/font.ttf",
+      "sha256": "465b81752dfb1bc2e5786356972eb6189d2328f9adda3b1f5e5e9f5990c3366c",
+      "GSUB": [],
+      "GPOS": []
+    },
+    {
+      "path": "tests/Research/text-feature-dispatch/font.ttf",
+      "sha256": "7c40590d5dbed2e2501b13d487036fdbe0d31e9723ec82805447ce63dae2c319",
+      "GSUB": [
+        {
+          "index": 0,
+          "type": 1,
+          "flags": 0,
+          "formats": [
+            null
+          ],
+          "asciiFirstGlyphCoverage": "A"
+        }
+      ],
+      "GPOS": []
+    }
+  ],
+  "evidenceBaseCommit": "20a02cefc9973eaeb2d494abddd2d3ef88806bfa",
+  "pathRebase": "The existing text-ccmp-dispatch program is unchanged and now belongs to text-feature-dispatch.",
+  "interpretation": "First-glyph coverage is not a complete context/ligature match. For example, ordinary vowels overlap ccmp ligature coverage even without following marks. null formats represent fontTools mapping abstractions, not absent binary formats."
+}

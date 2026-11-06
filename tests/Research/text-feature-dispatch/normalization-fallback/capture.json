@@ -1,0 +1,216 @@
+{
+  "status": "Open: cmap-only font demand/selection bypasses covered canonical components and acquires/selects a later face.",
+  "sourceBaseline": "f2a15ffb1dfc2499d2c63044c25c7586004b86d6",
+  "width": 128,
+  "height": 72,
+  "outputScale": 1,
+  "fontPack": "../fallback-pack.json",
+  "fontRoot": "..",
+  "programs": [
+    {
+      "font": "../normalization/font.ttf",
+      "fontSha256": "476ad09a0b6a3e7568e870f79ac2dc46f77475e47518b152e1c1f4cd579a44ad",
+      "recipe": "../normalization/capture.json"
+    },
+    {
+      "font": "fallback.ttf",
+      "fontSha256": "921ea8c6e60caee2fd39bd44f8c6af96417d08f236aa94a16dfd8ac42e244909",
+      "fontRecipe": {
+        "source": "../../kerning-precedence/fonts/PlainKern.ttf",
+        "sourceSha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+        "license": "../../kerning-precedence/LICENSE.txt",
+        "builder": "../../../../tools/build-text-dispatch-controls.py",
+        "identity": "fallback",
+        "fontToolsVersion": "4.66.1"
+      }
+    }
+  ],
+  "nativeFontBinding": "Both exact programs embedded as font/ttf data URLs under NormalizationCC0Probe and FallbackProbe, normal style/400 weight; font-synthesis:none. Source requests both families in order; the decomposed control requests only the primary. Transparent 128x72 SVG image, scale 1.",
+  "browserPins": {
+    "windows": "../../../../tools/chrome-for-testing.json",
+    "linux": "../../../../tools/chrome-for-testing.linux64.json"
+  },
+  "roles": {
+    "source": {
+      "input": "source.svg",
+      "inputSha256": "d11ae1cf16b52b009e349aba11602a07c8b27a1b3f0cb0eafb4d7d7fabac4059",
+      "platforms": {
+        "windows": {
+          "reference": "../normalization/references/066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622.png",
+          "referenceSha256": "066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622",
+          "nativeInputSha256": "e41d5f7b9aa6c49fc9be8d5509f2cee266488ad480240b5af1e94617570b1a4e",
+          "captures": [
+            {
+              "pngSha256": "066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            }
+          ],
+          "before": {
+            "librarySha256": "46a98bdb761a93ede686068f69ea0361ca00351b1f8f0ce8cd0b16bb258dbea1",
+            "outcome": "rendered",
+            "png": "before/73497910dc0b97763c6376fdf1f31a658cf5e96432bb257fdce9144c0d4ff6cc.png",
+            "pngSha256": "73497910dc0b97763c6376fdf1f31a658cf5e96432bb257fdce9144c0d4ff6cc",
+            "mismatchPixels": 643,
+            "requestedFontPrograms": 2,
+            "controlRequestedFontPrograms": 1,
+            "controlMismatch": 0
+          }
+        },
+        "linux": {
+          "reference": "../normalization/references/9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5.png",
+          "referenceSha256": "9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5",
+          "nativeInputSha256": "e41d5f7b9aa6c49fc9be8d5509f2cee266488ad480240b5af1e94617570b1a4e",
+          "captures": [
+            {
+              "pngSha256": "9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            }
+          ],
+          "before": {
+            "librarySha256": "46a98bdb761a93ede686068f69ea0361ca00351b1f8f0ce8cd0b16bb258dbea1",
+            "outcome": "rendered",
+            "png": "before/235ed3e440e8f88e075cffa2abeb5f8625ca1b739bdcccb6965c6658a60b99e6.png",
+            "pngSha256": "235ed3e440e8f88e075cffa2abeb5f8625ca1b739bdcccb6965c6658a60b99e6",
+            "mismatchPixels": 575,
+            "requestedFontPrograms": 2,
+            "controlRequestedFontPrograms": 1,
+            "controlMismatch": 0
+          }
+        }
+      }
+    },
+    "control": {
+      "input": "control.svg",
+      "inputSha256": "c4ea790143689208aab1ac1f807ec04305f3ac540efb5cbb1f4f1c93c36ac8e1",
+      "platforms": {
+        "windows": {
+          "reference": "../normalization/references/066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622.png",
+          "referenceSha256": "066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622",
+          "nativeInputSha256": "5f985388b8cc94b3924245ad4952f1480a5fc0f67027b29d5cd695d1515d7f1d",
+          "captures": [
+            {
+              "pngSha256": "066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "066f7e0414aa77a40b974f8cd12b1006719489530d48a4d52eb8b43813970622",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../normalization/references/9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5.png",
+          "referenceSha256": "9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5",
+          "nativeInputSha256": "5f985388b8cc94b3924245ad4952f1480a5fc0f67027b29d5cd695d1515d7f1d",
+          "captures": [
+            {
+              "pngSha256": "9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "9008b134e3181a04fad720e9a12aa9c6069789f41a7836aee45054070c017aa5",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "acceptance": "Both texts retain the primary program and exact native pixels. SVG-based acquisition requests one program; preserve the source scalar/paint owner and cleanup/retry.",
+  "browserIdentities": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "platform": "win64",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "platform": "linux64",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  }
+}

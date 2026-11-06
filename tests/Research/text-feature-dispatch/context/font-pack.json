@@ -1,0 +1,17 @@
+{
+  "packId": "context-probe",
+  "files": [
+    {
+      "relativePath": "font.ttf",
+      "byteSize": 1620,
+      "sha256": "161192cab3266aaa0d1933ce49feae0af9e664f41c24f31836a8ba6e640aecb6"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "ContextProbe",
+      "resolvedFamily": "ContextProbe",
+      "relativeFontFile": "font.ttf"
+    }
+  ]
+}

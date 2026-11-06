@@ -546,7 +546,7 @@
     "The one-file font-catalog fast path and resource discovery enforce the same character boundary.",
     "The kerning-flags guide now distinguishes conservative raw scalar rejection from the supported canonical attached-mark path."
   ],
-  "nextFinding": "../text-ccmp-dispatch/capture.json",
+  "nextFinding": "text-feature-dispatch-review.json",
   "evidenceIntegrity": {
     "framework": "net11.0",
     "host": "windows",

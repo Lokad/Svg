@@ -1,0 +1,17 @@
+{
+  "packId": "normalization-cc0-probe",
+  "files": [
+    {
+      "relativePath": "font.ttf",
+      "byteSize": 1640,
+      "sha256": "476ad09a0b6a3e7568e870f79ac2dc46f77475e47518b152e1c1f4cd579a44ad"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "NormalizationCC0Probe",
+      "resolvedFamily": "NormalizationCC0Probe",
+      "relativeFontFile": "font.ttf"
+    }
+  ]
+}

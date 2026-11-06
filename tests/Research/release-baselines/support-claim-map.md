@@ -44,9 +44,12 @@ through shared lengths, scalar cursors, chunk anchors, paths and baseline owners
 Canonical native references and representative ownership paths stay separate.
 The [shared character-admission milestone](text-layout-admission.json) closes
 covered bidi/syllabic text bypassing the declared subset and preserves every
-original/context replay. The remaining shaping rows stay pending: an independent
-[ordinary-run ccmp witness](../text-ccmp-dispatch/README.md) exposes shared dispatch
-work before their closure.
+original/context replay. The remaining shaping rows stay pending: independent
+[shared-dispatch controls](../text-feature-dispatch/README.md) expose substitution,
+contextual positioning, canonical decomposition and fallback work before closure.
+The [bounded review](text-feature-dispatch-review.json) keeps their current owners,
+60 healthy capture receipts and selection/execution constraints separate from
+passing renderer qualification.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and

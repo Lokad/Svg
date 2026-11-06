@@ -1,0 +1,196 @@
+{
+  "status": "Open: independent references frozen before the shared shaping dispatch correction.",
+  "sourceBaseline": "f2a15ffb1dfc2499d2c63044c25c7586004b86d6",
+  "width": 128,
+  "height": 72,
+  "outputScale": 1,
+  "fontSha256": "f6cab3179d0bfaf4a24f4d5ee92d474d715b96e393b195fe904163bbc6efa604",
+  "fontRecipe": {
+    "source": "../../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "sourceSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "license": "../../supplied-font-labels/fonts/OFL.txt",
+    "fontToolsVersion": "4.66.1",
+    "builder": "../../../../tools/build-text-dispatch-controls.py",
+    "identity": "normalization-noto"
+  },
+  "nativeFontBinding": "Exact program bytes embedded as a font/ttf data URL under the input family; normal style/400 weight, font-synthesis:none. Transparent SVG image capture, 128x72 at scale 1.",
+  "browserPins": {
+    "windows": "../../../../tools/chrome-for-testing.json",
+    "linux": "../../../../tools/chrome-for-testing.linux64.json"
+  },
+  "roles": {
+    "source": {
+      "input": "source.svg",
+      "inputSha256": "9309d7f96b6083dba5beef908cc279518dd2835935ed73d6f9167c8a9c850aab",
+      "platforms": {
+        "windows": {
+          "reference": "references/bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799.png",
+          "referenceSha256": "bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799",
+          "nativeInputSha256": "aadc06f7d788a3766c71aa7434d677651eb00653e2b9ecea53e11225cb7b9cb2",
+          "captures": [
+            {
+              "pngSha256": "bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            }
+          ],
+          "before": {
+            "librarySha256": "46a98bdb761a93ede686068f69ea0361ca00351b1f8f0ce8cd0b16bb258dbea1",
+            "outcome": "UnresolvedResource",
+            "controlMismatch": 0
+          },
+          "nativeSourceVsControl": 0
+        },
+        "linux": {
+          "reference": "references/ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad.png",
+          "referenceSha256": "ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad",
+          "nativeInputSha256": "aadc06f7d788a3766c71aa7434d677651eb00653e2b9ecea53e11225cb7b9cb2",
+          "captures": [
+            {
+              "pngSha256": "ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            }
+          ],
+          "before": {
+            "librarySha256": "46a98bdb761a93ede686068f69ea0361ca00351b1f8f0ce8cd0b16bb258dbea1",
+            "outcome": "UnresolvedResource",
+            "controlMismatch": 0
+          },
+          "nativeSourceVsControl": 0
+        }
+      }
+    },
+    "control": {
+      "input": "control.svg",
+      "inputSha256": "2843942fa3b07ee7083145d02f5c17fa12cbe47c7f6eb8d650d55dfe3e1d00c5",
+      "platforms": {
+        "windows": {
+          "reference": "references/bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799.png",
+          "referenceSha256": "bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799",
+          "nativeInputSha256": "2d7e42e3a1cb77216d2c90cb300bcbcd05370748e22e2cc55dd52e6ffd17fb27",
+          "captures": [
+            {
+              "pngSha256": "bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "bc6e90d616adedaf86de9f08e56328d42335534824eeab2417dc34e9758f0799",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad.png",
+          "referenceSha256": "ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad",
+          "nativeInputSha256": "2d7e42e3a1cb77216d2c90cb300bcbcd05370748e22e2cc55dd52e6ffd17fb27",
+          "captures": [
+            {
+              "pngSha256": "ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            },
+            {
+              "pngSha256": "ff1eee27aceb90b8306bfe18a97dec07b392f07ba8342991bd6603e2628b72ad",
+              "terminalExitCode": 0,
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "stderrTruncated": false,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "programStorage": "Recipe only: rebuild the derivative from the existing OFL program with --include-noto; no duplicate Noto program is committed.",
+  "browserIdentities": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "platform": "win64",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "platform": "linux64",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  }
+}

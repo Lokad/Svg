@@ -1,0 +1,17 @@
+{
+  "packId": "context-control",
+  "files": [
+    {
+      "relativePath": "control.ttf",
+      "byteSize": 1472,
+      "sha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "ContextProbe",
+      "resolvedFamily": "ContextProbe",
+      "relativeFontFile": "control.ttf"
+    }
+  ]
+}

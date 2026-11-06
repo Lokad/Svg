@@ -397,6 +397,18 @@ a numerical diagnostic, separate from canonical rendering-reference admission.
 
 ## Font program controls
 
+The [shared dispatch controls](../tests/Research/text-feature-dispatch/README.md)
+reproduce four tiny CC0 programs for substitution, contextual positioning,
+canonical components and fallback. With development-only `fontTools==4.66.1`:
+
+```powershell
+python -X utf8 -B tools/build-text-dispatch-controls.py --output artifacts/research/text-dispatch
+```
+
+Compare the reported hashes with the bank records; rebuilding does not capture or
+replace references. Add `--include-noto` for the separate recipe-only OFL witness,
+reconstructed from the existing committed program without storing another copy.
+
 The CC0 [extension fixture](../tests/Research/kerning-flags/README.md) derives from
 the committed GposMarks program. With development-only `fontTools==4.66.1`, rebuild
 it into a new output file:

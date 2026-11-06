@@ -3,7 +3,8 @@
 [Shared character admission](text-layout-admission.json) binds current source,
 full runtime/package qualification and [all original/context replays](text-layout-admission-svgweb.json).
 Its independent controls close silent bidi/syllabic misordering when glyphs are
-supplied. [Canonical dispatch](../text-ccmp-dispatch/README.md) remains open.
+supplied. The [shared shaping review](text-feature-dispatch-review.json) binds four
+open dispatch/coverage findings to independently frozen controls and current owners.
 
 [Native line sources](native-line-source.json) retain commands independently of
 paint availability through shared preparation. Four failing-before cases and
