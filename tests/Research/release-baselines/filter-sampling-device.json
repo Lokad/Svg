@@ -1,0 +1,869 @@
+{
+  "status": "All 24 admitted shader/placement differences are exact on both hosts; all 475 earlier exact historical cases and every independent source-context row remain exact. Broader source/package/SVGWeb promotion follows the coherent source commit.",
+  "sourceBaseCommit": "1e1857c7382d972908a2489c6b17d039c83f539b",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/SvgConverter.cs",
+      "sha256": "c8a74b7e4adfc0209bcad57f457d7799b1fe3a9d40f9d4dc6706ffb41e4a4a06"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgCpuRasterGrid.cs",
+      "sha256": "d1ace98922843dd1a35cf435d05ab94e139838355fa0c7bac22ee79ad34f831f"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgShaderSamplingContext.cs",
+      "sha256": "c8ce088807ea423638499d13cdb6e658d3833f7af41d26c7d9e4aab9d48a49ba"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+      "sha256": "4b2d60db1fe1186b5702221800b3c01710c92cdeb9d6a04b1f4c48023ef383e4"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+      "sha256": "76a46d5694b5aa2f9570d65c93ce40a243a3df754020f3234ff117363d8cfc39"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgFilterSourceContextReferenceTests.cs",
+      "sha256": "4ab546406fb5e83b29b93886b8f6adbcc1daba73c862140b7f3ebb0c446d8262"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/FixtureManifestTests.cs",
+      "sha256": "8390ce2383889f2bc2eb22bc656ed1191d2db9c515fb543e3966950859907180"
+    },
+    {
+      "path": "docs/SUPPORT_MATRIX.md",
+      "sha256": "3cae5b68e031d119209fe55991b89cef06433db2b8c2a1ab754330c6cd83b49f"
+    }
+  ],
+  "cause": "Sampling origins used the compact ink request instead of the filter destination request. Complete clip coverage can extend beyond its shortened paint window. Nonopaque filters own a painted-output enclosure; an explicit owned destination has already consumed its parent clip. Logical paint-classification bounds are not that destination window.",
+  "correction": "Reuse the existing retained-coverage lookup with an explicit search window. Seed generic and offset source-image sampling from complete clip coverage inside the current destination, intersecting the existing painted-output bounds for nonopaque filter restoration. Preserve the earlier ink request for geometry capture and storage. Reuse propagated bounds when requests are equal; share the nonopaque extent with ordinary restoration. No dither phase override is introduced.",
+  "ownerDistinctions": {
+    "paint": "Raster-frame/scope logical clips still classify geometric/viewport paints independently of compact storage.",
+    "sampling": "A current owned destination uses its clipped addressable enclosure for filter output requests; its parent clip has already been consumed. Nonopaque inline filters use the same painted-output enclosure as an explicit surrounding opacity group.",
+    "construction": "Conservative source geometry and its allocation continue using the original propagated ink request; unrelated ink is not captured to alter line/curve construction."
+  },
+  "selection": {
+    "path": "../gradient-factory-colors/resolved-known-differences.json",
+    "sha256": "3b2e1b01982663d41fcba11e75561e2dfe4cd90345c13b450f0343c5547fc1e6",
+    "resolved": 499,
+    "routine": 232,
+    "research": 267,
+    "open": 0,
+    "admissionBoundaries": 432
+  },
+  "newlyResolvedIds": [
+    "changed-65-candidate-1",
+    "changed-66-control-1",
+    "changed-68-control-1",
+    "changed-71-candidate-1",
+    "changed-72-control-1",
+    "changed-74-control-1",
+    "changed-77-candidate-1",
+    "changed-78-control-1",
+    "changed-80-control-1",
+    "changed-81-candidate-1",
+    "changed-82-control-1",
+    "changed-86-control-1",
+    "changed-153-control-1",
+    "changed-154-candidate-1",
+    "changed-155-candidate-1",
+    "changed-162-control-1",
+    "changed-163-candidate-1",
+    "changed-164-candidate-1",
+    "changed-171-control-1",
+    "changed-172-candidate-1",
+    "changed-173-candidate-1",
+    "changed-177-control-1",
+    "changed-178-candidate-1",
+    "changed-179-candidate-1"
+  ],
+  "historicalReplays": [
+    {
+      "host": "windows",
+      "beforeLibrarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "afterLibrarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "beforeCounts": {
+        "rejected": 432,
+        "exact": 475,
+        "rendered": 24
+      },
+      "afterCounts": {
+        "rejected": 432,
+        "exact": 499
+      },
+      "beforePixelDifferences": {
+        "changed-65-candidate-1": 39,
+        "changed-66-control-1": 32,
+        "changed-68-control-1": 4,
+        "changed-71-candidate-1": 39,
+        "changed-72-control-1": 32,
+        "changed-74-control-1": 4,
+        "changed-77-candidate-1": 28,
+        "changed-78-control-1": 32,
+        "changed-80-control-1": 4,
+        "changed-81-candidate-1": 35,
+        "changed-82-control-1": 36,
+        "changed-86-control-1": 22,
+        "changed-153-control-1": 39,
+        "changed-154-candidate-1": 33,
+        "changed-155-candidate-1": 36,
+        "changed-162-control-1": 39,
+        "changed-163-candidate-1": 33,
+        "changed-164-candidate-1": 36,
+        "changed-171-control-1": 28,
+        "changed-172-candidate-1": 21,
+        "changed-173-candidate-1": 24,
+        "changed-177-control-1": 35,
+        "changed-178-candidate-1": 17,
+        "changed-179-candidate-1": 21
+      },
+      "previouslyExactPreserved": 475,
+      "receiptSha256": "2601c4d1a4b55b989ae4e176f2f71b4cce5d1add64ae6b1f6d64324628ba9887"
+    },
+    {
+      "host": "linux",
+      "beforeLibrarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+      "afterLibrarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "beforeCounts": {
+        "rejected": 432,
+        "exact": 475,
+        "rendered": 24
+      },
+      "afterCounts": {
+        "rejected": 432,
+        "exact": 499
+      },
+      "beforePixelDifferences": {
+        "changed-65-candidate-1": 39,
+        "changed-66-control-1": 32,
+        "changed-68-control-1": 4,
+        "changed-71-candidate-1": 39,
+        "changed-72-control-1": 32,
+        "changed-74-control-1": 4,
+        "changed-77-candidate-1": 28,
+        "changed-78-control-1": 32,
+        "changed-80-control-1": 4,
+        "changed-81-candidate-1": 35,
+        "changed-82-control-1": 36,
+        "changed-86-control-1": 22,
+        "changed-153-control-1": 39,
+        "changed-154-candidate-1": 33,
+        "changed-155-candidate-1": 36,
+        "changed-162-control-1": 39,
+        "changed-163-candidate-1": 33,
+        "changed-164-candidate-1": 36,
+        "changed-171-control-1": 28,
+        "changed-172-candidate-1": 21,
+        "changed-173-candidate-1": 24,
+        "changed-177-control-1": 35,
+        "changed-178-candidate-1": 17,
+        "changed-179-candidate-1": 21
+      },
+      "previouslyExactPreserved": 475,
+      "receiptSha256": "79b4dd6ef158701bc6801c916c1f11ae49bdc36be622118295bddbf8a26e1497"
+    }
+  ],
+  "responsibilities": {
+    "mechanisms": "Existing direct filter requests/bounds, raster origins, geometry/hairline boundaries, budget/cancellation and owned-capture checks remain. The correction adds no pixel owner or public API.",
+    "contracts": "Retain the existing representative API and ownership matrix and every distinct allocation/execution path. No new fixture-by-API product is added.",
+    "rendering": "Each of the 24 failing-before sources remains an individual test through the existing canonical conversion. All 9230 independent source-context checks, including Research, run on both hosts/runtimes. Two independently captured minimal opacity-placement fixtures use the existing canonical manifest path. The 267 earlier exact exploratory cases remain individually discoverable as Research."
+  },
+  "opacityPlacementControls": {
+    "sourceCandidates": [
+      "../gradient-factory-colors/changed-66-candidate-1.svg",
+      "../gradient-factory-colors/changed-66-control-1.svg"
+    ],
+    "reconstruction": "Replace only the combined opacity/filter group with nested outer-opacity or inner-opacity groups and balance the extra group. Controls separately remove opacity or the filter. Preserve all other bytes. Original references remain frozen.",
+    "nativeCaptures": [
+      {
+        "host": "windows",
+        "name": "outer-opacity",
+        "inputSha256": "79f68a78df19c152e98edfcd79322b14b9ee1db371edd9f9d769896c0fa23b65",
+        "nativePngSha256": "90dd999f5ade452c72b93facc546433db4f9a656262ee7671432a3fbd838893e",
+        "role": "candidate",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "name": "inner-opacity",
+        "inputSha256": "af082b15bf8485cbdad93c3158a2ae67e807de2bfeebdd4721bbee481a01b016",
+        "nativePngSha256": "6a2637bbb20709a4b3f689b3a5c1ce98d97a1c43f5f37abebf02844d777daeaf",
+        "role": "candidate",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "name": "no-opacity",
+        "inputSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+        "nativePngSha256": "15710beed5e52b8f65f349bb5b6d4ae323ebcbcefa0a96ea6f5f7fc1a2b01377",
+        "role": "candidate",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "name": "no-filter",
+        "inputSha256": "cea3a97fa048befb7a0b381ec2910c98c9021a77afaefc1b6fdbcfd40f58cad0",
+        "nativePngSha256": "69411697c99ce6b90059ac5555a806618edeaf0a7fc11ce3ee707f858ee7b94d",
+        "role": "candidate",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "name": "outer-opacity",
+        "inputSha256": "79f68a78df19c152e98edfcd79322b14b9ee1db371edd9f9d769896c0fa23b65",
+        "nativePngSha256": "90dd999f5ade452c72b93facc546433db4f9a656262ee7671432a3fbd838893e",
+        "role": "candidate",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "name": "inner-opacity",
+        "inputSha256": "af082b15bf8485cbdad93c3158a2ae67e807de2bfeebdd4721bbee481a01b016",
+        "nativePngSha256": "6a2637bbb20709a4b3f689b3a5c1ce98d97a1c43f5f37abebf02844d777daeaf",
+        "role": "candidate",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "name": "no-opacity",
+        "inputSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+        "nativePngSha256": "15710beed5e52b8f65f349bb5b6d4ae323ebcbcefa0a96ea6f5f7fc1a2b01377",
+        "role": "candidate",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "name": "no-filter",
+        "inputSha256": "cea3a97fa048befb7a0b381ec2910c98c9021a77afaefc1b6fdbcfd40f58cad0",
+        "nativePngSha256": "69411697c99ce6b90059ac5555a806618edeaf0a7fc11ce3ee707f858ee7b94d",
+        "role": "candidate",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "name": "outer-opacity",
+        "inputSha256": "ffe439e6065d79b0bf8d448335e8229ec11b83f34b1b6090cb79459b9b479420",
+        "nativePngSha256": "c6b26983e17ddae0df1ba6f6785ab14b89f2a49e911d937461d752ccae686bd2",
+        "role": "control",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "name": "inner-opacity",
+        "inputSha256": "7d436030525c9e5caff6adc2df851891b65ded77e76e38371cb117e88010da8f",
+        "nativePngSha256": "3f3555738b494ea822b148d15ec1f52959b7e1234214d0a34d00a1e25dcd0a21",
+        "role": "control",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "name": "no-opacity",
+        "inputSha256": "00d98437930f980dd474f917784fa5cef5656225a4359e2fb22f3a91ac390db3",
+        "nativePngSha256": "ccdacb6fd420f8000e573193e0ae9b6d6363af3bf0e12d16305e2155df2d821a",
+        "role": "control",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "name": "no-filter",
+        "inputSha256": "5749fa1d55086905d2eda40624ce2b2f5580b539c3ff21ffa403d52457afd76e",
+        "nativePngSha256": "3e0ba3ba383cb2c2e00bfc0fc2120685042d91e200103f5e16ba2cf01a146da3",
+        "role": "control",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "name": "outer-opacity",
+        "inputSha256": "ffe439e6065d79b0bf8d448335e8229ec11b83f34b1b6090cb79459b9b479420",
+        "nativePngSha256": "c6b26983e17ddae0df1ba6f6785ab14b89f2a49e911d937461d752ccae686bd2",
+        "role": "control",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "name": "inner-opacity",
+        "inputSha256": "7d436030525c9e5caff6adc2df851891b65ded77e76e38371cb117e88010da8f",
+        "nativePngSha256": "3f3555738b494ea822b148d15ec1f52959b7e1234214d0a34d00a1e25dcd0a21",
+        "role": "control",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "name": "no-opacity",
+        "inputSha256": "00d98437930f980dd474f917784fa5cef5656225a4359e2fb22f3a91ac390db3",
+        "nativePngSha256": "ccdacb6fd420f8000e573193e0ae9b6d6363af3bf0e12d16305e2155df2d821a",
+        "role": "control",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "name": "no-filter",
+        "inputSha256": "5749fa1d55086905d2eda40624ce2b2f5580b539c3ff21ffa403d52457afd76e",
+        "nativePngSha256": "3e0ba3ba383cb2c2e00bfc0fc2120685042d91e200103f5e16ba2cf01a146da3",
+        "role": "control",
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      }
+    ],
+    "comparisons": {
+      "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "rows": [
+        {
+          "role": "candidate",
+          "name": "original",
+          "nativeHost": "windows",
+          "sourceSha256": "ffa92755b12eda8787cc99caee0d226a9f5814fbffdb67c21690ca179bb322db",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "e62dc4e88a9ed2c5c971a229645d35a5d748facb52b15acc33bc9c0d317c2b35",
+          "nativePngSha256": "79e4588ef39efa75a275236d00b869cbb92f0ed5b986cc85c7839696c10cb55c"
+        },
+        {
+          "role": "candidate",
+          "name": "original",
+          "nativeHost": "linux",
+          "sourceSha256": "ffa92755b12eda8787cc99caee0d226a9f5814fbffdb67c21690ca179bb322db",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "e62dc4e88a9ed2c5c971a229645d35a5d748facb52b15acc33bc9c0d317c2b35",
+          "nativePngSha256": "79e4588ef39efa75a275236d00b869cbb92f0ed5b986cc85c7839696c10cb55c"
+        },
+        {
+          "role": "candidate",
+          "name": "outer-opacity",
+          "nativeHost": "windows",
+          "sourceSha256": "79f68a78df19c152e98edfcd79322b14b9ee1db371edd9f9d769896c0fa23b65",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "e62dc4e88a9ed2c5c971a229645d35a5d748facb52b15acc33bc9c0d317c2b35",
+          "nativePngSha256": "90dd999f5ade452c72b93facc546433db4f9a656262ee7671432a3fbd838893e"
+        },
+        {
+          "role": "candidate",
+          "name": "outer-opacity",
+          "nativeHost": "linux",
+          "sourceSha256": "79f68a78df19c152e98edfcd79322b14b9ee1db371edd9f9d769896c0fa23b65",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "e62dc4e88a9ed2c5c971a229645d35a5d748facb52b15acc33bc9c0d317c2b35",
+          "nativePngSha256": "90dd999f5ade452c72b93facc546433db4f9a656262ee7671432a3fbd838893e"
+        },
+        {
+          "role": "candidate",
+          "name": "inner-opacity",
+          "nativeHost": "windows",
+          "sourceSha256": "af082b15bf8485cbdad93c3158a2ae67e807de2bfeebdd4721bbee481a01b016",
+          "changedPixels": 0,
+          "beforeChangedPixels": 26,
+          "libraryPngSha256": "16208d6954d300c710d20fb2f62638a9f174245f623337ca8296979200ebef71",
+          "nativePngSha256": "6a2637bbb20709a4b3f689b3a5c1ce98d97a1c43f5f37abebf02844d777daeaf"
+        },
+        {
+          "role": "candidate",
+          "name": "inner-opacity",
+          "nativeHost": "linux",
+          "sourceSha256": "af082b15bf8485cbdad93c3158a2ae67e807de2bfeebdd4721bbee481a01b016",
+          "changedPixels": 0,
+          "beforeChangedPixels": 26,
+          "libraryPngSha256": "16208d6954d300c710d20fb2f62638a9f174245f623337ca8296979200ebef71",
+          "nativePngSha256": "6a2637bbb20709a4b3f689b3a5c1ce98d97a1c43f5f37abebf02844d777daeaf"
+        },
+        {
+          "role": "candidate",
+          "name": "no-opacity",
+          "nativeHost": "windows",
+          "sourceSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+          "changedPixels": 0,
+          "beforeChangedPixels": 39,
+          "libraryPngSha256": "22220be0e3766672e20f2630962a6f167913cc4a5aa5811f06b520a3b1dbeb29",
+          "nativePngSha256": "15710beed5e52b8f65f349bb5b6d4ae323ebcbcefa0a96ea6f5f7fc1a2b01377"
+        },
+        {
+          "role": "candidate",
+          "name": "no-opacity",
+          "nativeHost": "linux",
+          "sourceSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+          "changedPixels": 0,
+          "beforeChangedPixels": 39,
+          "libraryPngSha256": "22220be0e3766672e20f2630962a6f167913cc4a5aa5811f06b520a3b1dbeb29",
+          "nativePngSha256": "15710beed5e52b8f65f349bb5b6d4ae323ebcbcefa0a96ea6f5f7fc1a2b01377"
+        },
+        {
+          "role": "candidate",
+          "name": "no-filter",
+          "nativeHost": "windows",
+          "sourceSha256": "cea3a97fa048befb7a0b381ec2910c98c9021a77afaefc1b6fdbcfd40f58cad0",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "7de3e241a9bce62cb15d4b0f0f89a57f3619bf32a06c4f8f52f30fbe9a57498f",
+          "nativePngSha256": "69411697c99ce6b90059ac5555a806618edeaf0a7fc11ce3ee707f858ee7b94d"
+        },
+        {
+          "role": "candidate",
+          "name": "no-filter",
+          "nativeHost": "linux",
+          "sourceSha256": "cea3a97fa048befb7a0b381ec2910c98c9021a77afaefc1b6fdbcfd40f58cad0",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "7de3e241a9bce62cb15d4b0f0f89a57f3619bf32a06c4f8f52f30fbe9a57498f",
+          "nativePngSha256": "69411697c99ce6b90059ac5555a806618edeaf0a7fc11ce3ee707f858ee7b94d"
+        },
+        {
+          "role": "control",
+          "name": "original",
+          "nativeHost": "windows",
+          "sourceSha256": "1cd54fa74605ef68fb2dcd1889621e324e8590e1ed6faad78c6edad5d63bb165",
+          "changedPixels": 0,
+          "beforeChangedPixels": 32,
+          "libraryPngSha256": "0a490a1c4aa9de39306bf45ecdc60e08505084a242a0b6d6745bf9998678ac6e",
+          "nativePngSha256": "1e954d4e3660785e23df82e99593ef302b189275aa38dd701f32545851076fa1"
+        },
+        {
+          "role": "control",
+          "name": "original",
+          "nativeHost": "linux",
+          "sourceSha256": "1cd54fa74605ef68fb2dcd1889621e324e8590e1ed6faad78c6edad5d63bb165",
+          "changedPixels": 0,
+          "beforeChangedPixels": 32,
+          "libraryPngSha256": "0a490a1c4aa9de39306bf45ecdc60e08505084a242a0b6d6745bf9998678ac6e",
+          "nativePngSha256": "1e954d4e3660785e23df82e99593ef302b189275aa38dd701f32545851076fa1"
+        },
+        {
+          "role": "control",
+          "name": "outer-opacity",
+          "nativeHost": "windows",
+          "sourceSha256": "ffe439e6065d79b0bf8d448335e8229ec11b83f34b1b6090cb79459b9b479420",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "0a490a1c4aa9de39306bf45ecdc60e08505084a242a0b6d6745bf9998678ac6e",
+          "nativePngSha256": "c6b26983e17ddae0df1ba6f6785ab14b89f2a49e911d937461d752ccae686bd2"
+        },
+        {
+          "role": "control",
+          "name": "outer-opacity",
+          "nativeHost": "linux",
+          "sourceSha256": "ffe439e6065d79b0bf8d448335e8229ec11b83f34b1b6090cb79459b9b479420",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "0a490a1c4aa9de39306bf45ecdc60e08505084a242a0b6d6745bf9998678ac6e",
+          "nativePngSha256": "c6b26983e17ddae0df1ba6f6785ab14b89f2a49e911d937461d752ccae686bd2"
+        },
+        {
+          "role": "control",
+          "name": "inner-opacity",
+          "nativeHost": "windows",
+          "sourceSha256": "7d436030525c9e5caff6adc2df851891b65ded77e76e38371cb117e88010da8f",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "7df3b38f7e0e98d147ea1d85679126a4a1307a63bccac5b9282084d29be1358f",
+          "nativePngSha256": "3f3555738b494ea822b148d15ec1f52959b7e1234214d0a34d00a1e25dcd0a21"
+        },
+        {
+          "role": "control",
+          "name": "inner-opacity",
+          "nativeHost": "linux",
+          "sourceSha256": "7d436030525c9e5caff6adc2df851891b65ded77e76e38371cb117e88010da8f",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "7df3b38f7e0e98d147ea1d85679126a4a1307a63bccac5b9282084d29be1358f",
+          "nativePngSha256": "3f3555738b494ea822b148d15ec1f52959b7e1234214d0a34d00a1e25dcd0a21"
+        },
+        {
+          "role": "control",
+          "name": "no-opacity",
+          "nativeHost": "windows",
+          "sourceSha256": "00d98437930f980dd474f917784fa5cef5656225a4359e2fb22f3a91ac390db3",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "68943d65c33f86dfa650107adec77e6fe3dabb598987c2358137633db9052ea5",
+          "nativePngSha256": "ccdacb6fd420f8000e573193e0ae9b6d6363af3bf0e12d16305e2155df2d821a"
+        },
+        {
+          "role": "control",
+          "name": "no-opacity",
+          "nativeHost": "linux",
+          "sourceSha256": "00d98437930f980dd474f917784fa5cef5656225a4359e2fb22f3a91ac390db3",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "68943d65c33f86dfa650107adec77e6fe3dabb598987c2358137633db9052ea5",
+          "nativePngSha256": "ccdacb6fd420f8000e573193e0ae9b6d6363af3bf0e12d16305e2155df2d821a"
+        },
+        {
+          "role": "control",
+          "name": "no-filter",
+          "nativeHost": "windows",
+          "sourceSha256": "5749fa1d55086905d2eda40624ce2b2f5580b539c3ff21ffa403d52457afd76e",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "e8e5e984e85a40e786950c01321694524766e43eb5891a4e7addbc6433d5a7eb",
+          "nativePngSha256": "3e0ba3ba383cb2c2e00bfc0fc2120685042d91e200103f5e16ba2cf01a146da3"
+        },
+        {
+          "role": "control",
+          "name": "no-filter",
+          "nativeHost": "linux",
+          "sourceSha256": "5749fa1d55086905d2eda40624ce2b2f5580b539c3ff21ffa403d52457afd76e",
+          "changedPixels": 0,
+          "beforeChangedPixels": 0,
+          "libraryPngSha256": "e8e5e984e85a40e786950c01321694524766e43eb5891a4e7addbc6433d5a7eb",
+          "nativePngSha256": "3e0ba3ba383cb2c2e00bfc0fc2120685042d91e200103f5e16ba2cf01a146da3"
+        }
+      ]
+    },
+    "nativeEquivalence": [
+      {
+        "role": "candidate",
+        "host": "windows",
+        "nativeOriginalVsOuter": 0,
+        "nativeOriginalVsInner": 33,
+        "libraryOriginalVsOuter": 0,
+        "libraryOriginalVsInner": 27
+      },
+      {
+        "role": "candidate",
+        "host": "linux",
+        "nativeOriginalVsOuter": 0,
+        "nativeOriginalVsInner": 33,
+        "libraryOriginalVsOuter": 0,
+        "libraryOriginalVsInner": 27
+      },
+      {
+        "role": "control",
+        "host": "windows",
+        "nativeOriginalVsOuter": 0,
+        "nativeOriginalVsInner": 19,
+        "libraryOriginalVsOuter": 32,
+        "libraryOriginalVsInner": 15
+      },
+      {
+        "role": "control",
+        "host": "linux",
+        "nativeOriginalVsOuter": 0,
+        "nativeOriginalVsInner": 19,
+        "libraryOriginalVsOuter": 32,
+        "libraryOriginalVsInner": 15
+      }
+    ],
+    "rejectedInitialVariant": "The larger logical native clip made all historical cases exact but regressed the explicit outer-opacity candidate by 32 pixels per host. The final request uses the owned destination window. The independent inner-opacity fixture also closes a 26-pixel failing-before discrepancy."
+  },
+  "authoredFixtures": [
+    {
+      "source": "../../Fixtures/original/clipped-filter-outer-opacity.svg",
+      "metadata": "../../References/original-clipped-filter-outer-opacity.json",
+      "license": "CC0-1.0",
+      "observations": [
+        {
+          "host": "windows",
+          "inputSha256": "5de589ab42920d189264820638574082e80f33671bcb71ec6233a55fed4dd055",
+          "nativePngSha256": "90dd999f5ade452c72b93facc546433db4f9a656262ee7671432a3fbd838893e",
+          "results": [
+            {
+              "label": "qualified-before",
+              "librarySha256": "5b3f12ee0854b7a34c0a703e18816fe0039ebae82c9f509affe3afaa2bd31671",
+              "changedPixels": 0
+            },
+            {
+              "label": "initial-candidate",
+              "librarySha256": "6cc9fe1e63df9d0bf2963d41d730338adce3239852d84f5ff12730d5bd033dc2",
+              "changedPixels": 32
+            },
+            {
+              "label": "candidate",
+              "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+              "changedPixels": 0
+            }
+          ],
+          "freshHealthyAgreeingCaptures": 3,
+          "profilesCleaned": true
+        },
+        {
+          "host": "linux",
+          "inputSha256": "5de589ab42920d189264820638574082e80f33671bcb71ec6233a55fed4dd055",
+          "nativePngSha256": "90dd999f5ade452c72b93facc546433db4f9a656262ee7671432a3fbd838893e",
+          "results": [
+            {
+              "label": "qualified-before",
+              "librarySha256": "5b3f12ee0854b7a34c0a703e18816fe0039ebae82c9f509affe3afaa2bd31671",
+              "changedPixels": 0
+            },
+            {
+              "label": "initial-candidate",
+              "librarySha256": "6cc9fe1e63df9d0bf2963d41d730338adce3239852d84f5ff12730d5bd033dc2",
+              "changedPixels": 32
+            },
+            {
+              "label": "candidate",
+              "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+              "changedPixels": 0
+            }
+          ],
+          "freshHealthyAgreeingCaptures": 3,
+          "profilesCleaned": true
+        }
+      ]
+    },
+    {
+      "source": "../../Fixtures/original/clipped-filter-inner-opacity.svg",
+      "metadata": "../../References/original-clipped-filter-inner-opacity.json",
+      "license": "CC0-1.0",
+      "observations": [
+        {
+          "host": "windows",
+          "inputSha256": "eece62736c51bad34b1aee54ea1fb0ab0150138d156966a182e561c4924cb471",
+          "nativePngSha256": "6a2637bbb20709a4b3f689b3a5c1ce98d97a1c43f5f37abebf02844d777daeaf",
+          "results": [
+            {
+              "label": "qualified-before",
+              "librarySha256": "5b3f12ee0854b7a34c0a703e18816fe0039ebae82c9f509affe3afaa2bd31671",
+              "changedPixels": 26
+            },
+            {
+              "label": "initial-candidate",
+              "librarySha256": "6cc9fe1e63df9d0bf2963d41d730338adce3239852d84f5ff12730d5bd033dc2",
+              "changedPixels": 0
+            },
+            {
+              "label": "candidate",
+              "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+              "changedPixels": 0
+            }
+          ],
+          "freshHealthyAgreeingCaptures": 3,
+          "profilesCleaned": true
+        },
+        {
+          "host": "linux",
+          "inputSha256": "eece62736c51bad34b1aee54ea1fb0ab0150138d156966a182e561c4924cb471",
+          "nativePngSha256": "6a2637bbb20709a4b3f689b3a5c1ce98d97a1c43f5f37abebf02844d777daeaf",
+          "results": [
+            {
+              "label": "qualified-before",
+              "librarySha256": "5b3f12ee0854b7a34c0a703e18816fe0039ebae82c9f509affe3afaa2bd31671",
+              "changedPixels": 26
+            },
+            {
+              "label": "initial-candidate",
+              "librarySha256": "6cc9fe1e63df9d0bf2963d41d730338adce3239852d84f5ff12730d5bd033dc2",
+              "changedPixels": 0
+            },
+            {
+              "label": "candidate",
+              "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+              "changedPixels": 0
+            }
+          ],
+          "freshHealthyAgreeingCaptures": 3,
+          "profilesCleaned": true
+        }
+      ]
+    }
+  ],
+  "focusedChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "testAssemblySha256": "536acdfdac4ade8589a6ef82568c1f986b9b41fb181f95f3a7b36b8661e9fb2f",
+      "exitCode": 0,
+      "seconds": 12.394838099833578,
+      "counters": {
+        "executed": "706",
+        "passed": "706",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "testAssemblySha256": "536acdfdac4ade8589a6ef82568c1f986b9b41fb181f95f3a7b36b8661e9fb2f",
+      "exitCode": 0,
+      "seconds": 35.647096999920905,
+      "counters": {
+        "executed": "706",
+        "passed": "706",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "testAssemblySha256": "0b5b0a707e4a2e4ee60efe2c27a2140cb3d4924ed7d492b00bf8dc43d4e219c9",
+      "exitCode": 0,
+      "seconds": 29.00251100002788,
+      "counters": {
+        "executed": "9256",
+        "passed": "9256",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "testAssemblySha256": "0b5b0a707e4a2e4ee60efe2c27a2140cb3d4924ed7d492b00bf8dc43d4e219c9",
+      "exitCode": 0,
+      "seconds": 38.09097469993867,
+      "counters": {
+        "executed": "9256",
+        "passed": "9256",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "2e2bacb41f7e0fe5208fdb85c5f8fd55bb9920bae7a51247932b027fa139134b",
+      "testAssemblySha256": "6dc9ded9e868c4443b15b3e4401bf5f91c8737bb240b0b5e45226c0770b93e9a",
+      "exitCode": 0,
+      "seconds": 11.090314799919724,
+      "counters": {
+        "executed": "706",
+        "passed": "706",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "2e2bacb41f7e0fe5208fdb85c5f8fd55bb9920bae7a51247932b027fa139134b",
+      "testAssemblySha256": "6dc9ded9e868c4443b15b3e4401bf5f91c8737bb240b0b5e45226c0770b93e9a",
+      "exitCode": 0,
+      "seconds": 14.32681080000475,
+      "counters": {
+        "executed": "706",
+        "passed": "706",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "2e2bacb41f7e0fe5208fdb85c5f8fd55bb9920bae7a51247932b027fa139134b",
+      "testAssemblySha256": "dbb41e25dad37305c5b430634bef8b4b1f31fdeb46fee80506670af41b6432e8",
+      "exitCode": 0,
+      "seconds": 27.6920172998216,
+      "counters": {
+        "executed": "9256",
+        "passed": "9256",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "2e2bacb41f7e0fe5208fdb85c5f8fd55bb9920bae7a51247932b027fa139134b",
+      "testAssemblySha256": "dbb41e25dad37305c5b430634bef8b4b1f31fdeb46fee80506670af41b6432e8",
+      "exitCode": 0,
+      "seconds": 38.861312499968335,
+      "counters": {
+        "executed": "9256",
+        "passed": "9256",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    }
+  ],
+  "additionalChecks": [
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "testAssemblySha256": "0b5b0a707e4a2e4ee60efe2c27a2140cb3d4924ed7d492b00bf8dc43d4e219c9",
+      "exitCode": 0,
+      "seconds": 12.496912700124085,
+      "counters": {
+        "executed": "3",
+        "passed": "3",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "31835745fb84fbf06fae193e691c3886144e0caf160bf405a4720ccd0f7352eb",
+      "testAssemblySha256": "0b5b0a707e4a2e4ee60efe2c27a2140cb3d4924ed7d492b00bf8dc43d4e219c9",
+      "exitCode": 0,
+      "seconds": 13.867211099946871,
+      "counters": {
+        "executed": "3",
+        "passed": "3",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "2e2bacb41f7e0fe5208fdb85c5f8fd55bb9920bae7a51247932b027fa139134b",
+      "testAssemblySha256": "dbb41e25dad37305c5b430634bef8b4b1f31fdeb46fee80506670af41b6432e8",
+      "exitCode": 0,
+      "seconds": 12.992732400074601,
+      "counters": {
+        "executed": "3",
+        "passed": "3",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "2e2bacb41f7e0fe5208fdb85c5f8fd55bb9920bae7a51247932b027fa139134b",
+      "testAssemblySha256": "dbb41e25dad37305c5b430634bef8b4b1f31fdeb46fee80506670af41b6432e8",
+      "exitCode": 0,
+      "seconds": 11.969197199912742,
+      "counters": {
+        "executed": "3",
+        "passed": "3",
+        "failed": "0"
+      },
+      "selection": "Affected filter/raster/hairline mechanisms, complete independent source-context bank including Research, 24 canonical native regressions, metadata and contained-line fixture; separate selection adds two opacity fixtures and bank-partition integrity."
+    }
+  ],
+  "broaderQualification": "Matching full primary CI, complete secondary suites, deterministic packages/installed consumers and every SVGWeb original/context replay follow this source commit. The current SVGWeb ledger remains bound to fd9564069 until the new replay passes.",
+  "limits": [
+    "No existing source SVG, native PNG, tolerance, exact assertion, text-layout implementation or public API changed. Two minimal authored CC0 fixtures are added.",
+    "The 432 historical rejections retain the same documented admission outcomes; they are separate from the now-closed admitted differences.",
+    "Diagnostic phase shifts and unconditional request widening remain unpromoted research.",
+    "All hosted SVG bodies/fragments/raw attributes remain RAM-only. Counterfactual inputs here derive from repository-authored sources.",
+    "Validation elapsed time includes process startup, discovery and concurrent work; no renderer-performance or suite-speedup claim.",
+    "Frozen Windows DejaVu authority remains open and asserted."
+  ]
+}

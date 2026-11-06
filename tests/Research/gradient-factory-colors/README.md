@@ -19,9 +19,9 @@ source/image hashes and reconstruct the embedded
 [Noto font](../supplied-font-labels/fonts/NotoSans-Regular.ttf) input from the
 [catalog](../static-css-document/font-pack.json).
 
-The [status audit](resolved-known-differences.json) selects another 475 historical
-inputs now exact on both hosts: 208 routine controls and 267 individual
-research cases. It separately tracks 24 admitted differences and 432 documented
+The [status audit](resolved-known-differences.json) selects another 499 historical
+inputs now exact on both hosts: 232 routine controls and 267 individual
+research cases. No admitted historical differences remain. It separately tracks 432 documented
 admission boundaries (144 direct mask-text children and 288 outside focal circles).
 These categories do not turn historical rejections into permanent contracts.
 [The initial audit](../release-baselines/paint-claim-trace.json) and
@@ -38,4 +38,8 @@ No reference or tolerance was rewritten.
 [Native device domains](../release-baselines/native-clip-device-domains.json)
 retain a source picture's complete extent and an isolated layer's logical clip
 independently of cropped addresses, closing nine instanced-viewport fill cases.
-The remaining shader/placement differences retain separate sampling investigation.
+[Sampling destination bounds](../release-baselines/filter-sampling-device.json)
+close the remaining 24 shader/placement interactions. Complete retained clips seed
+sampling within the current destination; nonopaque filters use their painted-output
+layer. Geometry capture keeps its separate ink request. Independent opacity-placement
+controls preserve the distinction between owned storage and logical paint clips.

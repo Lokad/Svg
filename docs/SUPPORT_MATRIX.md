@@ -423,7 +423,8 @@ Final offsets retain earlier image pixels outside the output region when replay 
 Empty tile restoration paints nothing. Image placement retains the owning bitmap's
 sampling phase; enclosing opacity stores restored pixels before paint-alpha modulation.
 Its painted-output bounds determine the sampling origin; source capture retains
-its recording context.
+its recording context. Sampling requests use complete retained clip coverage
+within the current destination, independently of compact ink storage.
 
 Drop shadows admit mapped/rounded deviations through 135 device pixels per axis;
 larger deviations reject. Gaussian blur rescales larger deviations and saturates

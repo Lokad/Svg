@@ -23,8 +23,9 @@ The [paint trace][paint-record] reviews P2-P7 and audits historical factory outc
 [Separate reflection maps][reflection-record] and [offset requests][offset-request-record]
 close four and 128 failures. [Geometry clip domains][geometry-clip-record] close
 51 more, and [native device domains][native-device-record] close nine viewport
-fill cases; P1 keeps 24 shader/placement compositions open,
-separately from documented admission boundaries.
+fill cases. [Sampling destinations][sampling-record] close the final 24 admitted
+shader/placement differences while retaining independent opacity-placement controls.
+The 432 documented admission boundaries remain separate.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -112,7 +113,7 @@ Scope: [gradients and patterns][contract-paints].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Open: [shared owner/check trace][paint-record] and [historical status][factory-status]. Of 931 historical cases, 475 are now exact, 432 hit documented admission boundaries, and 24 shader/placement compositions still differ. [Reflection maps][reflection-record] close four failures; [offset capture requests][offset-request-record] close 128; [geometry clip domains][geometry-clip-record] close 51; [native device domains][native-device-record] close nine viewport fill cases while preserving the independent source-context bank. Trace the remaining sampling/opacity interactions without changing targets. |
+| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Reviewed: [shared owner/check trace][paint-record] → [historical status][factory-status] and [sampling destination qualification][sampling-record]. All 499 admitted historical inputs are exact on both hosts; 432 retain separate documented admission boundaries. The shared corrections preserve each independent target, the full source-context bank and explicit inner/outer opacity controls. Runtime/source scope remains explicit in the linked records. |
 | P2 | Paint URL fallback, missing/wrong-kind/unavailable servers, valid transparent servers and invalid/effect URLs | Reviewed: [paint selection][paint-index] → [fallback checks][fallback-tests] and independent empty-channel/font contracts → [eight-state native pattern validity][fallback-native]. [Bindings and qualification][paint-record] correct the childless/nonpainting-child distinction. |
 | P3 | Definition-local percentage bases, cross-kind template defaults, transform replacement and literal gradientUnits rules | Reviewed: [coordinate units][gradient-coordinates] / [typed registration][definition-parser] → direct length/viewport/template/unit checks → independent definition/alias viewport fixtures. [Current bindings, case identities and qualification][paint-record]. |
 | P4 | Radial focal-circle containment and independently inherited center/radius/focal overrides | Reviewed: [typed registration][definition-parser] → root/template focal checks → [native radial maps][radial-native] and 192 exact historical alias inputs. [Trace][paint-record] pins the actual percentage containment rejection; original inputs stay unchanged. |
@@ -359,3 +360,4 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [offset-request-record]: offset-source-request.json
 [geometry-clip-record]: geometry-paint-clip-domain.json
 [native-device-record]: native-clip-device-domains.json
+[sampling-record]: filter-sampling-device.json

@@ -691,6 +691,11 @@ public static partial class SvgConverter
                 sourceRight = Math.Max(sourceRight, Math.Ceiling(nested.Right)); sourceBottom = Math.Max(sourceBottom, Math.Ceiling(nested.Bottom));
             }
             SvgPaintBounds sourceCaptureBounds = new((float)sourceLeft, (float)sourceTop, (float)sourceRight, (float)sourceBottom);
+            // A nonopaque filter restores through the same painted-output
+            // device as an explicit surrounding opacity group. Its clip seeds
+            // sampling independently of the compact source capture.
+            SvgPaintBounds? opacityOutputBounds = command.SourceOpacity.Value * foldedOpacity < 1
+                ? FilterResultBounds(binding, resource, SvgFilterBoundsKind.Output) : null;
             bool samplesSourcePicture = SamplesSourcePicture();
             bool ownsNativeSource = frame?.FilterBinding is {} nativeOwner && nativeOwner.Index == command.MaskContentIndex;
             SvgPaintBounds? ownCaptureHint = null;
@@ -776,8 +781,9 @@ public static partial class SvgConverter
                     : MapFilterParameterTransform(binding.Transform);
                 SvgFilterRegionContext sourceContext = new(sourceCoordinates,
                     objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
+                SvgPaintBounds outputRequest = new((float)requestedLeft, (float)requestedTop, (float)requestedRight, (float)requestedBottom);
                 SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext,
-                    new((float)requestedLeft, (float)requestedTop, (float)requestedRight, (float)requestedBottom), cancellationToken);
+                    outputRequest, cancellationToken);
                 SvgPaintBounds painted = new((float)(imageVisual.Left * horizontalScale + horizontalOffset), (float)(imageVisual.Top * verticalScale + verticalOffset),
                     (float)(imageVisual.Right * horizontalScale + horizontalOffset), (float)(imageVisual.Bottom * verticalScale + verticalOffset));
                 SvgPaintBounds outputHint = MapParameterSourceBounds(elementVisual, SvgFilterBoundsKind.Output,
@@ -788,7 +794,12 @@ public static partial class SvgConverter
                 if (hint.Right + paddingX < requestedLeft || hint.Bottom + paddingY < requestedTop
                     || hint.Left - paddingX > requestedRight || hint.Top - paddingY > requestedBottom) return end + 1;
                 requestedSourceImage = SvgFilterPlayback.RequestedSourceImageBounds(hint, needed);
-                imageShaderOrigin = SourceImageOrigin(hint, needed);
+                SvgAnalyticClipBounds bitmapBounds = new(0, 0, outputWidth, outputHeight);
+                SvgCpuRasterContext samplingBitmap = destinationBitmap ?? new(bitmapBounds, bitmapBounds);
+                SvgPaintBounds samplingRequest = SamplingOutputRequest(samplingBitmap);
+                SvgPaintBounds samplingNeeded = samplingRequest == outputRequest ? needed
+                    : SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext, samplingRequest, cancellationToken);
+                imageShaderOrigin = SourceImageOrigin(hint, samplingNeeded);
                 double captureLeft = Math.Max(left, needed.Left), captureTop = Math.Max(top, needed.Top);
                 double captureRight = Math.Min(right, needed.Right), captureBottom = Math.Min(bottom, needed.Bottom);
                 if (captureRight <= captureLeft || captureBottom <= captureTop)
@@ -978,9 +989,8 @@ public static partial class SvgConverter
             // Nonopaque filters restore through an enclosing opacity layer.
             // Its parameter-space painted extent is separate from the filtered
             // image's stored texels and sampling bounds.
-            if (command.SourceOpacity.Value * foldedOpacity < 1)
+            if (opacityOutputBounds is {} opacityExtent)
             {
-                SvgPaintBounds opacityExtent = FilterResultBounds(binding, resource, SvgFilterBoundsKind.Output);
                 restoreLeft = Math.Max(restoreLeft, ClampFloor(opacityExtent.Left, outputWidth));
                 restoreTop = Math.Max(restoreTop, ClampFloor(opacityExtent.Top, outputHeight));
                 restoreRight = Math.Min(restoreRight, ClampCeiling(opacityExtent.Right, outputWidth));
@@ -1914,6 +1924,29 @@ public static partial class SvgConverter
                     MathF.Max(recorded.Right, output.Right), MathF.Max(recorded.Bottom, output.Bottom));
             }
 
+            SvgPaintBounds SamplingOutputRequest(SvgCpuRasterContext bitmap)
+            {
+                // An owned destination has already consumed its parent clip.
+                // Its addressable enclosure bounds filter output requests;
+                // NativeClipBounds remains a separate paint-classification domain.
+                SvgAnalyticClipBounds device = isolatedBitmapScope?.Bounds ?? bitmap.BitmapClip;
+                if (opacityOutputBounds is {} output)
+                {
+                    device = new((int)Math.Clamp(Math.Floor(output.Left), device.Left, device.Right),
+                        (int)Math.Clamp(Math.Floor(output.Top), device.Top, device.Bottom),
+                        (int)Math.Clamp(Math.Ceiling(output.Right), device.Left, device.Right),
+                        (int)Math.Clamp(Math.Ceiling(output.Bottom), device.Top, device.Bottom));
+                }
+                // A paint window can omit a retained clip's transparent fringe.
+                // Sample against its complete coverage within the owning device;
+                // keep the earlier ink request for geometry construction/storage.
+                SvgAnalyticClipBounds? window = activeConstructionClip.Length == 0 && activeViewport.Rectangle is not null
+                    ? activeViewport.Bounds : null;
+                SvgAnalyticClipBounds clip = RasterClipBounds(bitmap, window) ?? bitmap.BitmapClip;
+                return new(MathF.Max(region.Left, Math.Max(device.Left, clip.Left)), MathF.Max(region.Top, Math.Max(device.Top, clip.Top)),
+                    MathF.Min(region.Right, Math.Min(device.Right, clip.Right)), MathF.Min(region.Bottom, Math.Min(device.Bottom, clip.Bottom)));
+            }
+
             // Shader origins belong to the requested native source image, while
             // compact ink captures retain their independent allocation bounds.
             static SvgCpuBitmapOrigin SourceImageOrigin(SvgPaintBounds hint, SvgPaintBounds needed)
@@ -2084,7 +2117,10 @@ public static partial class SvgConverter
                     SvgPaintBounds outputHint = MapParameterSourceBounds(elementVisual, SvgFilterBoundsKind.Output,
                         missingElementParameter ? null : elementParameterBounds);
                     SvgPaintBounds hint = ImageHint(painted, outputHint);
-                    SvgCpuBitmapOrigin sourceImageOrigin = SourceImageOrigin(hint, needed);
+                    SvgPaintBounds samplingRequest = SamplingOutputRequest(tile);
+                    SvgPaintBounds samplingNeeded = samplingRequest == requestedSource ? needed
+                        : SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext, samplingRequest, cancellationToken);
+                    SvgCpuBitmapOrigin sourceImageOrigin = SourceImageOrigin(hint, samplingNeeded);
                     SvgAnalyticClipBounds sourceContentClip = new(1, 1, (int)sourceWidth - 1, (int)sourceHeight - 1);
                     if (frame is { FilterBinding: {} sourceOwner, NativeSourceBounds: {} ownedSource } && sourceOwner.Index == command.MaskContentIndex)
                     {
@@ -4052,9 +4088,11 @@ public static partial class SvgConverter
         }
 
         SvgAnalyticClipBounds? ActiveClipBounds(SvgCpuRasterContext context)
+            => RasterClipBounds(context, activeConstructionClip.Length != 0 ? activeConstructionBounds : activeViewport.Bounds);
+
+        SvgAnalyticClipBounds? RasterClipBounds(SvgCpuRasterContext context, SvgAnalyticClipBounds? current)
         {
             SvgCpuClipCoverage? coverage = activeConstructionClip.Length != 0 ? activeConstructionCoverage : activeViewport.Coverage;
-            SvgAnalyticClipBounds? current = activeConstructionClip.Length != 0 ? activeConstructionBounds : activeViewport.Bounds;
             if (coverage is not null && coverage.TryGetBounds(context.BitmapClip, out SvgAnalyticClipBounds local)) current = local;
             else
             {
@@ -4062,8 +4100,9 @@ public static partial class SvgConverter
                 if (activeConstructionClip.Length == 0 && activeViewport.Rectangle is not null && current is {} rectangleBounds)
                     current = new(Math.Max(rectangleBounds.Left, context.BitmapClip.Left), Math.Max(rectangleBounds.Top, context.BitmapClip.Top),
                         Math.Min(rectangleBounds.Right, context.BitmapClip.Right), Math.Min(rectangleBounds.Bottom, context.BitmapClip.Bottom));
-                if (tape.Length != 0 && current is {} bounds)
+                if (tape.Length != 0)
                 {
+                    SvgAnalyticClipBounds bounds = current ?? context.BitmapClip;
                     int left = Math.Max(bounds.Left, context.BitmapClip.Left), top = Math.Max(bounds.Top, context.BitmapClip.Top);
                     int right = Math.Max(left, Math.Min(bounds.Right, context.BitmapClip.Right)), bottom = Math.Max(top, Math.Min(bounds.Bottom, context.BitmapClip.Bottom));
                     current = CoverageBounds(tape, new(left, top, right, bottom), out _);

@@ -45,10 +45,13 @@ The [native device correction](native-clip-device-domains.json) closes the nine
 viewport fill cases by retaining logical picture/layer clips independently of
 addressable storage. It removes unnecessary AA routing and retains a new independent
 contained-line control, preserving the SVGWeb static diagnostic projection.
-475 historical inputs are exact; 24 shader/placement inputs remain open.
 [Its packaged original/context replay](native-clip-device-domains-svgweb.json)
 preserves all 204 source identities and prior outcomes, every rendered default
 and each supplied/static context on both hosts, including both Linux math profiles.
+The [sampling destination correction](filter-sampling-device.json) closes those
+24 interactions through complete retained clips and the current output-layer
+enclosure. All 499 admitted historical inputs are exact. Two independent opacity
+placement fixtures guard source isolation and destination clipping.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

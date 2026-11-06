@@ -1,5 +1,5 @@
 {
-  "status": "Nine viewport fill interactions are closed by native-clip-device-domains.json. The remaining 24 shader/placement interactions are open; no sampling-request experiment is promoted.",
+  "status": "Closed by filter-sampling-device.json. Historical traces and rejected variants retain their original renderer/source identities; the final shared sampling-destination model closes every admitted historical difference.",
   "controls": [
     {
       "source": "../gradient-factory-colors/changed-65-candidate-1.svg",
@@ -377,13 +377,10 @@
     "verdict": "The opaque witness becomes exact but previously exact opacity cases regress. A content-origin-only follow-up does not resolve those losses. Preserve this boundary for the next shared-model review; do not widen every request."
   },
   "remaining": {
-    "inputs": 24,
-    "scope": "Shader/placement interactions retain their independent native targets and all known opacity/clip cases."
+    "inputs": 0,
+    "scope": "All 499 admitted historical inputs are exact; 432 documented admission boundaries remain separate."
   },
-  "nextActions": [
-    "Trace native picture, dynamic-layer and restore ownership across filter opacity before changing sampling requests or origins.",
-    "Qualify every historical outcome and the complete independent source-context bank for a justified shared-model correction; retain all exact targets and existing owner paths."
-  ],
+  "nextActions": [],
   "limits": [
     "All sources are existing repository-authored fixtures; counterfactuals are recomposed in memory. No SVG or reference PNG collection is added.",
     "The two banks add 66 fresh native captures across both hosts. Original sources retain their frozen references.",
@@ -618,6 +615,7 @@
       ],
       "verdict": "Rejected: eight newly exact inputs do not justify twelve regressions of previously exact opacity interactions. No candidate code is promoted; broader tests are unnecessary for this rejected variant."
     },
-    "nextAction": "Determine the native picture/dynamic-layer/restore owner and request bounds across filter opacity and isolation before changing the shared sampling origin. Preserve all 475 accepted historical inputs and the independent source-context bank."
-  }
+    "nextAction": "Completed by filter-sampling-device.json: complete retained coverage seeds sampling within the current destination; inline nonopaque filters use painted-output bounds, and owned destinations use their parent-clipped enclosure."
+  },
+  "closureEvidence": "filter-sampling-device.json"
 }
