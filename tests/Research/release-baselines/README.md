@@ -25,6 +25,9 @@ four near-threshold failures through the shared scene-owned paint representation
 212 clip/filter compositions remain open.
 [The clip/filter investigation](clip-filter-investigation.json) calibrates one
 unchanged witness against six fresh healthy captures before further model changes.
+The [SVGWeb replay](gradient-reflection-svgweb.json) binds all 204 originals and
+their separate supplied/static contexts to the packaged reflection correction.
+Both Linux math-profile outputs for `svg.svg` retain independent native authority.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

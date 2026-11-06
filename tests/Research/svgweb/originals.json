@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/native-line-source.json",
+    "evidence": "../release-baselines/gradient-reflection-svgweb.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "ca222b22b0390e9b4175cb4fcc8c4d4f73b7b6ff",
-    "sourceIdentity": "Clean-commit packaged native line source retention. Fresh primary-runtime replay covers all 204 original hashes, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics; complete Windows/Linux suites on both runtime targets are bound in evidence. Earlier native references and admission boundaries remain frozen.",
-    "librarySha256": "5976a76be08bffc524e41ded0535be9813cc99e4aeafde9574c23ac725c0bd9e",
+    "sourceBaseline": "540cd66056382586ce783f5020dfb35d1751aa32",
+    "sourceIdentity": "Packaged shared gradient-reflection correction. Fresh primary-runtime replay preserves all 204 original hashes and prior outcomes/diagnostics, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics on both hosts. Complete suites, representative secondary compatibility and installed consumers remain separately qualified; references and admission boundaries are frozen.",
+    "librarySha256": "b67b058d6eb711425689c3458410e4882135f43131baf82585895aec441999aa",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10401,11 +10401,15 @@
           "ny1-static-review.json",
           "svg2009-static-review.json"
         ],
-        "currentReplay": "../release-baselines/native-line-source.json"
+        "currentReplay": "../release-baselines/gradient-reflection-svgweb.json"
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0
     },
-    "admissionBoundaries": "admission-boundaries.json"
+    "admissionBoundaries": "admission-boundaries.json",
+    "nativeMathProfiles": {
+      "defaultReplayLinux": "glibc 2.43 overlay, matching the current Ubuntu 26 native profile.",
+      "csvLinuxCompanion": "svg.svg retains its original glibc 2.39 PNG hash. Both independently qualified profile outputs are recorded in current evidence; no target was rewritten."
+    }
   }
 }

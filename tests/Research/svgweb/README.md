@@ -12,6 +12,10 @@ exact**, with 35 UnsupportedFeature and 1 MalformedInput outcome. The
 the inventory retains historical observations separately.
 `originals.json.currentReview` owns the current renderer and replay qualification;
 stage records retain their source identities and link back to that ledger.
+The [gradient-reflection replay](../release-baselines/gradient-reflection-svgweb.json)
+preserves every original outcome and all declared contexts. For `svg.svg`, the CSV
+keeps the original Linux glibc 2.39 PNG hash; the current replay's glibc 2.43 output
+has its own independently recaptured authority. Both match their browser profile.
 Its `currentReview.contextPartition` joins all 204 source identities and hashes:
 168 default exact, 22 supplied-program contexts, 11 other static diagnostics and
 three separate source reviews. This partition records the declared context for
