@@ -79,6 +79,10 @@ complete primary/secondary/package qualification binds the committed correction.
 source identities/outcomes and prior outputs. The [CSS trace](css-claim-trace.json)
 reviews A1-A7 against current owners, 58 native controls and direct numerical
 boundaries; A8 retains the statement/block at-rule diagnostic follow-up.
+The [at-rule admission correction](css-at-rule-admission.json) resolves that
+category mismatch at the shared rule entry. Five failing-before checks retain
+ordinary-rule, literal-value and cleanup controls; affected checks precede its
+separate committed-source promotion.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

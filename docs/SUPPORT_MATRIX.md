@@ -376,7 +376,8 @@ Token rules:
   accepted, but leading whitespace inside quoted URIs and fragment whitespace reject.
 
 Imports, media/supports rules, other pseudo selectors, sibling selectors, layout,
-variables, animation and CSS web-font acquisition are unsupported.
+variables, animation and CSS web-font acquisition are unsupported. At-rules report
+`UnsupportedFeature` before their declarations are interpreted.
 
 ### Markers and filters
 

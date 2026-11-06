@@ -1,0 +1,426 @@
+{
+  "status": "Shared at-rule category correction passes focused and affected checks. Coherent source promotion and complete CSS milestone qualification follow the commit.",
+  "sourceBaseCommit": "8562e39030b83563f30b6cfe09212559dcef6efe",
+  "beforeQualifiedSourceCommit": "10d885a384459ba407911420696ca6cbc0badd56",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
+      "sha256": "5ec92a9d0f20ff46b380549f7b997fa3a582b69976d360e3e1e5cf8ab4ee59c1"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgStaticCssTests.cs",
+      "sha256": "8294036106df2a3c6a43309ed36ab17fa3e3b3526a35aaec325263006ac4e331"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgStyleSheetTests.cs",
+      "sha256": "cf1640dfd1c6ed9a96ae020412c0514b564bf2266b11abbfa81e9fc46a921a8d"
+    },
+    {
+      "path": "docs/SUPPORT_MATRIX.md",
+      "sha256": "8ff9f3598fbf2c7475a5dcf0f1ae4f05eab8746122035b26daf1ac115715703d"
+    }
+  ],
+  "problem": "The rule parser searched for an opening declaration brace before recognizing excluded at-rules. Statement forms reported MalformedInput while block forms reported UnsupportedFeature.",
+  "change": "At the existing rule entry, after comment normalization and whitespace/EOF handling, reject the at-sign rule family as UnsupportedFeature. Ordinary-rule syntax, cancellation, owners, limits, rendering and public API shapes remain unchanged.",
+  "beforeChecks": {
+    "host": "windows",
+    "kind": "core",
+    "framework": "net11.0",
+    "librarySha256": "d7ab151e3715b021c49fc90b989c771edbcfe9dfe658c597722111765721cb65",
+    "testAssemblySha256": "e55d8e0d3709c71c9c64e477a37fcc970322fcaf0949c4aab19a72e4710e5ccc",
+    "selection": "FullyQualifiedName~Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted|FullyQualifiedName~Missing_ordinary_rule_blocks_remain_malformed|FullyQualifiedName~At_signs_in_quoted_declarations_do_not_become_rules|FullyQualifiedName~Excluded_late_at_rules_keep_source_context_empty_output_and_retry",
+    "exitCode": 1,
+    "seconds": 8.758462999947369,
+    "counters": {
+      "executed": "12",
+      "passed": "7",
+      "failed": "5"
+    },
+    "failures": [
+      {
+        "name": "Lokad.Svg.Tests.SvgStaticCssTests.Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted(css: \"rect{fill:blue}@import 'theme.css';\")",
+        "message": "Assert.Equal() Failure: Values differ\r\nExpected: UnsupportedFeature\r\nActual:   MalformedInput"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgStaticCssTests.Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted(css: \"@import 'theme.css';\")",
+        "message": "Assert.Equal() Failure: Values differ\r\nExpected: UnsupportedFeature\r\nActual:   MalformedInput"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgStaticCssTests.Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted(css: \" /*before*/ @IMPORT 'theme.css';\")",
+        "message": "Assert.Equal() Failure: Values differ\r\nExpected: UnsupportedFeature\r\nActual:   MalformedInput"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgStaticCssTests.Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted(css: \"@charset 'UTF-8';\")",
+        "message": "Assert.Equal() Failure: Values differ\r\nExpected: UnsupportedFeature\r\nActual:   MalformedInput"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgStyleSheetTests.Excluded_late_at_rules_keep_source_context_empty_output_and_retry",
+        "message": "Assert.Equal() Failure: Values differ\r\nExpected: UnsupportedFeature\r\nActual:   MalformedInput"
+      }
+    ]
+  },
+  "focusedChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "1046872e8a776afcd08ba8af2d23183e77973f7e0365d91a06fd8b6656db4ba4",
+      "testAssemblySha256": "e55d8e0d3709c71c9c64e477a37fcc970322fcaf0949c4aab19a72e4710e5ccc",
+      "selection": "FullyQualifiedName~Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted|FullyQualifiedName~Missing_ordinary_rule_blocks_remain_malformed|FullyQualifiedName~At_signs_in_quoted_declarations_do_not_become_rules|FullyQualifiedName~Excluded_late_at_rules_keep_source_context_empty_output_and_retry",
+      "exitCode": 0,
+      "seconds": 10.86978939990513,
+      "counters": {
+        "executed": "12",
+        "passed": "12",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "1046872e8a776afcd08ba8af2d23183e77973f7e0365d91a06fd8b6656db4ba4",
+      "testAssemblySha256": "e55d8e0d3709c71c9c64e477a37fcc970322fcaf0949c4aab19a72e4710e5ccc",
+      "selection": "FullyQualifiedName~Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted|FullyQualifiedName~Missing_ordinary_rule_blocks_remain_malformed|FullyQualifiedName~At_signs_in_quoted_declarations_do_not_become_rules|FullyQualifiedName~Excluded_late_at_rules_keep_source_context_empty_output_and_retry",
+      "exitCode": 0,
+      "seconds": 19.176432099891827,
+      "counters": {
+        "executed": "12",
+        "passed": "12",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affectedChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "1046872e8a776afcd08ba8af2d23183e77973f7e0365d91a06fd8b6656db4ba4",
+      "testAssemblySha256": "e55d8e0d3709c71c9c64e477a37fcc970322fcaf0949c4aab19a72e4710e5ccc",
+      "selection": "(FullyQualifiedName~SvgCss|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgCurrentColor|FullyQualifiedName~SvgDisplay|FullyQualifiedName~SvgPaintOrder|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgLocalUrlTests|FullyQualifiedName~Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution|FullyQualifiedName~Path_length_is_an_xml_number_not_a_css_property|FullyQualifiedName~Length_numbers_and_units_remain_one_token_across_consumers|FullyQualifiedName~Local_url_function_case_preserves_identifier_quoting_and_dispatch|FullyQualifiedName~No_filter_keyword_is_case_insensitive|FullyQualifiedName~Local_url_function_normalization_preserves_identifier_case_and_unicode_contents|FullyQualifiedName~Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids|FullyQualifiedName~Encoded_targets_use_the_same_resource_selection_before_font_acquisition|FullyQualifiedName~Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout|FullyQualifiedName~Invalid_fragment_encodings_do_not_bind_literal_encoded_ids|FullyQualifiedName~Local_fragments_decode_once_before_selecting_a_resource|FullyQualifiedName~Legacy_rgb_channels_use_a_single_unit_grammar|FullyQualifiedName~Modern_color_function_aliases_have_optional_alpha|FullyQualifiedName~Display_inheritance_agrees_between_font_discovery_preparation_and_replay|FullyQualifiedName~A_local_replacement_pattern_keeps_its_font_requirement_when_its_template_is_hidden|FullyQualifiedName~Definition_display_suppresses_resource_fonts_before_preparation_and_marker_metrics)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 11.4114782998804,
+      "counters": {
+        "executed": "1354",
+        "passed": "1354",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "1046872e8a776afcd08ba8af2d23183e77973f7e0365d91a06fd8b6656db4ba4",
+      "testAssemblySha256": "e55d8e0d3709c71c9c64e477a37fcc970322fcaf0949c4aab19a72e4710e5ccc",
+      "selection": "(FullyQualifiedName~SvgCss|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgCurrentColor|FullyQualifiedName~SvgDisplay|FullyQualifiedName~SvgPaintOrder|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgLocalUrlTests|FullyQualifiedName~Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution|FullyQualifiedName~Path_length_is_an_xml_number_not_a_css_property|FullyQualifiedName~Length_numbers_and_units_remain_one_token_across_consumers|FullyQualifiedName~Local_url_function_case_preserves_identifier_quoting_and_dispatch|FullyQualifiedName~No_filter_keyword_is_case_insensitive|FullyQualifiedName~Local_url_function_normalization_preserves_identifier_case_and_unicode_contents|FullyQualifiedName~Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids|FullyQualifiedName~Encoded_targets_use_the_same_resource_selection_before_font_acquisition|FullyQualifiedName~Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout|FullyQualifiedName~Invalid_fragment_encodings_do_not_bind_literal_encoded_ids|FullyQualifiedName~Local_fragments_decode_once_before_selecting_a_resource|FullyQualifiedName~Legacy_rgb_channels_use_a_single_unit_grammar|FullyQualifiedName~Modern_color_function_aliases_have_optional_alpha|FullyQualifiedName~Display_inheritance_agrees_between_font_discovery_preparation_and_replay|FullyQualifiedName~A_local_replacement_pattern_keeps_its_font_requirement_when_its_template_is_hidden|FullyQualifiedName~Definition_display_suppresses_resource_fonts_before_preparation_and_marker_metrics)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 18.11772199999541,
+      "counters": {
+        "executed": "1354",
+        "passed": "1354",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "1046872e8a776afcd08ba8af2d23183e77973f7e0365d91a06fd8b6656db4ba4",
+      "testAssemblySha256": "62596492df1fe2219da7965c41b101055f91ec0c176d59d6ddc129be377717c5",
+      "selection": "(FullyQualifiedName~SvgCssSelectorIdentifierReferenceTests|FullyQualifiedName~SvgInstancePaintOrderReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 42.525491799926385,
+      "counters": {
+        "executed": "1639",
+        "passed": "1639",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "1046872e8a776afcd08ba8af2d23183e77973f7e0365d91a06fd8b6656db4ba4",
+      "testAssemblySha256": "62596492df1fe2219da7965c41b101055f91ec0c176d59d6ddc129be377717c5",
+      "selection": "(FullyQualifiedName~SvgCssSelectorIdentifierReferenceTests|FullyQualifiedName~SvgInstancePaintOrderReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 35.74108589999378,
+      "counters": {
+        "executed": "1639",
+        "passed": "1639",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "897de4ebd6352ac2d79b28c68e0aa8bf555fc98cd9cfa107bb08e8708a10110d",
+      "testAssemblySha256": "5247aef391c15695a6b8f61758a720230a0d8855aa05cdc134e6d47ee233c13d",
+      "selection": "(FullyQualifiedName~SvgCss|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgCurrentColor|FullyQualifiedName~SvgDisplay|FullyQualifiedName~SvgPaintOrder|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgLocalUrlTests|FullyQualifiedName~Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution|FullyQualifiedName~Path_length_is_an_xml_number_not_a_css_property|FullyQualifiedName~Length_numbers_and_units_remain_one_token_across_consumers|FullyQualifiedName~Local_url_function_case_preserves_identifier_quoting_and_dispatch|FullyQualifiedName~No_filter_keyword_is_case_insensitive|FullyQualifiedName~Local_url_function_normalization_preserves_identifier_case_and_unicode_contents|FullyQualifiedName~Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids|FullyQualifiedName~Encoded_targets_use_the_same_resource_selection_before_font_acquisition|FullyQualifiedName~Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout|FullyQualifiedName~Invalid_fragment_encodings_do_not_bind_literal_encoded_ids|FullyQualifiedName~Local_fragments_decode_once_before_selecting_a_resource|FullyQualifiedName~Legacy_rgb_channels_use_a_single_unit_grammar|FullyQualifiedName~Modern_color_function_aliases_have_optional_alpha|FullyQualifiedName~Display_inheritance_agrees_between_font_discovery_preparation_and_replay|FullyQualifiedName~A_local_replacement_pattern_keeps_its_font_requirement_when_its_template_is_hidden|FullyQualifiedName~Definition_display_suppresses_resource_fonts_before_preparation_and_marker_metrics)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 14.823227899847552,
+      "counters": {
+        "executed": "1354",
+        "passed": "1354",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "897de4ebd6352ac2d79b28c68e0aa8bf555fc98cd9cfa107bb08e8708a10110d",
+      "testAssemblySha256": "5247aef391c15695a6b8f61758a720230a0d8855aa05cdc134e6d47ee233c13d",
+      "selection": "(FullyQualifiedName~SvgCss|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgCurrentColor|FullyQualifiedName~SvgDisplay|FullyQualifiedName~SvgPaintOrder|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgLocalUrlTests|FullyQualifiedName~Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution|FullyQualifiedName~Path_length_is_an_xml_number_not_a_css_property|FullyQualifiedName~Length_numbers_and_units_remain_one_token_across_consumers|FullyQualifiedName~Local_url_function_case_preserves_identifier_quoting_and_dispatch|FullyQualifiedName~No_filter_keyword_is_case_insensitive|FullyQualifiedName~Local_url_function_normalization_preserves_identifier_case_and_unicode_contents|FullyQualifiedName~Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids|FullyQualifiedName~Encoded_targets_use_the_same_resource_selection_before_font_acquisition|FullyQualifiedName~Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout|FullyQualifiedName~Invalid_fragment_encodings_do_not_bind_literal_encoded_ids|FullyQualifiedName~Local_fragments_decode_once_before_selecting_a_resource|FullyQualifiedName~Legacy_rgb_channels_use_a_single_unit_grammar|FullyQualifiedName~Modern_color_function_aliases_have_optional_alpha|FullyQualifiedName~Display_inheritance_agrees_between_font_discovery_preparation_and_replay|FullyQualifiedName~A_local_replacement_pattern_keeps_its_font_requirement_when_its_template_is_hidden|FullyQualifiedName~Definition_display_suppresses_resource_fonts_before_preparation_and_marker_metrics)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 14.960044899955392,
+      "counters": {
+        "executed": "1354",
+        "passed": "1354",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "897de4ebd6352ac2d79b28c68e0aa8bf555fc98cd9cfa107bb08e8708a10110d",
+      "testAssemblySha256": "dceaa147cef048e41108120228f5350e0e610ae7c06379e0cc989a4556c8f222",
+      "selection": "(FullyQualifiedName~SvgCssSelectorIdentifierReferenceTests|FullyQualifiedName~SvgInstancePaintOrderReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 24.709618099965155,
+      "counters": {
+        "executed": "1639",
+        "passed": "1639",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "897de4ebd6352ac2d79b28c68e0aa8bf555fc98cd9cfa107bb08e8708a10110d",
+      "testAssemblySha256": "dceaa147cef048e41108120228f5350e0e610ae7c06379e0cc989a4556c8f222",
+      "selection": "(FullyQualifiedName~SvgCssSelectorIdentifierReferenceTests|FullyQualifiedName~SvgInstancePaintOrderReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 29.801920699886978,
+      "counters": {
+        "executed": "1639",
+        "passed": "1639",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "proof": "The before and focused after checks use the identical final test assembly. Only the renderer DLL is substituted with the exact preserved qualified baseline. Five failures are category mismatches; seven pre-existing/control outcomes pass.",
+  "responsibilities": {
+    "mechanisms": "Eight individually discovered rule cases cover statement, commented/case-varied, after-ordinary, media/supports, font-face and keyframes forms. Two missing ordinary blocks remain malformed; one quoted-at-sign case preserves literal declaration content.",
+    "contract": "One late-style failure retains the declaring style ID/XML position, parser cleanup, empty stream output, input immutability and same-allowance retry. It has only Layer=Contract; direct cases retain Layer=Mechanism.",
+    "rendering": "1,639 existing native/paint-order/instance rendering checks per host/runtime retain exact targets. Admission-only cases add no rendering fixtures or API product matrix."
+  },
+  "publicProbe": {
+    "before": {
+      "sourceCommit": "10d885a384459ba407911420696ca6cbc0badd56",
+      "librarySha256": "d7ab151e3715b021c49fc90b989c771edbcfe9dfe658c597722111765721cb65",
+      "host": "windows",
+      "framework": "net11.0",
+      "sourceTemplate": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>{css}</style><rect width='8' height='8' fill='blue'/></svg>",
+      "rows": [
+        {
+          "id": "import",
+          "css": "@import \"theme.css\";",
+          "sourceSha256": "13c2621d09f6774960d49adba222e9c63efb99d6f624f474cd0c7698ca888d95",
+          "outcome": "MalformedInput",
+          "message": "Stylesheet rules must contain a declaration block."
+        },
+        {
+          "id": "charset",
+          "css": "@charset \"UTF-8\";",
+          "sourceSha256": "786711f0ecdb703df606e6dc73b955259a34ed24081565050eb2395226558e81",
+          "outcome": "MalformedInput",
+          "message": "Stylesheet rules must contain a declaration block."
+        },
+        {
+          "id": "media",
+          "css": "@media all {rect{fill:red}}",
+          "sourceSha256": "bcb8337ff24908c65e3fc475791e984ce63d24a03603e4ce589204b28f64840f",
+          "outcome": "UnsupportedFeature",
+          "message": "Nested stylesheet rules are not implemented."
+        },
+        {
+          "id": "supports",
+          "css": "@supports (display:block) {rect{fill:red}}",
+          "sourceSha256": "5412d583d5f2d73178165a7aebf1150e2eb51a3a7c947e9dd7c0c68fbcfef213",
+          "outcome": "UnsupportedFeature",
+          "message": "Nested stylesheet rules are not implemented."
+        },
+        {
+          "id": "font-face",
+          "css": "@font-face{font-family:Example;src:url(font.ttf)}",
+          "sourceSha256": "4b2a314879ef2cbfc7ff207b2961c9e606c0d118bd0358087b21843790154d0b",
+          "outcome": "UnsupportedFeature",
+          "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+        },
+        {
+          "id": "keyframes",
+          "css": "@keyframes pulse {from{opacity:0}to{opacity:1}}",
+          "sourceSha256": "4f0242f817fba0aefe32d9c4a972147f5554a600d92a722350a8cb96765ac4ce",
+          "outcome": "UnsupportedFeature",
+          "message": "Nested stylesheet rules are not implemented."
+        },
+        {
+          "id": "sibling-adjacent",
+          "css": "g+rect{fill:red}",
+          "sourceSha256": "a187334b5b9af1154b661d122d13d8bf4af546b9f67638945b2764c277746de6",
+          "outcome": "UnsupportedFeature",
+          "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+        },
+        {
+          "id": "sibling-general",
+          "css": "g~rect{fill:red}",
+          "sourceSha256": "f7e32b613df9895838a2d3e42f5568e44221a2edd11c1dd01b6e044d0c7058ce",
+          "outcome": "UnsupportedFeature",
+          "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+        },
+        {
+          "id": "variable-value",
+          "css": "rect{fill:var(--color)}",
+          "sourceSha256": "e5f38518e6ff0772538a37565695fdcf6e3470d3db34a8046f1601ef55225a53",
+          "outcome": "UnsupportedFeature",
+          "message": "The CSS color name or syntax is not supported."
+        },
+        {
+          "id": "variable-declaration",
+          "css": "rect{--color:red;fill:var(--color)}",
+          "sourceSha256": "d69386030a0492416a1b5e9f700ccc7722ee8a04a3a9fd34d288cff77d6c6edf",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property '--color' is not implemented."
+        },
+        {
+          "id": "animation",
+          "css": "rect{animation:pulse 1s}",
+          "sourceSha256": "c3f23a663a51d04fd3e0b8dc0bd6ff5eb4e48f8a8220a86476fcca11e7aa5dee",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'animation' is not implemented."
+        },
+        {
+          "id": "layout",
+          "css": "rect{display:flex}",
+          "sourceSha256": "3aa7e05f351dccb7c0710ccb9ef1eefd2103b282b237cdcd059e58a420874a99",
+          "outcome": "UnsupportedFeature",
+          "message": "Only inline, block, none and inherit display values are implemented."
+        }
+      ]
+    },
+    "after": {
+      "sourceBaseCommit": "8562e39030b83563f30b6cfe09212559dcef6efe",
+      "librarySha256": "1046872e8a776afcd08ba8af2d23183e77973f7e0365d91a06fd8b6656db4ba4",
+      "host": "windows",
+      "framework": "net11.0",
+      "sourceTemplate": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>{css}</style><rect width='8' height='8' fill='blue'/></svg>",
+      "rows": [
+        {
+          "id": "import",
+          "css": "@import \"theme.css\";",
+          "sourceSha256": "13c2621d09f6774960d49adba222e9c63efb99d6f624f474cd0c7698ca888d95",
+          "outcome": "UnsupportedFeature",
+          "message": "CSS at-rules are not implemented."
+        },
+        {
+          "id": "charset",
+          "css": "@charset \"UTF-8\";",
+          "sourceSha256": "786711f0ecdb703df606e6dc73b955259a34ed24081565050eb2395226558e81",
+          "outcome": "UnsupportedFeature",
+          "message": "CSS at-rules are not implemented."
+        },
+        {
+          "id": "media",
+          "css": "@media all {rect{fill:red}}",
+          "sourceSha256": "bcb8337ff24908c65e3fc475791e984ce63d24a03603e4ce589204b28f64840f",
+          "outcome": "UnsupportedFeature",
+          "message": "CSS at-rules are not implemented."
+        },
+        {
+          "id": "supports",
+          "css": "@supports (display:block) {rect{fill:red}}",
+          "sourceSha256": "5412d583d5f2d73178165a7aebf1150e2eb51a3a7c947e9dd7c0c68fbcfef213",
+          "outcome": "UnsupportedFeature",
+          "message": "CSS at-rules are not implemented."
+        },
+        {
+          "id": "font-face",
+          "css": "@font-face{font-family:Example;src:url(font.ttf)}",
+          "sourceSha256": "4b2a314879ef2cbfc7ff207b2961c9e606c0d118bd0358087b21843790154d0b",
+          "outcome": "UnsupportedFeature",
+          "message": "CSS at-rules are not implemented."
+        },
+        {
+          "id": "keyframes",
+          "css": "@keyframes pulse {from{opacity:0}to{opacity:1}}",
+          "sourceSha256": "4f0242f817fba0aefe32d9c4a972147f5554a600d92a722350a8cb96765ac4ce",
+          "outcome": "UnsupportedFeature",
+          "message": "CSS at-rules are not implemented."
+        },
+        {
+          "id": "sibling-adjacent",
+          "css": "g+rect{fill:red}",
+          "sourceSha256": "a187334b5b9af1154b661d122d13d8bf4af546b9f67638945b2764c277746de6",
+          "outcome": "UnsupportedFeature",
+          "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+        },
+        {
+          "id": "sibling-general",
+          "css": "g~rect{fill:red}",
+          "sourceSha256": "f7e32b613df9895838a2d3e42f5568e44221a2edd11c1dd01b6e044d0c7058ce",
+          "outcome": "UnsupportedFeature",
+          "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+        },
+        {
+          "id": "variable-value",
+          "css": "rect{fill:var(--color)}",
+          "sourceSha256": "e5f38518e6ff0772538a37565695fdcf6e3470d3db34a8046f1601ef55225a53",
+          "outcome": "UnsupportedFeature",
+          "message": "The CSS color name or syntax is not supported."
+        },
+        {
+          "id": "variable-declaration",
+          "css": "rect{--color:red;fill:var(--color)}",
+          "sourceSha256": "d69386030a0492416a1b5e9f700ccc7722ee8a04a3a9fd34d288cff77d6c6edf",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property '--color' is not implemented."
+        },
+        {
+          "id": "animation",
+          "css": "rect{animation:pulse 1s}",
+          "sourceSha256": "c3f23a663a51d04fd3e0b8dc0bd6ff5eb4e48f8a8220a86476fcca11e7aa5dee",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'animation' is not implemented."
+        },
+        {
+          "id": "layout",
+          "css": "rect{display:flex}",
+          "sourceSha256": "3aa7e05f351dccb7c0710ccb9ef1eefd2103b282b237cdcd059e58a420874a99",
+          "outcome": "UnsupportedFeature",
+          "message": "Only inline, block, none and inherit display values are implemented."
+        }
+      ]
+    },
+    "scope": "The same twelve authored CSS exclusion inputs are replayed through canonical public conversion. Two categories are corrected; ten existing exclusions retain their outcome. No rejected conversion publishes a PNG."
+  },
+  "validationScope": {
+    "affectedPasses": 11972,
+    "measurements": "Validation elapsed times include test host/discovery/TRX and exclude build. No controlled speedup or renderer-performance claim.",
+    "broaderQualification": "Pending coherent committed CSS milestone. Complete primary/secondary/package/SVGWeb evidence remains explicitly bound to 10d885a38 until promotion; frozen Windows DejaVu remains asserted."
+  }
+}

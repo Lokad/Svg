@@ -8,6 +8,52 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssTests
 {
     [Theory]
+    [InlineData("@import 'theme.css';")]
+    [InlineData(" /*before*/ @IMPORT 'theme.css';")]
+    [InlineData("@charset 'UTF-8';")]
+    [InlineData("rect{fill:blue}@import 'theme.css';")]
+    [InlineData("@media all{rect{fill:red}}")]
+    [InlineData("@supports(display:block){rect{fill:red}}")]
+    [InlineData("@font-face{font-family:Example;src:url(font.ttf)}")]
+    [InlineData("@keyframes pulse{from{opacity:0}to{opacity:1}}")]
+    public void Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted(string css)
+    {
+        RenderBudget budget = new(new HostMemoryBudget(100_000));
+        using (BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser))
+        using (BudgetedParserStringStore strings = new(budget))
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+                SvgStyleSheet.Parse(css, 16, rules, strings, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("rect")]
+    [InlineData("rect{fill:red}path")]
+    public void Missing_ordinary_rule_blocks_remain_malformed(string css)
+    {
+        RenderBudget budget = new(new HostMemoryBudget(100_000));
+        using (BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser))
+        using (BudgetedParserStringStore strings = new(budget))
+            Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() =>
+                SvgStyleSheet.Parse(css, 16, rules, strings, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void At_signs_in_quoted_declarations_do_not_become_rules()
+    {
+        RenderBudget budget = new(new HostMemoryBudget(100_000));
+        using (BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser))
+        using (BudgetedParserStringStore strings = new(budget))
+        {
+            SvgStyleSheet.Parse("rect{font-family:'Example@Face';fill:blue}", 16, rules, strings, budget, CancellationToken.None);
+            Assert.Equal(1, rules.Count);
+            Assert.Equal("'Example@Face'", rules[0].Style.TextFont.Family);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("hover")]
     [InlineData("active")]
     [InlineData("focus")]

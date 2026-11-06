@@ -16,6 +16,7 @@ internal static class SvgStyleSheet
         {
             position = SkipWhitespace(value, position, cancellationToken);
             if (position == value.Length) break;
+            if (value[position] == '@') throw new SvgException(SvgErrorCode.UnsupportedFeature, "CSS at-rules are not implemented.");
             int openingBrace = FindCharacter(value, '{', position, cancellationToken);
             if (openingBrace < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet rules must contain a declaration block.");
             int closingBrace = FindCharacter(value, '}', openingBrace + 1, cancellationToken);

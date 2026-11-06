@@ -7,6 +7,35 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgStyleSheetTests
 {
+    [Fact]
+    [Trait("Layer", "Contract")]
+    public void Excluded_late_at_rules_keep_source_context_empty_output_and_retry()
+    {
+        const string source = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8'/>\n  <style id='excluded'>@import 'theme.css';</style></svg>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(source), unchanged = input.ToArray();
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        SvgException error = Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
+        });
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        SvgSourceDiagnostic context = Assert.IsType<SvgSourceDiagnostic>(error.SourceDiagnostic);
+        Assert.Equal("style", context.ElementName);
+        Assert.Equal("excluded", context.ElementId);
+        Assert.Equal(2, context.LineNumber);
+        Assert.Equal(4, context.LinePosition);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream destination = new();
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+            SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, destination.Length);
+        byte[] valid = System.Text.Encoding.UTF8.GetBytes(source.Replace("@import 'theme.css';", "rect{fill:red}", StringComparison.Ordinal));
+        using (SvgRoot retry = SvgRootParser.Parse(valid, SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.Single(retry.Geometries);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
+    }
+
     [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("<style xmlns='http://www.w3.org/2000/svg'>$</style>")]
