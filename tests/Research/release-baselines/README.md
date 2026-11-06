@@ -77,12 +77,15 @@ independent browser discrepancies retain valid-list and early/late cleanup contr
 complete primary/secondary/package qualification binds the committed correction.
 [Its original/context replay](css-selector-lists-svgweb.json) preserves all 204
 source identities/outcomes and prior outputs. The [CSS trace](css-claim-trace.json)
-reviews A1-A7 against current owners, 58 native controls and direct numerical
-boundaries; A8 retains the statement/block at-rule diagnostic follow-up.
+reviews A1-A8 against current owners, 58 native controls and direct numerical
+boundaries.
 The [at-rule admission correction](css-at-rule-admission.json) resolves that
 category mismatch at the shared rule entry. Five failing-before checks retain
-ordinary-rule, literal-value and cleanup controls; affected checks precede its
-separate committed-source promotion.
+ordinary-rule, literal-value and cleanup controls. Complete primary/secondary/
+package qualification and [original/context replay](css-at-rule-admission-svgweb.json)
+bind the final CSS milestone. The [structural/source trace](structural-admission-claim-trace.json)
+completes X2/T2 with shared traversal, 372 focused checks and twelve packaged
+category probes, retaining font and rendering authority in their own support rows.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

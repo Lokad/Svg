@@ -1,9 +1,9 @@
 {
-  "status": "A1-A7 inspected and reviewed; A8 exclusion diagnostic follow-up remains explicit. The selector-list correction has complete source/package/original-context qualification. No additional renderer change or reference rewrite is introduced by this trace.",
-  "qualifiedSourceCommit": "10d885a384459ba407911420696ca6cbc0badd56",
-  "qualification": "css-selector-lists.json",
+  "status": "A1-A8 inspected and reviewed. Selector-list correctness and at-rule diagnostic corrections have separate failing-before proof; the final source has complete primary/secondary/package/original-context qualification. Independent references and text layout remain unchanged.",
+  "qualifiedSourceCommit": "c780283f423090a4363a7975f00db86a09064854",
+  "qualification": "css-at-rule-admission.json",
   "supportContract": "../../../docs/SUPPORT_MATRIX.md",
-  "supportContractSha256": "c696d0b98bb082ecb3445a7d882d2d6ab283e5a92dfe16a4d0feba1f777ff938",
+  "supportContractSha256": "8ff9f3598fbf2c7475a5dcf0f1ae4f05eab8746122035b26daf1ac115715703d",
   "sourceBindings": [
     {
       "path": "src/Lokad.Svg/Parsing/SvgColorParser.cs",
@@ -79,7 +79,7 @@
     },
     {
       "path": "src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
-      "sha256": "d587d7973421d258ffb691f580d7f7e8009ea5f841dee16dfc2860a62659ccbd"
+      "sha256": "5ec92a9d0f20ff46b380549f7b997fa3a582b69976d360e3e1e5cf8ab4ee59c1"
     },
     {
       "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.ColorGrammar.cs",
@@ -155,11 +155,11 @@
     },
     {
       "path": "tests/Lokad.Svg.Tests/SvgStaticCssTests.cs",
-      "sha256": "2da42a09686903f228e3890b90a76780c2a25b00ea0a28c5926c4ac80da26d26"
+      "sha256": "8294036106df2a3c6a43309ed36ab17fa3e3b3526a35aaec325263006ac4e331"
     },
     {
       "path": "tests/Lokad.Svg.Tests/SvgStyleSheetTests.cs",
-      "sha256": "9df07009b3bceb472935ae3614e3e10523762f5c5c7036372a4d6321c9a34570"
+      "sha256": "cf1640dfd1c6ed9a96ae020412c0514b564bf2266b11abbfa81e9fc46a921a8d"
     },
     {
       "path": "tests/Lokad.Svg.Tests/SvgTransformListTests.cs",
@@ -394,19 +394,25 @@
     },
     {
       "id": "A8",
-      "status": "Pending diagnostic follow-up",
+      "status": "Reviewed",
       "owners": [
         "src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
         "src/Lokad.Svg/Parsing/SvgCssSelectorSyntax.cs",
         "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs"
       ],
-      "inspected": "All twelve probed excluded rule/property families reject without publishing pixels. Statement-form at-rules currently take the missing-declaration-block MalformedInput route; block forms reject UnsupportedFeature. Preserve this witnessed distinction until the shared rule-entry diagnostic contract is corrected and checked.",
+      "inspected": "All excluded at-rule forms are recognized at the shared rule entry before block/declaration parsing. Eight direct rule cases retain consistent UnsupportedFeature; two ordinary incomplete rules remain MalformedInput and quoted at-signs stay literal. Existing pseudo/sibling/property admission is preserved. One late-style contract retains source context, cleanup, empty output and retry; the matching packaged twelve-family probe confirms all exclusions.",
       "checks": {
         "tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs": [
           "Selectors_outside_the_declared_subset_reject_before_rendering"
         ],
         "tests/Lokad.Svg.Tests/SvgStaticCssTests.cs": [
-          "Static_interaction_admission_keeps_other_or_malformed_pseudo_syntax_explicit"
+          "Static_interaction_admission_keeps_other_or_malformed_pseudo_syntax_explicit",
+          "Excluded_at_rules_keep_one_category_before_their_declarations_are_interpreted",
+          "Missing_ordinary_rule_blocks_remain_malformed",
+          "At_signs_in_quoted_declarations_do_not_become_rules"
+        ],
+        "tests/Lokad.Svg.Tests/SvgStyleSheetTests.cs": [
+          "Excluded_late_at_rules_keep_source_context_empty_output_and_retry"
         ]
       },
       "native": []
@@ -478,6 +484,108 @@
     }
   },
   "exclusionProbe": {
+    "sourceCommit": "c780283f423090a4363a7975f00db86a09064854",
+    "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+    "host": "windows",
+    "framework": "net11.0",
+    "sourceTemplate": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>{css}</style><rect width='8' height='8' fill='blue'/></svg>",
+    "rows": [
+      {
+        "id": "import",
+        "css": "@import \"theme.css\";",
+        "sourceSha256": "13c2621d09f6774960d49adba222e9c63efb99d6f624f474cd0c7698ca888d95",
+        "outcome": "UnsupportedFeature",
+        "message": "CSS at-rules are not implemented."
+      },
+      {
+        "id": "charset",
+        "css": "@charset \"UTF-8\";",
+        "sourceSha256": "786711f0ecdb703df606e6dc73b955259a34ed24081565050eb2395226558e81",
+        "outcome": "UnsupportedFeature",
+        "message": "CSS at-rules are not implemented."
+      },
+      {
+        "id": "media",
+        "css": "@media all {rect{fill:red}}",
+        "sourceSha256": "bcb8337ff24908c65e3fc475791e984ce63d24a03603e4ce589204b28f64840f",
+        "outcome": "UnsupportedFeature",
+        "message": "CSS at-rules are not implemented."
+      },
+      {
+        "id": "supports",
+        "css": "@supports (display:block) {rect{fill:red}}",
+        "sourceSha256": "5412d583d5f2d73178165a7aebf1150e2eb51a3a7c947e9dd7c0c68fbcfef213",
+        "outcome": "UnsupportedFeature",
+        "message": "CSS at-rules are not implemented."
+      },
+      {
+        "id": "font-face",
+        "css": "@font-face{font-family:Example;src:url(font.ttf)}",
+        "sourceSha256": "4b2a314879ef2cbfc7ff207b2961c9e606c0d118bd0358087b21843790154d0b",
+        "outcome": "UnsupportedFeature",
+        "message": "CSS at-rules are not implemented."
+      },
+      {
+        "id": "keyframes",
+        "css": "@keyframes pulse {from{opacity:0}to{opacity:1}}",
+        "sourceSha256": "4f0242f817fba0aefe32d9c4a972147f5554a600d92a722350a8cb96765ac4ce",
+        "outcome": "UnsupportedFeature",
+        "message": "CSS at-rules are not implemented."
+      },
+      {
+        "id": "sibling-adjacent",
+        "css": "g+rect{fill:red}",
+        "sourceSha256": "a187334b5b9af1154b661d122d13d8bf4af546b9f67638945b2764c277746de6",
+        "outcome": "UnsupportedFeature",
+        "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+      },
+      {
+        "id": "sibling-general",
+        "css": "g~rect{fill:red}",
+        "sourceSha256": "f7e32b613df9895838a2d3e42f5568e44221a2edd11c1dd01b6e044d0c7058ce",
+        "outcome": "UnsupportedFeature",
+        "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+      },
+      {
+        "id": "variable-value",
+        "css": "rect{fill:var(--color)}",
+        "sourceSha256": "e5f38518e6ff0772538a37565695fdcf6e3470d3db34a8046f1601ef55225a53",
+        "outcome": "UnsupportedFeature",
+        "message": "The CSS color name or syntax is not supported."
+      },
+      {
+        "id": "variable-declaration",
+        "css": "rect{--color:red;fill:var(--color)}",
+        "sourceSha256": "d69386030a0492416a1b5e9f700ccc7722ee8a04a3a9fd34d288cff77d6c6edf",
+        "outcome": "UnsupportedFeature",
+        "message": "Inline style property '--color' is not implemented."
+      },
+      {
+        "id": "animation",
+        "css": "rect{animation:pulse 1s}",
+        "sourceSha256": "c3f23a663a51d04fd3e0b8dc0bd6ff5eb4e48f8a8220a86476fcca11e7aa5dee",
+        "outcome": "UnsupportedFeature",
+        "message": "Inline style property 'animation' is not implemented."
+      },
+      {
+        "id": "layout",
+        "css": "rect{display:flex}",
+        "sourceSha256": "3aa7e05f351dccb7c0710ccb9ef1eefd2103b282b237cdcd059e58a420874a99",
+        "outcome": "UnsupportedFeature",
+        "message": "Only inline, block, none and inherit display values are implemented."
+      }
+    ]
+  },
+  "scope": "The 58-control audit verifies raw source/PNG identities and distinct platform/capture authority. Static-CSS font program/provenance and declared oracle-input bindings retain their existing scope; this audit does not reconstruct their injection harness. The 1,278 direct alpha vectors independently rejoin unchanged SVG/native PNG identities and decoded uniform alpha. Thirty-one browser numeric readouts protect bit precision. No missing upstream original or hosted SVGWeb context is qualified by these bindings.",
+  "relatedEvidence": [
+    "css-selector-lists-svgweb.json",
+    "css-test-responsibilities.json",
+    "color-filter-responsibilities.json",
+    "paint-claim-trace.json",
+    "css-at-rule-admission-svgweb.json"
+  ],
+  "limits": "Reviewed is a bounded source/mechanism/contract/native trace, not exhaustive CSS conformance. Other Pending support rows, frozen Windows DejaVu, W1 resource/context/provenance, performance and release duties remain open.",
+  "beforeExclusionProbe": {
     "sourceCommit": "10d885a384459ba407911420696ca6cbc0badd56",
     "librarySha256": "d7ab151e3715b021c49fc90b989c771edbcfe9dfe658c597722111765721cb65",
     "host": "windows",
@@ -569,13 +677,5 @@
         "message": "Only inline, block, none and inherit display values are implemented."
       }
     ]
-  },
-  "scope": "The 58-control audit verifies raw source/PNG identities and distinct platform/capture authority. Static-CSS font program/provenance and declared oracle-input bindings retain their existing scope; this audit does not reconstruct their injection harness. The 1,278 direct alpha vectors independently rejoin unchanged SVG/native PNG identities and decoded uniform alpha. Thirty-one browser numeric readouts protect bit precision. No missing upstream original or hosted SVGWeb context is qualified by these bindings.",
-  "relatedEvidence": [
-    "css-selector-lists-svgweb.json",
-    "css-test-responsibilities.json",
-    "color-filter-responsibilities.json",
-    "paint-claim-trace.json"
-  ],
-  "limits": "Reviewed is a bounded source/mechanism/contract/native trace, not exhaustive CSS conformance. A8/X2 diagnostics, other Pending support rows, frozen Windows DejaVu, W1 resource/context/provenance, performance and release duties remain open."
+  }
 }

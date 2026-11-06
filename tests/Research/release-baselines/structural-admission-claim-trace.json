@@ -1,0 +1,302 @@
+{
+  "status": "X2 and T2 reviewed against shared structural/source owners, direct mechanisms/contracts and a packaged public taxonomy probe. No additional production change is required by this bounded review.",
+  "qualifiedSourceCommit": "c780283f423090a4363a7975f00db86a09064854",
+  "qualification": "css-at-rule-admission.json",
+  "supportContract": "../../../docs/SUPPORT_MATRIX.md",
+  "supportContractSha256": "8ff9f3598fbf2c7475a5dcf0f1ae4f05eab8746122035b26daf1ac115715703d",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs",
+      "sha256": "dd9cdeab46dea895a772e4cf1d49bef805d00e23e87204e2c1d8303bf7366072"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+      "sha256": "a476d643d3a2a8067e62e85b9d61a227e23b0a844defeb397d67217de2fa4520"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs",
+      "sha256": "7669508ea2ec205326d951772044310794f9a45e04d5ad5f2271ba6c327eb3f8"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgRootParser.cs",
+      "sha256": "067bfbaa196a2b0e7d0d6902303b91273cc4398a4fec052a1d1879c2c626af10"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs",
+      "sha256": "79349a2266b21efe640d5b6f34c469b26e49c72384f5cba44db3efbf115c130d"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs",
+      "sha256": "5a8eb46d1dcc4991c2842d79c88137fd5de9a18169dd4e7584060b2c6b3ac1dd"
+    },
+    {
+      "path": "src/Lokad.Svg/SvgConverter.Invocation.cs",
+      "sha256": "a94d4fac7cbb3b250c4c2717a27e88a16553b45e6a4f7078703f329a5ea3e822"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.LegacyDeclarations.cs",
+      "sha256": "52408a5b040172fe75ff3ef16326cb238b707b094694af41bd020efe12a9e6d9"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgDefinitionNamespaceTests.cs",
+      "sha256": "397a9be60f19513f5a154eb60a9ba12cfb1cfcce5a1992c317ae70fbb78949a2"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgForeignMetadataTests.cs",
+      "sha256": "ba71926eff7f04011140eae0c068a2f5248158b4ad35686602d67350543895d3"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgRootParserTests.cs",
+      "sha256": "f4f3a75f8fb3d78d31c39cc9da870585c81f5b3b87b30cdc0afe21dcebb2e562"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgStaticScriptTests.cs",
+      "sha256": "f594317f59dc18fb7c6e5456ac1daac764c1988b356334f3bd7aaea650b52d66"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgStructuralAdmissionTests.cs",
+      "sha256": "ff85bab35ce8cd2464855a60a3ed6b62f68c27bb2ae01ea8e182952598d2922e"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgStructuralVocabularyTests.cs",
+      "sha256": "8b13620537a1e26bca96541dc85f70bcff934ad7891324a07c488d255e283841"
+    }
+  ],
+  "groups": [
+    {
+      "id": "X2",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs",
+        "src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs",
+        "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs",
+        "src/Lokad.Svg/Parsing/SvgRootParser.cs",
+        "src/Lokad.Svg/SvgConverter.Invocation.cs",
+        "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs"
+      ],
+      "inspected": "Shared vocabulary and traversal distinguish drawing, definitions, inert descriptions/scripts and unsupported content. Foreign/script/leaf consumers preserve structural counts and cancellation; XML/root failures map to MalformedInput. Unsupported live content retains its first diagnostic and its scene is disposed before public rejection. Font discovery follows the same eligibility roles. CSS at-rule category correction is qualified separately; image/resource format boundaries retain their own owners.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgStructuralVocabularyTests.cs": [
+          "Classifies_structural_container_names",
+          "Classifies_definition_and_dynamic_names"
+        ],
+        "tests/Lokad.Svg.Tests/SvgStructuralAdmissionTests.cs": [
+          "Validates_element_structure",
+          "Rejects_a_non_svg_root"
+        ],
+        "tests/Lokad.Svg.Tests/SvgDefinitionNamespaceTests.cs": [
+          "Malformed_namespace_bindings_remain_xml_errors",
+          "Namespace_declarations_still_count_against_structural_attribute_limits"
+        ],
+        "tests/Lokad.Svg.Tests/SvgForeignMetadataTests.cs": [
+          "Foreign_descriptions_with_svg_descendants_still_reject_without_requesting_fonts",
+          "Shared_foreign_traversal_counts_each_element_and_leaves_the_closing_node"
+        ],
+        "tests/Lokad.Svg.Tests/SvgStaticScriptTests.cs": [
+          "Shared_script_scan_counts_each_node_and_stops_before_the_following_sibling",
+          "Static_script_admission_preserves_character_data_and_namespace_boundaries"
+        ],
+        "tests/Lokad.Svg.Tests/SvgRootParserTests.cs": [
+          "Rejects_non_data_embedded_image_references",
+          "Rejects_malformed_embedded_image_data"
+        ]
+      },
+      "scope": "Structural admission/category trace. Detailed geometry, paint, decoder, shaping and host-resource failure contracts retain their separate support rows. This is not a claim to implement the excluded SVG behaviors."
+    },
+    {
+      "id": "T2",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs",
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+        "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs",
+        "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs"
+      ],
+      "inspected": "Legacy font declarations remain dormant under the existing definition/eligibility roles. They do not create a font resolver or alter the live text request. A deliberately different legacy family style/weight/glyph outline leaves the ordinary host-supplied program authoritative. The prepared contract retains one provider request and exact equality with the positive host-program control.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.LegacyDeclarations.cs": [
+          "Dormant_legacy_font_descriptors_do_not_change_the_live_request",
+          "Prepared_text_keeps_the_host_program_despite_a_legacy_font_declaration"
+        ]
+      },
+      "scope": "Dormant declaration and live host-program selection contract, not SVG-font implementation or independent TrueType pixel conformance. Program/shaping/platform fidelity belongs to T1/T3-T19."
+    }
+  ],
+  "focusedChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+      "testAssemblySha256": "0e31d18e2a314881a306a236fcea144bfc447dc1a2c4bb6a49ba68f4b43c25c1",
+      "selection": "FullyQualifiedName~SvgStructuralAdmissionTests|FullyQualifiedName~SvgStructuralVocabularyTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgStaticScriptTests|FullyQualifiedName~SvgDefinitionNamespaceTests|FullyQualifiedName~OpenTypeFontTests.Dormant_legacy_font_descriptors_do_not_change_the_live_request|FullyQualifiedName~OpenTypeFontTests.Prepared_text_keeps_the_host_program_despite_a_legacy_font_declaration|FullyQualifiedName~SvgRootParserTests.Rejects_non_data_embedded_image_references|FullyQualifiedName~SvgRootParserTests.Rejects_malformed_embedded_image_data",
+      "exitCode": 0,
+      "seconds": 12.742564900079742,
+      "counters": {
+        "executed": "93",
+        "passed": "93",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+      "testAssemblySha256": "0e31d18e2a314881a306a236fcea144bfc447dc1a2c4bb6a49ba68f4b43c25c1",
+      "selection": "FullyQualifiedName~SvgStructuralAdmissionTests|FullyQualifiedName~SvgStructuralVocabularyTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgStaticScriptTests|FullyQualifiedName~SvgDefinitionNamespaceTests|FullyQualifiedName~OpenTypeFontTests.Dormant_legacy_font_descriptors_do_not_change_the_live_request|FullyQualifiedName~OpenTypeFontTests.Prepared_text_keeps_the_host_program_despite_a_legacy_font_declaration|FullyQualifiedName~SvgRootParserTests.Rejects_non_data_embedded_image_references|FullyQualifiedName~SvgRootParserTests.Rejects_malformed_embedded_image_data",
+      "exitCode": 0,
+      "seconds": 18.897185100009665,
+      "counters": {
+        "executed": "93",
+        "passed": "93",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+      "testAssemblySha256": "290298539a5957dee932a608583a50aef87bb63e67f674ad15f3d6b75d50bd5f",
+      "selection": "FullyQualifiedName~SvgStructuralAdmissionTests|FullyQualifiedName~SvgStructuralVocabularyTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgStaticScriptTests|FullyQualifiedName~SvgDefinitionNamespaceTests|FullyQualifiedName~OpenTypeFontTests.Dormant_legacy_font_descriptors_do_not_change_the_live_request|FullyQualifiedName~OpenTypeFontTests.Prepared_text_keeps_the_host_program_despite_a_legacy_font_declaration|FullyQualifiedName~SvgRootParserTests.Rejects_non_data_embedded_image_references|FullyQualifiedName~SvgRootParserTests.Rejects_malformed_embedded_image_data",
+      "exitCode": 0,
+      "seconds": 10.007090399973094,
+      "counters": {
+        "executed": "93",
+        "passed": "93",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+      "testAssemblySha256": "290298539a5957dee932a608583a50aef87bb63e67f674ad15f3d6b75d50bd5f",
+      "selection": "FullyQualifiedName~SvgStructuralAdmissionTests|FullyQualifiedName~SvgStructuralVocabularyTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgStaticScriptTests|FullyQualifiedName~SvgDefinitionNamespaceTests|FullyQualifiedName~OpenTypeFontTests.Dormant_legacy_font_descriptors_do_not_change_the_live_request|FullyQualifiedName~OpenTypeFontTests.Prepared_text_keeps_the_host_program_despite_a_legacy_font_declaration|FullyQualifiedName~SvgRootParserTests.Rejects_non_data_embedded_image_references|FullyQualifiedName~SvgRootParserTests.Rejects_malformed_embedded_image_data",
+      "exitCode": 0,
+      "seconds": 11.62235870002769,
+      "counters": {
+        "executed": "93",
+        "passed": "93",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "packagedPublicProbe": {
+    "sourceCommit": "c780283f423090a4363a7975f00db86a09064854",
+    "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+    "host": "windows",
+    "framework": "net11.0",
+    "scope": "Twelve authored taxonomy probes through the existing public inspection-then-conversion protocol. Rejections can occur during inspection; ordinary conversion and failure cleanup are separately protected by the named direct/contract tests. No rendering-fidelity or missing-resource-resolution claim.",
+    "rows": [
+      {
+        "id": "unknown-svg",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><unknown/></svg>",
+        "sourceSha256": "a2e6ec9bc8d565b9accfb8446860bd6555de6512b1193d94b346be72ac216c68",
+        "expected": "UnsupportedFeature",
+        "outcome": "UnsupportedFeature",
+        "message": "This SVG child element is not implemented yet."
+      },
+      {
+        "id": "foreign-object",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><foreignObject width='8' height='8'><div xmlns='http://www.w3.org/1999/xhtml'>text</div></foreignObject></svg>",
+        "sourceSha256": "dd98ffbbcb2a54e29bf2dfd95d412da67b26de2045b3b96116ec91ac47e4eea4",
+        "expected": "UnsupportedFeature",
+        "outcome": "UnsupportedFeature",
+        "message": "This SVG child element is not implemented yet."
+      },
+      {
+        "id": "animation",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><animate attributeName='x' from='0' to='1' dur='1s'/></svg>",
+        "sourceSha256": "08b2b012be736ed15312856455ca34a604a317a6cad97a54ab8300b28ba1a44a",
+        "expected": "UnsupportedFeature",
+        "outcome": "UnsupportedFeature",
+        "message": "This SVG child element is not implemented yet."
+      },
+      {
+        "id": "external-image",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><image href='logo.png' width='8' height='8'/></svg>",
+        "sourceSha256": "776e5ab84944cc2c2a53631239f1af74fc792177a2873a9c3751615ec17d0623",
+        "expected": "UnsupportedFeature",
+        "outcome": "UnsupportedFeature",
+        "message": "Only base64 PNG data-URI embedded images are implemented."
+      },
+      {
+        "id": "unsupported-filter",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><filter id='f'><feTurbulence baseFrequency='.1'/></filter></defs><rect width='8' height='8' filter='url(#f)'/></svg>",
+        "sourceSha256": "352034a14497f31550a782e29682a0d4615013cfa4b113d3a079588c19cdae2d",
+        "expected": "UnsupportedFeature",
+        "outcome": "UnsupportedFeature",
+        "message": "Filter primitive 'feTurbulence' is not implemented."
+      },
+      {
+        "id": "other-image-format",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><image href='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==' width='8' height='8'/></svg>",
+        "sourceSha256": "48a547ebca62d98f47c5a75d77c9ebebec41f2a3b5ff315bbce52891db26536b",
+        "expected": "UnsupportedFeature",
+        "outcome": "UnsupportedFeature",
+        "message": "Only base64 PNG data-URI embedded images are implemented."
+      },
+      {
+        "id": "malformed-xml",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect></svg>",
+        "sourceSha256": "841b6d1e55ba2ad542eb4833ef44b78afea1c155a767beaf1dcdb732d3076c0f",
+        "expected": "MalformedInput",
+        "outcome": "MalformedInput",
+        "message": "SVG XML is malformed: The 'rect' start tag on line 1 position 63 does not match the end tag of 'svg'. Line 1, position 70."
+      },
+      {
+        "id": "non-svg-root",
+        "source": "<not-svg/>",
+        "sourceSha256": "3c343f4c4186646beb4b2ef5232579f91cc5092c80488d03a0bbf2aa6f9851f9",
+        "expected": "MalformedInput",
+        "outcome": "MalformedInput",
+        "message": "The document root must be an SVG element in the SVG namespace."
+      },
+      {
+        "id": "malformed-image",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><image href='data:image/png;base64,!!!' width='8' height='8'/></svg>",
+        "sourceSha256": "4fbd04b68a2e3f82d11aaa573a6a48c78a708bb051f5b609d6d7445a85905be9",
+        "expected": "MalformedInput",
+        "outcome": "MalformedInput",
+        "message": "Embedded image data is not valid base64."
+      },
+      {
+        "id": "malformed-ordinary-css",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>rect</style><rect width=\"8\" height=\"8\"/></svg>",
+        "sourceSha256": "91a055c15acdcb0455cdf17c7be2e9b515e9f81bb57cd5cf917cb4dd256f804f",
+        "expected": "MalformedInput",
+        "outcome": "MalformedInput",
+        "message": "Stylesheet rules must contain a declaration block."
+      },
+      {
+        "id": "output-limit",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='1000000' height='1000000'/>",
+        "sourceSha256": "694c75e50043ab7ec349f56a47feaef83a4fa95f8b2b545f7d95027fef50a445",
+        "expected": "LimitExceeded",
+        "outcome": "LimitExceeded",
+        "message": "Output dimensions exceed the configured dimension limit."
+      },
+      {
+        "id": "admitted-control",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='blue'/></svg>",
+        "sourceSha256": "b29a9acdabde4c157a94061fd7322e1b1c689ac222a305c1f0fe22f975592b7d",
+        "expected": "rendered",
+        "outcome": "rendered",
+        "message": null
+      }
+    ]
+  },
+  "retainedAuthority": "Admission-only checks use explicit category/structure oracles. Existing X3/X5 inert-content controls retain their independent native references. The legacy-font contract compares unchanged host-program output and request accounting; it adds no browser-font authority or rendering matrix.",
+  "relatedEvidence": [
+    "support-claim-map.md",
+    "diagnostic-unicode-prefix.json",
+    "css-claim-trace.json",
+    "css-at-rule-admission-svgweb.json"
+  ],
+  "limits": "Reviewed is a bounded trace. Remaining text/font/platform, ownership/limits, provenance, performance and release requirements remain separate; frozen Windows DejaVu stays asserted."
+}

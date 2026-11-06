@@ -31,9 +31,11 @@ their current owners, mechanisms, contracts and 270 retained native controls.
 Per-case receipts, bank attestations and explicit rejection roles remain distinct.
 The [embedded-image trace][image-record] completes E2/E3 against live viewport,
 source-view, sampling, paint and ownership boundaries and 143 retained controls.
-The [CSS trace][css-record] reviews A1-A7 and retains a concrete A8 diagnostic
-follow-up. [Selector-list qualification][selector-list-record] closes three native
-paint discrepancies through the shared grammar reader without changing targets.
+The [CSS trace][css-record] reviews A1-A8. [Selector-list qualification][selector-list-record]
+closes three native paint discrepancies; [at-rule admission][at-rule-record] aligns
+excluded rule categories at the shared entry. No reference targets change.
+The [structural/source trace][structural-record] completes X2/T2 against shared
+traversal, rejection cleanup and dormant declarations with live host fonts.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -61,7 +63,7 @@ Scope: [prolog and supported subset][contract].
 | ID | Claim group | Trace |
 | --- | --- | --- |
 | X1 | One DOCTYPE; internal general entities; expansion/reader ownership and cancellation; other declarations reject | Reviewed: [XML policy][xml-policy] → [DOCTYPE][doctype-tests] / [entity mechanisms][entity-tests] → [literal/encoded native controls][entity-native]. |
-| X2 | Structural vocabulary/static subset, unsupported visible content and distinct error categories | Pending: trace the exclusion paths, rather than inferring admission from the error enum. |
+| X2 | Structural vocabulary/static subset, unsupported visible content and distinct error categories | Reviewed: [shared admission](../../../src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs) / [traversal](../../../src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs) / [disposed-scene rejection](../../../src/Lokad.Svg/SvgConverter.Invocation.cs) → [direct structural gates](../../Lokad.Svg.Tests/SvgStructuralAdmissionTests.cs) and [namespace boundaries](../../Lokad.Svg.Tests/SvgDefinitionNamespaceTests.cs) → [packaged category probes and source bindings][structural-record]. Detailed feature contracts retain their own rows. |
 | X3 | Inert foreign descriptions; SVG descendants reject; XLink namespace metadata and structural counts | Reviewed: [traversal][traversal] / [structural admission][structural] / [attribute policy][attributes] → [foreign metadata][foreign-tests] → [metadata references][metadata-native]. |
 | X4 | Literal, case-sensitive attribute applicability; unknown unqualified names inert; reserved namespaces retained | Reviewed: [attribute policy][attributes] → [applicability tests][attribute-tests] → [native applicability control][attribute-native]. |
 | X5 | Inert event attributes and character-data scripts; lexical boundaries/counts; no paint/font/resource activation | Reviewed: [attribute policy][attributes] / [structural admission][structural] → [event][event-tests] / [script][script-tests] cases → [native metadata controls][metadata-native]. |
@@ -170,7 +172,7 @@ Scope: [static CSS][contract-css].
 | A5 | Element-local currentColor, RGB/HSL syntax/units and syntax-dependent alpha precision | Reviewed: [color/precision owner](../../../src/Lokad.Svg/Parsing/SvgColorParser.cs) → [element-local color](../../Lokad.Svg.Tests/SvgCurrentColorInheritanceTests.cs), [functional grammar](../../Lokad.Svg.Tests/OpenTypeFontTests.ColorGrammar.cs) and [direct alpha boundaries](../../Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs) → [1,278 rejoined native vectors and retained color authority][css-record]. |
 | A6 | ASCII whitespace, contiguous length tokens, list commas, transform case and token-size limits | Reviewed: [ASCII separators](../../../src/Lokad.Svg/Parsing/SvgCssWhitespace.cs) / [numeric owner](../../../src/Lokad.Svg/Parsing/SvgFloatNumber.cs) → [Unicode boundaries](../../Lokad.Svg.Tests/SvgCssWhitespaceTests.cs), [contiguous lengths](../../Lokad.Svg.Tests/OpenTypeFontTests.LengthTokens.cs) and [comma/limit contracts](../../Lokad.Svg.Tests/SvgTransformListTests.cs) → [31 native numeric readouts and source trace][css-record]. |
 | A7 | Once-decoded UTF-8 local fragments, escape/whitespace rejection and URL/filter-name case rules | Reviewed: [bounded URL/fragment owner](../../../src/Lokad.Svg/Parsing/SvgLocalUrl.cs) → [quoted/bounded references](../../Lokad.Svg.Tests/SvgLocalUrlTests.cs), [decode-once collisions](../../Lokad.Svg.Tests/OpenTypeFontTests.EncodedFragments.cs) and [function/identifier case](../../Lokad.Svg.Tests/OpenTypeFontTests.LocalUrlTokens.cs). [Current bindings][css-record] retain distinct resource-selection paths. |
-| A8 | Imports/rules/pseudo/sibling/layout/variable/web-font exclusions | Pending: [twelve packaged exclusion probes][css-record] reject without pixels, but statement at-rules report MalformedInput while block forms report UnsupportedFeature. Correct and check the shared rule-entry diagnostic category before closing this trace. |
+| A8 | Imports/rules/pseudo/sibling/layout/variable/web-font exclusions | Reviewed: [shared rule entry](../../../src/Lokad.Svg/Parsing/SvgStyleSheet.cs) → [direct rule/literal/category controls](../../Lokad.Svg.Tests/SvgStaticCssTests.cs) and [late-source cleanup/empty-output contract](../../Lokad.Svg.Tests/SvgStyleSheetTests.cs) → [twelve matching packaged exclusions and current trace][css-record]. [Five failing-before category checks][at-rule-record] preserve ordinary malformed rules. |
 
 ## Markers and filters
 
@@ -192,7 +194,7 @@ Scope: [text and fonts][contract-text].
 | ID | Claim group | Trace |
 | --- | --- | --- |
 | T1 | Explicit host font acquisition/cache, static TrueType face 0/composites/hinting and required-program/glyph failures | Pending. |
-| T2 | Dormant legacy SVG font declarations without acquisition or text-request effects | Pending. |
+| T2 | Dormant legacy SVG font declarations without acquisition or text-request effects | Reviewed: [definition roles](../../../src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs) / [font eligibility](../../../src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs) → [unchanged live request, host-program pixels and counted acquisition](../../Lokad.Svg.Tests/OpenTypeFontTests.LegacyDeclarations.cs). [Source/contract trace][structural-record]; font pixel conformance remains in the other T rows. |
 | T3 | LTR character/shaping subset, finite Latin/DFLT ligature table and unsupported script/font/layout forms | Pending. |
 | T4 | Affine text paints/strokes/dashes/non-scaling widths/order and solid decoration | Pending. |
 | T5 | Position-list units/declaration bases, inherited/replayed cursors and unitless rotation | Pending. |
@@ -374,3 +376,5 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [image-record]: embedded-image-claim-trace.json
 [css-record]: css-claim-trace.json
 [selector-list-record]: css-selector-lists.json
+[at-rule-record]: css-at-rule-admission.json
+[structural-record]: structural-admission-claim-trace.json
