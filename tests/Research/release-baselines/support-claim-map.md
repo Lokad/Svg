@@ -68,6 +68,10 @@ T4/T17 against source/object/drawing maps, stroke/decoration owners, live resour
 discovery and platform metric policy. Current byte identities, generated-source
 checks and historical capture scopes remain explicit; ownership/limit claims
 below still require their own review.
+The [limits/ownership trace](limits-ownership-claim-trace.json) completes R1-R5
+against the current structural, capacity, cancellation and lifetime owners.
+Its representative mechanisms/contracts and installed host consumers revalidate
+the absorbed HTTP/host handoff without another rendering/API product.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -251,11 +255,11 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| R1 | Input/output/dimension/pixel/structural/path limits, intermediate surfaces and no synthetic work quotas | Pending. |
-| R2 | Borrowed shared allowance, admission before allocation, capacity/growth peaks and approximate coverage limits | Pending. |
-| R3 | Cancellation/cleanup across discovery through encoding; borrowed stream and caller transaction responsibility | Pending. |
-| R4 | Immutable program/readers, one-attempt prepared documents and independently owned PNG output | Pending. |
-| R5 | Governed output forms, retained metadata/cache scopes, HTTP root association and no refusal fallback/retry | Pending. |
+| R1 | Input/output/dimension/pixel/structural/path limits, intermediate surfaces and no synthetic work quotas | Reviewed: [limit domains](../../../src/Lokad.Svg/SvgRenderLimits.cs) / [shared admission](../../../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs) / [raster sizing](../../../src/Lokad.Svg/Rendering/SvgRasterSizing.cs) / [encoding](../../../src/Lokad.Svg/Encoding/PngEncoder.cs) → direct structural, cumulative-path, surface and PNG boundaries plus representative output contracts. [Current trace](limits-ownership-claim-trace.json) keeps storage limits distinct from cooperative cancellation. |
+| R2 | Borrowed shared allowance, admission before allocation, capacity/growth peaks and approximate coverage limits | Reviewed: [host contract](../../../src/Lokad.Svg/Memory/IMemoryBudget.cs) / [reservation adapter](../../../src/Lokad.Svg/Rendering/RenderBudget.cs) / [parser capacities](../../../src/Lokad.Svg/Parsing/BudgetedParserCollections.cs) → shared/failed-growth, old-plus-new capacity, scene transfer and encoding/storage checks. [Current trace](limits-ownership-claim-trace.json) retains the approximate-accounting boundary. |
+| R3 | Cancellation/cleanup across discovery through encoding; borrowed stream and caller transaction responsibility | Reviewed: [invocation](../../../src/Lokad.Svg/SvgConverter.Invocation.cs) / [prepared cleanup](../../../src/Lokad.Svg/SvgPreparedDocument.cs) / [encoder](../../../src/Lokad.Svg/Encoding/PngEncoder.cs) → partial cancellation, held byte reads, destination backpressure/failure, refusal and reuse checks. [Current trace](limits-ownership-claim-trace.json) keeps charges until actual borrowers finish and leaves caller streams/transactions with the host. |
+| R4 | Immutable program/readers, one-attempt prepared documents and independently owned PNG output | Reviewed: [snapshot lifetime](../../../src/Lokad.Svg/Fonts/SvgFontSnapshot.cs) / [single attempt](../../../src/Lokad.Svg/SvgPreparedDocument.cs) / [PNG owner](../../../src/Lokad.Svg/SvgPngResult.cs) → escaped face invalidation, borrowed memory, document/result siblings and overlapping async output contracts. [Current trace](limits-ownership-claim-trace.json) retains caller serialization and parent-lifetime duties. |
+| R5 | Governed output forms, retained metadata/cache scopes, HTTP root association and no refusal fallback/retry | Reviewed: [output ownership](../../../src/Lokad.Svg/SvgConverter.Invocation.cs) / [HTTP cache/borrowers](../../../src/Lokad.Svg/Fonts/SvgHttpFontPackResolver.cs) / [finite policy](../../../src/Lokad.Svg/Fonts/SvgHttpFontAcquisitionOptions.cs) → governed destination, retained result/cache, refusal, cancellation and selective-acquisition checks → four installed public-package consumers. [Current trace](limits-ownership-claim-trace.json) revalidates the absorbed handoff and distinguishes idle-capacity maintenance from admission refusal. |
 | Q1 | Current .NET 10/11 Windows/Linux targets, pinned RC and no runtime package dependency | Reviewed: [project][project] / [SDK pin][sdk] → [cross-runtime/CI evidence][diag-record], [rendering/package milestone][render-record]. Future release qualification remains P7. |
 | Q2 | Declared exactness/exclusions/source provenance; correctness distinct from performance | Pending: join the current tests/provenance contract without treating inherited or source-unqualified targets as new authority. |
 

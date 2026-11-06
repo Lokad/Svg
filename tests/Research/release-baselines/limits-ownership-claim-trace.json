@@ -1,0 +1,237 @@
+{
+  "status": "Reviewed R1-R5 against current limits, allocation/owner boundaries, representative API contracts and installed host consumers. The absorbed HTTP/host handoff acceptance is revalidated.",
+  "qualifiedSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+  "qualification": "text-feature-dispatch-contexts.json",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "src/Lokad.Svg/SvgRenderLimits.cs": "abd32a18e8f209ad98550dbdbc763d84d183576430542603e9a824c4c7de4261",
+    "src/Lokad.Svg/SvgRenderOptions.cs": "a89091dacc8217fec3b1e5b536fe4a76eb39c1e709cc184e8c6b84884943d8fa",
+    "src/Lokad.Svg/SvgRasterBounds.cs": "c73b8584d7ab95206844fbc9eaa5a59e8d35d0c55cabf90277e10bc26bd88d0b",
+    "src/Lokad.Svg/SvgConverter.cs": "c8a74b7e4adfc0209bcad57f457d7799b1fe3a9d40f9d4dc6706ffb41e4a4a06",
+    "src/Lokad.Svg/SvgConverter.Invocation.cs": "a94d4fac7cbb3b250c4c2717a27e88a16553b45e6a4f7078703f329a5ea3e822",
+    "src/Lokad.Svg/SvgPreparedDocument.cs": "845b5aca6c77da9e0c90925b52da8ac1e410825071431abfc18fd3b7510584c7",
+    "src/Lokad.Svg/SvgPngResult.cs": "cfc3f756449a883f910c4e97dc1d2cb0e89998ee286ea09859e098863fd13449",
+    "src/Lokad.Svg/Memory/IMemoryBudget.cs": "1c6a380f6da559a8f48533d1bfef3133970069977d7f45a6c8e8864342d023f0",
+    "src/Lokad.Svg/Rendering/RenderBudget.cs": "99f4569f2b7d454ed4bd567a8de4d2f1c8b61e959c666630ba917f4f8ccfa61e",
+    "src/Lokad.Svg/Rendering/SvgRasterSizing.cs": "4e02e1fad4537ba71e6323903060a7ea11b00015789d6132eaf08be855b647a9",
+    "src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs": "ef3900c2a6bbe65ff58c7610622360edb4e7e12dbf70605986317d37bc04139d",
+    "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs": "7669508ea2ec205326d951772044310794f9a45e04d5ad5f2271ba6c327eb3f8",
+    "src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs": "79349a2266b21efe640d5b6f34c469b26e49c72384f5cba44db3efbf115c130d",
+    "src/Lokad.Svg/Parsing/SvgXmlReaderPolicy.cs": "279351b822749591e12104fd203ad8fc9674ac7d5b315b37ceae9701ba88493d",
+    "src/Lokad.Svg/Parsing/SvgPathDataParser.cs": "2900afe61418cab5adcc7457c7c6d129e62f6d6525198cbf4f22885a0bf053c6",
+    "src/Lokad.Svg/Parsing/BudgetedParserCollections.cs": "bbef92a85b051094fcf1c0e73e19f48a58fff022e30112897792ebaab4bbf340",
+    "src/Lokad.Svg/Encoding/PngEncoder.cs": "6a4faecf992bc8b5394b36647826274eface59f3c4be403e0578af8ffab06595",
+    "src/Lokad.Svg/Encoding/PngImageDecoder.cs": "057b42d923b5d4a78d73943ba36e446a47584a496c05c6a9244102927784f1ba",
+    "src/Lokad.Svg/Fonts/SvgFontSnapshot.cs": "b8fc1e6a4ab1bdb7caf304631fe2936dcb3c1bf6b7e5be678cfbdbd491516393",
+    "src/Lokad.Svg/Fonts/SvgHttpFontPackResolver.cs": "2ab2ba18aa123bbf203f21c3b5430fabdd429eae09a41555dd1aa9a43fa86a93",
+    "src/Lokad.Svg/Fonts/SvgHttpFontAcquisitionOptions.cs": "9dc01bcd482c9bbb2ff9d13051da506123a4a41abb06e7b909ac96babf631cec",
+    "tests/Lokad.Svg.Tests/RenderBudgetTests.cs": "81960cd48d58a57388591255be19d3da9575744985256ea804e4b4913b4cbec7",
+    "tests/Lokad.Svg.Tests/SvgConversionApiContractTests.cs": "ae2cdb69e80cd39a9ca649ef9bb61b2a74da3250015285e54f0a680992d0f21b",
+    "tests/Lokad.Svg.Tests/PngEncoderTests.cs": "44bf16a1550db8a6610ad1bc0adc57207a3b44fefe1386ba639760ac0aa36298",
+    "tests/Lokad.Svg.Tests/PngImageDecoderTests.cs": "36e83ebfb810075f225f65985d3fb1ff581992927885ffcd3509233c0666a3c0",
+    "tests/Lokad.Svg.Tests/OutputDimensionTests.cs": "53f747bea3a7c35ddd1cda0ecb6d04d2157a32b6566f1e408ca4f5abef4a509e",
+    "tests/Lokad.Svg.Tests/SvgRasterSizingTests.cs": "e5b45271c105fe6ea80d3f655a27d8a2d7da8157f237d68b94d3bc3084a99cac",
+    "tests/Lokad.Svg.Tests/SvgSceneTransferMemoryTests.cs": "8264bae54c122da66bcd5ac59d64cf5e3cd8d270c882497d441208fd887c0aeb",
+    "tests/Lokad.Svg.Tests/SvgRootParserOwnershipTests.cs": "228c0836eaa2570ce2f9c79d9dd1a1ef99533951934ba27748a3fa33e466aed8",
+    "tests/Lokad.Svg.Tests/BudgetedParserStringStoreTests.cs": "df17be7b8f42d5ac7ff2c93fd5e66b34bb1e125df880434423b68624eba30eff",
+    "tests/Lokad.Svg.Tests/BudgetedTextBufferTests.cs": "db535bb904e702d97ef755585ad041593ac74071918d11b9aab6bb6a8802a13c",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.SharedMemory.cs": "e0d4c21dcf1c5d185e45e394fcf8f965842af255592c05df942ab9de25685c36",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.HttpPrepared.cs": "050e067252d9a3639673638b53d9059d6b1dfbb209a27fc2b005d0f215cf7d39",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.HttpResolver.cs": "a39b5302d2bc2466695d891be7eea17066489b32d1e9f972faefec0a87861673",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.BoundedRasterSizing.cs": "3367732f9bcf7574b43f62bc5d19617bb7e50223af40487790fc3d5e4f33eb2b",
+    "tests/Lokad.Svg.Tests/SvgRootParserTests.cs": "f4f3a75f8fb3d78d31c39cc9da870585c81f5b3b87b30cdc0afe21dcebb2e562",
+    "tests/Lokad.Svg.Tests/PublicContractTests.cs": "32a1736acdc8624c4624122ee1bd1543a7f963176da003ff2bdd308969fc39fa",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.cs": "c23264e6a84dc0fb30d52f8eeb44b32ab3d5f4d3a976edcbfd45a829b1438519",
+    "tools/test-package.ps1": "6a7807fbe3980dbd4a9f8248299b4b2d08db6554c2373939153db1686c54285a",
+    "tools/Lokad.Svg.PackageSmoke/HttpFontQualification.cs": "2781c085c6f508007ee61cca58d6d4b808bc7a4cd1a6657100cfd9adfd6c3488",
+    "tools/Lokad.Svg.PackageSmoke/HttpFontSmokeHandler.cs": "3096e497e45bd8d131fce928aa49570bbcaf6c1dbed17a470b18a380099df45f",
+    "tools/Lokad.Svg.PackageSmoke/Lokad.Svg.PackageSmoke.csproj": "04ff63fa92a86d7a21a97eaac27f6dbb5b1fe6b18873b48ac5ccdbd7b91e8f02",
+    "tests/Shared/TestMemoryBudget.cs": "7c4a020870530fc522d3414a03e9c439e677840e29adff76da59b4fb45e1303b",
+    "docs/SUPPORT_MATRIX.md": "b6323483e2adce0a48e471edaf57134ca5a4b4a59604ff27652d0b5de91a975b",
+    "docs/HTTP_FONTS.md": "ea5a8ac3885e849d9f423c6fa920f07fe5e1ec860c70405de29e954803a76f24"
+  },
+  "claims": {
+    "R1": {
+      "owners": [
+        "SvgRenderLimits",
+        "SvgDocumentPreparation/SvgStructuralAdmission",
+        "SvgRasterSizing/SvgConverter",
+        "PngImageDecoder/PngEncoder",
+        "SvgPathDataParser"
+      ],
+      "inspected": [
+        "Input bytes and expanded XML reader characters are independently bounded; element count, depth and attributes are checked through ordinary, retained and inert-subtree traversal.",
+        "Output rounding/fitting retains dimension, pixel and contiguous-RGBA limits before allocation. Embedded images and filter source/halo frames enforce their own surface bounds.",
+        "Path command limits are cumulative across supported path elements and checked before expansion; generated geometry has bounded builders.",
+        "Encoded-size checks include fixed PNG/chunk overhead and bounded IDAT slices for owned, caller-memory and stream sinks.",
+        "These are structural/storage bounds. No synthetic parse/raster/encoder work allowance replaces cooperative cancellation."
+      ],
+      "checks": "Direct dimension/raster/PNG/decoder boundaries, cumulative parser limits and representative destination contracts; pixels have separate native owners."
+    },
+    "R2": {
+      "owners": [
+        "IMemoryBudget/IMemoryScope/IMemoryReservation",
+        "RenderBudget",
+        "BudgetedParserCollections",
+        "PngEncoder",
+        "scene/raster owners"
+      ],
+      "inspected": [
+        "The host root is borrowed. Empty scopes introduce no independent cap; reservation and growth refusal preserve existing charges.",
+        "Array/list/dictionary growth and exact-array transfer reserve replacement capacity while old storage remains charged. Charges transfer with retained owners and release once.",
+        "PNG scanline/chunk/compressed/output storage has distinct peak and retained owners; caller-owned program/destination bytes remain borrowed.",
+        "Accounting is an estimate of dominant storage. Small metadata/runtime overhead and the documented approximate allowance are not a per-workload heap guarantee."
+      ],
+      "checks": "Zero/negative/disposed admission, failed growth, shared roots, parser capacity, scene transfer, rendering denial, encoding growth and immediate reuse."
+    },
+    "R3": {
+      "owners": [
+        "SvgConverter.Invocation",
+        "SvgPreparedDocument",
+        "SvgDocumentPreparation",
+        "PngEncoder",
+        "font acquisition owners"
+      ],
+      "inspected": [
+        "Tokens flow through discovery, program acquisition, parsing, raster work, PNG scanlines/CRC/copies and awaited destination writes.",
+        "Operation cleanup encloses real async completion. Cancellation does not refund a still-running borrowed byte read or destination write.",
+        "Encoder failure aborts further compression output and releases scratch. Borrowed streams/clients/root budgets are not disposed; output transactions belong to the host.",
+        "Failure/refusal/cancellation unwind partial scene/font/execution owners; later independent operations can reuse allowance."
+      ],
+      "checks": "Held byte reads, async backpressure/write failure, partial row/scan cancellation, acquisition cancellation, denied storage and retry after cleanup."
+    },
+    "R4": {
+      "owners": [
+        "SvgFontSnapshot",
+        "SvgPreparedDocument",
+        "SvgPngResult"
+      ],
+      "inspected": [
+        "Snapshot programs are borrowed immutable byte regions; callers serialize disposal with readers. Disposal invalidates retained prepared faces and drops metadata/requests.",
+        "Prepared conversion admission uses one atomic state transition. Its synchronous and asynchronous paths release retained scene/snapshot storage after the sole attempt completes.",
+        "Owned PNG results use a sibling scope beneath the borrowed host owner, outlive operation/document cleanup and release bytes/charge on result disposal.",
+        "Caller serialization and parent lifetime remain explicit contracts; the library does not infer reader completion from disposal alone."
+      ],
+      "checks": "Shared snapshots, governed bare-memory rejection without consuming the document, retained result competition, independent sibling lifetime and overlapping async output."
+    },
+    "R5": {
+      "owners": [
+        "SvgConverter.Invocation",
+        "SvgPreparedDocument",
+        "SvgHttpFontPackResolver",
+        "SvgHttpFontAcquisitionOptions"
+      ],
+      "inspected": [
+        "Governed bare-memory output rejects; owned/memory/stream destinations keep appropriate result versus scratch owners.",
+        "Prepared HTTP documents discover requirements once before catalog work. Font-free requests stay independent of cold, stalled or failed initialization.",
+        "Shared catalog/program loads retain resolver-owned deadlines and verified bytes. Waiter cancellation ends that wait without canceling another borrower.",
+        "The host supplies the root, client, transport policy and budgets sharing one allowance. Operation/result scopes use the supplied document owner; cache uses the resolver owner. Root ancestry is a host contract, not an identity heuristic.",
+        "Finite transient transport retry is distinct from later-call recovery. Size/integrity/deterministic failures and admission refusal do not retry.",
+        "Idle-capacity maintenance may trim unborrowed programs; refusal does not trigger eviction, waiting, alternate fonts or another storage path. Active borrowers keep cache charges through shutdown."
+      ],
+      "checks": "HTTP coalescing/selective acquisition, complete deadline/body handling, rooted paths, structured failures, borrowed client, zero-idle lifetime, shutdown, one preparation and installed public-package flows."
+    }
+  },
+  "handoffAcceptance": {
+    "status": "Closed against current source and installed package; the TODO/host handoff files remain removed.",
+    "evidence": [
+      "host-api-qualification.md",
+      "host-api-package.json",
+      "filter-input-demand.json"
+    ],
+    "originalRequirements": [
+      "one preparation",
+      "font-free independence",
+      "selective acquisition and shared reuse",
+      "waiter cancellation and later recovery",
+      "integrity and finite transport policy",
+      "host-selected roots",
+      "structured failures",
+      "borrowed HttpClient",
+      "cache/document/result/shutdown ownership"
+    ]
+  },
+  "validation": {
+    "selection": "Existing named tests extracted from the completed full suites; every selected method executes with identical membership and passes on all four host/runtime combinations. No new rendering/API product or test batching.",
+    "coreGroups": {
+      "PublicContractTests.cs": 22,
+      "OutputDimensionTests.cs": 24,
+      "OpenTypeFontTests.SharedMemory.cs": 26,
+      "PngImageDecoderTests.cs": 124,
+      "SvgConversionApiContractTests.cs": 96,
+      "RenderBudgetTests.cs": 56,
+      "BudgetedParserStringStoreTests.cs": 5,
+      "OpenTypeFontTests.cs": 3,
+      "PngEncoderTests.cs": 23,
+      "OpenTypeFontTests.HttpPrepared.cs": 13,
+      "BudgetedTextBufferTests.cs": 12,
+      "OpenTypeFontTests.HttpResolver.cs": 23,
+      "SvgRootParserOwnershipTests.cs": 13,
+      "SvgRasterSizingTests.cs": 21,
+      "SvgRootParserTests.cs": 4,
+      "OpenTypeFontTests.BoundedRasterSizing.cs": 2,
+      "SvgSceneTransferMemoryTests.cs": 1
+    },
+    "results": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 468
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 468
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 468
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 468
+      }
+    ],
+    "packages": {
+      "Lokad.Svg.0.4.0-dev.1.nupkg": "9d588926673f410da72a80d7f573a573119f73ec2ffbc0270320724e3047675d",
+      "Lokad.Svg.0.4.0-dev.1.snupkg": "e4955d693c16580ae193ced6203552b87db6ccea58ddc325e002b17c3369a3b4"
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ],
+        "exitCode": 0,
+        "logSha256": "806db7d948fffcdaa9fe20a5fc5e07265f8632a52f009689b2499ea4866c0dea",
+        "seconds": 7.478683300083503
+      },
+      {
+        "host": "linux",
+        "frameworks": [
+          "net11.0",
+          "net10.0"
+        ],
+        "exitCode": 0,
+        "logSha256": "5ac0ab1bf1ddffc53554b5b44f224dcc8929baeb013a615587b9a5bef35c6389",
+        "seconds": 148.38550570001826
+      }
+    ],
+    "installedMessages": [
+      "Installed package shared admission and retained-result ownership passed.",
+      "Installed package conversion, overlap rejection and dimension-limit scenarios passed.",
+      "Installed package font-free inspection, bounded output and source diagnostic scenarios passed.",
+      "Installed package font-pack catalog scenario passed.",
+      "Installed HTTP font selection, concurrent reuse, cancellation, shutdown borrowers, async output and admission refusal passed."
+    ]
+  },
+  "limits": [
+    "Finite source/contract review, not an instantaneous heap or all-possible-interleavings proof.",
+    "No new source/test/reference change or repeated runtime execution in this trace. Existing full qualification supplies runtime outcomes.",
+    "Installed timings include restore/build/startup and overlap; no renderer-performance or before/after claim.",
+    "Windows DejaVu authority, remaining SVGWeb contexts and historical upstream-source recovery remain separate."
+  ]
+}

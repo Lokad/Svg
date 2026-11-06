@@ -25,6 +25,9 @@ direct checks and independently bound metrics/browser controls.
 The [text paint/resource trace](text-paint-resource-claim-trace.json) completes the
 remaining paint, resource-demand and platform-metric text groups, keeping source
 and drawing bounds, inactive-source exceptions and native capture scopes distinct.
+The [limits/ownership trace](limits-ownership-claim-trace.json) completes the
+remaining resource contracts and absorbed HTTP/host handoff against current
+owners, representative API/cleanup checks and installed package consumers.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)
