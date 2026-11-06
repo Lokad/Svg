@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseCommit": "8442f0c9ce456dfba7b8a878b77eefbcd332cf9c",
+  "scope": "S2/S9: nested logical percentage bases, physical clips and root-effect admission; I2 reuses the unchanged conditional-selection source audit.",
+  "productionSourceUnchangedSince": "c13ac322c",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs": "0fddb8202eb8cf5ea4e1216fe4850c824aef89d42b1094aee5c9edd926f5333a",
+    "src/Lokad.Svg/Parsing/SvgViewportFrame.cs": "e9bd6f20665869dfc9636a497af6bc55222d6da4795674f81b436a1fc8ad8ad4",
+    "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs": "7669508ea2ec205326d951772044310794f9a45e04d5ad5f2271ba6c327eb3f8",
+    "src/Lokad.Svg/Parsing/SvgRootAttributes.cs": "e1f1e340c72d181b04d146756a42bab7ca7fba07b70ea27505ce326565de5419",
+    "src/Lokad.Svg/Parsing/SvgComputedStyle.cs": "220371429fc8b5e654a59135148d7680552247d3bf2d70dffaf486e8a34a78c5",
+    "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs": "5deafbe25e20d2ddcc925c96576eecd80c86a54494d5bd67a1ba328a75ef1da6",
+    "src/Lokad.Svg/Parsing/SvgPaintResourceSelection.cs": "3c362bc6c876d7d423a6625b72645a2c902c652e73b4a5ad58482224efa9c676",
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "dd9cdeab46dea895a772e4cf1d49bef805d00e23e87204e2c1d8303bf7366072",
+    "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "cc5a23f5d1017aae8466bb3e87c6eacb108b5474381d387cb07d8452b2fd6f6e",
+    "tests/Lokad.Svg.Tests/SvgRootEffectAdmissionTests.cs": "825095c093ea58d984120e0cf316c64a6cb1062712c4070b40f8a2e3986935e2"
+  },
+  "coverage": {
+    "newMethods": 2,
+    "newMechanismCases": 7,
+    "oldMethodsAndTraitsUnchanged": true,
+    "rejection": "XML root filter/clip-path, inline root filter and later stylesheet root filter reject UnsupportedFeature.",
+    "positive": "Mixed-case none, inline priority and important stylesheet none preserve the exact root rectangle without resolving overridden references.",
+    "directAndOwnershipCases": 82,
+    "canonicalViewportReferenceCases": 81,
+    "hostRuntimeCombinations": 4
+  },
+  "nativeEvidence": {
+    "manifest": "../viewport-percentage-bases/manifest.json",
+    "manifestLfSha256": "18e19a53472f2f6442210ebcd61f74deb83aabe6975e16086cfbe4934894fd13",
+    "sourceAndReferenceHashesVerified": 81,
+    "platform": "win64",
+    "declaredFreshProcesses": 3,
+    "captureScope": "The existing corpus-level healthy/stable capture attestation is retained. This is not 81 new per-case capture receipt triples or new Linux browser evidence.",
+    "currentRendererReplay": "All81 existing canonical reference cases pass on both hosts/runtimes; the bank and its assertion paths are unchanged."
+  },
+  "qualification": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgRootEffectAdmissionTests|FullyQualifiedName~SvgViewportPercentageTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgViewportRecordingScopeTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~SvgViewportClipStorageTests|FullyQualifiedName~SvgRootSyntaxTests",
+      "librarySha256": "a3e6ba6d133cc418c63d2a0ba4db696e92897309c9473d0f946d8f6b13d0995c",
+      "testAssemblySha256": "bc399530d004e51c9eecc0a00144b74b1cc66dc7a19d7b7031657304e453dc4a",
+      "seconds": 9.223823100095615,
+      "counters": {
+        "executed": "82",
+        "passed": "82",
+        "failed": "0"
+      },
+      "trxSha256": "db448909ee09cc9484430387d25aad7e5911208a28488415e021319577f4d023",
+      "caseIdentitySha256": "66d67e8f29d615a7470d71110dcf62abb3f12f4c6ed3e35c972cb396ae10da3c"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgRootEffectAdmissionTests|FullyQualifiedName~SvgViewportPercentageTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgViewportRecordingScopeTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~SvgViewportClipStorageTests|FullyQualifiedName~SvgRootSyntaxTests",
+      "librarySha256": "a3e6ba6d133cc418c63d2a0ba4db696e92897309c9473d0f946d8f6b13d0995c",
+      "testAssemblySha256": "bc399530d004e51c9eecc0a00144b74b1cc66dc7a19d7b7031657304e453dc4a",
+      "seconds": 13.71878350013867,
+      "counters": {
+        "executed": "82",
+        "passed": "82",
+        "failed": "0"
+      },
+      "trxSha256": "3f59a3816550f9ce5052847b6c64630fdae250274f65101d94b0feb93717e8b9",
+      "caseIdentitySha256": "66d67e8f29d615a7470d71110dcf62abb3f12f4c6ed3e35c972cb396ae10da3c"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests&DisplayName~viewport-percentage-bases",
+      "librarySha256": "a3e6ba6d133cc418c63d2a0ba4db696e92897309c9473d0f946d8f6b13d0995c",
+      "testAssemblySha256": "833c475a045a97cda16bb99543d2e000d41754d62c00a8fd0fa8e211fd10d4d6",
+      "seconds": 13.810408700024709,
+      "counters": {
+        "executed": "81",
+        "passed": "81",
+        "failed": "0"
+      },
+      "trxSha256": "5c9e423b966330da55ef7a123cd0feab276f5134b09e2cace6ff58d663c6a2af",
+      "caseIdentitySha256": "76932eba644586ffd2f6fe804ea7896766b2a087a17c77efcc3f0cc573838489"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests&DisplayName~viewport-percentage-bases",
+      "librarySha256": "a3e6ba6d133cc418c63d2a0ba4db696e92897309c9473d0f946d8f6b13d0995c",
+      "testAssemblySha256": "833c475a045a97cda16bb99543d2e000d41754d62c00a8fd0fa8e211fd10d4d6",
+      "seconds": 13.164809500100091,
+      "counters": {
+        "executed": "81",
+        "passed": "81",
+        "failed": "0"
+      },
+      "trxSha256": "d5f97d9a9017dc6f074f1c5c8b5dd30394bba6c3951f58e5e2d6c19cabff053d",
+      "caseIdentitySha256": "76932eba644586ffd2f6fe804ea7896766b2a087a17c77efcc3f0cc573838489"
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgRootEffectAdmissionTests|FullyQualifiedName~SvgViewportPercentageTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgViewportRecordingScopeTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~SvgViewportClipStorageTests|FullyQualifiedName~SvgRootSyntaxTests",
+      "librarySha256": "e619e3d7d19a762a9c329683f75100f32e2e66f37575aebe9c0486b3d248bdf0",
+      "testAssemblySha256": "32f19be32c902ff742cb07ba270ccc85f4fdaea2ed4f5c8469fda5acdb451bb4",
+      "seconds": 12.132500700186938,
+      "counters": {
+        "executed": "82",
+        "passed": "82",
+        "failed": "0"
+      },
+      "trxSha256": "27efa58628f722d94ce1d4b1201cf877ce0433ea49553029961b470d367097ff",
+      "caseIdentitySha256": "66d67e8f29d615a7470d71110dcf62abb3f12f4c6ed3e35c972cb396ae10da3c"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgRootEffectAdmissionTests|FullyQualifiedName~SvgViewportPercentageTests|FullyQualifiedName~SvgHostViewportPercentageTests|FullyQualifiedName~SvgViewportRecordingScopeTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~SvgViewportClipStorageTests|FullyQualifiedName~SvgRootSyntaxTests",
+      "librarySha256": "e619e3d7d19a762a9c329683f75100f32e2e66f37575aebe9c0486b3d248bdf0",
+      "testAssemblySha256": "32f19be32c902ff742cb07ba270ccc85f4fdaea2ed4f5c8469fda5acdb451bb4",
+      "seconds": 13.164776500081643,
+      "counters": {
+        "executed": "82",
+        "passed": "82",
+        "failed": "0"
+      },
+      "trxSha256": "f5614f71e545894c59607c93decbe506fc85003348c09dabcdf01a49086fe2a6",
+      "caseIdentitySha256": "66d67e8f29d615a7470d71110dcf62abb3f12f4c6ed3e35c972cb396ae10da3c"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests&DisplayName~viewport-percentage-bases",
+      "librarySha256": "e619e3d7d19a762a9c329683f75100f32e2e66f37575aebe9c0486b3d248bdf0",
+      "testAssemblySha256": "72cb206924b4d57472cd9a8b31cdf50f36d36cd3e39f7b93d3f1736ee9a2edea",
+      "seconds": 13.898625300033018,
+      "counters": {
+        "executed": "81",
+        "passed": "81",
+        "failed": "0"
+      },
+      "trxSha256": "29dba334ed83a245e0851aae61f4d1eaea33418cb67b80d81b634fb992430ce1",
+      "caseIdentitySha256": "76932eba644586ffd2f6fe804ea7896766b2a087a17c77efcc3f0cc573838489"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgSymbolInstanceReferenceTests&DisplayName~viewport-percentage-bases",
+      "librarySha256": "e619e3d7d19a762a9c329683f75100f32e2e66f37575aebe9c0486b3d248bdf0",
+      "testAssemblySha256": "72cb206924b4d57472cd9a8b31cdf50f36d36cd3e39f7b93d3f1736ee9a2edea",
+      "seconds": 15.220196499954909,
+      "counters": {
+        "executed": "81",
+        "passed": "81",
+        "failed": "0"
+      },
+      "trxSha256": "8b3e03b51ada515bb241100e823d1acadfad6f50ca7e77b8243401c9e2b0863d",
+      "caseIdentitySha256": "76932eba644586ffd2f6fe804ea7896766b2a087a17c77efcc3f0cc573838489"
+    }
+  ],
+  "conditionalSelection": {
+    "acceptance": "resource-selection.md#conditional-selection",
+    "sourceAuditCommit": "a28737f9235a89fb94d81bfb8e00a67cf7c07f01",
+    "fourProductionWalksByteIdentical": true,
+    "scope": "Reused source-bound policy/35 switch/9 acquisition/54 native selection checks; no new conditional runtime execution is claimed here."
+  },
+  "inventory": {
+    "methods": 5164,
+    "csharpFiles": 743,
+    "coreMethods": 4702,
+    "coreUnclassified": 1129,
+    "visualMethods": 462,
+    "visualUnclassified": 212
+  },
+  "limits": "Functional VSTest times include discovery/startup/TRX and overlapping host pairs; no performance comparison. Production, public API, package/version and admission policy are unchanged; existing inputs/references/tolerances are preserved. Full renderer/package gates remain milestone work."
+}

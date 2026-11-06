@@ -4,17 +4,20 @@ Scope: every feature and limit section of the current [support contract][contrac
 The overview table is indexed by the detailed rows below; it adds no separate
 conformance promise. Labels summarize claims without duplicating the contract.
 
-Evidence base: `9f4e66439`. Contract LF SHA-256:
+Evidence base: `8442f0c9c`. Contract LF SHA-256:
 `940246099e74c54ff2d26a2756ddc98b1a87d2567138bc18b3b7f86b44cdf533`.
 Production source is unchanged since `c13ac322c`; the [diagnostic qualification][diag-record]
 records full .NET 11 CI and affected Windows/Linux .NET 10 checks. The
 [rendering milestone][render-record] owns full cross-runtime rendering/package
 evidence. Their source/runtime/platform boundaries remain distinct.
 
-Integrity inspection checked all 58 relative targets/anchors and 46 cited native
+The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
 current source/reference byte hashes. This is an evidence audit; runtime outcomes
 remain bound to the qualifications above.
+The [viewport/root qualification][viewport-record] adds seven root admission cases
+and replays the existing 81-case Windows-native viewport bank on both hosts/runtimes.
+Its older corpus-level capture attestation remains distinct from per-case triples.
 
 **Reviewed** means the named implementation and direct checks were inspected for
 that row, with independent references where pixels are involved. It does not mean
@@ -24,8 +27,8 @@ An admission-only or numerical mechanism does not need another rendering matrix.
 
 Closure: inspect every Pending row; retain a source-bound witness and a concrete
 next action for each Open row. Fix witnessed defects through the shared owner,
-preserving failing-before cases and reference authority. This map adds no tests,
-changes no support boundary, and does not close W1, performance or release gates.
+preserving failing-before cases and reference authority. Linked qualifications own
+added checks; W1, performance and release gates remain separate.
 
 ## XML and static admission
 
@@ -55,14 +58,14 @@ Scope: [document sizing][contract-sizing].
 | ID | Claim group | Trace |
 | --- | --- | --- |
 | S1 | Root units/defaults/aspect derivation, supplied viewport and late CSS/auto sizing | Reviewed: [shared sizing][sizing] → [dimension/provenance tests][dimension-tests]. Numerical sizing; projection pixels are S6. |
-| S2 | Logical/viewBox percentage bases, nested aspect maps and physical clips independent of raster density | Pending: finish the nested/percentage native-reference chain separately from root rounding. |
+| S2 | Logical/viewBox percentage bases, nested aspect maps and physical clips independent of raster density | Reviewed: [root bases][root-attributes] / [nested syntax][viewport-syntax] / [frames][viewport-frame] / [traversal][traversal] → [percentage][viewport-tests] / [host viewport][host-viewport-tests] / [fitting checks][raster-tests] → [81 native inputs][viewport-native] and [four-context replay][viewport-record]. |
 | S3 | Outer canvas background, currentColor/keywords, root opacity/visibility independence and inapplicable backgrounds | Reviewed: [canvas playback][converter] → [background mechanisms][background-tests] → [canvas controls][background-native]. |
 | S4 | Root padding syntax/priority, containing-width percentages, fixed box/content clipping and inapplicable padding | Reviewed: [box syntax][box-syntax] / [image map][image-map] → [box mechanisms][box-tests] → [padding controls][padding-native]. |
 | S5 | Root border widths/styles/colors/priority, box-sizing and border-style exclusions | Reviewed: [box syntax][box-syntax] / [canvas playback][converter] → [border mechanisms][border-tests] → [box/border][border-native] and [alpha/miter controls][border-paint-native]. |
 | S6 | Natural-image rounding, output density/padding and tiny/large numeric fallback | Reviewed: [image map][image-map] → [matrix/boundary mechanisms][image-map-tests] → [independent density controls][density-native]. |
 | S7 | Bounded inspection without fonts/geometry/image preparation; sizing provenance and shared raster planning | Reviewed: [inspection/sizing][sizing] → [dimension/ownership cases][dimension-tests] and [raster plans][raster-tests]. API and numerical contract. |
 | S8 | Positive optional caps, uniform fitting, conservative integer/pixel rounding, one-pixel minimum and explicit limits/refusal | Reviewed: [raster sizing][raster-sizing] / [bounds contract][raster-bounds] → [fit/range/ownership cases][raster-tests] / [prepared-font fitting][bounded-font-tests]. Fitting preserves the same explicit-scale pixels; S6 owns density references. |
-| S9 | Root filter/clip exclusions and winning CSS no-effect declarations | Pending: shared attribute/computed-style gates are traced; identify the direct root-location rejection/override witnesses. |
+| S9 | Root filter/clip exclusions and winning CSS no-effect declarations | Reviewed: [attribute policy][attributes] / [computed-style gate][computed-style] → [seven direct rejection/override cases][root-effect-tests] → [qualification][viewport-record]. Admission and retained geometry are checked directly. |
 
 ## Geometry and strokes
 
@@ -84,7 +87,7 @@ Scope: [documents and instances][contract-instances].
 | ID | Claim group | Trace |
 | --- | --- | --- |
 | I1 | Local reference inheritance excludes source ancestors | Pending. |
-| I2 | Local switch selection, empty locale set and required feature/extension rejection | Pending. |
+| I2 | Local switch selection, empty locale set and required feature/extension rejection | Reviewed: [traversal][traversal], [direct][font-discovery] / [instance discovery][instance-discovery] and [paint selection][paint-index] → [switch scope checks][switch-tests] → [source-bound conditional acceptance][selection-record]. All four production walks remain byte-identical to that audit ([binding][viewport-record]). |
 | I3 | Missing/cyclic/empty references, href precedence, generated filters and zero use/symbol viewport behavior | Pending. |
 | I4 | Root/nested/symbol overflow, styles and retained-content restrictions; referenced group opacity/filter and named-use placement | Pending. |
 
@@ -219,6 +222,13 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [diag-text]: ../../../src/Lokad.Svg/SvgDiagnosticText.cs
 [font-diag]: ../../../src/Lokad.Svg/Fonts/SvgFontDiagnostic.cs
 [sizing]: ../../../src/Lokad.Svg/Parsing/SvgDocumentSizing.cs
+[root-attributes]: ../../../src/Lokad.Svg/Parsing/SvgRootAttributes.cs
+[viewport-syntax]: ../../../src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs
+[viewport-frame]: ../../../src/Lokad.Svg/Parsing/SvgViewportFrame.cs
+[computed-style]: ../../../src/Lokad.Svg/Parsing/SvgComputedStyle.cs
+[font-discovery]: ../../../src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs
+[instance-discovery]: ../../../src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs
+[paint-index]: ../../../src/Lokad.Svg/Parsing/SvgPaintResourceSelection.cs
 [converter]: ../../../src/Lokad.Svg/SvgConverter.cs
 [box-syntax]: ../../../src/Lokad.Svg/Parsing/SvgRootBoxSyntax.cs
 [image-map]: ../../../src/Lokad.Svg/Rendering/SvgRootImageMap.cs
@@ -236,6 +246,10 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [diag-tests]: ../../Lokad.Svg.Tests/SvgSourceDiagnosticTests.cs
 [font-diag-tests]: ../../Lokad.Svg.Tests/OpenTypeFontTests.Diagnostics.cs
 [dimension-tests]: ../../Lokad.Svg.Tests/SvgDocumentDimensionsTests.cs
+[viewport-tests]: ../../Lokad.Svg.Tests/SvgViewportPercentageTests.cs
+[host-viewport-tests]: ../../Lokad.Svg.Tests/SvgHostViewportPercentageTests.cs
+[root-effect-tests]: ../../Lokad.Svg.Tests/SvgRootEffectAdmissionTests.cs
+[switch-tests]: ../../Lokad.Svg.Tests/SvgSwitchScopeTests.cs
 [background-tests]: ../../Lokad.Svg.Tests/SvgCanvasBackgroundTests.cs
 [box-tests]: ../../Lokad.Svg.Tests/SvgRootBoxLayoutTests.cs
 [border-tests]: ../../Lokad.Svg.Tests/SvgRootBorderLayoutTests.cs
@@ -251,6 +265,9 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [border-native]: ../root-box-layout/capture.json
 [border-paint-native]: ../root-border/capture.json
 [density-native]: ../root-image-density/capture.json
+[viewport-native]: ../viewport-percentage-bases/manifest.json
+[viewport-record]: viewport-root-admission.json
+[selection-record]: resource-selection.md#conditional-selection
 [diag-record]: diagnostic-unicode-prefix.json
 [render-record]: shadow-foreground.json
 [png-rows]: png-row-storage.json

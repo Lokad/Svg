@@ -2,6 +2,8 @@
 
 The [support-claim trace](support-claim-map.md) gives the current contract a finite
 review index. Reviewed claims, pending traces and unresolved authority stay distinct.
+The [viewport/root admission qualification](viewport-root-admission.json) pins seven
+root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 
 [Diagnostic text boundaries](diagnostic-unicode-prefix.json) replace three cuts
 with one bounded prefix operation that preserves surrogate pairs. Direct boundary
