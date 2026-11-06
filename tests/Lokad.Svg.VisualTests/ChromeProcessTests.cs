@@ -25,6 +25,30 @@ public sealed class ChromeProcessTests : IDisposable
 
     [Fact]
     [Trait("Layer", "Contract")]
+    public async Task Failed_native_startup_cleans_profile_and_native_scratch()
+    {
+        if (!OperatingSystem.IsLinux()) return;
+        Directory.CreateDirectory(_profileParent);
+        string executable = Path.Combine(_profileParent, "native-scratch-probe");
+        File.WriteAllText(executable, """
+            #!/bin/sh
+            parent=$(dirname "$0")
+            printf '%s' "${TMPDIR-}" > "$parent/observed-scratch.txt"
+            case "${TMPDIR-}" in "$parent"/*) mkdir "$TMPDIR/org.chromium.Chromium.fixture" ;; esac
+            exit 1
+            """.Replace("\r\n", "\n", StringComparison.Ordinal) + "\n");
+        File.SetUnixFileMode(executable, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await ChromeProcess.LaunchAsync(executable, _profileParent, CancellationToken.None));
+
+        string scratch = File.ReadAllText(Path.Combine(_profileParent, "observed-scratch.txt"));
+        Assert.StartsWith(_profileParent + Path.DirectorySeparatorChar, scratch, StringComparison.Ordinal);
+        Assert.False(Directory.Exists(scratch));
+        Assert.Empty(Directory.GetDirectories(_profileParent));
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Missing_executable_creates_no_profile()
     {
         await Assert.ThrowsAsync<FileNotFoundException>(async () => await ChromeProcess.LaunchAsync(Path.Combine(_profileParent, "missing"), _profileParent, CancellationToken.None));

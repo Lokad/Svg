@@ -189,7 +189,8 @@ tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifac
 On Linux, pass `-PinPath tools/chrome-for-testing.linux64.json` to setup, smoke
 and capture commands. Each platform needs its own references; a missing Linux
 capture cannot borrow Windows evidence. Run the smoke without concurrent capture
-batches on the same host because it audits the shared temporary-profile namespace.
+operations sharing its temporary parent. Each launch owns a short private root for
+its profile and native scratch; smoke verifies cleanup and preserves sibling owners.
 
 Setup preserves sandboxing. On Windows it authenticates the bundled installer,
 uses its bounded `--configure-browser-in-directory` operation (success status 78)

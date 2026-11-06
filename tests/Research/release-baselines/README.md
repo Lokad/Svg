@@ -32,6 +32,9 @@ The [offset-source request](offset-source-request.json) correction aligns specia
 playback with the ordinary graph's capture request, closing 128 more historical
 inputs with 177,908 affected passing executions. The remaining 84 placement/viewport/
 stroke inputs retain their own frozen targets and focused next actions.
+[Its original/context replay](offset-source-request-svgweb.json) preserves all
+previous output and both Linux scalar-math profiles. [Chrome scratch ownership](chrome-native-scratch.json)
+fixes the separate native temporary-file leak observed after exact Ubuntu CI captures.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

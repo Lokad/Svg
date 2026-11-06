@@ -12,7 +12,7 @@ exact**, with 35 UnsupportedFeature and 1 MalformedInput outcome. The
 the inventory retains historical observations separately.
 `originals.json.currentReview` owns the current renderer and replay qualification;
 stage records retain their source identities and link back to that ledger.
-The [gradient-reflection replay](../release-baselines/gradient-reflection-svgweb.json)
+The [offset-source replay](../release-baselines/offset-source-request-svgweb.json)
 preserves every original outcome and all declared contexts. For `svg.svg`, the CSV
 keeps the original Linux glibc 2.39 PNG hash; the current replay's glibc 2.43 output
 has its own independently recaptured authority. Both match their browser profile.

@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/gradient-reflection-svgweb.json",
+    "evidence": "../release-baselines/offset-source-request-svgweb.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "540cd66056382586ce783f5020dfb35d1751aa32",
-    "sourceIdentity": "Packaged shared gradient-reflection correction. Fresh primary-runtime replay preserves all 204 original hashes and prior outcomes/diagnostics, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics on both hosts. Complete suites, representative secondary compatibility and installed consumers remain separately qualified; references and admission boundaries are frozen.",
-    "librarySha256": "b67b058d6eb711425689c3458410e4882135f43131baf82585895aec441999aa",
+    "sourceBaseline": "dc5a174fbf5361bcd97bba2ef7914a0aef6ee8dc",
+    "sourceIdentity": "Packaged propagated offset-source request correction. Fresh primary-runtime replay preserves all 204 original hashes and prior outcomes/diagnostics, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics on both hosts. Complete suites, representative secondary compatibility and installed consumers remain separately qualified; references and admission boundaries are frozen.",
+    "librarySha256": "6849fbc6469ecc57df6ea8d9a3e0956ebf3e757ba3d2662c968d28c027951f1d",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10401,7 +10401,7 @@
           "ny1-static-review.json",
           "svg2009-static-review.json"
         ],
-        "currentReplay": "../release-baselines/gradient-reflection-svgweb.json"
+        "currentReplay": "../release-baselines/offset-source-request-svgweb.json"
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0

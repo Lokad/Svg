@@ -1,0 +1,306 @@
+{
+  "status": "Chrome owns and cleans its native temporary files as well as its profile. Deterministic failing-before regression and native smoke pass on both hosts/runtimes; matching full CI is pending.",
+  "sourceBaseCommit": "dc5a174fbf5361bcd97bba2ef7914a0aef6ee8dc",
+  "witnessedFailure": {
+    "runId": 42195860726,
+    "artifact": "chrome-smoke-ubuntu-latest",
+    "artifactFileSha256": "821d59b251cf62b6b71ed0f2024e518796d55473da02b20beddf824215a279a5",
+    "leftoverKind": "Native org.chromium.Chromium.* directory in the borrowed temporary parent; all preceding image comparisons were exact."
+  },
+  "cause": "ChromeProcess owned only the user-data profile. Chromium may create additional native files under TMPDIR, outside that profile.",
+  "change": "One unique short launch root contains the profile and receives TMPDIR/TEMP/TMP. Startup failure and disposal clean only that owned root after process/pipe shutdown. Absolute parent/child validation preserves the borrowed parent and sibling owners. The short leaf keeps Linux socket paths bounded.",
+  "sourceBindings": [
+    {
+      "path": "tools/Lokad.Svg.Chrome/ChromeProcess.cs",
+      "sha256": "fa7aecaf0d2b6e18c8e235c0a597b5b13daa3f4604a9b195b36323dde8e903d3"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/ChromeProcessTests.cs",
+      "sha256": "8e27ac3dde7c2eede3f7be246b3b20e19fe785a58f456f99e3577ca45235e550"
+    }
+  ],
+  "regression": "Linux fake native startup records TMPDIR and creates a scratch child only inside the test-owned parent. The old launcher fails the ownership assertion; the fixed launcher cleans both profile and scratch. Windows retains its native smoke coverage.",
+  "before": {
+    "testAssemblySha256": "f0096fcd45d4a682ba6505090c7c0be46f088f42eb6b3515b92709b97a9e8044",
+    "counters": {
+      "executed": "1",
+      "passed": "0",
+      "failed": "1"
+    },
+    "trxSha256": "35d78297824b858ec42cb04a5cd61ede56a3ceff3129c2a9bd86052ec87fbdbe"
+  },
+  "after": [
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "4f2917e74abca1dcd2640c38ea3640de993746af9793e4b976c1f4c8d9e185d3",
+      "testAssemblySha256": "a502affd91179bfff2293076dcc79a75d290981eec568504183113df992b8cea",
+      "selection": "FullyQualifiedName~ChromeProcessTests|FullyQualifiedName~ChromeDiagnosticsTests",
+      "exitCode": 0,
+      "seconds": 12.75612000003457,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "trxSha256": "f6fb057d340b30c99fb829a37f4627220c2ef0bfe2d8a4a998b0c11889eda8a9"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "4f2917e74abca1dcd2640c38ea3640de993746af9793e4b976c1f4c8d9e185d3",
+      "testAssemblySha256": "a502affd91179bfff2293076dcc79a75d290981eec568504183113df992b8cea",
+      "selection": "FullyQualifiedName~ChromeProcessTests|FullyQualifiedName~ChromeDiagnosticsTests",
+      "exitCode": 0,
+      "seconds": 23.484107399825007,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "trxSha256": "0a23d5d4bd51ee80836ad5e8a0523e14d7e3327744b2d837505c96695c272b14"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "f89b76471856382dbc72fb72a36e9320a38c696d101d1159bb2315d8dedb8b5e",
+      "testAssemblySha256": "9697517c0daffb5088d1c726e148c80a94721607d346cef686c58fb050ca9847",
+      "selection": "FullyQualifiedName~ChromeProcessTests|FullyQualifiedName~ChromeDiagnosticsTests",
+      "exitCode": 0,
+      "seconds": 21.561369400005788,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "trxSha256": "8719b5af773b7ba6d856703df1f1c294389f338b101dae392b2d99b61024e24a"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "f89b76471856382dbc72fb72a36e9320a38c696d101d1159bb2315d8dedb8b5e",
+      "testAssemblySha256": "9697517c0daffb5088d1c726e148c80a94721607d346cef686c58fb050ca9847",
+      "selection": "FullyQualifiedName~ChromeProcessTests|FullyQualifiedName~ChromeDiagnosticsTests",
+      "exitCode": 0,
+      "seconds": 35.627591599943116,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "trxSha256": "8d3ae2844cba7b834db3d115ebab3a9c907db4876949ac0378bbdc690a09fd6b"
+    }
+  ],
+  "nativeSmoke": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "exitCode": 0,
+      "seconds": 46.751320800045505,
+      "fingerprintSha256": "342b59990d7c22ebcd211a4058ad24be5a5bf14cefd2e4e3a5bf480261e0d76c",
+      "platform": "win64",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipe": "3",
+      "healthyCaptures": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1540,
+          "debuggerReadyMilliseconds": 854,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "\r\nDevTools listening on [redacted URL]\r\n[10592:88252:1106/110400.844:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 746,
+          "debuggerReadyMilliseconds": 170,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "\r\nDevTools listening on [redacted URL]\r\n[21052:111300:1106/110402.077:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 961,
+          "debuggerReadyMilliseconds": 390,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "\r\nDevTools listening on [redacted URL]\r\n[70168:94288:1106/110403.257:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "unrelatedTemporaryOwnersPreserved": true,
+      "viewportReferenceSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "exitCode": 0,
+      "seconds": 318.757357099792,
+      "fingerprintSha256": "1e63a23f649f19b65c9bf91d5a0fd4ed670f72132b1f93064bef69097b366b02",
+      "platform": "linux64",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipe": "3",
+      "healthyCaptures": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 20850,
+          "debuggerReadyMilliseconds": 16063,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "[707:707:1106/110556.602277:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[707:707:1106/110556.720567:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[707:829:1106/110601.792760:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[707:707:1106/110606.181360:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[707:707:1106/110606.650097:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n[707:707:1106/110606.785150:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[707:707:1106/110607.098640:ERROR:chrome/browser/component_updater/soda_component_installer.cc:96] On demand update of the SODA component failed with error: 5\n[707:707:1106/110607.099817:ERROR:chrome/browser/component_updater/soda_language_pack_component_installer.cc:85] On demand update of the SODA language component failed with error: 5\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 22662,
+          "debuggerReadyMilliseconds": 18038,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "[1391:1391:1106/110619.304096:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[1391:1391:1106/110619.380859:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[1391:1690:1106/110625.518405:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[1391:1391:1106/110631.327391:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[1391:1391:1106/110631.733603:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[1391:1391:1106/110631.871155:ERROR:chrome/browser/component_updater/soda_component_installer.cc:96] On demand update of the SODA component failed with error: 5\n[1391:1391:1106/110631.872104:ERROR:chrome/browser/component_updater/soda_language_pack_component_installer.cc:85] On demand update of the SODA language component failed with error: 5\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 3966,
+          "debuggerReadyMilliseconds": 1879,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "[2091:2091:1106/110636.534558:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[2091:2091:1106/110636.534731:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[2091:2123:1106/110636.758063:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[2091:2091:1106/110637.685753:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[2091:2091:1106/110637.790999:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[2091:2091:1106/110637.924644:ERROR:chrome/browser/component_updater/soda_language_pack_component_installer.cc:85] On demand update of the SODA language component failed with error: 5\n[2091:2091:1106/110637.931522:ERROR:chrome/browser/component_updater/soda_component_installer.cc:96] On demand update of the SODA component failed with error: 5\n[2091:2091:1106/110638.463497:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "unrelatedTemporaryOwnersPreserved": true,
+      "viewportReferenceSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "exitCode": 0,
+      "seconds": 73.92665110016242,
+      "fingerprintSha256": "4e2ccae6410e47aad3e23fe25b5ae70a9c73a9c2afb41b53a1d487f8f5abc415",
+      "platform": "win64",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipe": "3",
+      "healthyCaptures": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 2459,
+          "debuggerReadyMilliseconds": 406,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "\r\nDevTools listening on [redacted URL]\r\n[94824:98176:1106/110446.739:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1902,
+          "debuggerReadyMilliseconds": 238,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "\r\nDevTools listening on [redacted URL]\r\n[117112:39264:1106/110449.191:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 952,
+          "debuggerReadyMilliseconds": 237,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "\r\nDevTools listening on [redacted URL]\r\n[53916:23532:1106/110451.450:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "unrelatedTemporaryOwnersPreserved": true,
+      "viewportReferenceSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "exitCode": 0,
+      "seconds": 407.46223099995404,
+      "fingerprintSha256": "095e423d15354845bb706e09497f41796cf3deb87ae9a7780fd8f697240bdd0e",
+      "platform": "linux64",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipe": "3",
+      "healthyCaptures": [
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 14322,
+          "debuggerReadyMilliseconds": 10352,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "[6526:6526:1106/110740.484446:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[6526:6526:1106/110740.521373:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[6526:6615:1106/110744.486037:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[6526:6526:1106/110750.271875:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[6526:6526:1106/110750.525141:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[6526:6526:1106/110750.703596:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n[6526:6526:1106/110750.884022:ERROR:chrome/browser/component_updater/soda_component_installer.cc:96] On demand update of the SODA component failed with error: 5\n[6526:6526:1106/110750.886059:ERROR:chrome/browser/component_updater/soda_language_pack_component_installer.cc:85] On demand update of the SODA language component failed with error: 5\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 1416,
+          "debuggerReadyMilliseconds": 720,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "[6972:6972:1106/110754.856312:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[6972:6972:1106/110754.856496:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[6972:7000:1106/110754.955056:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[6972:6972:1106/110755.217814:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[6972:6972:1106/110755.331929:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[6972:6972:1106/110755.352059:ERROR:chrome/browser/component_updater/soda_component_installer.cc:96] On demand update of the SODA component failed with error: 5\n[6972:6972:1106/110755.352778:ERROR:chrome/browser/component_updater/soda_language_pack_component_installer.cc:85] On demand update of the SODA language component failed with error: 5\n[6972:6972:1106/110755.509533:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        },
+        {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 1092,
+          "debuggerReadyMilliseconds": 287,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "stderr": "[7299:7299:1106/110758.213854:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[7299:7299:1106/110758.213912:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[7299:7328:1106/110758.335029:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[7299:7299:1106/110758.627108:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[7299:7299:1106/110758.734245:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[7299:7299:1106/110758.753381:ERROR:chrome/browser/component_updater/soda_language_pack_component_installer.cc:85] On demand update of the SODA language component failed with error: 5\n[7299:7299:1106/110758.754489:ERROR:chrome/browser/component_updater/soda_component_installer.cc:96] On demand update of the SODA component failed with error: 5\n[7299:7299:1106/110758.980495:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      ],
+      "unrelatedTemporaryOwnersPreserved": true,
+      "viewportReferenceSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+    }
+  ],
+  "limits": [
+    "No cleanup check, reference, tolerance, pin or browser launch-health requirement was weakened.",
+    "This is a developer-tool lifetime correction; renderer production source remains dc5a174fb.",
+    "Recorded elapsed times are validation costs, not renderer performance measurements.",
+    "CI 42195860726 is terminal and closed; its skipped steps remain skipped. New matching CI must qualify the tool correction."
+  ]
+}

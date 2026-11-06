@@ -2,13 +2,14 @@ using System.Diagnostics;
 
 namespace Lokad.Svg.Chrome;
 
-/// <summary>Owns one headless Chrome process, bounded diagnostics and an isolated debugging profile.</summary>
+/// <summary>Owns one headless Chrome process, bounded diagnostics, its profile and native scratch directory.</summary>
 internal sealed class ChromeProcess : IAsyncDisposable
 {
-    private const int ProfileCleanupRetryCount = 50;
-    private static readonly TimeSpan ProfileCleanupRetryDelay = TimeSpan.FromMilliseconds(100);
+    private const int CleanupRetryCount = 50;
+    private static readonly TimeSpan CleanupRetryDelay = TimeSpan.FromMilliseconds(100);
     private readonly Process _process;
     private readonly string _profileDirectory;
+    private readonly string _temporaryDirectory;
     private readonly string _executableName;
     private readonly ChromeDiagnostics _diagnostics = new();
     private readonly CancellationTokenSource _drainCancellation = new();
@@ -18,10 +19,11 @@ internal sealed class ChromeProcess : IAsyncDisposable
     private long _debuggerReadyMilliseconds = -1;
     private bool _disposed;
 
-    private ChromeProcess(Process process, string profileDirectory)
+    private ChromeProcess(Process process, string profileDirectory, string temporaryDirectory)
     {
         _process = process;
         _profileDirectory = profileDirectory;
+        _temporaryDirectory = temporaryDirectory;
         _executableName = Path.GetFileName(process.StartInfo.FileName);
         _stderrDrain = _diagnostics.DrainAsync(process.StandardError, _drainCancellation.Token);
         _stdoutDrain = DrainOutputAsync(process.StandardOutput, _drainCancellation.Token);
@@ -38,10 +40,10 @@ internal sealed class ChromeProcess : IAsyncDisposable
     internal static Task<ChromeProcess> LaunchAsync(string executable, CancellationToken cancellationToken)
         => LaunchAsync(executable, Path.GetTempPath(), cancellationToken);
 
-    /// <summary>Creates and owns one unique profile below the borrowed parent directory.</summary>
+    /// <summary>Creates and owns one launch directory containing the profile and native scratch below the borrowed parent.</summary>
     /// <remarks>
     /// The caller retains the parent and its other children. Failure and disposal remove
-    /// only this launch's profile; cancellation before launch creates no directory.
+    /// only this launch's directory; cancellation before launch creates no directory.
     /// Independent launches may share a parent concurrently.
     /// </remarks>
     internal static async Task<ChromeProcess> LaunchAsync(string executable, string profileParent, CancellationToken cancellationToken)
@@ -50,7 +52,12 @@ internal sealed class ChromeProcess : IAsyncDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(profileParent);
         cancellationToken.ThrowIfCancellationRequested();
         if (!File.Exists(executable)) throw new FileNotFoundException("Pinned Chrome executable was not found.", executable);
-        string profile = Path.Combine(profileParent, "lokad-svg-chrome-" + Guid.NewGuid().ToString("N"));
+        string parent = Path.TrimEndingDirectorySeparator(Path.GetFullPath(profileParent));
+        // Keep the leaf short: Chromium puts its Linux socket below TMPDIR.
+        string temporary = Path.GetFullPath(Path.Combine(parent, "b-" + Path.GetRandomFileName()));
+        if (!string.Equals(Path.GetDirectoryName(temporary), parent, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+            throw new InvalidOperationException("Chrome launch directory must stay below its borrowed parent.");
+        string profile = Path.Combine(temporary, "p");
         Directory.CreateDirectory(profile);
         ProcessStartInfo startInfo = new(executable)
         {
@@ -59,6 +66,7 @@ internal sealed class ChromeProcess : IAsyncDisposable
             RedirectStandardError = true,
             RedirectStandardOutput = true,
         };
+        foreach (string name in new[] { "TMPDIR", "TEMP", "TMP" }) startInfo.Environment[name] = temporary;
         startInfo.ArgumentList.Add("--headless=new");
         startInfo.ArgumentList.Add("--disable-gpu");
         startInfo.ArgumentList.Add("--remote-debugging-address=127.0.0.1");
@@ -68,8 +76,8 @@ internal sealed class ChromeProcess : IAsyncDisposable
         startInfo.ArgumentList.Add("--user-data-dir=" + profile);
         Process process;
         try { process = Process.Start(startInfo) ?? throw new InvalidOperationException("Chrome process could not be started."); }
-        catch { await DeleteProfileAsync(profile); throw; }
-        ChromeProcess chrome = new(process, profile);
+        catch { await DeleteLaunchDirectoryAsync(temporary); throw; }
+        ChromeProcess chrome = new(process, profile, temporary);
         try
         {
             using CancellationTokenSource startup = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -122,7 +130,7 @@ internal sealed class ChromeProcess : IAsyncDisposable
             _process.Dispose();
             try
             {
-                await DeleteProfileAsync(_profileDirectory);
+                await DeleteLaunchDirectoryAsync(_temporaryDirectory);
                 profileCleaned = true;
             }
             finally
@@ -144,13 +152,13 @@ internal sealed class ChromeProcess : IAsyncDisposable
         }
     }
 
-    private static async Task DeleteProfileAsync(string profileDirectory)
+    private static async Task DeleteLaunchDirectoryAsync(string directory)
     {
         for (int attempt = 0; ; attempt++)
         {
-            try { Directory.Delete(profileDirectory, true); return; }
-            catch (UnauthorizedAccessException) when (attempt < ProfileCleanupRetryCount) { await Task.Delay(ProfileCleanupRetryDelay); }
-            catch (IOException) when (attempt < ProfileCleanupRetryCount) { await Task.Delay(ProfileCleanupRetryDelay); }
+            try { Directory.Delete(directory, true); return; }
+            catch (UnauthorizedAccessException) when (attempt < CleanupRetryCount) { await Task.Delay(CleanupRetryDelay); }
+            catch (IOException) when (attempt < CleanupRetryCount) { await Task.Delay(CleanupRetryDelay); }
         }
     }
 
