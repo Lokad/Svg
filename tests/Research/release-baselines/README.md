@@ -22,6 +22,9 @@ representative ownership contracts and 108 healthy native capture receipts.
 The [shaping/kerning trace](text-shaping-kerning-claim-trace.json) completes
 admission, ligature, mark and pair-positioning review against shared owners,
 direct checks and independently bound metrics/browser controls.
+The [text paint/resource trace](text-paint-resource-claim-trace.json) completes the
+remaining paint, resource-demand and platform-metric text groups, keeping source
+and drawing bounds, inactive-source exceptions and native capture scopes distinct.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

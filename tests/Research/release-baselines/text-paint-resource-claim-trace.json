@@ -1,0 +1,339 @@
+{
+  "status": "Reviewed T4 and T17 against current paint/discovery/metric owners, direct checks, representative ownership contracts and retained native scopes.",
+  "qualifiedSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+  "qualification": "text-feature-dispatch-contexts.json",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "src/Lokad.Svg/Parsing/SvgTextPaintStyle.cs": "869ab4cfd82801b1d6bf23e4a2ae9d6775443a03da80848dfc67abc76c86c9d2",
+    "src/Lokad.Svg/Parsing/SvgTextPaintPurpose.cs": "98d5f7c89882e6880d8cc8b892b9c7c12a72ba6cbb3768201a1bf407fceb54b7",
+    "src/Lokad.Svg/Parsing/SvgTextPaintPreparation.cs": "0708cfa59c7c48acfc12aeef111d167e62cb70fbdf78ae48302fdc552424ee5e",
+    "src/Lokad.Svg/Parsing/SvgTextPaintOutput.cs": "c64ef314803cfae6bfc99f88332860c09305a3c5ea8edcd18d1370a0c0882301",
+    "src/Lokad.Svg/Parsing/SvgTextLayoutBounds.cs": "dd820dc7ef4376180d35b9b99fc377073313affd7c7a9f725c683e9945f1dd44",
+    "src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs": "9866bcaadcf1bd764fd48870a4c08b77e23442bb63d8cda77d4cee7b87e4ad88",
+    "src/Lokad.Svg/Parsing/SvgTextDecoration.cs": "5ae026b63961eef354ce77ed30d5ad757214c8ad10d7106e563b8f3358b0758b",
+    "src/Lokad.Svg/Parsing/SvgTextDecorationRenderer.cs": "28d9c5067edfcd10744a7625885f3d78c133878085e1e387a2ca9b02bd6c9977",
+    "src/Lokad.Svg/Parsing/SvgPaintableElementContext.cs": "2d436b174f9231e3cde971a913681749e094782a256f4ee19a2e553db40ae156",
+    "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs": "f99d68cc2ac113547e42e31caca331bdbc4d0fd33839d2c14388738a9a0f5b13",
+    "src/Lokad.Svg/Parsing/SvgRoot.cs": "47979fd0f67cd6001e61feb038c097a4e179b236a247debeca8cb3df1201e84a",
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "d445a9aaa015c416a1fee0da1512e8ef43db787640b04ad75a8171a0fee41abf",
+    "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "92805adc76aff11589c6acbcccfd21980b33ad7e1fd5405e6bb3847ee0486fca",
+    "src/Lokad.Svg/Fonts/SvgGlyphDeviceMetrics.cs": "10896a3177ec807e9c911dd68b4dfddaa832f28b9a93049916840e53845accc1",
+    "src/Lokad.Svg/Fonts/SvgGlyphRasterSource.cs": "01d41398069d80ae2135b18ddc72e4d6386274c1810559c9c8b33898104cfcfe",
+    "src/Lokad.Svg/Fonts/SvgGlyphRasterSource.Path.cs": "b7ab64349b7615943ed90d9b78c5620431dbe8a7449456e88d29f4ab13ba93da",
+    "src/Lokad.Svg/Fonts/SvgGlyphRasterSource.Stroke.cs": "5ba4dea8f07b391cbb6c29f035b0ab509a99bfcb37b74262c4c66969ab1da330",
+    "src/Lokad.Svg/Fonts/SvgGlyphStrikeTransform.cs": "95c1ddd05e279c8380864ff4e9ad281c33baf811015b1797271a66a6ef23e48a",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.cs": "04449a6836077613f4a34f8d3435d67979fffd7e7a94fc6dce1977372aeba67a",
+    "tests/Lokad.Svg.Tests/SvgTextStrokeTests.cs": "f5883aa8e86a3060e411b72d07a04bfaf28a6c25a6f9bf963b671d8ead054ca5",
+    "tests/Lokad.Svg.Tests/SvgTextDecorationTests.cs": "1436cab28bb6c4323331051cb6f26ee3897c2da7712d5b88ccbbd1b708bda84b",
+    "tests/Lokad.Svg.Tests/SvgTextPaintMatrixTests.cs": "9fc5e306e5a2b3d182f857931f4194f853bd4915957d9de48d2ee55e5fee877e",
+    "tests/Lokad.Svg.Tests/SvgTextSpanPaintTests.cs": "4fdd7efaf33cb9b2c691715bac9198cceeb464b1f6bbba0814f67e3f54acac88",
+    "tests/Lokad.Svg.Tests/SvgTextPaintBoundsTests.cs": "1293b129451af4aad40588ff6e4d1de6e4ab7fa41c7c93d39f69a36dad9fb56b",
+    "tests/Lokad.Svg.Tests/SvgTextPaintBoundsTests.SharedLayout.cs": "ca8042935a4046de28ca76115621cbec81431b00c73ca761b2c6e382b8448fda",
+    "tests/Lokad.Svg.Tests/SvgTextPaintBoundsTests.FilterSource.cs": "9a50a498d32a079c207638b1330a456ce83540a53a234c1e21e89baf05d4be26",
+    "tests/Lokad.Svg.Tests/SvgGlyphResourceBoundsTests.cs": "e8aa887b6841d4ea1ca93e80ab1a6e537a7c741f9b702241580e97f28c783263",
+    "tests/Lokad.Svg.Tests/SvgGlyphStrikeSamplingTests.cs": "cb4e32496d8f95a90f2035d94d1ba3e6391e8bad6ecc110431a72e21b570301c",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextPaints.cs": "b4595cae0fddd94c4fe636b4f31c3d8163d3807088ae2ef37d0a001684d1e541",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.InactiveTextPaint.cs": "68ccdb058e57d56ca48a1ca3e2220cbaa1646d60fad567fa06ec544928db294e",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.PaintlessFilterSources.cs": "2c94cc188e8f651c1ae36711c93f31dc7f44487e42260f70775a95e291abb15c",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.InstanceDiscovery.cs": "146e3dfdd7f6fc0fbe44864e4b2c52ee9b00a63078d2e23096c2f16958d05b00",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs": "0362a05f71e847173929776b13bd4d7d9528444bdfc705e28ce9790790278235",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.LineMarkers.cs": "eed62c97b7bb05583da5002fc0958d1bcd60847742079acd24c415fc49bc0d7d",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTargets.cs": "605f99f025c228e2b02a17b0e549c9775172365ab858c21727e9ed97706876f3",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.SmallStrikes.cs": "82d467547c418a47801fefa44fcb6bdb2f5760b1a954da0dbb8441b9a16e8dd1",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.WindowsSpanExtension.cs": "d1505253e986ed8c6e40d0d14bd419ea2f54d5181cd03291b23b696ff9a1c11d",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Anchors.cs": "c9f246272ec96da1c633f90ce65fd3c5f2f481d0058ff76a2d7d1be11d3e66e5",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.cs": "8e5e045cf18fc0017634b4cfe57d59f08c9bd333356ef21984368e73f5df43e2",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.DecorationFragments.cs": "e88b4a51f29edcecece08583f1f0675198ef2fec40bf13712c631657744d7cf1",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.DecorationScreening.cs": "5869ab2d442d5348479cdb7b122490697714e4550622371765730b8119a405ec",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Replay.cs": "4a239b02e9c7553eb779b85fe3d079c84228f37bf62dba90d72d968fcf761af4",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.Screening.cs": "023568b041e1c16613cafc6e33ebbe39ad92db78a169b59155630b2bb47bceec",
+    "tests/Lokad.Svg.VisualTests/SvgTextInstanceCompositionReferenceTests.cs": "71f450135c63558b8d08a4d6b2320b2aca9b7f263a30d7a794fe2a4973dc3df1",
+    "tests/Lokad.Svg.VisualTests/SvgMaskTextRecordingReferenceTests.cs": "2002bc638c90876eab4fda5e47e5e9f836251899f22529646a0322d287a8c78e",
+    "tests/Lokad.Svg.VisualTests/SvgFontLayoutDiagramTests.cs": "0e47048355c72d1647691166ef58ca66c5bb4d784696afc2fd6c6486d5a837f9",
+    "tests/Lokad.Svg.VisualTests/PaintReferenceBank.cs": "2c8bd3b4720d78af2d45fde09a851848180385d75089d8f2a814aabb6caf4509",
+    "tests/Lokad.Svg.VisualTests/SvgNativeControlAssertions.cs": "06262104cd40f80ce58d8cc072f13af6d556b01abdf63bbe9629ad9f0d923478",
+    "docs/SUPPORT_MATRIX.md": "b6323483e2adce0a48e471edaf57134ca5a4b4a59604ff27652d0b5de91a975b"
+  },
+  "claims": {
+    "T4": {
+      "inspected": [
+        "Glyph paint retains logical source/object bounds separately from native drawing enclosure and filter-source visual bounds.",
+        "Solid/linear/radial/pattern fills and strokes retain enclosing, fragment and physical-font maps separately; object-box shaders bind the complete source text box.",
+        "Stroke construction borrows the existing glyph source and shared path/dash machinery, with independent font/device non-scaling width, caps/joins and paint order.",
+        "Decoration emission retains source-fragment order, line-through ordering and path placements; it lowers solid rectangles/outlines through existing scene owners.",
+        "Collapsed placement preserves effect anchors/object bounds while emitting no glyph paint; empty shader strokes do not shift surviving drawing enclosures."
+      ],
+      "directChecks": [
+        "Matrix order and ULP texture/rounding boundaries, source/control object boxes and shared path layout.",
+        "Fill/stroke inheritance, dash/width/order/non-scaling contracts, invalid modes before acquisition, empty/zero outcomes and stroke-owner denial/cancellation/retry.",
+        "Decoration grammar, propagation and declaring paint ownership."
+      ],
+      "nativeScope": "Existing text-paint source/image/stage/precision/decoration banks, fractional strokes and source-instance compositions retain independent targets, source recipes and platform differences."
+    },
+    "T17": {
+      "inspected": [
+        "Direct/resource discovery preserves each live pattern/mask/marker context and restores traversal scopes; dormant, overridden and inactive sources do not acquire unnecessary programs.",
+        "Hidden/unpainted glyphs still supply advances to later painted spans. The shared SvgTextMetricScope retains active enclosing-filter bounds even when local paint is unavailable or placement collapses.",
+        "ClipMask purpose overrides ignored fill/stroke/filter paints while preserving typography and silhouette demand.",
+        "Device font-size precision, strike fitting, baseline rounding and filter/source bounds remain explicit stages; fitted font size alone does not choose the paint baseline.",
+        "Courier one-cell span widening is selected only by the exact embedded family metadata; catalog aliases cannot enable it for other bytes."
+      ],
+      "directChecks": [
+        "Live/dormant instance and resource consumers, resource text inheritance, inactive target exceptions and source-independent filters.",
+        "Native small-strike execution/scanning, glyph texture/phase boundaries and exact embedded-family/alias guards.",
+        "Discovery/paint staging release on refusal or cancellation and remain retryable."
+      ],
+      "nativeScope": "Complete mask-text/resource-context documents, font-span metadata controls, filter-source images and retained source-instance compositions. Other font families retain their separate platform authority, including open Windows DejaVu."
+    }
+  },
+  "nativeAudit": [
+    {
+      "manifest": "text-paint-bounds/image-capture.json",
+      "manifestSha256": "5f63394f609121d9066348a3ae6e917944fd8357352965ea281e758ddf7795cd",
+      "sourceFilesChecked": 242,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 484,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/shared-layout-images.json",
+      "manifestSha256": "4fbddaa2b7a73850fbad2aa6895ea4f251d0c742c21156404df67e0a33a635d6",
+      "sourceFilesChecked": 142,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 284,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/filter-source-images.json",
+      "manifestSha256": "f1ebaec108d0a2e9dd0bbcb886b3bb1655e5f6044625c90bc7215d4be1d388ed",
+      "sourceFilesChecked": 135,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 270,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/precision-pattern-images.json",
+      "manifestSha256": "23dc434b5f9f40aa877434bdd20abfe1c785f66468652fb13238c697c51da0e8",
+      "sourceFilesChecked": 26,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 52,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/paint-stage-images.json",
+      "manifestSha256": "9b48e5ef204f2b1159b19f2675fc0800238d29113133cbea0915baf4724ec6d5",
+      "sourceFilesChecked": 10,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 20,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/precision-stroke-images.json",
+      "manifestSha256": "56e9567bd130053955cec72c0de4e560f109eccc26321ec45fcde407646973a6",
+      "sourceFilesChecked": 5,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 10,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/fragment-stages.json",
+      "manifestSha256": "32adef756d8c71bed6ab4552939a4e1af6a1a8081c894f4d520eb7cee1d6b51b",
+      "sourceFilesChecked": 3,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 6,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/precision-source-images.json",
+      "manifestSha256": "a8f63dc3a1317132984a7e1f5b70e1f0521633b376845d69bb2e6f7d3d852700",
+      "sourceFilesChecked": 5,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 10,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/precision-screening.json",
+      "manifestSha256": "1b04ca7cc7fbc837b5dc668fe2b78b6ca127eed2d025a5a969176557affb9fe1",
+      "sourceFilesChecked": 0,
+      "reconstructedSourceChecks": 960,
+      "referenceFilesChecked": 0,
+      "digestOnlyTargets": 1920,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/decoration-ink-images.json",
+      "manifestSha256": "751f5bbb0df1ed07642723b203a32c2d4acff690e99575fab5ef7e8d1f981256",
+      "sourceFilesChecked": 10,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 20,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/anchor-screening.json",
+      "manifestSha256": "8c252aef259fea0c365f602914b62a9065086bf82b76932e3d57c5ed9ae80f61",
+      "sourceFilesChecked": 0,
+      "reconstructedSourceChecks": 1488,
+      "referenceFilesChecked": 0,
+      "digestOnlyTargets": 2976,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/decoration-fragment-images.json",
+      "manifestSha256": "a6411ebefc333be0e84de359e8b0081259bf2daa3a11230b805b40569f6ae538",
+      "sourceFilesChecked": 22,
+      "reconstructedSourceChecks": 0,
+      "referenceFilesChecked": 44,
+      "digestOnlyTargets": 0,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "text-paint-bounds/decoration-screening.json",
+      "manifestSha256": "f61ee4efbba41df2e7924083a3c301ceb8645a5363b73350fbe19276aaf6a8df",
+      "sourceFilesChecked": 0,
+      "reconstructedSourceChecks": 684,
+      "referenceFilesChecked": 0,
+      "digestOnlyTargets": 1368,
+      "authority": "Existing declared native observations; original capture/launch scopes are retained. Generated source identities are checked by the named C# rendering tests, not inferred from reference pixels."
+    },
+    {
+      "manifest": "fractional-text-strokes/capture.json",
+      "manifestSha256": "433589ada44df5fa6127c331452c79ddaa4f84cd4d8df57d32b8a8f33fdb5c67",
+      "sourceFilesChecked": 45,
+      "referenceFilesChecked": 90,
+      "healthyReceipts": 270,
+      "bankAttestedPlatformRows": 0,
+      "authority": "Source/font/reference identities checked. Individual three-process receipts and declared bank-level health/cleanup attestations remain separate, as do independent logical roles."
+    },
+    {
+      "manifest": "text-instance-composition/capture.json",
+      "manifestSha256": "56e9307b0ffd603ad38de8744d30a10bc3e9401f4de70a51b6148f64c2f3b0d9",
+      "sourceFilesChecked": 155,
+      "referenceFilesChecked": 310,
+      "healthyReceipts": 0,
+      "bankAttestedPlatformRows": 310,
+      "authority": "Source/font/reference identities checked. Individual three-process receipts and declared bank-level health/cleanup attestations remain separate, as do independent logical roles."
+    },
+    {
+      "manifest": "mask-text-recording/capture.json",
+      "manifestSha256": "c284179a43fa6b438153ce6a5ab902c5e2a3af0123b2d3cbb2559f238e68fafe",
+      "sourceFilesChecked": 7,
+      "referenceFilesChecked": 14,
+      "healthyReceipts": 42,
+      "bankAttestedPlatformRows": 0,
+      "authority": "Source/font/reference identities checked. Individual three-process receipts and declared bank-level health/cleanup attestations remain separate, as do independent logical roles."
+    },
+    {
+      "manifest": "stroked-decorations/manifest.json",
+      "manifestSha256": "904075fae58f35cc68a19fcd8d716822a25616e07322e5430d200c991df96aef",
+      "sourceFilesChecked": 4,
+      "referenceFilesChecked": 4,
+      "authority": "Retains each fidelity/font-contract role and bank/platform attestation; not relabeled as new per-case dual-platform captures."
+    },
+    {
+      "manifest": "windows-font-span-extension/manifest.json",
+      "manifestSha256": "5fc283a4e09ac28a3e96e40207530b740c18dc5cb3460b3988fff82d59198579",
+      "authority": "Existing native font document, exercised in the shared shaping milestone; exact embedded-family versus catalog-alias mechanisms are separately selected below."
+    }
+  ],
+  "validation": {
+    "selection": "Named existing core methods and visual classes extracted from completed full suites. Every selected method executes and passes with identical membership on both hosts/runtimes; no test matrix was added.",
+    "groups": {
+      "core": {
+        "SvgTextPaintMatrixTests.cs": 12,
+        "OpenTypeFontTests.MaskTargets.cs": 202,
+        "OpenTypeFontTests.PaintlessFilterSources.cs": 355,
+        "SvgTextPaintBoundsTests.FilterSource.cs": 20,
+        "SvgTextPaintBoundsTests.SharedLayout.cs": 48,
+        "OpenTypeFontTests.WindowsSpanExtension.cs": 5,
+        "OpenTypeFontTests.MaskTextInheritance.cs": 100,
+        "SvgTextDecorationTests.cs": 9,
+        "OpenTypeFontTests.InactiveTextPaint.cs": 73,
+        "OpenTypeFontTests.SmallStrikes.cs": 50,
+        "SvgTextSpanPaintTests.cs": 31,
+        "OpenTypeFontTests.InstanceDiscovery.cs": 13,
+        "SvgGlyphStrikeSamplingTests.cs": 32,
+        "OpenTypeFontTests.TextPaints.cs": 19,
+        "SvgTextStrokeTests.cs": 21,
+        "OpenTypeFontTests.LineMarkers.cs": 16,
+        "SvgTextPaintBoundsTests.cs": 12,
+        "SvgGlyphResourceBoundsTests.cs": 3
+      },
+      "visual": {
+        "SvgTextPaintBoundsReferenceTests": 3983,
+        "SvgFontLayoutDiagramTests": 112,
+        "SvgTextInstanceCompositionReferenceTests": 200,
+        "SvgMaskTextRecordingReferenceTests": 7
+      }
+    },
+    "results": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "assembly": "core",
+        "passed": 1021
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "assembly": "visual",
+        "passed": 4302
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "assembly": "core",
+        "passed": 1021
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "assembly": "visual",
+        "passed": 4302
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "assembly": "core",
+        "passed": 1021
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "assembly": "visual",
+        "passed": 4302
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "assembly": "core",
+        "passed": 1021
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "assembly": "visual",
+        "passed": 4302
+      }
+    ]
+  },
+  "relatedEvidence": [
+    "composition-claim-trace.json",
+    "text-placement-claim-trace.json",
+    "text-layout-acceptance.json",
+    "shader-original-acceptance.json"
+  ],
+  "limits": [
+    "No new captures, production changes, reference/tolerance rewrites or renderer-performance claim.",
+    "Historical bank-level capture attestations remain distinct from individually healthy receipts; original-source provenance is not inferred from renamed fixtures.",
+    "General font/platform conformance and outstanding SVGWeb resource contexts are separate from these finite reviewed claims."
+  ]
+}
