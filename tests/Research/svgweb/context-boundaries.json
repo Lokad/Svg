@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "status": "Remaining context evidence characterized. All14 original hashes remain; documented animation/media, strict-CSS and duplicate-ID decisions are explicit. Three external raster bindings still lack original source-bound pixel authority. No new supported static defect is established; unchanged-original acceptance is not claimed.",
+  "sourceBaseCommit": "14b32d4bfed2fb083dcd9d980fd6d14385cedf4b",
+  "runtimeQualification": "../release-baselines/shadow-foreground.json",
+  "admissionMap": "admission-boundaries.json",
+  "originalLedger": "originals.json",
+  "sourceReinspection": {
+    "files": 14,
+    "allSourceHashesMatchOriginalLedger": true,
+    "sourceIdentityMapSha256": "dc2b6f4e934a4c9a80536f2bac8b37371de53b7f27b6d75ddd7f17aecc14088b",
+    "hostedSvgBodiesRetained": 0,
+    "rawSourceAttributeValuesRetained": 0,
+    "resourceOrArchiveBodiesRetained": 0
+  },
+  "decisions": {
+    "externalImages": "Automatic image fetching and non-PNG formats remain outside static conversion. Four image elements in three originals refer to three distinct bindings. Replacement-raster diagnostics retain placement/composition authority only. New evidence must bind actual original resource content and interpretation before original pixel qualification.",
+    "animationOrMedia": "Nine unchanged originals require timeline, event or media semantics outside the current static contract. Existing disabled/removed base-state diagnostics and their exact native targets remain separate. Lexical begin classes below are not sampled time-zero frames.",
+    "css": "ny1.svg retains the shared active unknown-property rejection. Its repaired/supplied-font diagnostic is exact; general browser CSS recovery remains outside the contract.",
+    "duplicateId": "gaussian1.svg retains MalformedInput for duplicate definition IDs. Its unused-ID repair remains a declared exact diagnostic, never unchanged-original acceptance."
+  },
+  "externalImages": [
+    {
+      "name": "image.svg",
+      "sourceSha256": "6c183668da499d712611df9dfb85820f7d92e5b0813d2edc5927e93d4f4ac052",
+      "imageBindings": [
+        {
+          "attributeValueSha256": "df737a5da4bb3ea3662d5a6a3c4db5fa4b0db9a4a689aac9d18abd79a9d41a6b",
+          "actual": {
+            "resolvedUrlSha256": "df737a5da4bb3ea3662d5a6a3c4db5fa4b0db9a4a689aac9d18abd79a9d41a6b",
+            "scheme": "http",
+            "httpStatus": 429,
+            "retrieval": "http-error"
+          },
+          "httpsTransportDiagnostic": {
+            "resolvedUrlSha256": "999a2f680d08ffd2653c2ed1db03e21fc8f50d10a7d4e9a126a1b94690199807",
+            "scheme": "https",
+            "httpStatus": 429,
+            "retrieval": "http-error"
+          }
+        }
+      ]
+    },
+    {
+      "name": "masking-path-04-b.svg",
+      "sourceSha256": "cbc79d87c656da74497bb2169c23c9b2fe7ba7d16c595d232f63b92d78058b3c",
+      "imageBindings": [
+        {
+          "attributeValueSha256": "9e66c9ebb60057073b423cc24ce6e4577db07f1d0537a8a14ec250139327b55a",
+          "actual": {
+            "resolvedUrlSha256": "f60666ab43964d46893fd79313a8e3654fed0f0e11f7f4938aa496cba991a708",
+            "scheme": "https",
+            "httpStatus": 404,
+            "retrieval": "http-error"
+          }
+        },
+        {
+          "attributeValueSha256": "9e66c9ebb60057073b423cc24ce6e4577db07f1d0537a8a14ec250139327b55a",
+          "actual": {
+            "resolvedUrlSha256": "f60666ab43964d46893fd79313a8e3654fed0f0e11f7f4938aa496cba991a708",
+            "scheme": "https",
+            "httpStatus": 404,
+            "retrieval": "http-error"
+          }
+        }
+      ]
+    },
+    {
+      "name": "oscon.svg",
+      "sourceSha256": "e265238fd7c1eb1bb7272d2d4646f93bee75392edb4e01404a3136b19f673ee7",
+      "imageBindings": [
+        {
+          "attributeValueSha256": "0aabca094a92f2004a2a5fbd1b72d381f3ed3436c9f2e63c8d55b45ae1ace11a",
+          "actual": {
+            "resolvedUrlSha256": "0aabca094a92f2004a2a5fbd1b72d381f3ed3436c9f2e63c8d55b45ae1ace11a",
+            "scheme": "http",
+            "retrieval": "unavailable",
+            "errorType": "URLError"
+          },
+          "httpsTransportDiagnostic": {
+            "resolvedUrlSha256": "e7f8e87cdd92fb4f0dc0a7e1792343c8b17f8db988d9c2da26f4b517057c53eb",
+            "scheme": "https",
+            "retrieval": "unavailable",
+            "errorType": "URLError"
+          }
+        }
+      ]
+    }
+  ],
+  "animationAndMedia": [
+    {
+      "name": "anim1.svg",
+      "sourceSha256": "3bf2ce86dc2e904a95ecb7617fed044d694ff7c8ca2700dd42d69043e3e0475e",
+      "elements": {
+        "animate": 5
+      },
+      "targetPropertyClasses": {
+        "x": 5
+      },
+      "beginClasses": {
+        "otherExplicitBegin": 3,
+        "containsEventOrSyncbaseToken": 2
+      },
+      "allXmlDuplicateIdGroups": 2
+    },
+    {
+      "name": "anim2.svg",
+      "sourceSha256": "b8d377c37778c3e8231ce916d3b01dcf430a0535ba002126aaa25d909a6e4bf9",
+      "elements": {
+        "animateTransform": 6
+      },
+      "targetPropertyClasses": {
+        "transform": 6
+      },
+      "beginClasses": {
+        "otherExplicitBegin": 4,
+        "containsEventOrSyncbaseToken": 2
+      },
+      "allXmlDuplicateIdGroups": 3
+    },
+    {
+      "name": "anim3.svg",
+      "sourceSha256": "3c26307c866001375a1e6228f8e14a733db3e9446c98bc29bd6e5a11208be345",
+      "elements": {
+        "animateTransform": 6
+      },
+      "targetPropertyClasses": {
+        "transform": 6
+      },
+      "beginClasses": {
+        "otherExplicitBegin": 6
+      },
+      "allXmlDuplicateIdGroups": 0
+    },
+    {
+      "name": "displayWebStats.svg",
+      "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
+      "elements": {
+        "animate": 53,
+        "set": 4,
+        "animateColor": 24,
+        "animateTransform": 2
+      },
+      "targetPropertyClasses": {
+        "fill-opacity": 3,
+        "visibility": 4,
+        "stroke-width": 24,
+        "r": 24,
+        "fill": 24,
+        "transform": 2,
+        "stroke-opacity": 2
+      },
+      "beginClasses": {
+        "omitted": 5,
+        "otherExplicitBegin": 3,
+        "containsEventOrSyncbaseToken": 75
+      },
+      "allXmlDuplicateIdGroups": 1
+    },
+    {
+      "name": "pservers-grad-03-b-anim.svg",
+      "sourceSha256": "36726fb7ab5239ee321b72027eddc7dcf5dfedb0ee60250e64102a93f04816e2",
+      "elements": {
+        "animate": 12
+      },
+      "targetPropertyClasses": {
+        "width": 4,
+        "height": 4,
+        "x": 2,
+        "y": 2
+      },
+      "beginClasses": {
+        "otherExplicitBegin": 12
+      },
+      "allXmlDuplicateIdGroups": 0
+    },
+    {
+      "name": "scimitar-anim.svg",
+      "sourceSha256": "177834a4c8cb24612d33866ce0de51eb79c5c785d701609df71f7808d1ade572",
+      "elements": {
+        "audio": 1,
+        "animateTransform": 7
+      },
+      "targetPropertyClasses": {
+        "transform": 7
+      },
+      "beginClasses": {
+        "otherExplicitBegin": 8
+      },
+      "allXmlDuplicateIdGroups": 1
+    },
+    {
+      "name": "svg2009.svg",
+      "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+      "elements": {
+        "animateTransform": 9,
+        "animate": 2
+      },
+      "targetPropertyClasses": {
+        "transform": 9,
+        "opacity": 2
+      },
+      "beginClasses": {
+        "otherExplicitBegin": 11
+      },
+      "allXmlDuplicateIdGroups": 0
+    },
+    {
+      "name": "video1.svg",
+      "sourceSha256": "e6941453371664e5d392af70aab97cc2d9d02ca0b406324553dcaaaf0e38fcff",
+      "elements": {
+        "video": 1,
+        "animate": 6,
+        "animateTransform": 7
+      },
+      "targetPropertyClasses": {
+        "width": 2,
+        "height": 2,
+        "x": 1,
+        "y": 1,
+        "transform": 7
+      },
+      "beginClasses": {
+        "otherExplicitBegin": 14
+      },
+      "allXmlDuplicateIdGroups": 0
+    },
+    {
+      "name": "x11.svg",
+      "sourceSha256": "3e84d54927b69c7177ea2b5162bbe55a0ff02bec0f843d0c047db5df0fa31d6f",
+      "elements": {
+        "audio": 1
+      },
+      "targetPropertyClasses": {},
+      "beginClasses": {
+        "otherExplicitBegin": 1
+      },
+      "allXmlDuplicateIdGroups": 0
+    }
+  ],
+  "resourceRecovery": {
+    "observedLiveBindings": "image.svg returned429 over authored HTTP and separate HTTPS transport; the relative masking raster returned404; oscon.svg failed transport. These are environment/time-specific observations, not proof that all archives lack the content. No rate-limited binding was retried after these observations.",
+    "projectReleases": [
+      {
+        "url": "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/svgweb/svgweb-2009-09-16-Umberhulk-B.zip",
+        "archiveBytes": 2951214,
+        "archiveSha256": "d02f89ad2db07ee0845e27d7f22b004bf7d3bfc6a6a9b8d7a2da957e808aae01",
+        "archiveMemberCount": 251,
+        "hostedNamesFound": 204,
+        "hostedByteExactSources": 187,
+        "sourceIdentityMapSha256": "4d545e25eba3a3315ea79298e2e938f06a962bd5176fd67b58a289beb7bf404d",
+        "selectedSourceMatches": {
+          "image.svg": true,
+          "masking-path-04-b.svg": false,
+          "oscon.svg": true
+        },
+        "maskingSourceSha256": "ccba3ccfe586255b25ec10b7b2bf11b92fdd491efabd3de4f3da69f9158a2944"
+      },
+      {
+        "url": "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/svgweb/svgweb-2010-04-09-dracolisk.zip",
+        "archiveBytes": 2981752,
+        "archiveSha256": "de6c75d0a3a99c14ddca5a1ebfd45fbd86e90bccc00c377d0bf29e63e9a239c7",
+        "archiveMemberCount": 253,
+        "hostedNamesFound": 204,
+        "hostedByteExactSources": 188,
+        "sourceIdentityMapSha256": "24c701f22ce225f26a5c68de0737301f2d86ab605accde5fa2cda8c5c7a53a43",
+        "selectedSourceMatches": {
+          "image.svg": true,
+          "masking-path-04-b.svg": false,
+          "oscon.svg": true
+        },
+        "maskingSourceSha256": "ccba3ccfe586255b25ec10b7b2bf11b92fdd491efabd3de4f3da69f9158a2944"
+      }
+    ],
+    "officialSuite": {
+      "originalName": "masking-path-04-b.svg",
+      "hostedSourceSha256": "cbc79d87c656da74497bb2169c23c9b2fe7ba7d16c595d232f63b92d78058b3c",
+      "officialSourceUrl": "https://www.w3.org/Graphics/SVG/Test/20110816/svg/masking-path-04-b.svg",
+      "officialSourceSha256": "8134764acf99feff4a8ffff58ee108ebd8a81c0c2712a9276945c0fa95bb4a87",
+      "byteExactSource": false,
+      "imageReferenceSpellingsEqual": true,
+      "hostedImageElements": 2,
+      "officialImageElements": 2,
+      "resources": [
+        {
+          "resolvedUrlSha256": "8c895910b7e07cdbc505d45d72f0b08afb4a31d44e7ef8e846721b7587f57e22",
+          "sourceSha256": "f6014b59072aaeb9e97ee4d6c3ba6cd10eb0f341e42faf730fa23d9e51d525e0",
+          "bytes": 37497,
+          "httpStatus": 200,
+          "contentType": "image/png",
+          "pngChunks": [
+            "IHDR",
+            "gAMA",
+            "tEXt",
+            "PLTE",
+            "IDAT",
+            "IEND"
+          ],
+          "unsupportedColorMetadata": [
+            "gAMA"
+          ]
+        }
+      ],
+      "sourceOrResourceBodiesRetained": 0
+    },
+    "officialSuiteArchive": {
+      "url": "https://www.w3.org/Graphics/SVG/Test/20110816/archives/W3C_SVG_11_TestSuite.tar.gz",
+      "archiveSha256": "b5f46cca1ad79b670f9179770b2366c57efd5c671d084144090feab4b7ff1030",
+      "archiveBytes": 14651624,
+      "memberCount": 5509,
+      "aggregateUncompressedBytes": 36747842,
+      "archiveSvgSourceSha256": "fd798910c1e693fb0480ae17029ce5ee52e897f1e076124aa8c789552909edf2",
+      "retainedArchiveSvgOrResourceFiles": 0,
+      "resources": [
+        {
+          "resolvedMemberSha256": "1a70c2dc10b3e16b9a0e10fd3a77b48868378856cea4e05e29fa331c51a73b3e",
+          "contentSha256": "9d9423dea19538c04776d9b32557b4232372cb1215f503bc88475758123a76e2",
+          "bytes": 3995,
+          "signature": "other",
+          "gammaInteger": null,
+          "pngChunkCounts": {}
+        },
+        {
+          "resolvedMemberSha256": "522c0b8e35289f3c36b5cf7f0207c261c301fd4f2d80d89614fcb41126a1250c",
+          "contentSha256": "c53b1a0610a1d5e9208954bde2a5fcdd0f1b50288edc7a429b32f9aaade05bb5",
+          "bytes": 88260,
+          "signature": "png",
+          "gammaInteger": 45454,
+          "pngChunkCounts": {
+            "IHDR": 1,
+            "cHRM": 1,
+            "gAMA": 1,
+            "sRGB": 1,
+            "bKGD": 1,
+            "pHYs": 1,
+            "IDAT": 11,
+            "IEND": 1
+          }
+        }
+      ]
+    },
+    "limits": "Matching case filenames and image-reference spellings do not establish resource identity. Both SVGWeb releases have a different masking source; the live official-suite source and published suite archive also differ. Two live raster responses differ in bytes; pixel equivalence was not measured. The archive is not substituted for the original hosted context."
+  },
+  "actualPngAdmission": {
+    "authoredImageOnlyInputSha256": "a4969ab48f49692705b7ecc3303fa2780c78022a9e936eea606adc173c9b3653",
+    "pngSha256": "311e3cb080acf6c602ecf30638b3ea2b1f4ac76efcb005dacc511dab7a6840ac",
+    "sourceSvgBodiesRetained": 0,
+    "rasterBytesRetained": 0,
+    "actualPngTransportedWithoutEditing": true,
+    "hosts": [
+      {
+        "host": "windows",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "outcome": "UnsupportedFeature",
+        "element": "image",
+        "messageSha256": "691ed5f99d16f67f0c153e5c7142c986ea8eae52ee979809b7fb5f49f4c2fd28",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e"
+      },
+      {
+        "host": "linux",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "outcome": "UnsupportedFeature",
+        "element": "image",
+        "messageSha256": "691ed5f99d16f67f0c153e5c7142c986ea8eae52ee979809b7fb5f49f4c2fd28",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e"
+      }
+    ],
+    "matchesEarlierResourceBody": false,
+    "earlierPngSha256": "f6014b59072aaeb9e97ee4d6c3ba6cd10eb0f341e42faf730fa23d9e51d525e0",
+    "pngChunks": [
+      "IHDR",
+      "gAMA",
+      "PLTE",
+      "IDAT",
+      "IEND"
+    ]
+  },
+  "existingContractChecks": {
+    "selection": "FullyQualifiedName~SvgRootParserTests.Rejects_non_data_embedded_image_references|FullyQualifiedName~SvgRootParserTests.Rejects_malformed_embedded_image_data|FullyQualifiedName~SvgRootParserTests.Rejects_duplicate_leaf_and_group_ids|FullyQualifiedName~PublicContractTests.Active_content_outside_the_supported_root_stylesheet_is_rejected_before_it_can_be_ignored|FullyQualifiedName~SvgSourceDiagnosticTests.Later_text_preserves_the_first_unsupported_source|FullyQualifiedName~SvgStructuralVocabularyTests|FullyQualifiedName~PngImageDecoderTests|FullyQualifiedName~SvgStyleSheetTests",
+    "hostTargets": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+        "testAssemblySha256": "1e2b420132c6c96317d66aa87ae945aad39d677164c1aa0f88a10a2b2fbdd525",
+        "exitCode": 0,
+        "seconds": 7.353275500005111,
+        "counters": {
+          "executed": "286",
+          "passed": "286",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+        "testAssemblySha256": "1e2b420132c6c96317d66aa87ae945aad39d677164c1aa0f88a10a2b2fbdd525",
+        "exitCode": 0,
+        "seconds": 13.225505100097507,
+        "counters": {
+          "executed": "286",
+          "passed": "286",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077",
+        "testAssemblySha256": "501b8f001f2eb16486348907c1de5018cb88dec519fee35be661e2c2a30fca53",
+        "exitCode": 0,
+        "seconds": 6.700180400162935,
+        "counters": {
+          "executed": "286",
+          "passed": "286",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077",
+        "testAssemblySha256": "501b8f001f2eb16486348907c1de5018cb88dec519fee35be661e2c2a30fca53",
+        "exitCode": 0,
+        "seconds": 10.06722000008449,
+        "counters": {
+          "executed": "286",
+          "passed": "286",
+          "failed": "0"
+        }
+      }
+    ],
+    "executions": 1144,
+    "scope": "Existing non-data-image, invalid-base64, dynamic content, first diagnostic, shared vocabulary, PNG decoder/color metadata, stylesheet and duplicate-ID checks. No new rendering/API matrix.",
+    "standaloneResourceProbe": "The unchanged captured PNG is embedded in an authored image-only input in RAM. Both hosts use the qualified net11 asset on.NET11 and reach the expected unsupported color-metadata boundary. This is format admission, not a pixel or original-resource qualification."
+  },
+  "preserved": {
+    "defaultOutcomes": "168 rendered/35 UnsupportedFeature/1 MalformedInput",
+    "ledgerCurrentReviewUnchanged": true,
+    "frozenSourcesReferencesTolerancesUnchanged": true,
+    "existingDeclaredStaticNativeQualificationsUnchanged": true,
+    "productionTestsApisPackagesAndCiUnchanged": true
+  },
+  "nextActions": [
+    "Obtain a source-bound original raster archive or stable publisher binding before qualifying the three external-image originals; do not repeat live failures without new evidence.",
+    "Keep the nine dynamic originals and strict CSS/duplicate-ID sources explicitly outside unchanged-original admission. Their exact declared diagnostics remain regressions.",
+    "Continue supported static/support-contract and structural review; these context findings require no additional resolver, animation engine, CSS recovery or duplicate-ID special case."
+  ],
+  "recordedUtc": "2026-11-06T03:23:40.855846+00:00"
+}

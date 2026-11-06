@@ -26,6 +26,13 @@ current contract and declared context: 22 font snapshots, three external images,
 nine animation/media sources, one CSS boundary and one malformed duplicate ID.
 Seven transported font contexts retain their separate SVG-font limitation.
 
+The [context audit](context-boundaries.json) pins the remaining 14 source hashes
+and the current exclusions. Three original image bindings lack source-bound
+raster authority: live requests fail and inspected archive revisions differ.
+One separately transported live PNG reaches the existing color-metadata boundary;
+it does not qualify the original. Dynamic base states, strict CSS and duplicate-ID
+repairs retain their declared contexts and frozen references.
+
 The [remaining-gate review](remaining-static-gates.json) follows all thirteen
 parent/resource/XML cases beyond their first rejection. All thirteen declared static
 diagnostics are exact on both hosts. Internal-entity and

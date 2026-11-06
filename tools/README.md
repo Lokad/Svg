@@ -333,6 +333,12 @@ establish rendering correctness. This live-endpoint procedure is outside normal
 builds/tests. The [review record](../tests/Research/svgweb/README.md) defines the
 remaining original-rendering and orthogonal-fixture work.
 
+For [external-image contexts](../tests/Research/svgweb/context-boundaries.json),
+keep response bytes and archives in bounded RAM. Bind archived resources only
+after matching the complete SVG source hash; matching filenames or reference
+spellings is insufficient. Record transport failures and distinct asset byte
+identities without substituting them for an original binding or pixel reference.
+
 For the seven legacy Droid SVG fonts, an optional research transport derives
 unhinted TrueType programs from the hashed source outlines and advances. It
 requires `fontTools==4.66.1` in a development Python environment. Choose a new

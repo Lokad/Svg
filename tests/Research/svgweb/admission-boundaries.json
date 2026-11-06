@@ -284,6 +284,7 @@
       ]
     }
   },
+  "contextEvidence": "context-boundaries.json",
   "qualificationBoundary": "168 default originals are exact; the other 36 retain their original outcomes. Declared supplied programs, repaired sources, authored replacement rasters and disabled animation remain separate contexts.",
   "hostedSvgBodiesRetained": 0,
   "rawSourceAttributeValuesRetained": 0,
