@@ -1,0 +1,281 @@
+{
+  "status": "E2/E3 reviewed against unchanged qualified owners/tests and independent native controls. No implementation, test, reference or tolerance change is needed by this bounded review.",
+  "qualifiedSourceCommit": "0b44105157567e38c2d88ebfe62c4d861f3dd448",
+  "qualification": "filter-empty-region-validation.json",
+  "supportContract": "../../../docs/SUPPORT_MATRIX.md",
+  "supportContractSha256": "c696d0b98bb082ecb3445a7d882d2d6ab283e5a92dfe16a4d0feba1f777ff938",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+      "sha256": "a476d643d3a2a8067e62e85b9d61a227e23b0a844defeb397d67217de2fa4520"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgImageGeometry.cs",
+      "sha256": "f135faa8eb93717340bd8da1bc0ab0e7239ba4eaad2a30db1de757829ab79ee3"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgImageSyntax.cs",
+      "sha256": "cdf67b32ac64901cb976aa8d486206223ee8b24d666592efd6e09bbf35947871"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgLeafParser.cs",
+      "sha256": "d5cf43ebddfd3630666e6f00e18b8d6f5573c8568890c4a38fb282d976e3fe6f"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs",
+      "sha256": "a57eb2e40dae164661168a96aa3d42c6796ba41a982ceb5ea379551ae75c500f"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs",
+      "sha256": "8b939f2655f5f6cac29e73df71014647c8674a0667cd8d204d0547d38ef4f6da"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPaintRecording.cs",
+      "sha256": "479fab685933102a5fa5d99cc918bc0b2c9310174c4818502f7944638322d3ce"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPatternUseReplay.cs",
+      "sha256": "2e9aefe6adbc0825b30900c6f9fbf994b6b6a761f59f077c3f297845d2832034"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs",
+      "sha256": "f99d68cc2ac113547e42e31caca331bdbc4d0fd33839d2c14388738a9a0f5b13"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgImageMipMap.cs",
+      "sha256": "83448120dd9beba569101ba4898fa87d32df49aecbe8afb2ef89163cc82c19ab"
+    },
+    {
+      "path": "src/Lokad.Svg/SvgConverter.cs",
+      "sha256": "c8a74b7e4adfc0209bcad57f457d7799b1fe3a9d40f9d4dc6706ffb41e4a4a06"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.ImageIntrinsicSizes.cs",
+      "sha256": "71680bcae1d810bf62a4c0fa45f016135eeb0885a87588600386be318f67eb31"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs",
+      "sha256": "ff0742506f727c2ecd5eb5e96f3ca1a5da9dd3580306c817f81480fb66fe0812"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgImageInstanceViewportTests.cs",
+      "sha256": "c9aa4f21de38d395ec3a8c000b94e49ec5a34c22ca12ebd017de7797df6b2460"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgImagePaintTests.cs",
+      "sha256": "0aa57b1a19da3a68803b4ddf9d0900a18353431ce78b16a24e68b3003a13c08e"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgImageSourceEffectsTests.cs",
+      "sha256": "56d40ae20c2390538c39adb0aed18480549afd5ddc0665629191e5935afb7e50"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgImageSourceViewTests.cs",
+      "sha256": "8782cb33267d00071995ec32d2aa85e049ba7c673755cb55985ec559104ab588"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgRectangleBitmapSpanTests.cs",
+      "sha256": "93e969001e56e1feeb146a824eae812c93530a804e718fc68336e262f3474fbe"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgStaticCssImageTests.cs",
+      "sha256": "113a8c0d582fb7bac44d294b3d23dd8a8c82061349893de79c6a18faabfb6221"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgUniformImageOpacityTests.cs",
+      "sha256": "f6d9d5ef3c9891689aa50910c212aa52fcbaa018bbaf91042ab17186fa7d6e0f"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgFilterStageReferenceTests.cs",
+      "sha256": "fde7e1c583afd95b4127892d918fc3fb5599230737136fb62eb8e640aa309276"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgImageFitSamplingReferenceTests.cs",
+      "sha256": "36c31143c30205737be212bc37ccf840fde31553d5c17e71bedb942561db7d52"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+      "sha256": "76a46d5694b5aa2f9570d65c93ce40a243a3df754020f3234ff117363d8cfc39"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgSymbolInstanceReferenceTests.cs",
+      "sha256": "6e271227517a4cc97a672964d777306f9fe6f34c026932a0024d15ad9931f2f8"
+    }
+  ],
+  "groups": [
+    {
+      "id": "E2",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgImageSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgImageGeometry.cs",
+        "src/Lokad.Svg/Parsing/SvgLeafParser.cs",
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+        "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs"
+      ],
+      "inspected": "Image syntax resolves percentages against each live viewport and preserves unqualified href precedence, including empty href. Missing dimensions derive from decoded intrinsic size/aspect. Meet/slice produce independent float destination and source crop rectangles before sampling maps; destination clipping transfers raster ownership without moving the immutable source view. CSS/inherited shape paints are reset at the image boundary; direct XML fill/stroke retain admission rejection.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgImageSourceViewTests.cs": [
+          "Slice_keeps_the_requested_pixel_window_independent_of_destination_coverage",
+          "Slice_retains_vertical_alignment_endpoints",
+          "Destination_clipping_does_not_recrop_or_move_source_pixels",
+          "Affine_sampling_clamps_to_the_view_while_retaining_parent_stride",
+          "Recorded_decode_levels_use_rounded_requests_and_ceil_sizes",
+          "Reduction_keeps_box_triangle_weights_and_joint_truncation"
+        ],
+        "tests/Lokad.Svg.Tests/SvgImageInstanceViewportTests.cs": [
+          "Instances_resolve_lengths_in_the_live_viewport",
+          "The_definition_viewport_does_not_size_later_instances",
+          "Symbols_resolve_image_lengths_with_and_without_viewbox"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.ImageIntrinsicSizes.cs": [
+          "Omitted_image_dimensions_use_intrinsic_size_and_aspect_in_every_live_context",
+          "Intrinsic_image_dimensions_preserve_decoded_storage_on_denial_cancellation_and_retry"
+        ],
+        "tests/Lokad.Svg.Tests/SvgImagePaintTests.cs": [
+          "Images_ignore_shape_paint_through_raw_and_prepared_outputs",
+          "Image_presentation_does_not_bind_irrelevant_paint_servers",
+          "Image_presentation_keeps_direct_paint_attribute_admission"
+        ],
+        "tests/Lokad.Svg.Tests/SvgRectangleBitmapSpanTests.cs": [
+          "Rectangle_dispatch_matches_compiled_native_calls"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgImageFitSamplingReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgSymbolInstanceReferenceTests.cs"
+      ],
+      "native": [
+        "../image-source-views/capture.json",
+        "../image-fit-sampling/capture.json",
+        "../affine-image-maps/manifest.json"
+      ]
+    },
+    {
+      "id": "E3",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgImageGeometry.cs",
+        "src/Lokad.Svg/Parsing/SvgLeafParser.cs",
+        "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs",
+        "src/Lokad.Svg/Parsing/SvgPaintRecording.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs",
+        "src/Lokad.Svg/Parsing/SvgPatternUseReplay.cs",
+        "src/Lokad.Svg/SvgConverter.cs",
+        "src/Lokad.Svg/Rendering/SvgImageMipMap.cs"
+      ],
+      "inspected": "Decoded uniform colors and owned varied rasters retain distinct bitmap opacity/sample paths. Recorded image source paint keeps intrinsic object bounds separate from visual/clip enclosures. Existing scopes preserve filter/mask/clip/opacity order, live instance placement and pattern replay. Direct mask images reject during mask-child validation. Affine filter source replay admits retained polygons/glyphs but rejects embedded image geometry; ordinary affine image placement and an axis-aligned ancestor filter remain distinct.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgImageSourceEffectsTests.cs": [
+          "Referenced_images_keep_source_effects_through_viewport_clipping",
+          "Filtered_image_instances_keep_the_same_placement_as_direct_images",
+          "Viewport_clips_filter_output_after_source_pixels_move_inside",
+          "Replayed_image_effect_owners_release_on_denial_cancellation_and_retry"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.ImageIntrinsicSizes.cs": [
+          "Intrinsic_image_sizes_supply_object_bounds_for_composed_effects"
+        ],
+        "tests/Lokad.Svg.Tests/SvgUniformImageOpacityTests.cs": [
+          "Uniform_images_keep_bitmap_alpha_rounding_through_opacity_owners",
+          "Uniform_image_color_uses_bitmap_opacity_before_unpremultiplication"
+        ],
+        "tests/Lokad.Svg.Tests/SvgImagePaintTests.cs": [
+          "Image_presentation_keeps_visibility_opacity_and_composed_effects",
+          "Image_presentation_preserves_scene_owners_on_denial_cancellation_and_retry",
+          "Image_presentation_api_forms_preserve_distinct_source_paths"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs": [
+          "Filter_scratch_releases_after_denial_cancellation_and_retry",
+          "Prepared_bitmap_replay_preserves_input_and_borrowed_destination_after_cancellation"
+        ],
+        "tests/Lokad.Svg.Tests/SvgStaticCssImageTests.cs": [
+          "Pattern_content_replay_releases_image_filter_owners_on_denial_and_retry",
+          "Missing_output_clip_releases_the_decoded_image_and_does_not_publish_output",
+          "Image_filter_bounds_and_work_denial_preserve_the_prepared_source_for_retry"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgFilterStageReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgSymbolInstanceReferenceTests.cs"
+      ],
+      "native": [
+        "../image-source-views/capture.json",
+        "../filter-image-placement/capture.json",
+        "../static-css-images/manifest.json"
+      ]
+    }
+  ],
+  "nativeAudit": {
+    "cases": 143,
+    "platformRows": 286,
+    "individualHealthyCaptureReceipts": 66,
+    "bankAttestedPlatformRows": 264,
+    "identitySetEncoding": "SHA256 of UTF-8 compact JSON, insertion-order [id, source SHA256, host, reference SHA256] rows, ensure_ascii=True.",
+    "scope": "Raw SVG/PNG bindings and canonical-LF metadata, three declared equal captures per host/case, distinct individual versus bank health authority, and all three explicit scaled native capture inputs. The image-fit capture record retains failing-before renderer outcomes; current exact outcomes belong to the linked complete qualification. No missing upstream original or hosted context is qualified by this binding audit.",
+    "banks": [
+      {
+        "family": "image-source-views",
+        "metadata": "capture.json",
+        "metadataSha256": "dffdcaadf68aeb533356e11b3eabf6eaabf60ebf13bbf469e20d134e50d88211",
+        "cases": 120,
+        "platformRows": 240,
+        "individualHealthyCaptureReceipts": 0,
+        "bankAttestedPlatformRows": 240,
+        "explicitScaledCaptureInputs": 3,
+        "identitySetSha256": "969e7584c459b1c3444f5b1756e764f5507f38b2a0e737f3fe9c1cbbf828648c"
+      },
+      {
+        "family": "image-fit-sampling",
+        "metadata": "capture.json",
+        "metadataSha256": "dcd0379c71ae12b19b281cdc045b42af04d4a0c7a18d144ba9d8a6f6eb1270ed",
+        "cases": 3,
+        "platformRows": 6,
+        "individualHealthyCaptureReceipts": 18,
+        "bankAttestedPlatformRows": 0,
+        "explicitScaledCaptureInputs": 0,
+        "identitySetSha256": "cadc233af8b22e76c2dee3e36cbdb2229b6d3a88cf6321e37f215ec30f530363"
+      },
+      {
+        "family": "filter-image-placement",
+        "metadata": "capture.json",
+        "metadataSha256": "7cdcce936a86089c443dbcda62aed25bd02840be0cb2f917afeceb6b664d23a7",
+        "cases": 12,
+        "platformRows": 24,
+        "individualHealthyCaptureReceipts": 0,
+        "bankAttestedPlatformRows": 24,
+        "explicitScaledCaptureInputs": 0,
+        "identitySetSha256": "3c0904e2581bb27ffdd817648688b6d26bc3aec6d10e96f7ea056b094d14220f"
+      },
+      {
+        "family": "affine-image-maps",
+        "metadata": "manifest.json",
+        "metadataSha256": "56255804d8d679d350658c4c8818feab43db0a6a29f60c1c7d63c0c47e35c17d",
+        "cases": 3,
+        "platformRows": 6,
+        "individualHealthyCaptureReceipts": 18,
+        "bankAttestedPlatformRows": 0,
+        "explicitScaledCaptureInputs": 0,
+        "identitySetSha256": "51c6fe510863bc3a0a01e4901274adcc5c227aa6334414f108f94ae0f1e20737"
+      },
+      {
+        "family": "static-css-images",
+        "metadata": "manifest.json",
+        "metadataSha256": "a3648032d6631ca3a686ca27bde0b7cbb325e2cf530a48e72431950836d0d9f2",
+        "cases": 5,
+        "platformRows": 10,
+        "individualHealthyCaptureReceipts": 30,
+        "bankAttestedPlatformRows": 0,
+        "explicitScaledCaptureInputs": 0,
+        "identitySetSha256": "4dfcbfea88b67e3b8d015b36dd07efaf597d5d3ea58959b522eb026a35f7e178"
+      }
+    ]
+  },
+  "retainedResponsibilities": "Mechanisms isolate crop/enclosure/stride/mip/reduction/span/alpha boundaries; selected ownership and API cases cover distinct uniform/varied, raw/prepared and destination paths; native fixtures use canonical rendering. Existing input identities, exactness, platform differences and failing-before evidence remain intact.",
+  "relatedEvidence": [
+    "../image-source-views/coverage-index.json",
+    "../image-source-views/before-correction.json",
+    "../image-fit-sampling/qualification.json",
+    "filter-claim-trace.json"
+  ],
+  "limits": "Reviewed is a bounded source/check/reference trace, not all combinations. Other Pending support rows, frozen Windows DejaVu, W1 original/resource/context limitations, performance and release duties remain open."
+}

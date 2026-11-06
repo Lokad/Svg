@@ -67,6 +67,10 @@ F1 against unchanged qualified source/test trees. It verifies 270 retained contr
 attestations, rejection cases and font contracts separate. The resource-display
 cost diagnostic establishes no simplification or speedup; distinct preparation
 and conversion paths remain covered.
+The [embedded-image trace](embedded-image-claim-trace.json) completes E2/E3 across
+intrinsic/live-viewport sizing, immutable source views, fitting/sampling and effect
+ownership. Its 143-control audit retains scaled native inputs, capture authority
+and the affine-filter admission boundary; implementation and targets are unchanged.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

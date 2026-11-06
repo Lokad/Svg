@@ -76,6 +76,10 @@
       "sha256": "0dff95611e5ee8dc78e9cdf0659f8bded4886748be89a2a4cc4b61c3ce033248"
     },
     {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.EffectDefaults.cs",
+      "sha256": "5da38db729a1002df0f61ec3381a9a4ac507f3b275ee85f3bb19e6e78b556567"
+    },
+    {
       "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs",
       "sha256": "321efef7d3cff850ece041b6189aa0e5f764b0ecd70c269b4b91306682732b70"
     },
@@ -94,6 +98,10 @@
     {
       "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs",
       "sha256": "0362a05f71e847173929776b13bd4d7d9528444bdfc705e28ce9790790278235"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.SubsetContracts.cs",
+      "sha256": "c73e49c7b2333af9477c8f641ea1916928355d9b02ac08e429c30b4e48c39c11"
     },
     {
       "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs",
@@ -429,8 +437,11 @@
           "Short_or_collapsed_point_lists_have_empty_clip_coverage",
           "Shared_dependencies_are_not_cycles_and_a_disjoint_intersection_is_empty"
         ],
-        "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs": [
-          "Documented_declaration_locations_agree_in_conversion_and_preparation"
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.SubsetContracts.cs": [
+          "Effect_attributes_and_css_keep_distinct_admission_contracts"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.EffectDefaults.cs": [
+          "None_effect_references_are_inert_with_ancestor_effects_and_replay"
         ]
       },
       "renderingChecks": [

@@ -29,6 +29,8 @@ The 432 documented admission boundaries remain separate.
 The [composition/marker trace][composition-record] reviews C1-C8 and F1, binding
 their current owners, mechanisms, contracts and 270 retained native controls.
 Per-case receipts, bank attestations and explicit rejection roles remain distinct.
+The [embedded-image trace][image-record] completes E2/E3 against live viewport,
+source-view, sampling, paint and ownership boundaries and 143 retained controls.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -136,7 +138,7 @@ Scope: [clips and masks][contract-composition].
 | C4 | Ordered alpha/luminance mask content, text/uses, regions and spatial/object-box restrictions | Reviewed: [ordered mask replay](../../../src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs) / [target bounds](../../../src/Lokad.Svg/Parsing/SvgMaskTarget.cs) → [content ownership](../../Lokad.Svg.Tests/SvgMaskContentReplayTests.cs) / [spatial boundaries](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs) → [native mask controls][composition-record]. |
 | C5 | Filter → mask → clip → opacity; source/object/visual bounds; resource-context mask fonts | Reviewed: [recorded mask scopes](../../../src/Lokad.Svg/Parsing/SvgLeafMaskComposition.cs) → [scope/storage contracts](../../Lokad.Svg.Tests/SvgUniformGroupMaskTests.cs), [resource text inheritance](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs) and [inactive-target demand](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskTargets.cs) → [independent composition/text controls][composition-record]. |
 | C6 | Masks on symbol/live/retained/text instances and placement restrictions | Reviewed: [existing mask scene owner](../../../src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs) → [distinct source/live-use/text boundaries](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs) / [retained-scope ownership](../../Lokad.Svg.Tests/SvgScopedClipMaskTests.cs) → [native placement controls][composition-record]. |
-| C7 | Attribute-only clip/mask bindings, none/inheritance, nested clips, compound unions and short point lists | Reviewed: [attribute binding/dependencies](../../../src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs) → [inheritance/intersections](../../Lokad.Svg.Tests/SvgClipIntersectionTests.cs), [cycles/empty operands](../../Lokad.Svg.Tests/SvgClipBooleanTests.cs) and [declaration-location admission](../../Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs) → [ordered native controls][composition-record]. |
+| C7 | Attribute-only clip/mask bindings, none/inheritance, nested clips, compound unions and short point lists | Reviewed: [attribute binding/dependencies](../../../src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs) → [inheritance/intersections](../../Lokad.Svg.Tests/SvgClipIntersectionTests.cs), [cycles/empty operands](../../Lokad.Svg.Tests/SvgClipBooleanTests.cs), [none defaults](../../Lokad.Svg.Tests/OpenTypeFontTests.EffectDefaults.cs) and [effect-specific admission](../../Lokad.Svg.Tests/OpenTypeFontTests.SubsetContracts.cs) → [ordered native controls][composition-record]. |
 | C8 | Resource display versus empty/hidden content, aliases, visibility inheritance and balanced leaf child roles | Reviewed: [resource definitions](../../../src/Lokad.Svg/Parsing/SvgDefinitionParser.cs) → [clip display](../../Lokad.Svg.Tests/OpenTypeFontTests.ClipResourceDisplay.cs), [mask display](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskResourceDisplay.cs) and [visibility roles](../../Lokad.Svg.Tests/SvgClipVisibilityTests.cs) → [child-role references and distinct paint/filter traces][composition-record]. |
 
 ## Embedded PNGs
@@ -146,8 +148,8 @@ Scope: [embedded images][contract-images].
 | ID | Claim group | Trace |
 | --- | --- | --- |
 | E1 | Base64/noninterlaced 8-bit formats, transparency/significance, chunk/CRC/inflate rules and explicit color/format exclusions | Reviewed: [decoder][png-decoder] → [decoder mechanisms/ownership][png-tests] → [row-storage invariants][png-rows] and [color-admission regression][png-color]. Literal byte/pixel oracles; placement is separate. |
-| E2 | Percentage/affine/aspect placement, missing/intrinsic dimensions, href precedence and fill/stroke applicability | Pending. |
-| E3 | Image opacity/clips/masks/source filters, pattern/mask content locations and affine-filter replay exclusion | Pending. |
+| E2 | Percentage/affine/aspect placement, missing/intrinsic dimensions, href precedence and fill/stroke applicability | Reviewed: [image syntax](../../../src/Lokad.Svg/Parsing/SvgImageSyntax.cs) / [owned source view](../../../src/Lokad.Svg/Parsing/SvgImageGeometry.cs) → [crop/stride/mip mechanisms](../../Lokad.Svg.Tests/SvgImageSourceViewTests.cs), [live viewport instances](../../Lokad.Svg.Tests/SvgImageInstanceViewportTests.cs), [intrinsic sizing](../../Lokad.Svg.Tests/OpenTypeFontTests.ImageIntrinsicSizes.cs) and [paint applicability](../../Lokad.Svg.Tests/SvgImagePaintTests.cs) → [native placement/sampling bindings][image-record]. |
+| E3 | Image opacity/clips/masks/source filters, pattern/mask content locations and affine-filter replay exclusion | Reviewed: [source recording](../../../src/Lokad.Svg/Parsing/SvgLeafParser.cs) / [bitmap playback](../../../src/Lokad.Svg/SvgConverter.cs) → [source/effect placement](../../Lokad.Svg.Tests/SvgImageSourceEffectsTests.cs), [bitmap alpha](../../Lokad.Svg.Tests/SvgUniformImageOpacityTests.cs), [distinct image API paths](../../Lokad.Svg.Tests/SvgImagePaintTests.cs) and [borrowed-source ownership](../../Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs) → [native image/effect controls and retained admission limits][image-record]. |
 
 The three external-image originals remain a separate W1 [binding problem][w1-context].
 An archived or replacement raster does not establish their unchanged-original pixels.
@@ -366,3 +368,4 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [sampling-record]: filter-sampling-device.json
 [filter-record]: filter-claim-trace.json
 [composition-record]: composition-claim-trace.json
+[image-record]: embedded-image-claim-trace.json
