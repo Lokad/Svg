@@ -36,6 +36,9 @@ closes three native paint discrepancies; [at-rule admission][at-rule-record] ali
 excluded rule categories at the shared entry. No reference targets change.
 The [structural/source trace][structural-record] completes X2/T2 against shared
 traversal, rejection cleanup and dormant declarations with live host fonts.
+The [font selection/program trace][font-program-record] reviews T1/T12 against
+host acquisition, bounded execution and lazy coverage. Frozen Windows DejaVu
+remains an explicit failing T18 gate.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -193,7 +196,7 @@ Scope: [text and fonts][contract-text].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| T1 | Explicit host font acquisition/cache, static TrueType face 0/composites/hinting and required-program/glyph failures | Pending. |
+| T1 | Explicit host font acquisition/cache, static TrueType face 0/composites/hinting and required-program/glyph failures | Reviewed: [verified sources](../../../src/Lokad.Svg/Fonts/SvgFontProgramSource.cs) / [snapshot admission](../../../src/Lokad.Svg/Fonts/SvgFontSnapshot.cs) / [bounded interpreter](../../../src/Lokad.Svg/Fonts/TrueTypeHinting.cs) → [source/ownership contracts](../../Lokad.Svg.Tests/SvgFontProgramSourceTests.cs) and [program/composite mechanisms](../../Lokad.Svg.Tests/OpenTypeFontTests.cs) → [independent program metrics, browser documents and intermediate contours][font-program-record]. [Host cache ownership](host-api-qualification.md) remains separate; Windows DejaVu pixel authority stays open in T18. |
 | T2 | Dormant legacy SVG font declarations without acquisition or text-request effects | Reviewed: [definition roles](../../../src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs) / [font eligibility](../../../src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs) → [unchanged live request, host-program pixels and counted acquisition](../../Lokad.Svg.Tests/OpenTypeFontTests.LegacyDeclarations.cs). [Source/contract trace][structural-record]; font pixel conformance remains in the other T rows. |
 | T3 | LTR character/shaping subset, finite Latin/DFLT ligature table and unsupported script/font/layout forms | Pending. |
 | T4 | Affine text paints/strokes/dashes/non-scaling widths/order and solid decoration | Pending. |
@@ -204,7 +207,7 @@ Scope: [text and fonts][contract-text].
 | T9 | Unicode 17 case/title/word/language rules, expansions/context, source ownership and font coverage | Pending. |
 | T10 | Canonical decomposition/order/recomposition and finite ccmp substitution | Pending. |
 | T11 | Mark/ligature-component/mark-to-mark attachment, GDEF/filter sets and contextual kerning | Pending. |
-| T12 | CSS family identity/policy/directional fallback, lazy scalar coverage, request-only/raw snapshots and face boundaries | Pending. |
+| T12 | CSS family identity/policy/directional fallback, lazy scalar coverage, request-only/raw snapshots and face boundaries | Reviewed: [family identity](../../../src/Lokad.Svg/Fonts/SvgFontFamilySyntax.cs) / [catalog policy](../../../src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs) / [lazy coverage](../../../src/Lokad.Svg/Fonts/SvgFontSnapshot.Coverage.cs) → [directional weights](../../Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs), [face boundaries](../../Lokad.Svg.Tests/OpenTypeFontTests.Coverage.cs) and [request-only/raw/acquisition contracts](../../Lokad.Svg.VisualTests/SvgGlyphFallbackTests.Selection.cs) → [ordered-family and mixed-coverage native controls][font-program-record]. |
 | T13 | Family/name/list/weight bounds, size source contexts/global keywords and inert typography on geometry | Pending. |
 | T14 | Ligature barriers, fragment metrics, relative cursors, inert descriptive text and shared paint/object boxes | Pending. |
 | T15 | Path geometry/transforms/tangents/spacing, continuation cursor, anchors and textLength degeneracies | Pending. |
@@ -378,3 +381,4 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [selector-list-record]: css-selector-lists.json
 [at-rule-record]: css-at-rule-admission.json
 [structural-record]: structural-admission-claim-trace.json
+[font-program-record]: font-selection-program-claim-trace.json

@@ -86,6 +86,11 @@ package qualification and [original/context replay](css-at-rule-admission-svgweb
 bind the final CSS milestone. The [structural/source trace](structural-admission-claim-trace.json)
 completes X2/T2 with shared traversal, 372 focused checks and twelve packaged
 category probes, retaining font and rendering authority in their own support rows.
+The [font selection/program trace](font-selection-program-claim-trace.json) reviews
+T1/T12 with 2,928 passing core checks, retained browser/program/contour bindings and
+focused rendering checks. Both Windows runtimes retain the known DejaVu failure;
+its frozen target and the separate open T18 gate remain unchanged. A stale private
+study locator is replaced with the committed contour record's explicit scope.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

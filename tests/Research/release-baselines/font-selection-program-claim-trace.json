@@ -1,0 +1,889 @@
+{
+  "status": "T1/T12 reviewed against acquisition, static-program and selection boundaries. No production correction required. T18 remains open and failing.",
+  "qualifiedSourceCommit": "c780283f423090a4363a7975f00db86a09064854",
+  "qualification": "css-at-rule-admission.json",
+  "supportContract": "../../../docs/SUPPORT_MATRIX.md",
+  "supportContractSha256": "8ff9f3598fbf2c7475a5dcf0f1ae4f05eab8746122035b26daf1ac115715703d",
+  "hashPolicy": "Canonical LF for source/JSON metadata; exact bytes for authored SVG, font programs and PNG references.",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Fonts/OpenTypeFont.CompositeTrueType.cs",
+      "sha256": "993c29f6e7de66e86a1eb042f38f86365a1155229731cf250cbb42af7490ef5c"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/OpenTypeFont.TrueType.cs",
+      "sha256": "657e34a758541fdcb3818ef479db23bcc7285959243924cf7ca8cc7c8dc84440"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/OpenTypeFont.cs",
+      "sha256": "04449a6836077613f4a34f8d3435d67979fffd7e7a94fc6dce1977372aeba67a"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs",
+      "sha256": "718c4f7f5bc38fb958c0f0c92fd9f900194e7536d5e89953e082e15439ba16b2"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontFamilySyntax.cs",
+      "sha256": "ac541b60eaca29a9b8f21fbcfcce6992db0ddadf7a92a9f5bf01bc90b9b19027"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs",
+      "sha256": "82c9ce06b39db5de6fc6fec26af782a2a377bb6c8ee03264c791c4a6b246d622"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontProgramSource.cs",
+      "sha256": "7f578296e9125b39b74ec86e62118cae168cf761addb8623441bce675e14f1f4"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontSelectionPolicy.cs",
+      "sha256": "5ab12e9999e35c69375c82b32d5f938dae53b6f1f48bb1bd628f51bca6a926c2"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontSnapshot.Coverage.cs",
+      "sha256": "f1629a2401ac483de0c4fb3c700c2afdb916b84d35af4cb45e1abaa76922ac0b"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontSnapshot.cs",
+      "sha256": "b8fc1e6a4ab1bdb7caf304631fe2936dcb3c1bf6b7e5be678cfbdbd491516393"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/TrueTypeHinting.cs",
+      "sha256": "ab5756675ee31c8585266eedabb42a88531badb5653eba780ef9b9b5f0c65387"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.Coverage.cs",
+      "sha256": "613e06c89ca0fd7fbf49cf9372649ae1a999f55c07d0d68c312831dd3f4a6fa6"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.FontFamilyStacks.cs",
+      "sha256": "428580bdd1df50dd9cf5aa283633efd0584951be58beb3fcd660aac116f2457c"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.cs",
+      "sha256": "c23264e6a84dc0fb30d52f8eeb44b32ab3d5f4d3a976edcbfd45a829b1438519"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFontCoverageDiscoveryTests.cs",
+      "sha256": "f070512d6bf914a9a2f4d6119469475d6cfc5444aa1fad15ecc2dc14ee17dd6c"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFontFamilyTests.cs",
+      "sha256": "d3fee8080f4dbcd6ec555aa4c7b6b32c59a8714107dbb4f71ae5457238c17485"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFontProgramSourceTests.cs",
+      "sha256": "a8838bbb4fff591bf26a1b906587bd13ff9a5cc3e68652263455d92908c21526"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs",
+      "sha256": "fdea522215b75a7b34313172c61a35c554cca21dbebdf6ccc03e7fe472d1bcea"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/TrueTypeHintingTests.cs",
+      "sha256": "b42c71ad802bbed5d7c724c39538ecc054b583da5f741ee066c4895dda929131"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgCompositeFlagTests.cs",
+      "sha256": "8b85a2a6f433d3dd7e3e8f3cef8d4c2f28334d5b79b65ba4bfd2e93d9fc7e3a3"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgCompositeGlyphTests.cs",
+      "sha256": "716145098f4c909903cd7722a09e97605d47c98afaf178076e59e0c47b7bf2b3"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgCompositeMetricsTests.cs",
+      "sha256": "8dbf5053e7466d8ca884fc1052939ef7fce61a3f44b3f9a3a740ec6267680323"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgFontFamilyStackTests.cs",
+      "sha256": "621f5b5cbff433c9caa82a243aca01834bec6f9a8e5a32aa48b4a69aa590f150"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgGlyphFallbackTests.Selection.cs",
+      "sha256": "cb0f6020a515105298e4aafb719b2db1559a5f0898d553c8ebb5b40e578e3002"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgGlyphFallbackTests.cs",
+      "sha256": "8bcfe66c691ae671723b38c877e1e517334c203a26ef452e170598b231e12528"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgStaticTrueTypeFontTests.cs",
+      "sha256": "d8e4bd458ff8dc5baf1a2a5f7761ff7da4eefad440d73302a127daf62156dd2a"
+    }
+  ],
+  "groups": [
+    {
+      "id": "T1",
+      "owners": [
+        "src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs",
+        "src/Lokad.Svg/Fonts/SvgFontProgramSource.cs",
+        "src/Lokad.Svg/Fonts/SvgFontSnapshot.cs",
+        "src/Lokad.Svg/Fonts/OpenTypeFont.cs",
+        "src/Lokad.Svg/Fonts/OpenTypeFont.TrueType.cs",
+        "src/Lokad.Svg/Fonts/OpenTypeFont.CompositeTrueType.cs",
+        "src/Lokad.Svg/Fonts/TrueTypeHinting.cs"
+      ],
+      "inspected": [
+        "Catalog/source boundaries perform no ambient discovery. Bind verifies catalog face provenance; selected programs are borrowed, SHA/size verified before metrics, and shared by program identity. Host HTTP/cache policy has its separate installed-consumer qualification.",
+        "Selected face index must be zero; unsupported containers reject at the SFNT entry. Unused catalog faces are not opened. Snapshot admission checks 256 faces, distinct declared sizes and 32 MiB before acquisition where declarations are available.",
+        "Bounded composite traversal preserves parent/child maps and strike ownership. The interpreter owns one thread/glyph context, checks cancellation and bounded storage/program flow, categorizes malformed operands and rejects unsupported executed instructions.",
+        "Required source, integrity, format and missing-glyph failures retain their distinct diagnostic stages. Snapshot disposal invalidates handles without disposing host storage. Pixel fidelity remains constrained by the separate open T18 reference-authority issue."
+      ],
+      "checks": {
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.cs": [
+          "Validates_core_standalone_TrueType_metrics",
+          "Rejects_unsupported_font_containers",
+          "Rejects_invalid_table_ranges_and_core_metrics",
+          "Expands_nested_composite_glyph_transforms_in_parent_order",
+          "Rejects_a_cycle_in_composite_glyph_references",
+          "Snapshot_acquires_one_program_once_for_multiple_same_face_aliases",
+          "Request_based_snapshot_rejects_a_nonzero_face_index_before_provider_access",
+          "Request_based_snapshot_does_not_reject_an_unused_unsupported_face",
+          "Snapshot_validates_every_selected_declaration_when_program_bytes_are_deduplicated",
+          "Request_based_snapshot_rejects_declared_programs_over_its_byte_limit_before_provider_access",
+          "Snapshot_classifies_bound_source_failures_by_origin",
+          "Snapshot_classifies_provider_failures_by_origin",
+          "Svg_based_snapshot_verifies_integrity_before_metric_parsing",
+          "Snapshot_invalidates_escaped_prepared_font_handles_on_disposal"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFontProgramSourceTests.cs": [
+          "Acquisition_selects_and_verifies_only_the_requested_program",
+          "Pending_bound_source_retains_caller_bytes_and_observes_cancellation_after_completion",
+          "Pending_integrity_failure_keeps_its_origin_and_releases_snapshot_admission",
+          "Pending_source_failure_keeps_its_origin_and_releases_snapshot_admission"
+        ],
+        "tests/Lokad.Svg.Tests/TrueTypeHintingTests.cs": [
+          "Executed_unimplemented_instructions_remain_explicit",
+          "Cancels_backward_jumps_and_bounds_recursive_calls_by_depth",
+          "Allows_empty_function_repetition_and_bounds_program_bytes",
+          "Reserves_machine_arrays_before_allocation",
+          "Disposal_releases_program_borrows_and_rejects_reuse"
+        ]
+      },
+      "nativeScope": "Original supplied programs and independent HarfBuzz design metrics, browser document pixels and separately fitted intermediate contours. Intermediate contours are not complete-document pixel authority; frozen Windows DejaVu remains a failing T18 gate."
+    },
+    {
+      "id": "T12",
+      "owners": [
+        "src/Lokad.Svg/Fonts/SvgFontFamilySyntax.cs",
+        "src/Lokad.Svg/Fonts/SvgFontSelectionPolicy.cs",
+        "src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs",
+        "src/Lokad.Svg/Fonts/SvgFontSnapshot.cs",
+        "src/Lokad.Svg/Fonts/SvgFontSnapshot.Coverage.cs",
+        "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs"
+      ],
+      "inspected": [
+        "Shared CSS family syntax retains ordered decoded names and generic/literal identity through canonical round trips, including escapes and declaration punctuation. Authored/canonical lists, decoded identifiers and family count have distinct limits.",
+        "Immutable host policy authorizes generic mappings and ordered fallback names. Authored candidates precede host fallback. CSS style/weight selection uses directional weight phases, including 400-500; literal constructor requests keep nearest weight and deterministic ties.",
+        "SVG preparation requests emitted normalized scalars and lazily acquires later covering programs. Primary ownership is preserved; same-SHA programs are shared, conflicting declarations reject and unsupported selected faces fail before provider access.",
+        "Request-only preparation has no scalar coverage and selects one candidate. Raw conversion consults supplied snapshot requests only. Supplementary scalar indices/units per em and face boundaries remain explicit; no cross-face kerning or ligature merge is introduced."
+      ],
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgFontFamilyTests.cs": [
+          "Discovery_shares_quoted_and_escaped_syntax_across_presentation_inline_and_stylesheet",
+          "Categorizes_malformed_lists_without_selecting_a_prefix",
+          "A_maximum_length_canonical_list_round_trips_with_all_families",
+          "Oversized_canonical_text_is_rejected_on_the_first_parse",
+          "Tokenization_observes_original_cancellation"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs": [
+          "CSS_weight_fallback_follows_directional_order_independently_of_manifest_order",
+          "Literal_weight_requests_keep_nearest_weight_and_deterministic_ties",
+          "CSS_weight_matching_keeps_italic_precedence_over_weight_distance",
+          "CSS_weight_matching_keeps_family_order_and_host_fallback_authorization"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.FontFamilyStacks.cs": [
+          "Quoted_literal_generic_and_host_generic_select_different_supplied_programs",
+          "Host_policy_is_immutable_and_never_introduces_an_unconfigured_generic_or_fallback",
+          "Authored_order_and_explicit_alias_membership_do_not_depend_on_manifest_order",
+          "Selection_failures_keep_original_source_location_before_any_acquisition",
+          "Legacy_prepared_literal_names_still_match_quoted_CSS_requests"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.Coverage.cs": [
+          "Coverage_boundaries_stop_cross_face_kerning_and_ligatures_while_retaining_each_face_rules",
+          "Supplementary_coverage_preserves_scalar_indices_and_the_selected_units_per_em",
+          "Coverage_preparation_deduplicates_shared_programs_across_distinct_requests"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFontCoverageDiscoveryTests.cs": [
+          "Coverage_requests_emitted_scalars_in_streaming_and_normalized_paths",
+          "Materialized_scalar_needs_remain_charged_until_their_coverage_owner_finishes",
+          "Coverage_storage_denial_releases_the_parser_owner"
+        ]
+      },
+      "nativeScope": "Ordered-family document and mixed-coverage document retain independent Windows/Linux browser pixels and changed-program positive controls. Synthetic mechanism tests cover weight directions, generic identity, supplementary scalars and face boundaries without multiplying the entire rendering/API matrix."
+    }
+  ],
+  "renderingChecks": {
+    "tests/Lokad.Svg.VisualTests/SvgFontFamilyStackTests.cs": [
+      "Ordered_document_selects_authored_programs_and_matches_frozen_Chrome_pixels"
+    ],
+    "tests/Lokad.Svg.VisualTests/SvgGlyphFallbackTests.cs": [
+      "Mixed_coverage_preserves_primary_glyphs_advances_and_complete_document_pixels",
+      "Missing_everywhere_retains_original_scalar_and_source_diagnostics"
+    ],
+    "tests/Lokad.Svg.VisualTests/SvgGlyphFallbackTests.Selection.cs": [
+      "Authored_coverage_precedes_host_fallback_and_preserves_its_diagnostic_kind",
+      "Disabled_fallback_keeps_a_missing_scalar_failure_and_raw_conversion_does_no_acquisition",
+      "Request_only_preparation_does_not_claim_unseen_coverage_alternatives",
+      "Unused_bad_program_is_not_opened_and_required_bad_program_fails_meaningfully",
+      "Cancellation_during_alternative_acquisition_preserves_the_token_and_allows_retry"
+    ],
+    "tests/Lokad.Svg.VisualTests/SvgStaticTrueTypeFontTests.cs": [
+      "Public_static_program_selection_and_layout_match_independent_metrics",
+      "Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output"
+    ],
+    "tests/Lokad.Svg.VisualTests/SvgCompositeGlyphTests.cs": [
+      "Child_and_mirrored_parent_match_independent_native_contours"
+    ],
+    "tests/Lokad.Svg.VisualTests/SvgCompositeFlagTests.cs": [
+      "Component_origins_strikes_and_alignment_zones_match_independent_native_contours"
+    ],
+    "tests/Lokad.Svg.VisualTests/SvgCompositeMetricsTests.cs": [
+      "Accents_and_metric_dependent_parents_match_independent_native_contours"
+    ]
+  },
+  "focusedChecks": {
+    "selections": {
+      "core": "FullyQualifiedName~SvgFont|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~TrueTypeCompositeStateTests|FullyQualifiedName~OpenTypeFontTests.Validates_core_standalone_TrueType_metrics|FullyQualifiedName~OpenTypeFontTests.Rejects_unsupported_font_containers|FullyQualifiedName~OpenTypeFontTests.Rejects_invalid_table_ranges_and_core_metrics|FullyQualifiedName~OpenTypeFontTests.Validates_optional_name_metadata_and_all_supported_OS2_versions|FullyQualifiedName~OpenTypeFontTests.Rejects_invalid_optional_name_and_OS2_metadata|FullyQualifiedName~OpenTypeFontTests.Checks_cancellation_before_font_parsing|FullyQualifiedName~OpenTypeFontTests.Observes_cancellation_between_SFNT_directory_records|FullyQualifiedName~OpenTypeFontTests.Metrics_backed_font_readers_observe_cancellation_without_a_work_counter|FullyQualifiedName~OpenTypeFontTests.Active_composite_glyph_cycle_scans_check_cancellation|FullyQualifiedName~OpenTypeFontTests.Cmap_lookup_observes_cancellation_after_its_no_counter_entry_probe|FullyQualifiedName~OpenTypeFontTests.Maps_a_BMP_scalar_through_a_format_4_cmap|FullyQualifiedName~OpenTypeFontTests.Maps_format_4_segment_boundary_scalars|FullyQualifiedName~OpenTypeFontTests.Reuses_snapshot_validated_metrics_for_cmap_and_advance_queries|FullyQualifiedName~OpenTypeFontTests.Text_layout_releases_single_glyph_position_storage|FullyQualifiedName~OpenTypeFontTests.Text_layout_observes_cancellation_at_the_cmap_lookup_checkpoint|FullyQualifiedName~OpenTypeFontTests.Text_layout_reuses_the_cmap_lookup_for_repeated_scalars_within_one_run|FullyQualifiedName~OpenTypeFontTests.Maps_a_supplementary_scalar_through_a_format_12_cmap|FullyQualifiedName~OpenTypeFontTests.Maps_format_12_group_boundary_scalars|FullyQualifiedName~OpenTypeFontTests.Maps_a_BMP_scalar_through_a_format_12_cmap_when_format_4_is_absent|FullyQualifiedName~OpenTypeFontTests.Accepts_a_unicode_platform_zero_format_4_cmap_but_not_a_windows_symbol_cmap|FullyQualifiedName~OpenTypeFontTests.Rejects_a_surrogate_code_point_as_a_non_scalar_value|FullyQualifiedName~OpenTypeFontTests.Rejects_a_format_12_cmap_with_a_length_smaller_than_its_header|FullyQualifiedName~OpenTypeFontTests.Rejects_every_format_4_declared_length_smaller_than_its_header|FullyQualifiedName~OpenTypeFontTests.Rejects_a_format_4_declared_length_that_truncates_its_segment_arrays|FullyQualifiedName~OpenTypeFontTests.Rejects_a_format_4_range_offset_that_starts_after_its_declared_payload|FullyQualifiedName~OpenTypeFontTests.Categorizes_a_format_12_glyph_index_overflow_as_malformed_input|FullyQualifiedName~OpenTypeFontTests.Rejects_a_later_malformed_format_12_group_even_when_an_earlier_group_matches|FullyQualifiedName~OpenTypeFontTests.Rejects_a_format_4_range_offset_that_points_before_its_glyph_index_array|FullyQualifiedName~OpenTypeFontTests.Rejects_malformed_format_4_segments_even_when_the_requested_scalar_bypasses_them|FullyQualifiedName~OpenTypeFontTests.Reads_hmtx_advances_including_the_final_shared_advance|FullyQualifiedName~OpenTypeFontTests.Validates_loca_ranges_before_exposing_borrowed_glyf_bytes|FullyQualifiedName~OpenTypeFontTests.Reads_the_fixed_header_of_a_nonempty_glyph|FullyQualifiedName~OpenTypeFontTests.Reads_simple_glyph_contours_without_retaining_hint_instructions|FullyQualifiedName~OpenTypeFontTests.Decodes_simple_glyph_coordinate_deltas_and_on_curve_flags|FullyQualifiedName~OpenTypeFontTests.Builds_quadratic_contours_with_implied_on_curve_midpoints|FullyQualifiedName~OpenTypeFontTests.Builds_quadratic_contours_for_degenerate_point_configurations|FullyQualifiedName~OpenTypeFontTests.Segment_building_is_repeatable|FullyQualifiedName~OpenTypeFontTests.Combines_simple_glyph_data_into_quadratic_contours|FullyQualifiedName~OpenTypeFontTests.Rejects_truncated_simple_glyph_flags_and_invalid_contour_endpoints|FullyQualifiedName~OpenTypeFontTests.Rejects_malformed_simple_glyph_point_data_on_both_decode_paths|FullyQualifiedName~OpenTypeFontTests.Reads_composite_glyph_component_offsets_and_scale|FullyQualifiedName~OpenTypeFontTests.Composite_flag_admission_preserves_known_metadata_and_rejects_reserved_bits|FullyQualifiedName~OpenTypeFontTests.Conflicting_composite_offset_flags_are_malformed_and_release_decoder_owners|FullyQualifiedName~OpenTypeFontTests.Rejects_a_composite_component_with_conflicting_scale_encodings|FullyQualifiedName~OpenTypeFontTests.Rejects_point_matched_composite_glyph_components_on_all_decode_paths|FullyQualifiedName~OpenTypeFontTests.Rejects_truncated_composite_glyph_transforms_on_all_decode_paths|FullyQualifiedName~OpenTypeFontTests.Validates_composite_glyph_references_during_expansion_not_inspection|FullyQualifiedName~OpenTypeFontTests.Validates_empty_composite_programs_and_preserves_unhinted_outline_inspection|FullyQualifiedName~OpenTypeFontTests.Rejects_truncated_composite_glyph_instructions_as_malformed_input|FullyQualifiedName~OpenTypeFontTests.Rejects_malformed_composite_glyph_components_on_all_decode_paths|FullyQualifiedName~OpenTypeFontTests.Expands_composite_glyphs_with_their_affine_transform|FullyQualifiedName~OpenTypeFontTests.Expands_composite_glyphs_with_the_OpenType_scale01_matrix_coefficient|FullyQualifiedName~OpenTypeFontTests.Expands_composite_glyphs_with_the_OpenType_scale10_matrix_coefficient|FullyQualifiedName~OpenTypeFontTests.Expands_nested_composite_glyph_transforms_in_parent_order|FullyQualifiedName~OpenTypeFontTests.Expands_composite_glyphs_with_a_two_by_two_rotation_matrix|FullyQualifiedName~OpenTypeFontTests.Rejects_a_cycle_in_composite_glyph_references|FullyQualifiedName~OpenTypeFontTests.Creates_a_bounded_snapshot_from_verified_caller_owned_font_bytes|FullyQualifiedName~OpenTypeFontTests.Snapshot_observes_cancellation_between_integrity_hash_chunks|FullyQualifiedName~OpenTypeFontTests.Snapshot_hashes_a_manifest_bound_program_once|FullyQualifiedName~OpenTypeFontTests.Manifest_bound_source_observes_cancellation_between_integrity_hash_chunks|FullyQualifiedName~OpenTypeFontTests.Snapshot_does_not_expose_its_prepared_face_array_for_mutation|FullyQualifiedName~OpenTypeFontTests.Snapshot_rejects_access_after_disposal|FullyQualifiedName~OpenTypeFontTests.Snapshot_invalidates_escaped_prepared_font_handles_on_disposal|FullyQualifiedName~OpenTypeFontTests.Snapshot_disposal_does_not_revoke_already_escaped_caller_memory|FullyQualifiedName~OpenTypeFontTests.Snapshot_acquires_one_program_once_for_multiple_same_face_aliases|FullyQualifiedName~OpenTypeFontTests.Snapshot_rejects_a_nonzero_face_index_for_a_standalone_font|FullyQualifiedName~OpenTypeFontTests.Request_based_snapshot_rejects_a_nonzero_face_index_before_provider_access|FullyQualifiedName~OpenTypeFontTests.Request_based_snapshot_does_not_reject_an_unused_unsupported_face|FullyQualifiedName~OpenTypeFontTests.Snapshot_attaches_format_context_to_an_unsupported_font_program|FullyQualifiedName~OpenTypeFontTests.Snapshot_attaches_integrity_context_when_bound_font_bytes_change|FullyQualifiedName~OpenTypeFontTests.Snapshot_validates_every_selected_declaration_when_program_bytes_are_deduplicated|FullyQualifiedName~OpenTypeFontTests.Snapshot_checks_its_face_limit_before_reading_any_font_source|FullyQualifiedName~OpenTypeFontTests.Request_based_snapshot_rejects_declared_programs_over_its_byte_limit_before_provider_access|FullyQualifiedName~OpenTypeFontTests.Request_based_snapshot_rejects_conflicting_same_hash_sizes_before_provider_access|FullyQualifiedName~OpenTypeFontTests.Snapshot_resolves_requests_and_selectively_acquires_distinct_programs|FullyQualifiedName~OpenTypeFontTests.Bind_rejects_a_face_from_another_catalog|FullyQualifiedName~OpenTypeFontTests.Bind_observes_cancellation_during_the_provenance_scan|FullyQualifiedName~OpenTypeFontTests.AcquireAsync_observes_cancellation_before_reporting_a_foreign_face|FullyQualifiedName~OpenTypeFontTests.Snapshot_rejects_a_selected_collection_face_before_acquisition|FullyQualifiedName~OpenTypeFontTests.Request_based_snapshot_reports_a_bounded_missing_source_diagnostic|FullyQualifiedName~OpenTypeFontTests.Snapshot_classifies_bound_source_failures_by_origin|FullyQualifiedName~OpenTypeFontTests.Snapshot_classifies_provider_failures_by_origin|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_discovers_and_prepares_a_selected_font|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_rejects_an_invalid_root_before_font_acquisition|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_reports_selected_face_for_metric_format_failure|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_verifies_integrity_before_metric_parsing|FullyQualifiedName~OpenTypeFontTests.Later_authored_families_precede_catalog_fallback_and_keep_span_layout|FullyQualifiedName~OpenTypeFontTests.Quoted_literal_generic_and_host_generic_select_different_supplied_programs|FullyQualifiedName~OpenTypeFontTests.Host_policy_is_immutable_and_never_introduces_an_unconfigured_generic_or_fallback|FullyQualifiedName~OpenTypeFontTests.Authored_order_and_explicit_alias_membership_do_not_depend_on_manifest_order|FullyQualifiedName~OpenTypeFontTests.Selection_failures_keep_original_source_location_before_any_acquisition|FullyQualifiedName~OpenTypeFontTests.Legacy_prepared_literal_names_still_match_quoted_CSS_requests|FullyQualifiedName~OpenTypeFontTests.Coverage_boundaries_stop_cross_face_kerning_and_ligatures_while_retaining_each_face_rules|FullyQualifiedName~OpenTypeFontTests.Supplementary_coverage_preserves_scalar_indices_and_the_selected_units_per_em|FullyQualifiedName~OpenTypeFontTests.Coverage_preparation_deduplicates_shared_programs_across_distinct_requests",
+      "visual": "FullyQualifiedName~SvgFontFamilyStackTests|FullyQualifiedName~SvgGlyphFallbackTests|FullyQualifiedName~SvgStaticTrueTypeFontTests|FullyQualifiedName~SvgCompositeGlyphTests|FullyQualifiedName~SvgCompositeFlagTests|FullyQualifiedName~SvgCompositeMetricsTests|FullyQualifiedName~SvgSuppliedFontLabelTests"
+    },
+    "runs": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "0e31d18e2a314881a306a236fcea144bfc447dc1a2c4bb6a49ba68f4b43c25c1",
+        "exitCode": 0,
+        "seconds": 9.205564699834213,
+        "counters": {
+          "executed": "732",
+          "passed": "732",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "c0a4e2d167a9d90fdb20743f6617895a84d44ea2b8612566dd10b619832fd152"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "0e31d18e2a314881a306a236fcea144bfc447dc1a2c4bb6a49ba68f4b43c25c1",
+        "exitCode": 0,
+        "seconds": 13.779623499838635,
+        "counters": {
+          "executed": "732",
+          "passed": "732",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "c2b62148fe079647c93f42345b14693444ae06a9cf55d866a8c3be0a56458ac8"
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "099d1a05763a6f57f9613e6af9731408a2392418d379cfb962bafe0b4a17a2e0",
+        "exitCode": 1,
+        "seconds": 15.652541100047529,
+        "counters": {
+          "executed": "142",
+          "passed": "141",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ],
+        "outcomeIdentitySha256": "ab0aebdbc923f77303f009c47dec3a4bd55ea20d98a173bcbfa0716443a927b0"
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "099d1a05763a6f57f9613e6af9731408a2392418d379cfb962bafe0b4a17a2e0",
+        "exitCode": 0,
+        "seconds": 14.99369899998419,
+        "counters": {
+          "executed": "142",
+          "passed": "142",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "fa6d9b139f72609d801dfdff488ccdebc15feb21f0da5a16acb4ec6f486ffb27"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "290298539a5957dee932a608583a50aef87bb63e67f674ad15f3d6b75d50bd5f",
+        "exitCode": 0,
+        "seconds": 8.231096200179309,
+        "counters": {
+          "executed": "732",
+          "passed": "732",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "c0a4e2d167a9d90fdb20743f6617895a84d44ea2b8612566dd10b619832fd152"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "290298539a5957dee932a608583a50aef87bb63e67f674ad15f3d6b75d50bd5f",
+        "exitCode": 0,
+        "seconds": 10.935033699963242,
+        "counters": {
+          "executed": "732",
+          "passed": "732",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "c2b62148fe079647c93f42345b14693444ae06a9cf55d866a8c3be0a56458ac8"
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "a06f88d23d900bf8599c110739a644c3b1c89bb6097e599a3999184644ca3557",
+        "exitCode": 1,
+        "seconds": 15.2328220999334,
+        "counters": {
+          "executed": "142",
+          "passed": "141",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ],
+        "outcomeIdentitySha256": "ab0aebdbc923f77303f009c47dec3a4bd55ea20d98a173bcbfa0716443a927b0"
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "a06f88d23d900bf8599c110739a644c3b1c89bb6097e599a3999184644ca3557",
+        "exitCode": 0,
+        "seconds": 15.029021899914369,
+        "counters": {
+          "executed": "142",
+          "passed": "142",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "fa6d9b139f72609d801dfdff488ccdebc15feb21f0da5a16acb4ec6f486ffb27"
+      }
+    ],
+    "corePasses": 2928,
+    "renderingPasses": 566,
+    "renderingKnownFailures": 2,
+    "knownFailure": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+    "timingScope": "Per-job elapsed validation cost on the current development host; concurrent jobs, no before/after suite-speed or renderer-performance claim."
+  },
+  "retainedNativeAudit": {
+    "authoredControls": 12,
+    "platformRows": 24,
+    "retainedHealthyCaptureReceipts": 72,
+    "rows": [
+      {
+        "bank": "font-family-stacks",
+        "case": "ordered-families",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": 3014
+      },
+      {
+        "bank": "font-family-stacks",
+        "case": "ordered-families",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": 2695
+      },
+      {
+        "bank": "glyph-fallback",
+        "case": "mixed-coverage",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": {
+          "different-primary": 5097,
+          "different-secondary": 771
+        }
+      },
+      {
+        "bank": "glyph-fallback",
+        "case": "mixed-coverage",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": {
+          "different-primary": 4765,
+          "different-secondary": 702
+        }
+      },
+      {
+        "bank": "static-truetype-fonts",
+        "case": "liberation",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "static-truetype-fonts",
+        "case": "liberation",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "static-truetype-fonts",
+        "case": "dejavu",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Known open T18 frozen-reference mismatch",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "static-truetype-fonts",
+        "case": "dejavu",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "original-logo-live-text-64x64-transparent",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "original-logo-live-text-64x64-transparent",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "curve-counters",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "curve-counters",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "pair-and-space",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "pair-and-space",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "composite-accents",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "composite-accents",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "fractional-position-size",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "fractional-position-size",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "small-fractional-origin",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "small-fractional-origin",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "large-outline",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "large-outline",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "inherited-alias-paint",
+        "platform": "windows",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      },
+      {
+        "bank": "supplied-font-labels",
+        "case": "inherited-alias-paint",
+        "platform": "linux",
+        "retainedHealthyCaptureReceipts": 3,
+        "currentCandidate": "Exact in focused rendering checks",
+        "changedProgramPixels": null
+      }
+    ],
+    "intermediateContours": [
+      {
+        "record": "tests/Research/supplied-font-documents/diagnostics/composite-contours.json",
+        "cases": 18,
+        "status": "Exact intermediate geometry in focused checks; not whole-document authority",
+        "receiptScope": "Retained engine/probe provenance and vectors; no individual browser-process receipt claim"
+      },
+      {
+        "record": "tests/Research/curved-font-documents/diagnostics/composite-metrics-contours.json",
+        "cases": 10,
+        "status": "Exact intermediate geometry in focused checks; not whole-document authority",
+        "receiptScope": "Retained engine/probe provenance and vectors; no individual browser-process receipt claim"
+      },
+      {
+        "record": "tests/Research/composite-flag-exit-sheet/diagnostics/native-contours.json",
+        "cases": 22,
+        "status": "Exact intermediate geometry in focused checks; not whole-document authority",
+        "receiptScope": "Retained engine/probe provenance and vectors; no individual browser-process receipt claim"
+      }
+    ],
+    "sourceAndDataBindings": [
+      {
+        "path": "tests/Fixtures/original/logo-live-text.svg",
+        "sha256": "53159c3f72b3647d2bf80dcc71d9a328aa8165b58e6e5afc9cf6b4edd29218b5"
+      },
+      {
+        "path": "tests/Research/composite-flag-exit-sheet/diagnostics/native-contours.json",
+        "sha256": "ff5b704cc740ebe527b8322ee0b9304c01a1de063b8a7219dcf78fbdc283e0b2"
+      },
+      {
+        "path": "tests/Research/composite-flag-exit-sheet/font-pack.json",
+        "sha256": "3abbd2089a5fa4fff3bc8ba4bde65a23ae35457a67651dc2043143e671911ea0"
+      },
+      {
+        "path": "tests/Research/composite-flag-exit-sheet/fonts/CompositeFlags.ttf",
+        "sha256": "9dd209dcaf3fae7b34a0a54acbeaa5f8f0ca5c1e2aed62fa9990099fd0fc77a8"
+      },
+      {
+        "path": "tests/Research/composite-flag-exit-sheet/manifest.json",
+        "sha256": "80795f3396a329c3bb2819a82677276ceea85452c1c7faa1c3fd6f106387237e"
+      },
+      {
+        "path": "tests/Research/curved-font-documents/diagnostics/composite-metrics-contours.json",
+        "sha256": "f547a9b43789ca53a4554acf0e564c824c9e3c8be61535dccddf78a67a78e5d5"
+      },
+      {
+        "path": "tests/Research/curved-font-documents/font-pack.json",
+        "sha256": "d822ff935825e4db3e26f618228b5b64f09bac5febbbb2b7d5083384ad232998"
+      },
+      {
+        "path": "tests/Research/curved-font-documents/manifest.json",
+        "sha256": "d246568180b4cf814fd58c98a523e5b4ed909de62e25564c154b2e885f93cdcd"
+      },
+      {
+        "path": "tests/Research/font-family-stacks/font-pack.json",
+        "sha256": "cd77bea16ff1114a4ab689c27a4a3104b757ef4e47d95c0e252473a0a191c249"
+      },
+      {
+        "path": "tests/Research/font-family-stacks/manifest.json",
+        "sha256": "dd1f03f41714b705cf8c6d8e4b9a96792243421ff63910e9399b94bf0e16b6ca"
+      },
+      {
+        "path": "tests/Research/font-family-stacks/ordered-families.svg",
+        "sha256": "7927f3174ff54eff8c6cb577f7e2c71c0054dc9086b8921176d8812e86c34f8d"
+      },
+      {
+        "path": "tests/Research/font-family-stacks/references/linux/ordered-families.png",
+        "sha256": "2872d7e1f4d0e56776fcc9853fa931042edebbe86bcd1ee032f1406f0faabb00"
+      },
+      {
+        "path": "tests/Research/font-family-stacks/references/windows/ordered-families.png",
+        "sha256": "cba22c08b41f5c6b1441bddb1dc076a27a303d6107bfbb53d387188cf56f7d21"
+      },
+      {
+        "path": "tests/Research/glyph-fallback/font-pack.json",
+        "sha256": "efb6f4198b36f00b09c293a42fe15bbbd4b8b3d5a80357d13b4fc4c5b4ca9f1d"
+      },
+      {
+        "path": "tests/Research/glyph-fallback/fonts/Primary.ttf",
+        "sha256": "94da458b2ee3288c6959e4bdaaf3637da67f01274ce44d99c8e32ff37fc7fb07"
+      },
+      {
+        "path": "tests/Research/glyph-fallback/fonts/Secondary.ttf",
+        "sha256": "e356f4a340d5e63c97aa29282c48a2449ef63d961d62132c7b90bc363848bb40"
+      },
+      {
+        "path": "tests/Research/glyph-fallback/manifest.json",
+        "sha256": "07c2f473d4d6fdfd729d47de1dc1e7196b4c43faf6de7134ae0d8aea7aa9d4fb"
+      },
+      {
+        "path": "tests/Research/glyph-fallback/mixed-coverage.svg",
+        "sha256": "934c98bf09c98974ccf1265c5f6b5e2f04da14c735e0c8356394a9fa4ab40c87"
+      },
+      {
+        "path": "tests/Research/glyph-fallback/references/linux/mixed-coverage.png",
+        "sha256": "a209112a16d600d8f8ad5a051c3f3eab940719cf20e3a40b69a8111bb1f06264"
+      },
+      {
+        "path": "tests/Research/glyph-fallback/references/windows/mixed-coverage.png",
+        "sha256": "9cc316ea89d9bbbe54994dd5f463e5c8c1da73687a448ec3982837b52af3c988"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/dejavu/DejaVuSans.ttf",
+        "sha256": "7da195a74c55bef988d0d48f9508bd5d849425c1770dba5d7bfc6ce9ed848954"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/dejavu/font-pack.json",
+        "sha256": "0c1f13fba9977d2fc4ad260b1b1d8764d871f7ca605da3f4ef6201fc11ac2a11"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/dejavu/labels.svg",
+        "sha256": "f7f0cae3eea5e3162810a15a363bb6a9660302587836303b8d6cb13bc88d4d6a"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/font-tables.json",
+        "sha256": "7e175fe9dbe4cc037b898e6f97c955c38324f4852fec801b9da9e49f5e8928ba"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/liberation/LiberationSans-Regular.ttf",
+        "sha256": "76d04c18ea243f426b7de1f3ad208e927008f961dc5945e5aad352d0dfde8ee8"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/liberation/font-pack.json",
+        "sha256": "af1e41eb81083a55533694b3312795a10ee4a8b5db2fd121153844146ed18342"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/liberation/labels.svg",
+        "sha256": "f7f0cae3eea5e3162810a15a363bb6a9660302587836303b8d6cb13bc88d4d6a"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/manifest.json",
+        "sha256": "f56a8f75a2e7dee140a583d8243e59f4ff107641a31d61bed26546ab0f80de4b"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/metrics.json",
+        "sha256": "04e92d78cc8def263821d53e932eb4f60094207c4077884359fe6a76a0c9c186"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/references/linux/dejavu.png",
+        "sha256": "de9428af7066c7edebfcebaa6cf2d70792b5281362aae02d26f48faaa7f50f92"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/references/linux/liberation.png",
+        "sha256": "c4a0961f0c2f453345eb24233b7e2416e3c7de9b0e47f279ca8950882e3daa97"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/references/windows/dejavu.png",
+        "sha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39"
+      },
+      {
+        "path": "tests/Research/static-truetype-fonts/references/windows/liberation.png",
+        "sha256": "ea45aa27bb8f93f1e2669e4ef11af084365d0d24003d07ec8c01ed3693f4d0e4"
+      },
+      {
+        "path": "tests/Research/supplied-font-documents/diagnostics/composite-contours.json",
+        "sha256": "8a1574e78bdaa62ac23ad2e0de268f474eef9243afcae1c778934a75b83a13b5"
+      },
+      {
+        "path": "tests/Research/supplied-font-documents/font-pack.json",
+        "sha256": "9571034fe4253b195ba76a34a69c49e22861cf28bb519f7a5d61acadcc751b72"
+      },
+      {
+        "path": "tests/Research/supplied-font-documents/fonts/NotoSansMono-Bold.ttf",
+        "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+      },
+      {
+        "path": "tests/Research/supplied-font-documents/manifest.json",
+        "sha256": "4a496dd02187f80450c83272162022f5f6c456c6570c9bc5b2b0b353851c338e"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/composite-accents.svg",
+        "sha256": "b21bacd5d61639c5223af41004b86b3f2be3cc67b456deb1b6d8a6467c110b4e"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/curve-counters.svg",
+        "sha256": "1ceddf92f19f753b09a3b98ef2d69dc898f6a04ba0a538cab1dca56ee0b864f6"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/font-pack.json",
+        "sha256": "db56b7f5cdbf0dba560b2f6b83481179cbd8e403af5d90fcdfdbf0f4b062a40a"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/fonts/NotoSans-Regular.ttf",
+        "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/fractional-position-size.svg",
+        "sha256": "b325f251d77f667814e5102f810d84e676c97aa9ed4342082e8c48def1c5b782"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/inherited-alias-paint.svg",
+        "sha256": "bee9f6291220710ea55bd77a408fffcd3ddc08dc9f61d91efa3f12ff347d993f"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/large-outline.svg",
+        "sha256": "ab4e700cfdbac50041f4c89d6c3668c2a140a339d1c4e5ae45ce0bfc8ca3eac9"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/manifest.json",
+        "sha256": "d0cd8cfde224a6dfbd15c728066d466fd63febceede5769ecc830f1ceae7f8fe"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/metrics.json",
+        "sha256": "ea7f4b9fda88226e467ef86ac85c4ae6b24d7ccf89c6a0e7b37dbe81e04ba673"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/pair-and-space.svg",
+        "sha256": "363958e0a1e8f991375199cd4209a0cc00b6bc3946de7e5efc4ce81f3d07f05d"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/composite-accents.png",
+        "sha256": "bde692ca60e932193019fd30268fac0ed24c3489a3faf1658996a3f47689dbca"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/curve-counters.png",
+        "sha256": "21f4ca34630b0df241f34061e7bb5c29eefbfdd680dda184ad394af219b8b6fc"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/fractional-position-size.png",
+        "sha256": "0979c4ea06fe332ff1e7c1602d769a270a8f27b009c2e783ce1eef86675ba1f5"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/inherited-alias-paint.png",
+        "sha256": "cc86d876157779a243934fa594d12ec972e204028a433e13b3ce3b9eeecb786d"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/large-outline.png",
+        "sha256": "0618c2c363a74d5c1f90dcd0ea99275d1b19bfab395607926ba1c6eeaef06284"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/linux64/composite-accents.png",
+        "sha256": "27fbe900265038c791d6794988d5af19f79df8cddf6ec37fcc44355fb47eb57d"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/linux64/curve-counters.png",
+        "sha256": "23f890a24021707d6315b7b1cc53326d523627948dadf2393f6de81b4152c628"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/linux64/fractional-position-size.png",
+        "sha256": "cd30c62c7e294cc512b219cf9a4a4eda208c790983dfba3a9f050f8f2eac484a"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/linux64/inherited-alias-paint.png",
+        "sha256": "42a8179858b526c7824480595350fc0ba00b4021be697d1cc926bbb8ed3a9b69"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/linux64/large-outline.png",
+        "sha256": "d4f12609447d0796e8efc1d7dc15d0fdaa187820fce530e16ba37d5928314615"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/linux64/original-logo-live-text-64x64-transparent.png",
+        "sha256": "262779d670d4665f95a9bd43be6210d7266977512bae3a42aef86da0f75ab305"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/linux64/pair-and-space.png",
+        "sha256": "3297a254f038b8614f73e7cf9371ebe66c238a6dff494cda7f9e824bea19d1c7"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/linux64/small-fractional-origin.png",
+        "sha256": "85dc1522bef6f8d2f931f0721f505f2bbe2a68966aff04df12361c4a36ca2158"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/original-logo-live-text-64x64-transparent.png",
+        "sha256": "84f3970f83bc53a917e3a7430b155e2e9af93c13696656ea878236b25b73db27"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/pair-and-space.png",
+        "sha256": "901331cb3f91372a7856afa6b2b034cb61c6ce06e2dca777b74701864875d2f0"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/references/small-fractional-origin.png",
+        "sha256": "7ea069a30d9e2788f46f7667d6196a14b825c16d2761b5394563bca4470bb07e"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/small-fractional-origin.svg",
+        "sha256": "ee60237e99f8af7bb1b83ad1bfc3f0d59ef6fa94de9740f7e531f72bede71b2d"
+      }
+    ],
+    "scope": "Existing source/program/reference hashes and declared capture receipts rejoined; no new browser captures or reference replacements. The open Windows DejaVu row is deliberately included."
+  },
+  "evidenceCleanup": "Replaced the ignored local study locator in composite-flag native contour metadata with an explicit committed-evidence scope. All 22 contour arrays, IDs and original engine provenance are unchanged.",
+  "relatedEvidence": [
+    "support-claim-map.md",
+    "host-api-qualification.md",
+    "css-at-rule-admission.json",
+    "../font-family-stacks/manifest.json",
+    "../glyph-fallback/manifest.json"
+  ],
+  "limits": "Reviewed is a bounded implementation/check trace. T18 pixel authority, remaining text/shaping, full ownership/limits, W1 contexts, historical provenance and quiet-VM performance remain separate. No font resolver/API, glyph/layout implementation, fixture, expected vector, pixel target, tolerance or test matrix changed."
+}
