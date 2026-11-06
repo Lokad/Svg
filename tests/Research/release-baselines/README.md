@@ -61,6 +61,12 @@ The [filter claim trace](filter-claim-trace.json) completes F2-F6 against curren
 owners and direct checks. It verifies 302 retained source/reference cases with
 their distinct capture authority and adds 24 fresh finite-hue captures, without
 changing production or rewriting targets.
+The [composition/marker trace](composition-claim-trace.json) completes C1-C8 and
+F1 against unchanged qualified source/test trees. It verifies 270 retained controls,
+540 platform rows and 600 individual healthy capture receipts, keeping bank-level
+attestations, rejection cases and font contracts separate. The resource-display
+cost diagnostic establishes no simplification or speedup; distinct preparation
+and conversion paths remain covered.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

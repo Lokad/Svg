@@ -1,0 +1,778 @@
+{
+  "status": "C1-C8 and F1 reviewed against current owners, direct mechanisms/contracts and independently referenced controls. No production, test, reference or tolerance changes are required by this bounded review.",
+  "qualifiedSourceCommit": "0b44105157567e38c2d88ebfe62c4d861f3dd448",
+  "qualification": "filter-empty-region-validation.json",
+  "supportContract": "../../../docs/SUPPORT_MATRIX.md",
+  "supportContractSha256": "c696d0b98bb082ecb3445a7d882d2d6ab283e5a92dfe16a4d0feba1f777ff938",
+  "unchangedQualifiedTrees": {
+    "src": "7243f9bc65f0399f86614b842209b2cf68a1adbb",
+    "tests/Lokad.Svg.Tests": "be3b896efe8a2a793b89f956c2b734c27a43a9b5",
+    "tests/Lokad.Svg.VisualTests": "ec09e9d4155ad57c0b0f95484a79e0a3b8f52886",
+    "tests/Lokad.Svg.FontProbe.Tests": "a75b16983a9f9f58184a44c5d4e3380c2111256d"
+  },
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgClipDefinitionSource.cs",
+      "sha256": "5edd09183a3f6b5bc061837e9a5d83a758b2c0863ae75e9589c10676f89ea20e"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgClipDefinitionStaging.cs",
+      "sha256": "f4e9be0c8a9364a5adfb3c001f8e54723d62f7989206dde741c898027d5f1908"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs",
+      "sha256": "be09d8f37b0df9d7fac04f82befd7387852d70d25168ab40eb9e9bf701761d08"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgClipUnion.cs",
+      "sha256": "dffa3b5e3b1af926f099807c94a3a1b4caf277d967b833dd1abd8acbfa14c951"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+      "sha256": "a476d643d3a2a8067e62e85b9d61a227e23b0a844defeb397d67217de2fa4520"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgLeafMaskComposition.cs",
+      "sha256": "2ffdde8cd630e92363b336a95105877680751f4554e89d95ad4f06ddb39a17bc"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgLocalUrl.cs",
+      "sha256": "b9279d8163c82779f0a937175e5f2e08c7b9ecac848a8ec59a8fafde183659a7"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgMarkerSyntax.cs",
+      "sha256": "75544156c27109b59579f4a4b00b4989cff78b923c451d73608c0d91c7131dcc"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgMarkerVertices.cs",
+      "sha256": "c2a37a304ffc92c300e6b619e18203820843e3a8fc201cfa7aa7bed4be3b6803"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs",
+      "sha256": "8b939f2655f5f6cac29e73df71014647c8674a0667cd8d204d0547d38ef4f6da"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgMaskSyntax.cs",
+      "sha256": "1e4cd6ee79c907416c53c8673bf7f905f4b98f88c9e4d7595f154f368797edf5"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgMaskTarget.cs",
+      "sha256": "7bb7cc0b59144b42aed41ae4b155c48331f4a37c42c8eff1e0e920be1827d562"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPaintRecording.cs",
+      "sha256": "479fab685933102a5fa5d99cc918bc0b2c9310174c4818502f7944638322d3ce"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgResourceUseReplay.cs",
+      "sha256": "4929b7fd44e0319c6eea0ff03a463c4ea6bc9a269c4177dfa85aae727770279c"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs",
+      "sha256": "79349a2266b21efe640d5b6f34c469b26e49c72384f5cba44db3efbf115c130d"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.ClipResourceDisplay.cs",
+      "sha256": "0dff95611e5ee8dc78e9cdf0659f8bded4886748be89a2a4cc4b61c3ce033248"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs",
+      "sha256": "321efef7d3cff850ece041b6189aa0e5f764b0ecd70c269b4b91306682732b70"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskRecording.cs",
+      "sha256": "08bfb7af6c28b46c4dd062171b9bda70110bf302e368f4ae1c419b437af3e9b2"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskResourceDisplay.cs",
+      "sha256": "3a4dd83667de11c758432958ec862e86cead93181e6a0f7feb60a007e890a512"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTargets.cs",
+      "sha256": "605f99f025c228e2b02a17b0e549c9775172365ab858c21727e9ed97706876f3"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs",
+      "sha256": "0362a05f71e847173929776b13bd4d7d9528444bdfc705e28ce9790790278235"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs",
+      "sha256": "8e235bb1a4135b840adb60542b857e5fa7faa74686c49009c15f0072aa042197"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextClips.cs",
+      "sha256": "4dcd4e6f53a86a9f4e39739ddaed9d3eeb0cd2ca5c31552f3879bc5c85f6f9ea"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgClipBooleanTests.cs",
+      "sha256": "8b55d51d2e5fce4e199f6786eda901d37b99d4deb235f5c2374460e4397c34eb"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgClipChildRoleTests.cs",
+      "sha256": "a0a541de3e608e55e65eeca6572e7bd41d4ea7b4e856f12ad43c13760eba5f07"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgClipIntersectionTests.cs",
+      "sha256": "81e23d0ab83fced55de955648f9683c0280312951c0ae506cbf3c5bf0ecd7b9e"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgClipVisibilityTests.cs",
+      "sha256": "978f4ef3f7b0a20e76957f32516ea2896138e8907dab2cb373a33bace1e84df8"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgClipVisualBoundsTests.cs",
+      "sha256": "c76989e246b91e1479f0939181961563398f55677950fe2f06d134552906a2de"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgDeferredClipTests.cs",
+      "sha256": "ed47635bfecebc922700990d1179d2dbe12d378f75961a639f6c36eafcc10191"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgLineMarkerTests.cs",
+      "sha256": "e1ad6db9cfb309d29fbad6077fec4ebf8b374a27bed59929b1fef8c693ff6348"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgMarkerCanvasOwnershipTests.cs",
+      "sha256": "1485f40ed307dc677cbb26b37f4321ea0aace71aa30d5e181ee4bdec8283bac2"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgMarkerCanvasTests.cs",
+      "sha256": "fee82b7a4de893df94ed2e28c7d3072ecf86c6d0c5192ba83cb456067c96144c"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs",
+      "sha256": "41319c8574faf5b93e9a4f183e5ead6508a214353560aad934fab5c1e52dbd57"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgMarkerSyntaxTests.cs",
+      "sha256": "c2ada8a9b24b4a44e3d2266fc73c51c6c2fc2e9f97f3cc42fb919dbb705fc8cd"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgMaskContentReplayTests.cs",
+      "sha256": "f9bad4a445b45050faab2cdc3ce39300d1e61b470850cc73bf7c00abed856622"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgResourceUseReplayTests.cs",
+      "sha256": "817f6c11a94e7dc3e8a41bd6d7649de5bcc8b7c564f8ca63cd8568d8c0e221ed"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgScopedClipMaskTests.cs",
+      "sha256": "afc48c9479d611b4a9a0949459f97a05e4ebf42bb1b2bccdfaa00493b56175a6"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgUniformGroupMaskTests.cs",
+      "sha256": "da71796fbb847a21f61729f1c94c4f338b713c36e36973b1f13359bd54701f58"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgClipChildRoleReferenceTests.cs",
+      "sha256": "081a877212d0a0b44cd68f5fa7f7c07352b3fece410f10d40392640258e15718"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgContainedMaskClipReferenceTests.cs",
+      "sha256": "67dc307a770973f2fb563ea18a1e954fa39961004349ccd761b7c15703bb6141"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgDeferredClipReferenceTests.cs",
+      "sha256": "b48f3b03e1cb3cfb1510565a53846226287e530089e348f063d7b5d52da6fe4d"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgFractionalMaskRegionReferenceTests.cs",
+      "sha256": "e3a9f96c5a3667c930de64dd83f262c4fbc71dfe6d11c3f53936a4a8ea5dc4de"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgInheritedClipReferenceTests.cs",
+      "sha256": "67ed8378067c7ee5caa21efd78b2755973409d8f83bdfc98405dbe16dd7ebade"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgLeafMaskReferenceTests.cs",
+      "sha256": "679feb480dc5eb9cfec18d03b1bf42299a0d60ffca5b56dfca2a1f10f5495458"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgLineMarkerReferenceTests.cs",
+      "sha256": "34128ce142f2ce1d7a18ae38edbc1aa7973b3c79690a8dd4649c3d794fe269ab"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgMarkerPaintBindingReferenceTests.cs",
+      "sha256": "d5b291a463825c72370d19f7bd54d3551e2929c0d566d891146b9b29bc730291"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgMarkerReferenceTests.cs",
+      "sha256": "d100c58586684e31201ba3e3427f7b59d7a85c04ef223bcf8642b2d85e5e8dc7"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgMaskClipReferenceTests.cs",
+      "sha256": "359f207acf0ae77848da3600468d966ee696d70adce59b506ffb9f5133388d7e"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgMaskSourceClipReferenceTests.cs",
+      "sha256": "7abf02bb6d5cd00b0177437430cd03e484c764665d1bc2ace839e70c6cc468fc"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgMaskTextRecordingReferenceTests.cs",
+      "sha256": "2002bc638c90876eab4fda5e47e5e9f836251899f22529646a0322d287a8c78e"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgOwnClipReferenceTests.cs",
+      "sha256": "9d9bdbb448f1b35078c3277c6a798cfc5df0c5a1186da08c60b38acea88b9371"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgTextClipReferenceTests.cs",
+      "sha256": "7a2cf67ddcdac5a9edf91c820b4733d01db5893c2a309ae34ebc3c67b91cd2ba"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgUniformGroupMaskReferenceTests.cs",
+      "sha256": "3bd97a4fcc889e31f43f14e2a4787587196cf0475cbd3fa6d00ddcb3903cb287"
+    }
+  ],
+  "groups": [
+    {
+      "id": "C1",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+        "src/Lokad.Svg/Parsing/SvgClipDefinitionStaging.cs",
+        "src/Lokad.Svg/Parsing/SvgClipDefinitionSource.cs"
+      ],
+      "inspected": "Ordered geometry/use/text staging retains winding, child opacity and visual enclosure independently. Text borrows the existing shaping/decorations pipeline with clip paint overrides; dormant group silhouettes stay empty while independent descendant IDs and selected fonts remain live.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgClipChildRoleTests.cs": [
+          "Clip_groups_keep_an_empty_resource_without_adding_descendant_geometry",
+          "Selected_clip_descendants_discover_only_their_live_font_and_emitted_scalars",
+          "A_group_referenced_as_clip_content_does_not_acquire_its_text_font"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs": [
+          "Clip_resource_transform_keeps_its_documented_restriction",
+          "Clip_resource_paint_does_not_change_geometric_coverage"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextClips.cs": [
+          "Text_clip_font_selection_follows_live_source_roles",
+          "Text_clip_owners_release_after_refusal_cancellation_and_prepared_retry",
+          "Text_clip_cycles_reject_before_font_program_acquisition"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgTextClipReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgClipChildRoleReferenceTests.cs"
+      ],
+      "native": [
+        "../clip-definition-sources/capture.json",
+        "../clip-child-roles/capture.json",
+        "../text-clip/capture.json",
+        "../ordered-clip-coverage/capture.json"
+      ]
+    },
+    {
+      "id": "C2",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgResourceUseReplay.cs",
+        "src/Lokad.Svg/Parsing/SvgClipDefinitionStaging.cs",
+        "src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs"
+      ],
+      "inspected": "Deferred local uses lower source commands only after definitions resolve. Group targets contribute no contour; admitted geometric sources require exactly one contour. Resource-unit bases precede the referencing canvas map, and referenced own clips retain their explicit admission boundary.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgDeferredClipTests.cs": [
+          "Deferred_resource_units_bind_use_and_source_percentages_without_leaking_to_the_next_definition",
+          "Object_box_path_construction_encloses_normalized_geometry_in_the_referencing_canvas",
+          "Deferred_sources_keep_the_existing_boundary_and_painted_replay_threshold"
+        ],
+        "tests/Lokad.Svg.Tests/SvgResourceUseReplayTests.cs": [
+          "Referenced_clip_registration_preserves_native_curves_and_local_placement",
+          "Rejected_resource_references_release_partial_owners"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgDeferredClipReferenceTests.cs"
+      ],
+      "native": [
+        "../clip-definition-sources/capture.json",
+        "../ordered-clip-coverage/capture.json"
+      ]
+    },
+    {
+      "id": "C3",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+        "src/Lokad.Svg/Parsing/SvgResourceUseReplay.cs",
+        "src/Lokad.Svg/Parsing/SvgClipDefinitionStaging.cs"
+      ],
+      "inspected": "Clip visual/stroke inflation is metadata around original contour coverage. Native authored paths keep no silhouette stroke; inherited stroke metrics can enlarge enclosure without resolving an ignored stroke server or enlarging object-box coverage.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgClipVisualBoundsTests.cs": [
+          "Path_visual_enclosure_keeps_stroke_presentation_out_of_clip_coverage",
+          "Referenced_clip_children_keep_visual_strokes_without_constructing_stroke_paint",
+          "Contained_rectangle_visual_outsets_do_not_enlarge_the_object_box_clip_silhouette"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgOwnClipReferenceTests.cs"
+      ],
+      "native": [
+        "../ordered-clip-coverage/capture.json",
+        "../clip-definition-sources/capture.json"
+      ]
+    },
+    {
+      "id": "C4",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgMaskSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskTarget.cs"
+      ],
+      "inspected": "Mask content reuses the ordered vector scene owner; source snapshots and replay remain document-owned until adoption. Alpha/luminance, finite region maps, object-box fractions and user-space percentages remain separate. Unsupported direct children and insufficient explicit spatial coverage reject before leaking partial scenes.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgMaskContentReplayTests.cs": [
+          "Object_box_content_percentages_bind_to_leaf_group_use_and_empty_targets",
+          "Unsupported_mask_content_releases_the_promoted_scene",
+          "Nested_mask_groups_replay_in_order_and_release_retained_children"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs": [
+          "Axis_aligned_spatial_mask_fraction_regions_require_content_covering_the_explicit_region"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs": [
+          "Mask_region_percentages_require_user_space_units"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgFractionalMaskRegionReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgLeafMaskReferenceTests.cs"
+      ],
+      "native": [
+        "../mask-group-documents/manifest.json",
+        "../scoped-clips-masks/manifest.json",
+        "../colored-effects-markers/manifest.json"
+      ]
+    },
+    {
+      "id": "C5",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgPaintRecording.cs",
+        "src/Lokad.Svg/Parsing/SvgLeafMaskComposition.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskTarget.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs"
+      ],
+      "inspected": "Existing recorded scopes preserve filter/mask/clip/opacity ordering and isolate group opacity. Target object bounds precede placement; visual/source paint enclosures and mask regions remain distinct. Mask text is recorded in the resource context and that context is restored on every exit; inactive targets acquire fonts only when surviving layout, stroke or generated filter output needs them.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgUniformGroupMaskTests.cs": [
+          "Deferred_mask_scopes_follow_expanded_children_without_absorbing_siblings",
+          "Partial_mask_resolution_releases_scene_storage_on_memory_and_token_denial",
+          "Isolated_mask_surfaces_release_storage_on_memory_and_token_denial"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs": [
+          "Grouped_masks_inherit_the_resource_text_style_instead_of_the_masked_target",
+          "Mask_text_child_declarations_override_the_complete_inherited_style"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskTargets.cs": [
+          "Nonpainting_primitive_targets_do_not_lower_or_acquire_mask_fonts",
+          "Painted_strokes_visibility_overrides_and_filter_output_keep_mask_font_dependencies"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskRecording.cs": [
+          "Affine_mask_replay_restores_following_text_font_context_and_borrowed_memory"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgMaskTextRecordingReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgMaskSourceClipReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgMaskClipReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgUniformGroupMaskReferenceTests.cs"
+      ],
+      "native": [
+        "../mask-text-recording/capture.json",
+        "../mask-source-clip/capture.json",
+        "../scoped-clips-masks/manifest.json",
+        "../colored-effects-markers/manifest.json",
+        "../composition-sheet/manifest.json"
+      ]
+    },
+    {
+      "id": "C6",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgLeafMaskComposition.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs",
+        "src/Lokad.Svg/Parsing/SvgResourceUseReplay.cs"
+      ],
+      "inspected": "Retained masked source geometry and a mask on a live use have different replay/placement contracts. Axis-aligned source restrictions do not suppress affine live-use masks. Symbol-use placement and direct/source/live-use masked text remain separately checked, with independent mask scene ownership.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs": [
+          "Masked_shape_sources_require_axis_aligned_instances_but_live_use_masks_admit_affine_maps",
+          "A_mask_on_a_text_use_is_distinct_from_direct_masked_text_and_a_masked_text_source"
+        ],
+        "tests/Lokad.Svg.Tests/SvgScopedClipMaskTests.cs": [
+          "Nested_clip_stencils_preserve_color_and_ownership_through_retained_sources",
+          "Scoped_clips_and_masks_preserve_input_and_release_material_storage_after_denial_and_retry"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgMaskTextRecordingReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgContainedMaskClipReferenceTests.cs"
+      ],
+      "native": [
+        "../mask-text-recording/capture.json",
+        "../scoped-clips-masks/manifest.json",
+        "../mask-group-documents/manifest.json"
+      ]
+    },
+    {
+      "id": "C7",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgLocalUrl.cs",
+        "src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgClipDefinitionStaging.cs",
+        "src/Lokad.Svg/Parsing/SvgClipUnion.cs"
+      ],
+      "inspected": "Effect bindings are read from attributes; none is removed before URL binding, and explicit clip inheritance borrows only the immediate container. The existing bounded dependency traversal diagnoses cycles, intersects resource/child clips and preserves ordered union operands. Short/degenerate filled point lists yield empty coverage. Unsupported keyword/property/resource-unit placements retain direct admission checks.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgClipIntersectionTests.cs": [
+          "Explicit_clip_inheritance_uses_the_immediate_container_or_initial_value",
+          "Group_nested_resource_clips_preserve_a_containing_child_clip_and_release_owners"
+        ],
+        "tests/Lokad.Svg.Tests/SvgClipBooleanTests.cs": [
+          "Cycles_through_definitions_or_painted_union_children_release_the_registered_owners",
+          "Short_or_collapsed_point_lists_have_empty_clip_coverage",
+          "Shared_dependencies_are_not_cycles_and_a_disjoint_intersection_is_empty"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs": [
+          "Documented_declaration_locations_agree_in_conversion_and_preparation"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgInheritedClipReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgContainedMaskClipReferenceTests.cs"
+      ],
+      "native": [
+        "../ordered-clip-coverage/capture.json",
+        "../scoped-clips-masks/manifest.json"
+      ]
+    },
+    {
+      "id": "C8",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+        "src/Lokad.Svg/Parsing/SvgClipDefinitionStaging.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs",
+        "src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs"
+      ],
+      "inspected": "Disabled clip/mask resources preserve named identity but omit their binding; empty or hidden content instead retains empty coverage. Resource visibility and source/use visibility resolve before silhouette construction. Balanced leaf traversal preserves descriptions and IDs without activating drawing children. Existing paint/filter traces retain the distinct gradient/pattern/filter display rules.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.ClipResourceDisplay.cs": [
+          "A_disabled_clip_resource_removes_its_binding_without_removing_ancestor_effects",
+          "Disabled_clips_leave_filtered_masked_output_and_opacity_unchanged",
+          "Disabled_clip_storage_releases_on_denial_and_preserves_duplicate_id_errors"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.MaskResourceDisplay.cs": [
+          "Mask_display_distinguishes_disabled_resources_from_definition_ancestors",
+          "Disabled_mask_regions_do_not_crop_filtered_output_or_ancestor_effects"
+        ],
+        "tests/Lokad.Svg.Tests/SvgClipVisibilityTests.cs": [
+          "Own_display_none_disables_the_clip_while_ancestor_display_preserves_it",
+          "Resource_visibility_inherits_from_its_own_ancestors_and_children_can_override_it",
+          "Referenced_source_visibility_overrides_inheritance_but_not_display_none"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgClipChildRoleReferenceTests.cs"
+      ],
+      "native": [
+        "../clip-child-roles/capture.json",
+        "../clip-definition-sources/capture.json"
+      ]
+    },
+    {
+      "id": "F1",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgMarkerSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgMarkerVertices.cs",
+        "src/Lokad.Svg/Parsing/SvgPaintRecording.cs"
+      ],
+      "inspected": "Marker declarations retain units, viewport/ref metrics, finite specified-angle precision, viewBox and overflow independently of the source and canvas pose. Em lengths resolve immediately; live ex metrics use the existing font selection. Deferred document paints preserve inheritance and forward definitions; zero/hidden/collapsed hosts and no-host-stroke markers keep distinct rendering roles. Original vertices/subpaths and complete device admission remain separate from copied outline intermediates.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgMarkerSyntaxTests.cs": [
+          "Font_relative_marker_lengths_keep_em_values_and_defer_ex_metrics",
+          "Angles_keep_native_specified_precision_before_degree_conversion",
+          "Axis_half_turn_at_a_repeated_closed_vertex_retains_the_native_bisector",
+          "Invalid_or_excessive_values_retain_categorized_outcomes"
+        ],
+        "tests/Lokad.Svg.Tests/SvgMarkerCanvasTests.cs": [
+          "Source_transform_and_marker_pose_keep_separate_canvas_stages",
+          "Retained_path_metadata_allows_inverse_intermediates_until_complete_device_admission"
+        ],
+        "tests/Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs": [
+          "Marker_paints_bind_after_all_local_definitions_without_losing_inheritance",
+          "Deferred_marker_owners_release_on_denial_cancellation_and_retry"
+        ],
+        "tests/Lokad.Svg.Tests/SvgLineMarkerTests.cs": [
+          "Markers_paint_without_host_strokes_through_instances_and_resources",
+          "Pending_markers_and_retained_corners_release_owners_on_denial_and_retry"
+        ],
+        "tests/Lokad.Svg.Tests/SvgMarkerCanvasOwnershipTests.cs": [
+          "Native_canvas_stages_release_after_refusal_cancellation_and_retry"
+        ]
+      },
+      "renderingChecks": [
+        "tests/Lokad.Svg.VisualTests/SvgMarkerReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgMarkerPaintBindingReferenceTests.cs",
+        "tests/Lokad.Svg.VisualTests/SvgLineMarkerReferenceTests.cs"
+      ],
+      "native": [
+        "../marker-content/manifest.json",
+        "../path-marker-content/manifest.json",
+        "../marker-instance-content/manifest.json",
+        "../marker-canvas-stages/capture.json",
+        "../effects-marker-sheet/manifest.json",
+        "../marker-presentation-sheet/manifest.json"
+      ]
+    }
+  ],
+  "relatedTraces": [
+    "paint-claim-trace.json",
+    "filter-claim-trace.json",
+    "native-clip-device-domains.json",
+    "filter-sampling-device.json"
+  ],
+  "nativeAudit": {
+    "cases": 270,
+    "platformRows": 540,
+    "individualHealthyCaptureReceipts": 600,
+    "scope": "Raw source/PNG and canonical-LF metadata hashes, declared capture triples/health/cleanup, platform authority, and the two declared text-clip/mask-text font bridges. Historical bank attestations remain distinct. Boundary/native images do not turn renderer rejection into admitted fidelity. Binding authored/retained fixtures does not recover missing upstream original provenance or qualify hosted SVGWeb contexts.",
+    "identitySetEncoding": "SHA256 of UTF-8 compact JSON, insertion-order rows, ensure_ascii=True. Paired tuples: [id, source SHA256, host, reference SHA256]; manifest tuples additionally include role before host.",
+    "pairedBanks": [
+      {
+        "family": "clip-definition-sources",
+        "metadataSha256": "c1e08d0fa847babe2ea1ddc7471e48a16d778818b56e90c4e879b620b7bccff4",
+        "cases": 12,
+        "platformRows": 24,
+        "individualHealthyCaptureReceipts": 72,
+        "authority": "Individual healthy/clean triples.",
+        "fontBridgeVerified": false,
+        "identitySetSha256": "243517386db98bb1f87142a11683d76ded6afa69aa2f3df8d7e18d2e443b25cf"
+      },
+      {
+        "family": "clip-child-roles",
+        "metadataSha256": "a5f47f0aa3e0017c017d8fc8b6a4a87db9b5985483573a6175f5c19e32d776c1",
+        "cases": 8,
+        "platformRows": 16,
+        "individualHealthyCaptureReceipts": 48,
+        "authority": "Individual healthy/clean triples.",
+        "fontBridgeVerified": false,
+        "identitySetSha256": "44e1de99eebaabc153c066d81ce92792e85c8d4c6a755af83bca3bffdaf804e0"
+      },
+      {
+        "family": "text-clip",
+        "metadataSha256": "2b74cae82e048b955d4c072a6c60b05390fb1feecf982d6235aeff2b116223ea",
+        "cases": 19,
+        "platformRows": 38,
+        "individualHealthyCaptureReceipts": 114,
+        "authority": "Individual healthy/clean triples.",
+        "fontBridgeVerified": true,
+        "identitySetSha256": "fab0409b7064606b6aec58f4c46dbbabec3cc7b93a397eb6635b2fd806730b6f"
+      },
+      {
+        "family": "mask-text-recording",
+        "metadataSha256": "c284179a43fa6b438153ce6a5ab902c5e2a3af0123b2d3cbb2559f238e68fafe",
+        "cases": 7,
+        "platformRows": 14,
+        "individualHealthyCaptureReceipts": 42,
+        "authority": "Individual healthy/clean triples.",
+        "fontBridgeVerified": true,
+        "identitySetSha256": "a807466670f2bea7a127d7253fd72dfed302ec1b8ad8714b364600bbe39a33af"
+      },
+      {
+        "family": "mask-source-clip",
+        "metadataSha256": "f774181036ae13e4cb5131bcbfcfb31ce926100b37c93b6abfb89887183d3576",
+        "cases": 1,
+        "platformRows": 2,
+        "individualHealthyCaptureReceipts": 6,
+        "authority": "Individual healthy/clean triples.",
+        "fontBridgeVerified": false,
+        "identitySetSha256": "a8c73c07758fc0a63ab8fa1282e9d7a37980c2d4e01033f8a1e95bc0dc02a1ff"
+      },
+      {
+        "family": "ordered-clip-coverage",
+        "metadataSha256": "238fdef01c50af9b639c53ae38836573863c560984aa365a70a09799e980fd90",
+        "cases": 91,
+        "platformRows": 182,
+        "individualHealthyCaptureReceipts": 0,
+        "authority": "Bank-level healthy/clean attestation with three equal native hashes per platform/case.",
+        "fontBridgeVerified": false,
+        "identitySetSha256": "f8a039a84d95afe6e282f59d9cfda51af6a5158e85b628fd3a951d04a8dee8f3"
+      },
+      {
+        "family": "marker-canvas-stages",
+        "metadataSha256": "d2dda2e010fed2b584c69dcc26ec08e9b415e18b73ebc4f136612d48606cb6ac",
+        "cases": 37,
+        "platformRows": 74,
+        "individualHealthyCaptureReceipts": 0,
+        "authority": "Bank-level healthy/clean attestation with three equal native hashes per platform/case.",
+        "fontBridgeVerified": false,
+        "identitySetSha256": "5420346917f4524b96b33a6fbdc7eb5c232c6d450dd3d560ee06eca596872222"
+      }
+    ],
+    "manifestBanks": [
+      {
+        "family": "marker-content",
+        "metadataSha256": "c00295455a7cbdd3f34844a44196546d0feed432efa5b57c198a7658da05d9bd",
+        "cases": 20,
+        "roles": {
+          "fidelity": 16,
+          "boundary": 4
+        },
+        "platformRows": 40,
+        "individualHealthyCaptureReceipts": {
+          "windows": 60
+        },
+        "bankAttestedPlatformRows": {
+          "linux": 20
+        },
+        "identitySetSha256": "7169eb5a72481b20b6de684441033035b23281f6e9b84ebd5b21bc119fa16a50",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      },
+      {
+        "family": "path-marker-content",
+        "metadataSha256": "e5f4c760447bccced8ae780f76e1e0458560af509b66d8fb0dd0a22cee4ca8df",
+        "cases": 23,
+        "roles": {
+          "fidelity": 23
+        },
+        "platformRows": 46,
+        "individualHealthyCaptureReceipts": {
+          "windows": 69
+        },
+        "bankAttestedPlatformRows": {
+          "linux": 23
+        },
+        "identitySetSha256": "a823898141d55a498e6b7edd8c0ebb7eba1d9c28522d87bda8835fc6d3db7449",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      },
+      {
+        "family": "marker-instance-content",
+        "metadataSha256": "7326bf0bd52e9020c00201d63d64d8e1621505fd9caaf1669b0449479e7dbbf3",
+        "cases": 15,
+        "roles": {
+          "fidelity": 14,
+          "boundary": 1
+        },
+        "platformRows": 30,
+        "individualHealthyCaptureReceipts": {
+          "windows": 45
+        },
+        "bankAttestedPlatformRows": {
+          "linux": 15
+        },
+        "identitySetSha256": "71775dc6c097f58927ccc83f11cb376cab87e60ce2010c0088bbc58269ea9fd0",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      },
+      {
+        "family": "mask-group-documents",
+        "metadataSha256": "89a06d7baf53fbaba8a388111d32752f540dbff18069e2d62c272f5988e1a2e8",
+        "cases": 6,
+        "roles": {
+          "font-contract-fixture": 1,
+          "mechanism-control": 5
+        },
+        "platformRows": 12,
+        "individualHealthyCaptureReceipts": {
+          "windows": 18,
+          "linux": 18
+        },
+        "bankAttestedPlatformRows": {},
+        "identitySetSha256": "10d5fd6144b580eae1b093afd23375b84276f65ad8277edd9e561312e0f69e2c",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      },
+      {
+        "family": "scoped-clips-masks",
+        "metadataSha256": "e0e13ff33b11dd5284a72f5b7ffd9988c3517059935c2c0c035e0b440bc72cbe",
+        "cases": 5,
+        "roles": {
+          "mechanism-control": 3,
+          "retained-core-admission-control": 2
+        },
+        "platformRows": 10,
+        "individualHealthyCaptureReceipts": {},
+        "bankAttestedPlatformRows": {
+          "windows": 5,
+          "linux": 5
+        },
+        "identitySetSha256": "14715325b8db7d9da9b8c234f705335b14389acdfdc5d352112acd841bce383b",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      },
+      {
+        "family": "colored-effects-markers",
+        "metadataSha256": "ea6667942d8893b89dd8a3fd0abedac190a72806767352ecb86150436a45795e",
+        "cases": 12,
+        "roles": {
+          "mechanism-control": 12
+        },
+        "platformRows": 24,
+        "individualHealthyCaptureReceipts": {
+          "windows": 12,
+          "linux": 12
+        },
+        "bankAttestedPlatformRows": {
+          "windows": 8,
+          "linux": 8
+        },
+        "identitySetSha256": "3c26c06c8f1b9a2e9811304d190bd9ae594cb0d35961a28eb36f5d101b1e1f76",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      },
+      {
+        "family": "effects-marker-sheet",
+        "metadataSha256": "4dccedd041199fdd45030b862950647cfd9f509847ee55ef5c1f05de5e792feb",
+        "cases": 11,
+        "roles": {
+          "mechanism-control": 11
+        },
+        "platformRows": 22,
+        "individualHealthyCaptureReceipts": {
+          "windows": 33,
+          "linux": 33
+        },
+        "bankAttestedPlatformRows": {},
+        "identitySetSha256": "fdd1edeec20e54ef4a184c64769afa0cfa1c81572ff3af082fe0d70d2e48293b",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      },
+      {
+        "family": "marker-presentation-sheet",
+        "metadataSha256": "5e58ec05cbd42cde4252c71be784f8ed7d0284cac322b0b28f4d6d3aa84076ff",
+        "cases": 2,
+        "roles": {
+          "control": 2
+        },
+        "platformRows": 4,
+        "individualHealthyCaptureReceipts": {
+          "windows": 6,
+          "linux": 6
+        },
+        "bankAttestedPlatformRows": {},
+        "identitySetSha256": "f5ecffb54d241d8d9f9a0592a70897e7b472428aec40449dceb39045738f795c",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      },
+      {
+        "family": "composition-sheet",
+        "metadataSha256": "38481e312ca99d3fada00816e9860559d11ebcb4bcf9964b0869738a0a8b0155",
+        "cases": 1,
+        "roles": {
+          "retained-core-admission-control": 1
+        },
+        "platformRows": 2,
+        "individualHealthyCaptureReceipts": {
+          "windows": 3,
+          "linux": 3
+        },
+        "bankAttestedPlatformRows": {},
+        "identitySetSha256": "51fdbf827c3f753a47a0e04a97c3c57d049b2daf4b24f7880f448431563d1cd3",
+        "authority": "Retains each declared fidelity/mechanism/font/admission role. Linux bank attestations remain distinct from per-case healthy receipts; source/reference binding is not recovery of an upstream original."
+      }
+    ]
+  },
+  "developmentCostReview": {
+    "selection": "OpenTypeFontTests.A_disabled_clip_resource_removes_its_binding_without_removing_ancestor_effects OR OpenTypeFontTests.Mask_display_distinguishes_disabled_resources_from_definition_ancestors",
+    "host": "windows",
+    "framework": "net11.0",
+    "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+    "testAssemblySha256": "afbfe7ccbce530c67205ff4a54137deb7012a526ff65f89a22ab66a1090ac516",
+    "cases": 168,
+    "summedCaseSeconds": 3.3633931,
+    "wallSeconds": 19.52352109993808,
+    "result": "168 passed. Diagnostic includes test-host/discovery/TRX wall cost and excludes build. No before/after change or speedup is claimed. Clip prepared replay performs separate font discovery; the wide mask bank already uses raw canonical conversion. Retain these distinct paths until a justified measured consolidation is identified."
+  },
+  "limits": "Reviewed is a bounded source/check/reference trace, not exhaustive SVG conformance. Windows frozen DejaVu, W1 contexts/provenance, other Pending support rows, performance and release gates remain open as recorded in the plan and qualification."
+}

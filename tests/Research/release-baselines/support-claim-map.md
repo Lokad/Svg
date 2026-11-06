@@ -26,6 +26,9 @@ close four and 128 failures. [Geometry clip domains][geometry-clip-record] close
 fill cases. [Sampling destinations][sampling-record] close the final 24 admitted
 shader/placement differences while retaining independent opacity-placement controls.
 The 432 documented admission boundaries remain separate.
+The [composition/marker trace][composition-record] reviews C1-C8 and F1, binding
+their current owners, mechanisms, contracts and 270 retained native controls.
+Per-case receipts, bank attestations and explicit rejection roles remain distinct.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -127,14 +130,14 @@ Scope: [clips and masks][contract-composition].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| C1 | Direct geometric/text clip children, ordered unions/winding, shaping/paint roles and group-child exclusion | Pending. |
-| C2 | Restricted clip uses, later definitions, resource units/percentages and referenced clip rejection | Pending. |
-| C3 | Clip visual stroke enclosure independent of silhouette and ignored stroke server resolution | Pending. |
-| C4 | Ordered alpha/luminance mask content, text/uses, regions and spatial/object-box restrictions | Pending. |
-| C5 | Filter → mask → clip → opacity; source/object/visual bounds; resource-context mask fonts | Pending. |
-| C6 | Masks on symbol/live/retained/text instances and placement restrictions | Pending. |
-| C7 | Attribute-only clip/mask bindings, none/inheritance, nested clips, compound unions and short point lists | Pending. |
-| C8 | Resource display versus empty/hidden content, aliases, visibility inheritance and balanced leaf child roles | Pending. |
+| C1 | Direct geometric/text clip children, ordered unions/winding, shaping/paint roles and group-child exclusion | Reviewed: [staged source roles](../../../src/Lokad.Svg/Parsing/SvgClipDefinitionStaging.cs) → [selected/dormant child roles](../../Lokad.Svg.Tests/SvgClipChildRoleTests.cs) / [text ownership](../../Lokad.Svg.Tests/OpenTypeFontTests.TextClips.cs) → [native text/union controls and current bindings][composition-record]. |
+| C2 | Restricted clip uses, later definitions, resource units/percentages and referenced clip rejection | Reviewed: [resource replay](../../../src/Lokad.Svg/Parsing/SvgResourceUseReplay.cs) → [deferred units and admission thresholds](../../Lokad.Svg.Tests/SvgDeferredClipTests.cs) → [native source/union bindings][composition-record]. |
+| C3 | Clip visual stroke enclosure independent of silhouette and ignored stroke server resolution | Reviewed: [source staging](../../../src/Lokad.Svg/Parsing/SvgClipDefinitionStaging.cs) → [direct enclosure/silhouette checks](../../Lokad.Svg.Tests/SvgClipVisualBoundsTests.cs) → [independent clip controls][composition-record]. |
+| C4 | Ordered alpha/luminance mask content, text/uses, regions and spatial/object-box restrictions | Reviewed: [ordered mask replay](../../../src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs) / [target bounds](../../../src/Lokad.Svg/Parsing/SvgMaskTarget.cs) → [content ownership](../../Lokad.Svg.Tests/SvgMaskContentReplayTests.cs) / [spatial boundaries](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs) → [native mask controls][composition-record]. |
+| C5 | Filter → mask → clip → opacity; source/object/visual bounds; resource-context mask fonts | Reviewed: [recorded mask scopes](../../../src/Lokad.Svg/Parsing/SvgLeafMaskComposition.cs) → [scope/storage contracts](../../Lokad.Svg.Tests/SvgUniformGroupMaskTests.cs), [resource text inheritance](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskTextInheritance.cs) and [inactive-target demand](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskTargets.cs) → [independent composition/text controls][composition-record]. |
+| C6 | Masks on symbol/live/retained/text instances and placement restrictions | Reviewed: [existing mask scene owner](../../../src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs) → [distinct source/live-use/text boundaries](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskBoundaries.cs) / [retained-scope ownership](../../Lokad.Svg.Tests/SvgScopedClipMaskTests.cs) → [native placement controls][composition-record]. |
+| C7 | Attribute-only clip/mask bindings, none/inheritance, nested clips, compound unions and short point lists | Reviewed: [attribute binding/dependencies](../../../src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs) → [inheritance/intersections](../../Lokad.Svg.Tests/SvgClipIntersectionTests.cs), [cycles/empty operands](../../Lokad.Svg.Tests/SvgClipBooleanTests.cs) and [declaration-location admission](../../Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs) → [ordered native controls][composition-record]. |
+| C8 | Resource display versus empty/hidden content, aliases, visibility inheritance and balanced leaf child roles | Reviewed: [resource definitions](../../../src/Lokad.Svg/Parsing/SvgDefinitionParser.cs) → [clip display](../../Lokad.Svg.Tests/OpenTypeFontTests.ClipResourceDisplay.cs), [mask display](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskResourceDisplay.cs) and [visibility roles](../../Lokad.Svg.Tests/SvgClipVisibilityTests.cs) → [child-role references and distinct paint/filter traces][composition-record]. |
 
 ## Embedded PNGs
 
@@ -170,7 +173,7 @@ Scope: [markers and filters][contract-effects].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| F1 | Marker units/metrics/orientation/viewBox/overflow, inherited paints, display and collapsed bounds | Pending. |
+| F1 | Marker units/metrics/orientation/viewBox/overflow, inherited paints, display and collapsed bounds | Reviewed: [marker syntax](../../../src/Lokad.Svg/Parsing/SvgMarkerSyntax.cs) / [authored vertices](../../../src/Lokad.Svg/Parsing/SvgMarkerVertices.cs) → [numerical/admission checks](../../Lokad.Svg.Tests/SvgMarkerSyntaxTests.cs), [separate canvas stages](../../Lokad.Svg.Tests/SvgMarkerCanvasTests.cs) and [deferred paint ownership](../../Lokad.Svg.Tests/SvgMarkerPaintBindingTests.cs) → [six native banks and source bindings][composition-record]. |
 | F2 | Primitive/input/unit/region/color-space subset and straight-channel color-matrix forms/defaults/alpha generation | Reviewed: [definition syntax](../../../src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs) / [matrix syntax](../../../src/Lokad.Svg/Parsing/SvgFilterColorMatrixSyntax.cs) → [matrix mechanisms](../../Lokad.Svg.Tests/SvgFilterColorMatrixTests.cs) and [length domains](../../Lokad.Svg.Tests/SvgFilterLengthTests.cs) → [independent matrix references](../filter-color-matrix/README.md). [Current source/native trace][filter-record] includes finite hue boundary controls. |
 | F3 | Exact result names, dependency validation/evaluation, unread branches and capture demand | Reviewed: [the graph builder](../../../src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs) → [exact-name, culled-node and ownership checks](../../Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs), [reachability mechanisms](../../Lokad.Svg.Tests/SvgFilterSourceDependencyTests.cs) and [capture-demand contracts](../../Lokad.Svg.Tests/SvgFilterCaptureDemandTests.cs) → [independent capture controls](../filter-capture-demand/README.md). The [culling correction](filter-empty-region-validation.json) closes six failing-before numeric/public cases without allocating unread input planes; all source/runtime scopes remain explicit. |
 | F4 | Flood/offset/crop/alpha stages, offscreen/empty/paintless source eligibility, suppression and ancestor effects | Reviewed: [source eligibility/recording](../../../src/Lokad.Svg/Parsing/SvgPaintRecording.cs) → [eligibility contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.FilterSourceEligibility.cs), [paintless source bounds](../../Lokad.Svg.Tests/OpenTypeFontTests.PaintlessFilterSources.cs) and [offscreen output checks](../../Lokad.Svg.Tests/SvgFilterOutputBoundsTests.cs) → [empty-source references](../filter-empty-sources/README.md). [Source/stage bindings][filter-record] retain distinct source and ancestor scopes. |
@@ -362,3 +365,4 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [native-device-record]: native-clip-device-domains.json
 [sampling-record]: filter-sampling-device.json
 [filter-record]: filter-claim-trace.json
+[composition-record]: composition-claim-trace.json
