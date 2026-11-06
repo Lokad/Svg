@@ -237,96 +237,106 @@
   "nativeBankAudit": [
     {
       "family": "filter-clip-ownership",
-      "metadataSha256": "c5f69c26dfbd8ae17ed022c7e2953d06ce6a693bb3beb73bceae7542215c6f21",
+      "metadataSha256": "805fc4d90d8f459a0cae16408ccc349063c4d6f633b0679473b496f2b2e819fb",
       "cases": 14,
       "platformRows": 28,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "8c8fa9711db4dbaddd05d4d2b99607a8b3d2f24eb0b93a1c44dd39f479a4380e"
+      "identitySetSha256": "8c8fa9711db4dbaddd05d4d2b99607a8b3d2f24eb0b93a1c44dd39f479a4380e",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-restoration",
-      "metadataSha256": "8ffb08ff31a260b2da8a038064fe60d13f75d0ca49a08d1d34dcfc703fda79c8",
+      "metadataSha256": "a04eb9a6e82bebf4997b9c8e40001937cc399d93738822d5e8d520a86478c035",
       "cases": 30,
       "platformRows": 60,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "80fd31da0647e655a666e2c4ed2928b08b86be11f7dfd10d5452707d081f40d9"
+      "identitySetSha256": "80fd31da0647e655a666e2c4ed2928b08b86be11f7dfd10d5452707d081f40d9",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-affine-restoration",
-      "metadataSha256": "2771f6a5c3591e87d9c4a0b600c04e3a1fdd3bf138a2897946da0e53eb987af9",
+      "metadataSha256": "72a14f47e78dd61b45f1e4820fa2615b587d0da2727cedaa522296bd4bedf35a",
       "cases": 35,
       "platformRows": 70,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "d0079e6d3f3e3b658f318c298ac90ea1d230aa2356ec75832bfc7ea981a319f6"
+      "identitySetSha256": "d0079e6d3f3e3b658f318c298ac90ea1d230aa2356ec75832bfc7ea981a319f6",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-shadow-stages",
-      "metadataSha256": "93420978b55be52b600418388cb57b7ffe9299347ac89c01b7f9dcd495c1954c",
+      "metadataSha256": "85fbf3cba1ee2294586b4af83c837d8645d13402c39c2d97f23852666753a213",
       "cases": 60,
       "platformRows": 120,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "18f9efef7b62238f1b9256e42794e7da8028bea48dfc919a98fcf47477a829e3"
+      "identitySetSha256": "18f9efef7b62238f1b9256e42794e7da8028bea48dfc919a98fcf47477a829e3",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-alpha-stages",
-      "metadataSha256": "d4e7b9cc15c6cad829e0b958348a7b2fd2795c94c8cbb924947105566a3cc4dd",
+      "metadataSha256": "3f4217f14b14de9b32db8ed85b05e3ed8ce3f134da279666ef554bc405de64b2",
       "cases": 15,
       "platformRows": 30,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "863193aedc96b9cc308d16c670ef001a2e5433d02c5d6c572cfee8e9a029b333"
+      "identitySetSha256": "863193aedc96b9cc308d16c670ef001a2e5433d02c5d6c572cfee8e9a029b333",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-image-placement",
-      "metadataSha256": "5751f2804f6ccaed4c51ab6a705d4b6489f479433fb0a675cc3be4c95536bf88",
+      "metadataSha256": "7cdcce936a86089c443dbcda62aed25bd02840be0cb2f917afeceb6b664d23a7",
       "cases": 12,
       "platformRows": 24,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "3c0904e2581bb27ffdd817648688b6d26bc3aec6d10e96f7ea056b094d14220f"
+      "identitySetSha256": "3c0904e2581bb27ffdd817648688b6d26bc3aec6d10e96f7ea056b094d14220f",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-stored-images",
-      "metadataSha256": "5e385f885ea16462b889cd0cd1e48728513c10f418d485a345850de324301663",
+      "metadataSha256": "b4312260a05f9ed857a4e9d43917c3d43759c20667af499c784f7077d7050098",
       "cases": 19,
       "platformRows": 38,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "fabafbbe11fe312c798adff0bd5432a8e9e02849cfadffafcad7b093ad3e93ec"
+      "identitySetSha256": "fabafbbe11fe312c798adff0bd5432a8e9e02849cfadffafcad7b093ad3e93ec",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-stage-boundaries",
-      "metadataSha256": "d13eca6fe3d3109d480e76ba3c21eefc0748ac8b106a61ee525aa18a197611f4",
+      "metadataSha256": "4e910d61e9c9bc9df5022e32ddf287d54370757313210222743049a3310d5ab2",
       "cases": 17,
       "platformRows": 34,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "edb0f1b1a719f5b83de738b7d2fe556df0310de2641966e9a06f40b5c50ea9d1"
+      "identitySetSha256": "edb0f1b1a719f5b83de738b7d2fe556df0310de2641966e9a06f40b5c50ea9d1",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-opacity-sampling",
-      "metadataSha256": "88c1343391a6afe7b5301c5abda5e47848eb7a756929ffd50d00094ae4830021",
+      "metadataSha256": "8d7053742fa9c0fa2893f18007e3ec146b338282bbd9fb0bcc03c409c8f78c00",
       "cases": 53,
       "platformRows": 106,
       "threeCaptureHashBindings": true,
       "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
-      "identitySetSha256": "a2692fee4ad527e5dafb662887ad0f6b3386d57dadc7699a60db27a3e9ad3e28"
+      "identitySetSha256": "a2692fee4ad527e5dafb662887ad0f6b3386d57dadc7699a60db27a3e9ad3e28",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-color-matrix",
-      "metadataSha256": "b2a4696c59ded5726b5750d21946cabc706078f5705fc4ea0294aa798d9a97e3",
+      "metadataSha256": "d56625cc937c944b4de279949432648837ad0c109d1cc29759818f1d97153883",
       "cases": 27,
       "platformRows": 54,
       "freshHealthyCaptureReceipts": 162,
-      "identitySetSha256": "d5fcae0ac37ccabc43a2cb7bab7594dee05d49a22311ce99894a4e18311a143d"
+      "identitySetSha256": "d5fcae0ac37ccabc43a2cb7bab7594dee05d49a22311ce99894a4e18311a143d",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     },
     {
       "family": "filter-empty-sources",
-      "metadataSha256": "9384578979cbf7f725c8926fb46601cf88a22ef9cb15dffed0509e6588b9b108",
+      "metadataSha256": "87155113e62ccc6c6686c52a63ffcffef099e972def8386d03b3fdf2d7aca516",
       "cases": 20,
       "referenceRows": 20,
       "authorityScope": {
@@ -338,7 +348,8 @@
         "fullAliasComparisons": 20496,
         "originalImageComparisons": 48
       },
-      "identitySetSha256": "a0d26c1c6f07337f62ce9ec46e6ee68492c6e9f5048685051b72030a708b72b8"
+      "identitySetSha256": "a0d26c1c6f07337f62ce9ec46e6ee68492c6e9f5048685051b72030a708b72b8",
+      "metadataHashEncoding": "Committed UTF-8 bytes with LF line endings."
     }
   ],
   "hueBoundaryControls": {
@@ -533,18 +544,20 @@
       {
         "host": "windows",
         "pin": "../../../tools/chrome-for-testing.json",
-        "pinSha256": "00c552e6c8b97f04258ae4755a4d3026abfd886578bfbcfd7274651b8ffc3d95",
+        "pinSha256": "0b22aeb14f369098a029e7c5d136cb766a1a4058c388e1d683bf49a40a3d302c",
         "version": "153.0.8010.52",
         "platform": "win64",
-        "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+        "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "pinHashEncoding": "Committed UTF-8 bytes with LF line endings."
       },
       {
         "host": "linux",
         "pin": "../../../tools/chrome-for-testing.linux64.json",
-        "pinSha256": "a938d2e6c8caf1f3e6e565d7210c601283cdcd8abb13325b384d0dd730c215ae",
+        "pinSha256": "47cc665b7fd80fc96a29edf22b57d92d0a5502badd81a0bef5db1e9934ef606d",
         "version": "153.0.8010.52",
         "platform": "linux64",
-        "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+        "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "pinHashEncoding": "Committed UTF-8 bytes with LF line endings."
       }
     ],
     "captureRecipe": "Recipe 3 page/image screenshot, 8x8, transparent; three fresh healthy agreeing processes and cleaned profiles on each host."
