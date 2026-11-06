@@ -1,0 +1,581 @@
+{
+  "status": "A1-A7 inspected and reviewed; A8 exclusion diagnostic follow-up remains explicit. The selector-list correction has complete source/package/original-context qualification. No additional renderer change or reference rewrite is introduced by this trace.",
+  "qualifiedSourceCommit": "10d885a384459ba407911420696ca6cbc0badd56",
+  "qualification": "css-selector-lists.json",
+  "supportContract": "../../../docs/SUPPORT_MATRIX.md",
+  "supportContractSha256": "c696d0b98bb082ecb3445a7d882d2d6ab283e5a92dfe16a4d0feba1f777ff938",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgColorParser.cs",
+      "sha256": "f62d355c76d2c6e8528963f7574711df28d7ed9913a30097ff881b1c38644ba2"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgComputedStyle.cs",
+      "sha256": "220371429fc8b5e654a59135148d7680552247d3bf2d70dffaf486e8a34a78c5"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgComputedStyleResolver.cs",
+      "sha256": "821936812ee5cc47e948c12734b7ebb3f44a15862e4337b8b0e278faf7a92e07"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgContainerPresentationResolver.cs",
+      "sha256": "53893514a5ff50bdecaf7f1eba2cafb42911bc244392b95554def474fc513312"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgCssComments.cs",
+      "sha256": "1d0566fa049d337d4b6328e4de3e974479923a30119934ef54a66cf4761fa5e5"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgCssLength.cs",
+      "sha256": "a6a6397c2f61b82ddb26b2137c8ded982c1003a0cc368bb279e800da0404b249"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgCssSelectorSyntax.cs",
+      "sha256": "c362a1ac35025571852f4244aa4ce27dcc7eb1976b8a5a675da49aba04cc9957"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgCssWhitespace.cs",
+      "sha256": "5d8582bf750eeca04156506aa8dd20ed7d7ff72035fc34b4a69082768d0870d9"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs",
+      "sha256": "5deafbe25e20d2ddcc925c96576eecd80c86a54494d5bd67a1ba328a75ef1da6"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgFloatNumber.cs",
+      "sha256": "b2f2687fdca8b42813d2e58d0db9241ebded58e4a709973fda150137a35c5e03"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+      "sha256": "d81ce9e3b762fbe24a945ea0afccf8b2f9f857062978fbc8e75b33e9a6e6b669"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgInheritedPresentation.cs",
+      "sha256": "e9d3f6227c6f381c6acdf4ea802e7a716b3c7b9aceaec0053ad3225af9c58dc5"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs",
+      "sha256": "3bd38ff5b3d782517845991fbd4c4eb0909c3cc85f78e46da8a6165bb03096e3"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs",
+      "sha256": "a57eb2e40dae164661168a96aa3d42c6796ba41a982ceb5ea379551ae75c500f"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgLocalUrl.cs",
+      "sha256": "b9279d8163c82779f0a937175e5f2e08c7b9ecac848a8ec59a8fafde183659a7"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPaintOrder.cs",
+      "sha256": "ab86604dc423a8d673852bf2d0521be844278d5777e86ba4d7a87ac66d1f1235"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPresentationResolver.cs",
+      "sha256": "a7fb5439f533d451b4f64e3f65fa9b2b061c2cbd218fae029de8528f5eab2785"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgStyleCascade.cs",
+      "sha256": "ea1ce24148d8d708ed2d93dfe5c6db8dabed7a9f7322237cad8a3a2a1b15addf"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
+      "sha256": "d587d7973421d258ffb691f580d7f7e8009ea5f841dee16dfc2860a62659ccbd"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.ColorGrammar.cs",
+      "sha256": "a2e5f86be0da813c4a242da46914f3a88ff103b72ddecb993513407fec4c8b57"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.CssPathLength.cs",
+      "sha256": "5f5c8133ea241008ea136e5403d12e8505d1e4dc50a08e13f5c6e01b5c8699fe"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.CssTokens.cs",
+      "sha256": "33b8d00edf6b523dff960754cf7a184ab025172df605181093cd667043783360"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.DisplayInheritance.cs",
+      "sha256": "abf86b29224c15d3261eb7a66862cd4d3aef8e9d99f2d8291c41ba359ee9a6b8"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.EncodedFragments.cs",
+      "sha256": "67c8b14bfca552c281c8909a648471cebb23acfe1f8366dd7f63ef8a7a7771ef"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.LengthTokens.cs",
+      "sha256": "45005d80034f72277d6c98708287a648bedd7ff1731170c441404c09b3184124"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.LocalUrlTokens.cs",
+      "sha256": "16be8dd5f4a88306e71bae51908a3a565929c11dc30ef213b5b154dba1d2a7b3"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs",
+      "sha256": "8e235bb1a4135b840adb60542b857e5fa7faa74686c49009c15f0072aa042197"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs",
+      "sha256": "ea63e2f4978c2cb11089080d85765ad367ee59aa7fb52ed5cdb1e4fc0c84ab19"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgCssCommentTests.cs",
+      "sha256": "5039e42addfd3537cc03a5cc2ed514d96fbbbcde49cdb35cd174f49f86920292"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgCssGeometryDimensionTests.cs",
+      "sha256": "4a27809e63e4317b70aaa841cfde7779a7a5dc3a844564e10720e6a0e0088f70"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs",
+      "sha256": "8b61b2686a1e6bc95fae446d4ff27a7a0c7bdc28b0e6d38a97144cc22d735132"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgCssWhitespaceTests.cs",
+      "sha256": "841875e48131b3f20e5b2fd1da5ddbf94e578458ce4a2833b4c16881f4f66280"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgCurrentColorInheritanceTests.cs",
+      "sha256": "576a49cc410b39997579fb8dc6deec8715558ba577ff6ab1240efafcfe8e4927"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs",
+      "sha256": "956dc5a7961a1942f58b4e90c8c896eb6af3962aa053e68e2caf32e7e3c2f175"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFloatNumberTests.cs",
+      "sha256": "361b56e7c6fbbf2d9b62e617ae3c1cab5d23922c8ad5d2ef89d8cec3786dd804"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgLocalUrlTests.cs",
+      "sha256": "dda3c956f1ff8f8a5492f056b4719182bf4e0ddfdb923a9fc5723e5497476008"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgPaintOrderTests.cs",
+      "sha256": "a7d38edd1e580c4ce62c650c679de429df6a9b525e1b35440e8c68c2675402ae"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgStaticCssTests.cs",
+      "sha256": "2da42a09686903f228e3890b90a76780c2a25b00ea0a28c5926c4ac80da26d26"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgStyleSheetTests.cs",
+      "sha256": "9df07009b3bceb472935ae3614e3e10523762f5c5c7036372a4d6321c9a34570"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgTransformListTests.cs",
+      "sha256": "9da7cc0d8177251e8351b576edc3362388ea2064fdb45229adc9c951f5b125e5"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgCssSelectorIdentifierReferenceTests.cs",
+      "sha256": "6732407d850a96745b84ffc298347373250cf430fd9c8f30629cd6b94b0b2b6b"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgCurvedFontDocumentTests.cs",
+      "sha256": "4ba021451ade3706232caa99f14562f3e7bf8783d0b758e8396b0ea9468e423d"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgInstancePaintOrderReferenceTests.cs",
+      "sha256": "ba84331b8ef145238d6957be4b7456f23417a520e080dee2acc8273a617cff50"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+      "sha256": "76a46d5694b5aa2f9570d65c93ce40a243a3df754020f3234ff117363d8cfc39"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgSymbolInstanceReferenceTests.cs",
+      "sha256": "6e271227517a4cc97a672964d777306f9fe6f34c026932a0024d15ad9931f2f8"
+    }
+  ],
+  "groups": [
+    {
+      "id": "A1",
+      "status": "Reviewed",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
+        "src/Lokad.Svg/Parsing/SvgCssSelectorSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgCssComments.cs",
+        "src/Lokad.Svg/Parsing/SvgStyleCascade.cs",
+        "src/Lokad.Svg/Parsing/SvgComputedStyleResolver.cs"
+      ],
+      "inspected": "Shared compound-selector admission and matching retain distinct ID/class/type specificity axes. Ancestor matching uses bounded dynamic-programming rows. Per-property ranks preserve importance, specificity and source order. Quoted comments and late sheets retain their own traversal/source contexts. The corrected list reader admits every complete member and rejects missing ones before declarations can apply.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs": [
+          "Compound_selectors_match_the_actual_ancestor_chain",
+          "Class_specificity_outranks_any_number_of_element_selectors",
+          "Id_specificity_outranks_any_number_of_class_selectors",
+          "Selector_lists_require_a_selector_between_every_comma",
+          "Complete_selector_lists_keep_comments_attributes_and_inactive_members",
+          "Incomplete_selector_lists_reject_before_output_and_release_early_or_late_styles"
+        ],
+        "tests/Lokad.Svg.Tests/SvgCssCommentTests.cs": [
+          "Comments_preserve_existing_declarations_and_importance",
+          "Selector_comments_preserve_adjacent_compound_tokens",
+          "Comments_cannot_join_identifiers_into_another_supported_token"
+        ],
+        "tests/Lokad.Svg.Tests/SvgStyleSheetTests.cs": [
+          "Cascades_each_presentation_property_by_specificity_then_source_order",
+          "Late_stylesheets_apply_to_earlier_content",
+          "Late_prefixed_stylesheets_use_the_xml_input_encoding"
+        ]
+      },
+      "native": [
+        "../css-selector-identifiers/capture.json",
+        "../static-css-document/manifest.json"
+      ]
+    },
+    {
+      "id": "A2",
+      "status": "Reviewed",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgCssSelectorSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
+        "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs"
+      ],
+      "inspected": "Inactive interaction components retain class specificity but cannot match static conversion. Any inactive component disables its chain; mixed active lists still validate shared declarations normally. Inactive blocks retain bounded syntax/rule accounting without retained font/paint semantics or ancestor branches. Float remains an explicitly inert declaration.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgStaticCssTests.cs": [
+          "Interaction_components_have_class_specificity_and_never_match_static_elements",
+          "Inactive_rules_do_not_parse_paint_or_font_semantics",
+          "A_selector_list_with_a_static_member_still_validates_its_shared_declarations",
+          "Inactive_rule_metadata_retains_no_selector_declarations_or_ancestor_branch",
+          "Inactive_rules_still_obey_rule_and_declaration_size_limits",
+          "Float_is_inert_in_svg_image_layout"
+        ]
+      },
+      "native": []
+    },
+    {
+      "id": "A3",
+      "status": "Reviewed",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs",
+        "src/Lokad.Svg/Parsing/SvgComputedStyle.cs",
+        "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs"
+      ],
+      "inspected": "Specified declarations retain target/location admission independently of the cascade. Root sizing remains live while winning image/shape CSS dimensions reject. Path length stays an XML number; filter interpolation accepts its finite operating-space contexts and only the inert linearRGB default on containers. Rejection precedes retained source replay and font program acquisition where the syntax contract requires it.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgCssGeometryDimensionTests.cs": [
+          "Unsupported_css_dimensions_report_the_winning_property_and_release_storage",
+          "Matched_resource_and_instance_source_dimensions_are_rejected",
+          "Retained_image_dimensions_are_rejected_before_replay"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.CssPathLength.cs": [
+          "Path_length_is_an_xml_number_not_a_css_property"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs": [
+          "Documented_declaration_locations_agree_in_conversion_and_preparation"
+        ]
+      },
+      "native": []
+    },
+    {
+      "id": "A4",
+      "status": "Reviewed",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgPaintOrder.cs",
+        "src/Lokad.Svg/Parsing/SvgComputedStyle.cs",
+        "src/Lokad.Svg/Parsing/SvgPresentationResolver.cs",
+        "src/Lokad.Svg/Parsing/SvgContainerPresentationResolver.cs",
+        "src/Lokad.Svg/Parsing/SvgInheritedPresentation.cs"
+      ],
+      "inspected": "Paint order retains three distinct operations, appending omitted ones and rejecting duplicates. Display keeps authored inheritance separately from resolved parent display and cumulative suppression. The outer image viewport is established independently of root paint suppression; source/use/marker/pattern inheritance and explicit child overrides keep their own logical parents.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgPaintOrderTests.cs": [
+          "Invalid_order_has_an_explicit_outcome_and_releases_owners",
+          "Cancellation_after_ordered_native_paint_preserves_the_scene_for_identical_retry"
+        ],
+        "tests/Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs": [
+          "Explicit_inheritance_matches_the_logical_parent_through_source_replay",
+          "Noninherited_keywords_reset_display_instead_of_copying_the_parent"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.DisplayInheritance.cs": [
+          "Display_inheritance_agrees_between_font_discovery_preparation_and_replay"
+        ]
+      },
+      "native": [
+        "../paint-order/manifest.json"
+      ]
+    },
+    {
+      "id": "A5",
+      "status": "Reviewed",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgColorParser.cs",
+        "src/Lokad.Svg/Parsing/SvgComputedStyle.cs",
+        "src/Lokad.Svg/Parsing/SvgPresentationResolver.cs"
+      ],
+      "inspected": "Element color self-reference resolves inherited color only after the winning declaration is selected; fill/stroke currentColor still binds to each descendant. Legacy RGB requires one channel-unit grammar, while modern aliases admit optional slash alpha. Native fast versus full parsing retain their distinct alpha precision before paint multiplication and premultiplied storage; byte and float alpha are not collapsed.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgCurrentColorInheritanceTests.cs": [
+          "Winning_self_reference_matches_explicit_inheritance_through_source_and_instance_paths",
+          "Self_reference_is_resolved_only_after_cascade_and_importance",
+          "Fill_and_stroke_current_color_keep_binding_to_each_descendants_own_color"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.ColorGrammar.cs": [
+          "Legacy_rgb_channels_use_a_single_unit_grammar",
+          "Modern_color_function_aliases_have_optional_alpha"
+        ],
+        "tests/Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs": [
+          "Parsed_alpha_and_constant_store_match_native_boundary"
+        ]
+      },
+      "native": [
+        "../filter-uniform-precision/capture.json",
+        "../gradient-color-alpha/capture.json"
+      ]
+    },
+    {
+      "id": "A6",
+      "status": "Reviewed",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgCssWhitespace.cs",
+        "src/Lokad.Svg/Parsing/SvgCssLength.cs",
+        "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgFloatNumber.cs",
+        "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs"
+      ],
+      "inspected": "Shared ASCII separators preserve Unicode identifiers and literal string contents. Length numbers and units remain contiguous, numeric and transform owners retain separate float-composition stages, and each list grammar owns its comma rules. Scalar/property and authored stop/color token bounds are enforced before normalization can erase their source extent.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgCssWhitespaceTests.cs": [
+          "Selector_boundaries_preserve_non_ascii_identifier_characters",
+          "Scalar_tokens_do_not_turn_unicode_characters_into_css_whitespace",
+          "Malformed_css_tokens_reject_without_changing_their_value",
+          "Css_whitespace_preserves_quoted_unicode_and_form_feed_separation",
+          "Gradient_stop_styles_preserve_non_ascii_property_and_value_boundaries"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFloatNumberTests.cs": [
+          "Numeric_bits_match_three_independent_browser_captures",
+          "Local_transform_lists_preserve_native_axis_and_full_matrix_precision",
+          "Enclosing_groups_compose_finished_local_maps_at_double_precision",
+          "Numeric_reading_preserves_original_cancellation",
+          "Integrated_transform_and_path_readers_keep_range_and_grammar_owners"
+        ],
+        "tests/Lokad.Svg.Tests/SvgTransformListTests.cs": [
+          "Malformed_lists_keep_their_error_category",
+          "Comma_lists_observe_memory_cancellation_and_token_limits"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.LengthTokens.cs": [
+          "Length_numbers_and_units_remain_one_token_across_consumers"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.CssTokens.cs": [
+          "Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution"
+        ]
+      },
+      "native": []
+    },
+    {
+      "id": "A7",
+      "status": "Reviewed",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgLocalUrl.cs",
+        "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs"
+      ],
+      "inspected": "Local URL/href owners validate bounded identifiers and decode each percent-escaped UTF-8 run exactly once. Malformed sequences, NUL and decoded ASCII separators reject. Literal Unicode and identifier case remain distinct from ASCII-insensitive URL function and filter-none spelling; quoted URI leading space is not trimmed into another reference.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgLocalUrlTests.cs": [
+          "Parses_quoted_and_spaced_local_references",
+          "Rejects_overlong_reference_identifiers",
+          "Fragment_decoding_keeps_authored_bounds_and_budgeted_string_ownership"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.EncodedFragments.cs": [
+          "Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids",
+          "Encoded_targets_use_the_same_resource_selection_before_font_acquisition",
+          "Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout",
+          "Invalid_fragment_encodings_do_not_bind_literal_encoded_ids",
+          "Local_fragments_decode_once_before_selecting_a_resource"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.LocalUrlTokens.cs": [
+          "Local_url_function_case_preserves_identifier_quoting_and_dispatch",
+          "No_filter_keyword_is_case_insensitive",
+          "Local_url_function_normalization_preserves_identifier_case_and_unicode_contents"
+        ]
+      },
+      "native": []
+    },
+    {
+      "id": "A8",
+      "status": "Pending diagnostic follow-up",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
+        "src/Lokad.Svg/Parsing/SvgCssSelectorSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs"
+      ],
+      "inspected": "All twelve probed excluded rule/property families reject without publishing pixels. Statement-form at-rules currently take the missing-declaration-block MalformedInput route; block forms reject UnsupportedFeature. Preserve this witnessed distinction until the shared rule-entry diagnostic contract is corrected and checked.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs": [
+          "Selectors_outside_the_declared_subset_reject_before_rendering"
+        ],
+        "tests/Lokad.Svg.Tests/SvgStaticCssTests.cs": [
+          "Static_interaction_admission_keeps_other_or_malformed_pseudo_syntax_explicit"
+        ]
+      },
+      "native": []
+    }
+  ],
+  "renderingChecks": [
+    "tests/Lokad.Svg.VisualTests/SvgCssSelectorIdentifierReferenceTests.cs",
+    "tests/Lokad.Svg.VisualTests/SvgInstancePaintOrderReferenceTests.cs",
+    "tests/Lokad.Svg.VisualTests/SvgSymbolInstanceReferenceTests.cs",
+    "tests/Lokad.Svg.VisualTests/SvgCurvedFontDocumentTests.cs",
+    "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs"
+  ],
+  "nativeAudit": {
+    "banks": [
+      {
+        "family": "css-selector-identifiers",
+        "metadata": "capture.json",
+        "metadataSha256": "a251ea3e498fa27602ff4a145799af588153f56adbfe4852828fe3c3a1720c8f",
+        "cases": 12,
+        "platformRows": 24,
+        "individualHealthyCaptureReceipts": 72,
+        "bankAttestedPlatformRows": 0,
+        "identitySetSha256": "d92b717ea74245376ff568532b854877f0c1badb6cd0d75f24d0f67ae9a8ee02"
+      },
+      {
+        "family": "paint-order",
+        "metadata": "manifest.json",
+        "metadataSha256": "02881c13cc5c229c9bbb55e1689196a2e0f96c4f723fd2977da8473d65356182",
+        "cases": 29,
+        "platformRows": 58,
+        "individualHealthyCaptureReceipts": 0,
+        "bankAttestedPlatformRows": 58,
+        "identitySetSha256": "5a76cb2d80a2447408a2147e57780cd712cfbf3c37f5c7f5f9e6232ca0559363"
+      },
+      {
+        "family": "static-css-document",
+        "metadata": "manifest.json",
+        "metadataSha256": "d3a202ab8f23cac61761d0cddd8650a69dd8e6c80a56ac2d3238a80103fb65e8",
+        "cases": 17,
+        "platformRows": 34,
+        "individualHealthyCaptureReceipts": 102,
+        "bankAttestedPlatformRows": 0,
+        "identitySetSha256": "07243e3c47faeb6cbcd183ad7279c9b05fd1442695ca8774186b9b6a6aa8e74a"
+      }
+    ],
+    "alphaVectors": {
+      "vectors": 1278,
+      "vectorFile": "tests/Lokad.Svg.Tests/TestData/filter-alpha-boundaries.json",
+      "vectorFileSha256": "493de8c71040f11b45ad94d88e552d39f0f483761c5e7c645f0c158dab85d571",
+      "nativeMetadata": "../filter-uniform-precision/capture.json",
+      "nativeMetadataSha256": "473463fcd105b2c6faae06ec182b1118e3c75752efffcffe3eae6f61911458db",
+      "identitySetSha256": "5cc9da05c28e4ca4cf1534ea1888f9ec86f1dcf95a2981a377581ace397211e3",
+      "authority": "Every retained vector binds an unchanged authored SVG and native PNG; decoded reference alpha is uniform and equals its expected byte. Healthy launch triples are bank-level attestations, not per-case PNG receipt triples."
+    },
+    "numericVectors": {
+      "rows": 31,
+      "metadata": "tests/Lokad.Svg.Tests/TestData/svg-number-browser.json",
+      "metadataSha256": "59ac02a2933c93cf69e18b341172dd0ce89f7f972b9f512dee1aa50b7ef9498d",
+      "data": "tests/Lokad.Svg.Tests/TestData/svg-number-browser.csv",
+      "dataSha256": "767d38d6b995c003f838adb7ddfd19892a3340d2d93293cc7af6698c77b00efb",
+      "authority": "Three healthy/clean browser readouts; direct tests compare retained floating-point bits."
+    },
+    "reusedColorBank": {
+      "metadata": "../gradient-color-alpha/capture.json",
+      "metadataSha256": "31a95968da1c0a4df475b359351c9ed4198b8c3ca287dd325548fcbf82f78288",
+      "cases": 10060,
+      "priorTrace": "paint-claim-trace.json",
+      "scope": "Byte-identical metadata reuse only; this audit makes no new upstream-source recovery or blanket claim about every historical combination. Runtime and responsibility records retain their original scope."
+    }
+  },
+  "exclusionProbe": {
+    "sourceCommit": "10d885a384459ba407911420696ca6cbc0badd56",
+    "librarySha256": "d7ab151e3715b021c49fc90b989c771edbcfe9dfe658c597722111765721cb65",
+    "host": "windows",
+    "framework": "net11.0",
+    "sourceTemplate": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>{css}</style><rect width='8' height='8' fill='blue'/></svg>",
+    "rows": [
+      {
+        "id": "import",
+        "css": "@import \"theme.css\";",
+        "sourceSha256": "13c2621d09f6774960d49adba222e9c63efb99d6f624f474cd0c7698ca888d95",
+        "outcome": "MalformedInput",
+        "message": "Stylesheet rules must contain a declaration block."
+      },
+      {
+        "id": "charset",
+        "css": "@charset \"UTF-8\";",
+        "sourceSha256": "786711f0ecdb703df606e6dc73b955259a34ed24081565050eb2395226558e81",
+        "outcome": "MalformedInput",
+        "message": "Stylesheet rules must contain a declaration block."
+      },
+      {
+        "id": "media",
+        "css": "@media all {rect{fill:red}}",
+        "sourceSha256": "bcb8337ff24908c65e3fc475791e984ce63d24a03603e4ce589204b28f64840f",
+        "outcome": "UnsupportedFeature",
+        "message": "Nested stylesheet rules are not implemented."
+      },
+      {
+        "id": "supports",
+        "css": "@supports (display:block) {rect{fill:red}}",
+        "sourceSha256": "5412d583d5f2d73178165a7aebf1150e2eb51a3a7c947e9dd7c0c68fbcfef213",
+        "outcome": "UnsupportedFeature",
+        "message": "Nested stylesheet rules are not implemented."
+      },
+      {
+        "id": "font-face",
+        "css": "@font-face{font-family:Example;src:url(font.ttf)}",
+        "sourceSha256": "4b2a314879ef2cbfc7ff207b2961c9e606c0d118bd0358087b21843790154d0b",
+        "outcome": "UnsupportedFeature",
+        "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+      },
+      {
+        "id": "keyframes",
+        "css": "@keyframes pulse {from{opacity:0}to{opacity:1}}",
+        "sourceSha256": "4f0242f817fba0aefe32d9c4a972147f5554a600d92a722350a8cb96765ac4ce",
+        "outcome": "UnsupportedFeature",
+        "message": "Nested stylesheet rules are not implemented."
+      },
+      {
+        "id": "sibling-adjacent",
+        "css": "g+rect{fill:red}",
+        "sourceSha256": "a187334b5b9af1154b661d122d13d8bf4af546b9f67638945b2764c277746de6",
+        "outcome": "UnsupportedFeature",
+        "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+      },
+      {
+        "id": "sibling-general",
+        "css": "g~rect{fill:red}",
+        "sourceSha256": "f7e32b613df9895838a2d3e42f5568e44221a2edd11c1dd01b6e044d0c7058ce",
+        "outcome": "UnsupportedFeature",
+        "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+      },
+      {
+        "id": "variable-value",
+        "css": "rect{fill:var(--color)}",
+        "sourceSha256": "e5f38518e6ff0772538a37565695fdcf6e3470d3db34a8046f1601ef55225a53",
+        "outcome": "UnsupportedFeature",
+        "message": "The CSS color name or syntax is not supported."
+      },
+      {
+        "id": "variable-declaration",
+        "css": "rect{--color:red;fill:var(--color)}",
+        "sourceSha256": "d69386030a0492416a1b5e9f700ccc7722ee8a04a3a9fd34d288cff77d6c6edf",
+        "outcome": "UnsupportedFeature",
+        "message": "Inline style property '--color' is not implemented."
+      },
+      {
+        "id": "animation",
+        "css": "rect{animation:pulse 1s}",
+        "sourceSha256": "c3f23a663a51d04fd3e0b8dc0bd6ff5eb4e48f8a8220a86476fcca11e7aa5dee",
+        "outcome": "UnsupportedFeature",
+        "message": "Inline style property 'animation' is not implemented."
+      },
+      {
+        "id": "layout",
+        "css": "rect{display:flex}",
+        "sourceSha256": "3aa7e05f351dccb7c0710ccb9ef1eefd2103b282b237cdcd059e58a420874a99",
+        "outcome": "UnsupportedFeature",
+        "message": "Only inline, block, none and inherit display values are implemented."
+      }
+    ]
+  },
+  "scope": "The 58-control audit verifies raw source/PNG identities and distinct platform/capture authority. Static-CSS font program/provenance and declared oracle-input bindings retain their existing scope; this audit does not reconstruct their injection harness. The 1,278 direct alpha vectors independently rejoin unchanged SVG/native PNG identities and decoded uniform alpha. Thirty-one browser numeric readouts protect bit precision. No missing upstream original or hosted SVGWeb context is qualified by these bindings.",
+  "relatedEvidence": [
+    "css-selector-lists-svgweb.json",
+    "css-test-responsibilities.json",
+    "color-filter-responsibilities.json",
+    "paint-claim-trace.json"
+  ],
+  "limits": "Reviewed is a bounded source/mechanism/contract/native trace, not exhaustive CSS conformance. A8/X2 diagnostics, other Pending support rows, frozen Windows DejaVu, W1 resource/context/provenance, performance and release duties remain open."
+}

@@ -31,6 +31,9 @@ their current owners, mechanisms, contracts and 270 retained native controls.
 Per-case receipts, bank attestations and explicit rejection roles remain distinct.
 The [embedded-image trace][image-record] completes E2/E3 against live viewport,
 source-view, sampling, paint and ownership boundaries and 143 retained controls.
+The [CSS trace][css-record] reviews A1-A7 and retains a concrete A8 diagnostic
+follow-up. [Selector-list qualification][selector-list-record] closes three native
+paint discrepancies through the shared grammar reader without changing targets.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -160,14 +163,14 @@ Scope: [static CSS][contract-css].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| A1 | Selector grammar, attribute selectors, specificity/cascade, comments and strict property/error admission | Pending. |
-| A2 | Inactive interaction states/specificity, mixed lists and bounded inactive declarations; inert float | Pending. |
-| A3 | Property/location boundaries, XML-only pathLength and filter-space contexts | Pending. |
-| A4 | Paint order, cumulative display, root viewport under display:none and explicit display inheritance | Pending. |
-| A5 | Element-local currentColor, RGB/HSL syntax/units and syntax-dependent alpha precision | Pending. |
-| A6 | ASCII whitespace, contiguous length tokens, list commas, transform case and token-size limits | Pending. |
-| A7 | Once-decoded UTF-8 local fragments, escape/whitespace rejection and URL/filter-name case rules | Pending. |
-| A8 | Imports/rules/pseudo/sibling/layout/variable/web-font exclusions | Pending. |
+| A1 | Selector grammar, attribute selectors, specificity/cascade, comments and strict property/error admission | Reviewed: [shared grammar](../../../src/Lokad.Svg/Parsing/SvgCssSelectorSyntax.cs) / [cascade](../../../src/Lokad.Svg/Parsing/SvgStyleCascade.cs) → [grammar/cleanup](../../Lokad.Svg.Tests/SvgCssSelectorTests.cs) and [late/priority checks](../../Lokad.Svg.Tests/SvgStyleSheetTests.cs) → [native/source trace][css-record]. [Incomplete lists now reject][selector-list-record]. |
+| A2 | Inactive interaction states/specificity, mixed lists and bounded inactive declarations; inert float | Reviewed: [rule activation](../../../src/Lokad.Svg/Parsing/SvgStyleSheet.cs) → [specificity, absent resources, mixed lists and limits](../../Lokad.Svg.Tests/SvgStaticCssTests.cs) → [current bindings][css-record]. |
+| A3 | Property/location boundaries, XML-only pathLength and filter-space contexts | Reviewed: [target-aware declarations](../../../src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs) → [winning dimensions](../../Lokad.Svg.Tests/SvgCssGeometryDimensionTests.cs), [XML path length](../../Lokad.Svg.Tests/OpenTypeFontTests.CssPathLength.cs) and [location contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs). [Source trace][css-record] keeps admission separate from rendering. |
+| A4 | Paint order, cumulative display, root viewport under display:none and explicit display inheritance | Reviewed: [ordered operations](../../../src/Lokad.Svg/Parsing/SvgPaintOrder.cs) / [resolved display](../../../src/Lokad.Svg/Parsing/SvgComputedStyle.cs) → [paint ownership](../../Lokad.Svg.Tests/SvgPaintOrderTests.cs) / [logical-parent inheritance](../../Lokad.Svg.Tests/SvgDisplayInheritanceTests.cs) → [29 native controls and source bindings][css-record]. |
+| A5 | Element-local currentColor, RGB/HSL syntax/units and syntax-dependent alpha precision | Reviewed: [color/precision owner](../../../src/Lokad.Svg/Parsing/SvgColorParser.cs) → [element-local color](../../Lokad.Svg.Tests/SvgCurrentColorInheritanceTests.cs), [functional grammar](../../Lokad.Svg.Tests/OpenTypeFontTests.ColorGrammar.cs) and [direct alpha boundaries](../../Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs) → [1,278 rejoined native vectors and retained color authority][css-record]. |
+| A6 | ASCII whitespace, contiguous length tokens, list commas, transform case and token-size limits | Reviewed: [ASCII separators](../../../src/Lokad.Svg/Parsing/SvgCssWhitespace.cs) / [numeric owner](../../../src/Lokad.Svg/Parsing/SvgFloatNumber.cs) → [Unicode boundaries](../../Lokad.Svg.Tests/SvgCssWhitespaceTests.cs), [contiguous lengths](../../Lokad.Svg.Tests/OpenTypeFontTests.LengthTokens.cs) and [comma/limit contracts](../../Lokad.Svg.Tests/SvgTransformListTests.cs) → [31 native numeric readouts and source trace][css-record]. |
+| A7 | Once-decoded UTF-8 local fragments, escape/whitespace rejection and URL/filter-name case rules | Reviewed: [bounded URL/fragment owner](../../../src/Lokad.Svg/Parsing/SvgLocalUrl.cs) → [quoted/bounded references](../../Lokad.Svg.Tests/SvgLocalUrlTests.cs), [decode-once collisions](../../Lokad.Svg.Tests/OpenTypeFontTests.EncodedFragments.cs) and [function/identifier case](../../Lokad.Svg.Tests/OpenTypeFontTests.LocalUrlTokens.cs). [Current bindings][css-record] retain distinct resource-selection paths. |
+| A8 | Imports/rules/pseudo/sibling/layout/variable/web-font exclusions | Pending: [twelve packaged exclusion probes][css-record] reject without pixels, but statement at-rules report MalformedInput while block forms report UnsupportedFeature. Correct and check the shared rule-entry diagnostic category before closing this trace. |
 
 ## Markers and filters
 
@@ -369,3 +372,5 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [filter-record]: filter-claim-trace.json
 [composition-record]: composition-claim-trace.json
 [image-record]: embedded-image-claim-trace.json
+[css-record]: css-claim-trace.json
+[selector-list-record]: css-selector-lists.json

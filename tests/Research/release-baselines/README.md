@@ -74,7 +74,11 @@ and the affine-filter admission boundary; implementation and targets are unchang
 The [selector-list repair](css-selector-lists.json) rejects missing comma-separated
 selectors through the shared reader. Eleven failing-before checks and three
 independent browser discrepancies retain valid-list and early/late cleanup controls;
-full source/package promotion is recorded separately from affected validation.
+complete primary/secondary/package qualification binds the committed correction.
+[Its original/context replay](css-selector-lists-svgweb.json) preserves all 204
+source identities/outcomes and prior outputs. The [CSS trace](css-claim-trace.json)
+reviews A1-A7 against current owners, 58 native controls and direct numerical
+boundaries; A8 retains the statement/block at-rule diagnostic follow-up.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 
