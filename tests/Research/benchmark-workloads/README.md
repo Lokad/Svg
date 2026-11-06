@@ -43,4 +43,4 @@ the identity color-matrix panel's 110 differing pixels through the existing merg
 compositor. The [one-pixel counterparts](foreground-mechanisms.json) retain packed
 versus deferred-program rounding, with independent native triples. All eighteen
 inputs match their own targets across both hosts/runtime assets. Benchmark
-integration waits for the combined correctness milestone.
+integration is the next step after the qualified combined correctness milestone.

@@ -18,7 +18,9 @@ only the frozen DejaVu discrepancy.
 [Shadow foreground drawing](shadow-foreground.json) removes the duplicated image
 loop and preserves deferred color-program precision through the existing merge
 compositor. Literal packed/filtered counterparts and the identity-matrix panel
-regression pass; combined milestone qualification remains pending.
+regression pass. The combined source has deterministic packages, four installed
+consumers, full Windows/Linux suites on both runtime targets and all original/
+context replays. Windows retains only the frozen DejaVu conflict.
 
 [PNG color admission](png-color-admission.json) rejects `cICP` sample color-space
 metadata through the existing unsupported color-management boundary. Three
