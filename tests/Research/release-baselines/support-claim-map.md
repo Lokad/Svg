@@ -19,8 +19,9 @@ diagnostic. Its source hashes and focused checks remain separate from promotion
 of the earlier complete rendering/package milestone.
 The [stroke trace][stroke-record] completes G1 against existing geometric/native
 checks and corrects the inherited-vector-effect restriction without changing rendering.
-The [paint trace][paint-record] reviews P2-P7 and keeps P1 open against 216 admitted
-historical factory differences. It retains documented admission boundaries separately.
+The [paint trace][paint-record] reviews P2-P7 and audits historical factory outcomes.
+[Separate reflection maps][reflection-record] close four failures; P1 keeps 212
+clip/filter compositions open, separately from documented admission boundaries.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and

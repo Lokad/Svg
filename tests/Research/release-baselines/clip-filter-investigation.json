@@ -1,0 +1,143 @@
+{
+  "status": "Investigation open: 212 admitted clip/filter inputs across 21 graph/placement/opacity contexts. A fresh bounded target calibration is exact; shared cause is not yet established.",
+  "sourceCommit": "540cd66056382586ce783f5020dfb35d1751aa32",
+  "historicalMembership": "../gradient-factory-colors/resolved-known-differences.json",
+  "witness": "../gradient-factory-colors/changed-3-candidate-1.svg",
+  "context": "Ancestor rectangular clip, integer feOffset, rotated overlapping solid rectangles; unused gradient definitions do not make this a gradient-only defect.",
+  "libraryComparison": {
+    "changedPixels": 61,
+    "alphaChangedPixels": 61,
+    "rectangle": [
+      5,
+      4,
+      24,
+      25
+    ],
+    "qualifiedRuntime": "net11.0",
+    "librarySha256": "ba93065960b0e7df20f1e3a1c30a979c6f9a242e2d0f0632e9baa3f9ae7c97e0"
+  },
+  "nextActions": [
+    "Retain each candidate/control target independently: their native pixels can differ inside the clip.",
+    "Separate captured source image, bitmap origin/restore matrix, clip coverage and final materialization with authored orthogonal controls.",
+    "Use focused checks during investigation; preserve all 212 identities and promote resolution only after affected native/ownership qualification."
+  ],
+  "captures": [
+    {
+      "host": "windows",
+      "id": "changed-3-candidate-1",
+      "inputSha256": "5c9cf57ed40efd333107f4f396a9bcf21e052218c842a9f0ba655e6e7abc9cbf",
+      "toolAssemblySha256": "47b4e750ebe60bd873622f587a8b4cb31e30035943913a2d27f422084f42c2cf",
+      "nativePngSha256": "e2f1519c2f7a717c40d3ca30d42065a3f8574be1f74eacff0f87d9117862e671",
+      "frozenPngSha256": "b68c90fd402313f2da540604a31f9bcdaec2bfa2e9137926f2fdc1e58b7dfce8",
+      "changedPixelsAgainstFrozen": 0,
+      "captures": [
+        {
+          "pngSha256": "e2f1519c2f7a717c40d3ca30d42065a3f8574be1f74eacff0f87d9117862e671",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 861,
+            "debuggerReadyMilliseconds": 387,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "stderr": "\r\nDevTools listening on [redacted URL]\r\n",
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "pngSha256": "e2f1519c2f7a717c40d3ca30d42065a3f8574be1f74eacff0f87d9117862e671",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 10413,
+            "debuggerReadyMilliseconds": 134,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "stderr": "\r\nDevTools listening on [redacted URL]\r\n[44580:65040:1106/091308.482:ERROR:google_apis\\gcm\\engine\\registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\r\n[44580:65040:1106/091308.537:ERROR:google_apis\\gcm\\engine\\mcs_client.cc:702]   Error code: 401  Error message: Authentication Failed: wrong_secret\r\n[44580:65040:1106/091308.537:ERROR:google_apis\\gcm\\engine\\mcs_client.cc:704] Failed to log in to GCM, resetting connection.\r\n",
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "pngSha256": "e2f1519c2f7a717c40d3ca30d42065a3f8574be1f74eacff0f87d9117862e671",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 515,
+            "debuggerReadyMilliseconds": 134,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "stderr": "\r\nDevTools listening on [redacted URL]\r\n[45176:109008:1106/091316.291:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "id": "changed-3-candidate-1",
+      "inputSha256": "5c9cf57ed40efd333107f4f396a9bcf21e052218c842a9f0ba655e6e7abc9cbf",
+      "toolAssemblySha256": "47b4e750ebe60bd873622f587a8b4cb31e30035943913a2d27f422084f42c2cf",
+      "nativePngSha256": "e2f1519c2f7a717c40d3ca30d42065a3f8574be1f74eacff0f87d9117862e671",
+      "frozenPngSha256": "b68c90fd402313f2da540604a31f9bcdaec2bfa2e9137926f2fdc1e58b7dfce8",
+      "changedPixelsAgainstFrozen": 0,
+      "captures": [
+        {
+          "pngSha256": "e2f1519c2f7a717c40d3ca30d42065a3f8574be1f74eacff0f87d9117862e671",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 4815,
+            "debuggerReadyMilliseconds": 3264,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "stderr": "[4734:4734:1106/091307.380002:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[4734:4734:1106/091307.396654:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[4734:4751:1106/091308.409166:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[4734:4734:1106/091309.733368:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[4734:4751:1106/091309.821232:ERROR:crypto/nss_util.cc:256] Error initializing NSS with a persistent database (sql:%USERPROFILE%/.local/share/pki/nssdb): NSS error code: -8126\n[4734:4734:1106/091309.895881:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[4734:4734:1106/091309.962100:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "pngSha256": "e2f1519c2f7a717c40d3ca30d42065a3f8574be1f74eacff0f87d9117862e671",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 3808,
+            "debuggerReadyMilliseconds": 2586,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "stderr": "[5024:5024:1106/091312.712073:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[5024:5024:1106/091312.729298:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[5024:5041:1106/091313.618935:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[5024:5024:1106/091314.598102:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[5024:5041:1106/091314.678769:ERROR:crypto/nss_util.cc:256] Error initializing NSS with a persistent database (sql:%USERPROFILE%/.local/share/pki/nssdb): NSS error code: -8126\n[5024:5024:1106/091314.737168:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[5024:5024:1106/091314.818505:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "pngSha256": "e2f1519c2f7a717c40d3ca30d42065a3f8574be1f74eacff0f87d9117862e671",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 3890,
+            "debuggerReadyMilliseconds": 2617,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "stderr": "[5270:5270:1106/091317.920559:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[5270:5270:1106/091317.960856:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[5270:5287:1106/091318.702250:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[5270:5270:1106/091319.732510:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[5270:5287:1106/091319.787369:ERROR:crypto/nss_util.cc:256] Error initializing NSS with a persistent database (sql:%USERPROFILE%/.local/share/pki/nssdb): NSS error code: -8126\n[5270:5270:1106/091319.868641:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[5270:5270:1106/091319.924009:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "The six fresh captures calibrate one existing witness, not all 212 inputs.",
+    "PNG encoding bytes differ, but every decoded RGBA byte matches the unchanged frozen target. No reference was replaced.",
+    "Only committed authored SVG input was used; no hosted SVGWeb body or fragment was retained."
+  ]
+}

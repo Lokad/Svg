@@ -283,7 +283,330 @@
   ],
   "totalAffectedPassingExecutions": 184120,
   "broaderQualification": {
-    "status": "Pending matching-commit CI, complete local secondary suites and installed package consumers. The earlier ca222b22b package/original-context milestone remains separately bound."
+    "status": "Complete matching-source qualification except frozen Windows DejaVu authority; no publication. Earlier original/context replay remains bound to ca222b22b.",
+    "packagedSourceCommit": "540cd66056382586ce783f5020dfb35d1751aa32",
+    "assetBinding": "Post-commit rebuild carries the matching source revision. Production/test source hashes above equal the affected-qualification sources; installed consumers use these packaged assets.",
+    "deterministicPackages": {
+      "sourceCommit": "540cd66056382586ce783f5020dfb35d1751aa32",
+      "deterministic": true,
+      "hashes": {
+        "Lokad.Svg.0.4.0-dev.1.nupkg": "98227a70e0b0b71e4df31f7661569a68b46d9c57cfb413f08319594e055961ab",
+        "Lokad.Svg.0.4.0-dev.1.snupkg": "e27e32f9590c3f4280e0a169254471225a35e5c8e9f8ab3a616571c8ef346f79"
+      },
+      "assets": [
+        {
+          "framework": "net11.0",
+          "exitCode": 0,
+          "seconds": 13.694461399922147,
+          "librarySha256": "b67b058d6eb711425689c3458410e4882135f43131baf82585895aec441999aa"
+        },
+        {
+          "framework": "net10.0",
+          "exitCode": 0,
+          "seconds": 10.894278599880636,
+          "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d"
+        }
+      ]
+    },
+    "installedConsumerChecks": [
+      {
+        "kind": "package-windows",
+        "exitCode": 0,
+        "seconds": 6.946466899942607
+      },
+      {
+        "kind": "package-linux",
+        "exitCode": 0,
+        "seconds": 86.311560299946
+      }
+    ],
+    "fullLocalNet10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+        "testAssemblySha256": "1b0269a52d9538496fc1aadf3723ad1b809b5215a75a4496a2436b0a4e8f2d77",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 54.038039500126615,
+        "counters": {
+          "executed": "47990",
+          "passed": "47990",
+          "failed": "0"
+        },
+        "trxSha256": "6c7e023dbb352808807cc2a6209ad962b9b6fcc093bc26273f294a7ab80ccfa6"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+        "testAssemblySha256": "1b0269a52d9538496fc1aadf3723ad1b809b5215a75a4496a2436b0a4e8f2d77",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 60.314277299912646,
+        "counters": {
+          "executed": "47990",
+          "passed": "47990",
+          "failed": "0"
+        },
+        "trxSha256": "1b0158c32ec87e9950407fd475d17c395712ee45b136028525fe791f436f9bc4"
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+        "testAssemblySha256": "b569f088a1000937e0ed1619a345bf3632ed040f00cc12922b31a5a59a5ea765",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 75.57594719994813,
+        "counters": {
+          "executed": "78661",
+          "passed": "78660",
+          "failed": "1"
+        },
+        "trxSha256": "bf70f286e052821123656eb4d3682ae148789906317802d3999e429aceeea20c",
+        "knownFailure": "Unchanged frozen Windows DejaVu reference authority."
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+        "testAssemblySha256": "b569f088a1000937e0ed1619a345bf3632ed040f00cc12922b31a5a59a5ea765",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 174.07477589999326,
+        "counters": {
+          "executed": "78661",
+          "passed": "78661",
+          "failed": "0"
+        },
+        "trxSha256": "b0b0b3105cd69ab4612c989df09f527badfa3c7db31640f7317960fbb7c0eb10"
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+        "testAssemblySha256": "38c0f4db660b31deeff933d22241f1c39ff713759be9850244038823c8b839fe",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.764849599916488,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "trxSha256": "e7378601958fbee47be08246256de071245d0af9ce4c07cf2ad3f2c6d53eb584"
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+        "testAssemblySha256": "38c0f4db660b31deeff933d22241f1c39ff713759be9850244038823c8b839fe",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.407416199799627,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "trxSha256": "4fda582d3d4b0f27d5fc64983d2eb3b7125244ba2607f16aaf4636f5356e9350"
+      }
+    ],
+    "ci": {
+      "runId": "42185338273",
+      "status": "CLOSED",
+      "headSha": "540cd66056382586ce783f5020dfb35d1751aa32",
+      "jobs": [
+        {
+          "job": "build-and-test (ubuntu-latest)",
+          "jobId": 127784219794,
+          "conclusion": "success",
+          "logSha256": "0a7a21fd6da29f6ed79324f36c8b05821023c2f98e46b37c8fdbdc51e1e320f5",
+          "testSummaries": [
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 10,
+              "skipped": 0,
+              "total": 10
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 47990,
+              "skipped": 0,
+              "total": 47990
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 78661,
+              "skipped": 0,
+              "total": 78661
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 12246,
+              "skipped": 0,
+              "total": 12246
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 2671,
+              "skipped": 0,
+              "total": 2671
+            },
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net10.0",
+              "failed": 0,
+              "passed": 10,
+              "skipped": 0,
+              "total": 10
+            }
+          ],
+          "skippedSteps": [
+            "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+            "Run actions/upload-artifact@v4"
+          ]
+        },
+        {
+          "job": "build-and-test (windows-latest)",
+          "jobId": 127784220124,
+          "conclusion": "failure",
+          "logSha256": "eb9255081026d53376bc8355444a1f5590d5c68db5eed50e9954e404b5321236",
+          "testSummaries": [
+            {
+              "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 10,
+              "skipped": 0,
+              "total": 10
+            },
+            {
+              "assembly": "Lokad.Svg.Tests.dll",
+              "framework": "net11.0",
+              "failed": 0,
+              "passed": 47990,
+              "skipped": 0,
+              "total": 47990
+            },
+            {
+              "assembly": "Lokad.Svg.VisualTests.dll",
+              "framework": "net11.0",
+              "failed": 1,
+              "passed": 78660,
+              "skipped": 0,
+              "total": 78661
+            }
+          ],
+          "knownFailure": "Only frozen Windows DejaVu; downstream compatibility/tools/package steps skipped.",
+          "skippedSteps": [
+            ".NET 10 API, ownership and numerical compatibility",
+            ".NET 10 representative native rendering compatibility",
+            ".NET 10 font host compatibility",
+            "Run tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe",
+            "Run tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests",
+            "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+            "Allow the pinned Chrome executable to create its sandbox",
+            "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json",
+            "Run tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe",
+            "Run tools/validate-ci-artifacts.ps1 -Platform Windows -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe -RequireCurrentHost",
+            "Run tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/validator-selftest -Platform Windows",
+            "Run dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build",
+            "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "Post Run actions/setup-dotnet@v4",
+            "Post Run actions/setup-dotnet@v4"
+          ]
+        }
+      ]
+    },
+    "nextCiCompatibility": {
+      "purpose": "Add the four direct reflection checks and four native failing-before inputs to the existing representative .NET 10 selections; retain the full primary matrix at milestones.",
+      "workflowSha256": "e6e0dc4f4b387dac82a5f06486da8211adb1de640a8566d6381e0d08e5bd3ccd",
+      "localQualification": [
+        {
+          "host": "windows",
+          "kind": "core",
+          "framework": "net10.0",
+          "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+          "testAssemblySha256": "1b0269a52d9538496fc1aadf3723ad1b809b5215a75a4496a2436b0a4e8f2d77",
+          "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgLineStrokeLengthTests|FullyQualifiedName~SvgGradientReflectionTests|FullyQualifiedName~SvgTextPathOffsetSyntaxTests|FullyQualifiedName~Canvas_background_survives_a_full_canvas_translucent_source|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgFilterCaptureStorageTests|FullyQualifiedName~SvgFilterQueryStorageTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgRectangleSourceTests|FullyQualifiedName~SvgEmptyFilterSourceTests|FullyQualifiedName~SvgSingularTransformTests|FullyQualifiedName~SvgShadowTintMechanismTests)&Category!=Research",
+          "exitCode": 0,
+          "seconds": 25.431283500045538,
+          "counters": {
+            "executed": "12250",
+            "passed": "12250",
+            "failed": "0"
+          },
+          "trxSha256": "2c78b05b1884cf747c5a89b4ae5da3dd30d013903cba9674175b4a5d0bc2dc2a"
+        },
+        {
+          "host": "linux",
+          "kind": "core",
+          "framework": "net10.0",
+          "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+          "testAssemblySha256": "1b0269a52d9538496fc1aadf3723ad1b809b5215a75a4496a2436b0a4e8f2d77",
+          "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgLineStrokeLengthTests|FullyQualifiedName~SvgGradientReflectionTests|FullyQualifiedName~SvgTextPathOffsetSyntaxTests|FullyQualifiedName~Canvas_background_survives_a_full_canvas_translucent_source|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgFilterCaptureStorageTests|FullyQualifiedName~SvgFilterQueryStorageTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgRectangleSourceTests|FullyQualifiedName~SvgEmptyFilterSourceTests|FullyQualifiedName~SvgSingularTransformTests|FullyQualifiedName~SvgShadowTintMechanismTests)&Category!=Research",
+          "exitCode": 0,
+          "seconds": 30.221814000047743,
+          "counters": {
+            "executed": "12250",
+            "passed": "12250",
+            "failed": "0"
+          },
+          "trxSha256": "5c6abc112e5831f2e765572da3a7e82175391b2ac743870ea76e7387f17e5bea"
+        },
+        {
+          "host": "windows",
+          "kind": "visual",
+          "framework": "net10.0",
+          "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+          "testAssemblySha256": "b569f088a1000937e0ed1619a345bf3632ed040f00cc12922b31a5a59a5ea765",
+          "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~Decoration_fragments_|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests|FullyQualifiedName~SvgShadowSamplingReferenceTests|(FullyQualifiedName~SvgPaintInputReferenceTests.Paint_inputs_match_each_native_image&(DisplayName~spatial-227-candidate-1|DisplayName~spatial-231-candidate-1p5|DisplayName~spatial-259-candidate-1|DisplayName~spatial-263-candidate-1p5))",
+          "exitCode": 0,
+          "seconds": 16.869711099890992,
+          "counters": {
+            "executed": "2675",
+            "passed": "2675",
+            "failed": "0"
+          },
+          "trxSha256": "78f114edfc39658a02ca1a966dc2d31bf018f8dc9b93c2f1037385c746b5c3d8"
+        },
+        {
+          "host": "linux",
+          "kind": "visual",
+          "framework": "net10.0",
+          "librarySha256": "70a43e3ba121477afe8091fedef4d59dc53aa853aceebe5ca892d1ebf9d0d38d",
+          "testAssemblySha256": "b569f088a1000937e0ed1619a345bf3632ed040f00cc12922b31a5a59a5ea765",
+          "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~Decoration_fragments_|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests|FullyQualifiedName~SvgShadowSamplingReferenceTests|(FullyQualifiedName~SvgPaintInputReferenceTests.Paint_inputs_match_each_native_image&(DisplayName~spatial-227-candidate-1|DisplayName~spatial-231-candidate-1p5|DisplayName~spatial-259-candidate-1|DisplayName~spatial-263-candidate-1p5))",
+          "exitCode": 0,
+          "seconds": 35.794060399988666,
+          "counters": {
+            "executed": "2675",
+            "passed": "2675",
+            "failed": "0"
+          },
+          "trxSha256": "825e66f659a6cb686d1addc865047225dd82960f1ff2eba4d014aa4441c7e7ce"
+        }
+      ],
+      "boundary": "CI 42185338273 used the preceding workflow. These expanded exact filters were qualified locally on both hosts without rerunning unchanged primary suites."
+    }
   },
   "limits": [
     "No SVG, PNG, reference, comparison rule, tolerance or text-layout implementation changed.",

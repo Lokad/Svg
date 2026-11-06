@@ -23,6 +23,8 @@ patterns. Its historical factory audit recovers 283 exact inputs, distinguishes
 [Separate gradient reflection maps](gradient-reflection.json) subsequently close
 four near-threshold failures through the shared scene-owned paint representation;
 212 clip/filter compositions remain open.
+[The clip/filter investigation](clip-filter-investigation.json) calibrates one
+unchanged witness against six fresh healthy captures before further model changes.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 
