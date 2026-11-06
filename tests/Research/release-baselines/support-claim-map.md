@@ -4,10 +4,13 @@ Scope: every feature and limit section of the current [support contract][contrac
 The overview table is indexed by the detailed rows below; it adds no separate
 conformance promise. Labels summarize claims without duplicating the contract.
 
-Evidence base: `ca222b22b`. The [native line source correction][line-source-record]
-records current source/contract hashes, full runtime/package qualification and
-original/context replays. The [geometry/instance trace][geometry-record] binds
-three additional inspected groups to this source and its existing checks. The earlier
+Current full production qualification: `0ba18ed1e`, bound by the
+[shared shaping milestone](text-feature-dispatch-contexts.json). Each trace below
+owns its inspected source/check/native identities and qualification scope.
+The [native line source correction][line-source-record] records its source/contract
+hashes, runtime/package qualification and original/context replays.
+The [geometry/instance trace][geometry-record] binds three additional inspected
+groups to their source and existing checks. The earlier
 [diagnostic qualification][diag-record] records full .NET 11 CI and affected
 Windows/Linux .NET 10 checks; the [rendering milestone][render-record] owns its
 full cross-runtime rendering/package evidence. Source/runtime/platform boundaries
@@ -54,7 +57,7 @@ The [qualified complete-input refinement](text-feature-dispatch-contexts.json)
 closes those four findings and preserves supplied-font contexts whose unsupported
 lookups cannot match their input; potential matches remain explicitly unsupported.
 Full runtime/package and original/context replays are source-bound there; they do
-not replace inspection of each pending support claim below.
+not replace direct inspection of each support claim below.
 The [casing/canonical trace](text-casing-canonical-claim-trace.json) completes
 T9/T10 against shared scalar/context owners, direct boundaries and mappings,
 representative ownership contracts and 18 independently captured native banks.
@@ -67,11 +70,15 @@ The [text paint/resource trace](text-paint-resource-claim-trace.json) completes
 T4/T17 against source/object/drawing maps, stroke/decoration owners, live resource
 discovery and platform metric policy. Current byte identities, generated-source
 checks and historical capture scopes remain explicit; ownership/limit claims
-below still require their own review.
+retain their separate rows below.
 The [limits/ownership trace](limits-ownership-claim-trace.json) completes R1-R5
 against the current structural, capacity, cancellation and lifetime owners.
 Its representative mechanisms/contracts and installed host consumers revalidate
 the absorbed HTTP/host handoff without another rendering/API product.
+The [qualification/provenance trace](qualification-provenance-claim-trace.json)
+completes Q2 and condenses test guidance while preserving commands, section anchors
+and admission/reference requirements. All 84 groups have been inspected:
+83 are Reviewed; Windows DejaVu remains Open T18.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -261,7 +268,7 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 | R4 | Immutable program/readers, one-attempt prepared documents and independently owned PNG output | Reviewed: [snapshot lifetime](../../../src/Lokad.Svg/Fonts/SvgFontSnapshot.cs) / [single attempt](../../../src/Lokad.Svg/SvgPreparedDocument.cs) / [PNG owner](../../../src/Lokad.Svg/SvgPngResult.cs) → escaped face invalidation, borrowed memory, document/result siblings and overlapping async output contracts. [Current trace](limits-ownership-claim-trace.json) retains caller serialization and parent-lifetime duties. |
 | R5 | Governed output forms, retained metadata/cache scopes, HTTP root association and no refusal fallback/retry | Reviewed: [output ownership](../../../src/Lokad.Svg/SvgConverter.Invocation.cs) / [HTTP cache/borrowers](../../../src/Lokad.Svg/Fonts/SvgHttpFontPackResolver.cs) / [finite policy](../../../src/Lokad.Svg/Fonts/SvgHttpFontAcquisitionOptions.cs) → governed destination, retained result/cache, refusal, cancellation and selective-acquisition checks → four installed public-package consumers. [Current trace](limits-ownership-claim-trace.json) revalidates the absorbed handoff and distinguishes idle-capacity maintenance from admission refusal. |
 | Q1 | Current .NET 10/11 Windows/Linux targets, pinned RC and no runtime package dependency | Reviewed: [project][project] / [SDK pin][sdk] → [cross-runtime/CI evidence][diag-record], [rendering/package milestone][render-record]. Future release qualification remains P7. |
-| Q2 | Declared exactness/exclusions/source provenance; correctness distinct from performance | Pending: join the current tests/provenance contract without treating inherited or source-unqualified targets as new authority. |
+| Q2 | Declared exactness/exclusions/source provenance; correctness distinct from performance | Reviewed: [test/provenance contract](../../README.md) / [capture rules](../../../tools/README.md#capture-and-reference-rules) / [exact pixel comparison](../../../tools/Lokad.Svg.VisualDiff/PixelComparison.cs) / [independent math-profile selection](../../Shared/NativeMathProfile.cs) → fixture integrity, pixel/capture contracts, source-bound native companions and qualification scopes. [Current trace](qualification-provenance-claim-trace.json) preserves unsupported/source-unqualified roles, the open T18 conflict and separate performance qualification. |
 
 [contract]: ../../../docs/SUPPORT_MATRIX.md
 [contract-diag]: ../../../docs/SUPPORT_MATRIX.md#diagnostics

@@ -1,0 +1,194 @@
+{
+  "status": "Reviewed Q2 against current qualification/provenance contracts and enforcement; test guidance compacted and stale benchmark-blocker wording corrected. Open reference authority remains explicit.",
+  "qualifiedProductionSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+  "qualification": "text-feature-dispatch-contexts.json",
+  "documentationParentCommit": "377ff1aa4",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "tests/README.md": "491694755012100900d221540d597cd8a14437459d654053776d3ea8637627e7",
+    "tests/Research/README.md": "3bdb4114d3b8365816ccb8616574f608d1342ae8934de81abf0d194d7f7c3e42",
+    "tests/References/README.md": "2fdf391f6928f4fe846e5f6f6971f3d8a876ce3edb6cab56e9f529ae2e2085f4",
+    "tools/README.md": "f423c969afe8568dc061c1c9818f6f15c27ddae471a13f3cbb1b5934152d4c81",
+    "docs/SUPPORT_MATRIX.md": "b6323483e2adce0a48e471edaf57134ca5a4b4a59604ff27652d0b5de91a975b",
+    "docs/BENCHMARKS.md": "109e4d5150b53fc36ae15ef077857edb23fdd0a26903d99913645736857cc382",
+    ".github/workflows/ci.yml": "e6e0dc4f4b387dac82a5f06486da8211adb1de640a8566d6381e0d08e5bd3ccd",
+    "global.json": "22cd64c14b55c3ea600288a37e98819972f8bc9838e916a05f51065c791cea8a",
+    "tools/Lokad.Svg.VisualDiff/PixelComparison.cs": "5b70e8c77e209f32ff123fa64ec9da427fc9ceb66642f9a3a8603e3413093818",
+    "tests/Shared/NativeMathProfile.cs": "bbd87509e965355ecec59724a93be0641928a1ff4939490636ffd65c0ee215fa",
+    "tests/Lokad.Svg.VisualTests/SvgNativeControlAssertions.cs": "06262104cd40f80ce58d8cc072f13af6d556b01abdf63bbe9629ad9f0d923478",
+    "tests/Lokad.Svg.VisualTests/PixelComparerTests.cs": "f33386840a956fcb59884d1639cceb3f41c659ac03d8bed2562de7bb810b2632",
+    "tests/Lokad.Svg.VisualTests/FixtureManifestTests.cs": "8390ce2383889f2bc2eb22bc656ed1191d2db9c515fb543e3966950859907180",
+    "tests/Lokad.Svg.VisualTests/RasterCaptureContractTests.cs": "60dcc3b4cb6a4645e5d1e73f267583311694ed0565bef87e4410211bd5a998f7",
+    "tests/Lokad.Svg.VisualTests/SvgShadowSamplingReferenceTests.cs": "2b59501fe9469acc9b8c9cfcb51bc810dbe03add259af275cb40340f1b7ceb7d",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.cs": "8e5e045cf18fc0017634b4cfe57d59f08c9bd333356ef21984368e73f5df43e2",
+    "tests/Research/benchmark-workloads/manifest.json": "4dd9871919ca4b2fde74e10a795f9ddac1a7983dffac6a2d8104c08787388a3c",
+    "tests/Research/benchmark-workloads/capture.json": "569dadee6dcb3e1dcb971cf1d6afd6103724779972f2693a43d42266fddba94f",
+    "tests/Research/benchmark-workloads/README.md": "962684dbe83bd03d74582c0864e597ddff0f7513043274d031e106776251da91",
+    "tests/Research/release-baselines/benchmark-authored-documents.json": "73da6f35c2f24713f8c8ced070ec834ae19329b69f7384748f06c2c39386123f"
+  },
+  "inspected": [
+    "Support and fidelity remain separate: original sources/options/resources, capture-only transforms and declared platform targets retain independent identities.",
+    "Canonical RGBA equality requires equal dimensions and zero changed pixels. RGB under zero alpha is canonicalized; partial-alpha differences remain failures. Across runtimes, PNG compression is not pixel authority.",
+    "Native scalar-math companions retain the old data and independent captures. A fixed unrelated BCL probe selects the profile; renderer output does not select its target, and unknown profiles fail.",
+    "Research/unsupported/source-unqualified observations do not become supported fidelity through fixture renames, equal pixels or historical corpus totals.",
+    "Development, affected integration, full host/runtime qualification, browser-tool checks, installed packages and quiet-host performance keep distinct scopes.",
+    "Frozen Windows DejaVu remains asserted and separately open. A known failing assertion does not make CI green."
+  ],
+  "documentation": {
+    "testGuide": {
+      "beforeLines": 857,
+      "afterLines": 196,
+      "beforeWords": 6228,
+      "afterWords": 1514,
+      "beforeSha256": "6c4601b792029260191506ed8f7e19cb279dd2144689faab8db88b647826fe29",
+      "afterSha256": "491694755012100900d221540d597cd8a14437459d654053776d3ea8637627e7",
+      "sectionAnchorsPreserved": [
+        "## Responsibilities",
+        "## Development checks",
+        "## Corpus and offline execution",
+        "## Retired collections",
+        "## Fixture admission",
+        "## Milestone and release qualification"
+      ],
+      "commandAndAdmissionSectionsUnchanged": true
+    },
+    "relativeLinksAndAnchorsChecked": 54,
+    "preserved": [
+      "all six public section anchors",
+      "development commands",
+      "full runtime/package qualification commands",
+      "fixture-admission requirements",
+      "mandatory filter source/clip context coverage",
+      "native math profile independence",
+      "exactness and unchanged-reference rules",
+      "representative ownership versus canonical rendering responsibilities",
+      "Research membership and offline corpus behavior"
+    ],
+    "consolidation": "Current test procedures stay in tests/README.md. Detailed partitions stay in the responsibility map; completed findings/qualification stay in the existing evidence index and collection manifests.",
+    "staleCorrection": "Research/README.md still described the chart-shadow discrepancy as blocking benchmark integration. Its collection guide and authored-workload qualification already record closure; the current packaged primary asset was additionally replayed on all three authored workloads on both hosts."
+  },
+  "validation": {
+    "existingSuiteSelection": "Named enforcement/integrity/capture classes and the native-math integrity method extracted from the completed full suites; identical membership passes on both hosts/runtimes.",
+    "groups": {
+      "FixtureManifestTests": 1492,
+      "PixelComparerTests": 26,
+      "SvgShadowSamplingReferenceTests": 9,
+      "RasterCaptureContractTests": 6,
+      "Core_math_companions_preserve_original_inputs_and_independent_healthy_native_triples": 1
+    },
+    "results": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 1534
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 1534
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 1534
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 1534
+      }
+    ],
+    "authoredWorkloadReplay": {
+      "framework": "net11.0",
+      "sourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+      "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+      "independentCaptureReceipts": 18,
+      "results": [
+        {
+          "host": "windows",
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "exitCode": 0,
+          "seconds": 0.9674978998955339,
+          "pngSha256": "7805ef3193e2e2d06e800a28ae9aee7a1b7f48797e09d5d0f2113c840a88df3d",
+          "referenceSha256": "0e41950f4476b470d1df3f57bb257b25ffa09138737062d0b45a681ac10197ea",
+          "changedPixels": 0,
+          "width": 512,
+          "height": 384
+        },
+        {
+          "host": "windows",
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "exitCode": 0,
+          "seconds": 1.0400459999218583,
+          "pngSha256": "c46e5639a787013798f8e41714aff7843c158b408c5f0a8d119a09640aa99b86",
+          "referenceSha256": "4f550f74dda433cc0a1fa1e32f603116bc8c52dee09cb5454ee38ab64f581c46",
+          "changedPixels": 0,
+          "width": 768,
+          "height": 192
+        },
+        {
+          "host": "windows",
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "exitCode": 0,
+          "seconds": 1.3178589998278767,
+          "pngSha256": "35867ab4bd245c0e67274792b026f8fa3558716af8ff7c0e28d503b6b1c85aeb",
+          "referenceSha256": "704643ea71c7faca0cc2672d22a14dcc67bcc7e5d1d34bec97c3c49b15160674",
+          "changedPixels": 0,
+          "width": 1024,
+          "height": 640
+        },
+        {
+          "host": "linux",
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "exitCode": 0,
+          "seconds": 5.684274100000039,
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "referenceSha256": "95c9e40bbf77880f6c679bdbcb824a2ece6c13f2bc870a93e698135a3edf135b",
+          "changedPixels": 0,
+          "width": 512,
+          "height": 384
+        },
+        {
+          "host": "linux",
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "exitCode": 0,
+          "seconds": 1.8194447001442313,
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "referenceSha256": "aed01ce224547b8832db491335f07f9cd87ed2a041b85f6a9e6bc9f268e9615d",
+          "changedPixels": 0,
+          "width": 768,
+          "height": 192
+        },
+        {
+          "host": "linux",
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "exitCode": 0,
+          "seconds": 2.42872150009498,
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "referenceSha256": "62d97dfb4faae3edd7c7ff6f9ce4bb6b4a2001c0b09da2823bf0f09b070996d8",
+          "changedPixels": 0,
+          "width": 1024,
+          "height": 640
+        }
+      ],
+      "elapsedMeaning": "Individual functional CLI costs include startup; no renderer speed claim. All original sources/programs/native targets remain unchanged."
+    }
+  },
+  "remaining": [
+    "Frozen Windows DejaVu reference authority remains Open T18.",
+    "W1 original contexts, unavailable external resource bindings and original-source recovery remain explicit outstanding work.",
+    "Quiet-host performance remains unmeasured; this trace and documentation reduction do not claim faster test execution."
+  ]
+}

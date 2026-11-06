@@ -19,6 +19,7 @@ rather than treating historical rejections as a current support boundary.
 without importing the remote SVG collection. Its initial diagnostic ledger is
 separate from accepted offline rendering regressions.
 
-[Authored benchmark candidates](benchmark-workloads/README.md) retain larger
-icons, wordmark and chart inputs with frozen platform captures. The chart's
-translated rounded-shadow discrepancy blocks benchmark integration.
+[Authored benchmark workloads](benchmark-workloads/README.md) retain larger
+icons, wordmark and chart inputs with frozen platform captures. Their
+[functional qualification](release-baselines/benchmark-authored-documents.json)
+includes the closed chart-shadow correction; timed performance remains separate.

@@ -28,6 +28,10 @@ and drawing bounds, inactive-source exceptions and native capture scopes distinc
 The [limits/ownership trace](limits-ownership-claim-trace.json) completes the
 remaining resource contracts and absorbed HTTP/host handoff against current
 owners, representative API/cleanup checks and installed package consumers.
+The [qualification/provenance trace](qualification-provenance-claim-trace.json)
+completes the finite support review, condenses test guidance and corrects the
+stale chart-shadow blocker. The packaged primary asset preserves all three
+authored workloads exactly on both hosts; timed performance stays unmeasured.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)
