@@ -4,6 +4,7 @@ This review traces the existing clip, mask, marker, text and filter descriptors;
 it introduces no renderer, preparation cache or coordinate framework. Runtime source
 is `ec8c8de7a`; [package qualification](blur-image-identity.json) binds both runtime
 assets. The test source is `54c706249`, including the [selection correction](test-selection.json).
+Later corrections below retain their own source and validation bindings.
 
 | Boundary | Retained representation and reason | Existing witnesses |
 | --- | --- | --- |
@@ -13,6 +14,7 @@ assets. The test source is `54c706249`, including the [selection correction](tes
 | Marker pose and viewport | [Marker placement](../../../src/Lokad.Svg/Parsing/SvgMarkerSyntax.cs) retains pose separately from the content viewport and parent canvas. A [scene-owned stage](../../../src/Lokad.Svg/Parsing/SvgNativeCanvasStage.cs) shares immutable metadata across paints. Complete placement governs admission; finite inverse-normalization intermediates can exceed its range. | [Native matrix vectors](../../Lokad.Svg.Tests/SvgMarkerCanvasTests.cs), [refusal/cancellation/retry](../../Lokad.Svg.Tests/SvgMarkerCanvasOwnershipTests.cs), [paint-binding images](../../Lokad.Svg.VisualTests/SvgMarkerPaintBindingReferenceTests.cs). |
 | Text layout and recorded ink | [Glyph recording](../../../src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs) keeps source objects, locally enclosed drawing visuals and fractional element visuals distinct. Already-shaped glyphs, fitting and font owners remain authoritative. Mask font construction uses its resource context; consuming placement remains separate. | [Mask text](../../Lokad.Svg.VisualTests/SvgMaskTextRecordingReferenceTests.cs), [text clips](../../Lokad.Svg.VisualTests/SvgTextClipReferenceTests.cs). |
 | Recorded drawing and image destination | The [drawing map](../../../src/Lokad.Svg/Rendering/SvgDrawingMap.cs) keeps double parameter composition separate from native destination concatenation. The canvas descriptor expresses a different rounding boundary and cannot replace it. [Filter playback](../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) keeps requested/captured/stored/sampled extents separate. | [Captured canvas](../../Lokad.Svg.Tests/SvgCapturedCanvasCoordinatesTests.cs), [native source maps](../../Lokad.Svg.Tests/SvgFilterSourceMapTests.cs), [device paths](../../Lokad.Svg.Tests/SvgPathDeviceMappingTests.cs). |
+| Parent picture clip and cropped capture | `RasterFrame.NativeClipBounds` retains the parent picture's clip-classification domain in capture coordinates. A fractional clip can enclose the cropped allocation while clipping its parent picture; replacing the domain with storage changes paint alpha arithmetic. | [48 failing-before interactions and retained mechanism/owner checks](parent-picture-clip-domain.json). |
 
 The existing scene/registry owns retained descriptors and reservations; references
 borrow them. Mask replay transfers content into its adopting scene, while marker

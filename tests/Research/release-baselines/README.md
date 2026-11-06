@@ -35,6 +35,14 @@ stroke inputs retain their own frozen targets and focused next actions.
 [Its original/context replay](offset-source-request-svgweb.json) preserves all
 previous output and both Linux scalar-math profiles. [Chrome scratch ownership](chrome-native-scratch.json)
 fixes the separate native temporary-file leak observed after exact Ubuntu CI captures.
+The [parent-picture clip domain](parent-picture-clip-domain.json) closes another
+48 historical cases by keeping paint classification independent of cropped
+storage. The remaining 36 inputs share thin-stroke interactions; targets and
+distinct ownership paths remain unchanged.
+The [thin-stroke controls](thin-stroke-clip-investigation.json) separate one
+witness from filter playback: it still differs without the filter and becomes
+exact without either its clip or stroke. Thirty fresh native captures preserve
+that distinction on both hosts; the shared cause remains under investigation.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

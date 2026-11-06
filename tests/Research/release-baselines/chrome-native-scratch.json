@@ -1,5 +1,5 @@
 {
-  "status": "Chrome owns and cleans its native temporary files as well as its profile. Deterministic failing-before regression and native smoke pass on both hosts/runtimes; matching full CI is pending.",
+  "status": "Native scratch ownership is closed: failing-before regression, four local native smokes, and matching Ubuntu CI pass. Windows CI retains the separately tracked frozen DejaVu failure; downstream steps there were skipped.",
   "sourceBaseCommit": "dc5a174fbf5361bcd97bba2ef7914a0aef6ee8dc",
   "witnessedFailure": {
     "runId": 42195860726,
@@ -302,5 +302,43 @@
     "This is a developer-tool lifetime correction; renderer production source remains dc5a174fb.",
     "Recorded elapsed times are validation costs, not renderer performance measurements.",
     "CI 42195860726 is terminal and closed; its skipped steps remain skipped. New matching CI must qualify the tool correction."
-  ]
+  ],
+  "matchingCi": {
+    "runId": 42201564836,
+    "sourceCommit": "c87556612cd557dc9362cbe25041ae874db62719",
+    "status": "CLOSED",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "host": "ubuntu",
+        "jobId": 127837836286,
+        "conclusion": "success",
+        "logSha256": "b17212e8017a7776e2f4ff27ff45293b0ea7d297005cb98bc30809d375eea39b",
+        "suiteSummaries": [
+          "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:18:52.0547776Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 334 ms - Lokad.Svg.FontProbe.Tests.dll (net11.0)",
+          "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:20:17.1536351Z Passed!  - Failed:     0, Passed: 47991, Skipped:     0, Total: 47991, Duration: 1 m 12 s - Lokad.Svg.Tests.dll (net11.0)",
+          "build-and-test (ubuntu-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:20:22.4334258Z Passed!  - Failed:     0, Passed: 78790, Skipped:     0, Total: 78790, Duration: 1 m 14 s - Lokad.Svg.VisualTests.dll (net11.0)",
+          "build-and-test (ubuntu-latest)\t.NET 10 API, ownership and numerical compatibility\t2026-11-06T10:20:57.5623695Z Passed!  - Failed:     0, Passed: 12251, Skipped:     0, Total: 12251, Duration: 17 s - Lokad.Svg.Tests.dll (net10.0)",
+          "build-and-test (ubuntu-latest)\t.NET 10 representative native rendering compatibility\t2026-11-06T10:21:19.4848459Z Passed!  - Failed:     0, Passed:  2675, Skipped:     0, Total:  2675, Duration: 11 s - Lokad.Svg.VisualTests.dll (net10.0)",
+          "build-and-test (ubuntu-latest)\t.NET 10 font host compatibility\t2026-11-06T10:21:22.0860181Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 100 ms - Lokad.Svg.FontProbe.Tests.dll (net10.0)"
+        ],
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "jobId": 127837836673,
+        "conclusion": "failure",
+        "logSha256": "095031e410388e5bf020e8a4deaa709c726defa9934652681a29d532ae313bb8",
+        "suiteSummaries": [
+          "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:20:11.1627771Z Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 357 ms - Lokad.Svg.FontProbe.Tests.dll (net11.0)",
+          "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:22:55.3107833Z Passed!  - Failed:     0, Passed: 47991, Skipped:     0, Total: 47991, Duration: 2 m 20 s - Lokad.Svg.Tests.dll (net11.0)",
+          "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:23:42.9338588Z Failed!  - Failed:     1, Passed: 78789, Skipped:     0, Total: 78790, Duration: 2 m 56 s - Lokad.Svg.VisualTests.dll (net11.0)"
+        ],
+        "failures": [
+          "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:21:07.2205872Z   Failed Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\") [2 s]",
+          "build-and-test (windows-latest)\tRun dotnet test Lokad.Svg.slnx -c Release --no-build\t2026-11-06T10:21:11.1936484Z   Error Message:"
+        ]
+      }
+    ]
+  }
 }

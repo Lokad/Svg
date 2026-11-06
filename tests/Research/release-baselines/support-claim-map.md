@@ -21,7 +21,8 @@ The [stroke trace][stroke-record] completes G1 against existing geometric/native
 checks and corrects the inherited-vector-effect restriction without changing rendering.
 The [paint trace][paint-record] reviews P2-P7 and audits historical factory outcomes.
 [Separate reflection maps][reflection-record] and [offset requests][offset-request-record]
-close four and 128 failures; P1 keeps 84 placement/viewport/stroke compositions open,
+close four and 128 failures. [Parent-picture clip domains][picture-clip-record]
+close another 48; P1 keeps 36 thin-stroke compositions open,
 separately from documented admission boundaries.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
@@ -110,7 +111,7 @@ Scope: [gradients and patterns][contract-paints].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Open: [shared owner/check trace][paint-record] and [historical status][factory-status]. Of 931 historical cases, 415 are now exact, 432 hit documented admission boundaries, and 84 placement/viewport/stroke compositions still differ. [Reflection maps][reflection-record] close four failures; [propagated offset capture requests][offset-request-record] close 128 more through existing owners. Preserve targets and trace the remaining filtered source placement. |
+| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Open: [shared owner/check trace][paint-record] and [historical status][factory-status]. Of 931 historical cases, 463 are now exact, 432 hit documented admission boundaries, and 36 thin-stroke compositions still differ. [Reflection maps][reflection-record] close four failures; [offset capture requests][offset-request-record] close 128; [parent-picture clip classification][picture-clip-record] closes 48. Preserve targets and trace the remaining stroke interactions. |
 | P2 | Paint URL fallback, missing/wrong-kind/unavailable servers, valid transparent servers and invalid/effect URLs | Reviewed: [paint selection][paint-index] → [fallback checks][fallback-tests] and independent empty-channel/font contracts → [eight-state native pattern validity][fallback-native]. [Bindings and qualification][paint-record] correct the childless/nonpainting-child distinction. |
 | P3 | Definition-local percentage bases, cross-kind template defaults, transform replacement and literal gradientUnits rules | Reviewed: [coordinate units][gradient-coordinates] / [typed registration][definition-parser] → direct length/viewport/template/unit checks → independent definition/alias viewport fixtures. [Current bindings, case identities and qualification][paint-record]. |
 | P4 | Radial focal-circle containment and independently inherited center/radius/focal overrides | Reviewed: [typed registration][definition-parser] → root/template focal checks → [native radial maps][radial-native] and 192 exact historical alias inputs. [Trace][paint-record] pins the actual percentage containment rejection; original inputs stay unchanged. |
@@ -355,3 +356,4 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [pattern-template]: ../../../src/Lokad.Svg/Parsing/SvgPatternTemplate.cs
 [reflection-record]: gradient-reflection.json
 [offset-request-record]: offset-source-request.json
+[picture-clip-record]: parent-picture-clip-domain.json
