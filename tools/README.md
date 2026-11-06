@@ -138,6 +138,12 @@ Before retiring a run, promote unresolved original inputs, options and provenanc
 equal resulting images do not establish duplicate evidence. Compact completed
 qualification into its committed responsibility record after matching CI succeeds.
 
+Classify build output by its actual consumers. The
+[benchmark retention pass](../tests/Research/release-baselines/benchmark-cache-retention.json)
+retains generated source, final binaries and assemblies named by `ref.props`,
+while retiring completed compiler/restore intermediates. A sibling output directory
+can remain a required build input even when its files look like copies.
+
 Remove copied assets only after comparing every file with retained committed
 sources. An old tool installation can be removed after checking its files against
 a retained archive and confirming no process or configuration uses that path.

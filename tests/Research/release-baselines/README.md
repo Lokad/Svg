@@ -8,6 +8,11 @@ Reference images remain beside their existing licensed source collections.
 The [API migration audit](api-migration.json) accounts for every removed published
 declaration and verifies equivalent current API surfaces on both target frameworks.
 
+[Benchmark cache retention](benchmark-cache-retention.json) removes 828 completed
+compiler/restore files across three compile-only qualifications. All 1,332 retained
+files, including generated source, final executables and 24 referenced assembly
+inputs, remain byte-exact. Unresolved originals and release evidence remain separate.
+
 [Direct benchmark components](benchmark-direct-mechanisms.json) add CSS parsing,
 coverage, blending, gradient sampling, blur and color operations through existing
 production components. All 86 prior workloads and 52 timed bodies remain. The 96

@@ -1,0 +1,83 @@
+{
+  "status": "Completed compile-only benchmark intermediates retired by purpose and actual consumers.24 cache directories/828 files are removed; all1,332 retained generated/source/reference/final-output files remain byte-exact. Historical rendering, release, provenance and timed-measurement evidence is unchanged.",
+  "sourceBaseCommit": "a6214ec85a7f4992314f69330fa9e200531fbc67",
+  "purpose": "Remove rebuildable compiler/restore state after successful four-context generation, without treating referenced assemblies or final binaries as disposable copies.",
+  "cohorts": [
+    {
+      "name": "p6-reference-documents-20261106",
+      "qualification": "benchmark-reference-documents.json",
+      "hostRuntimeContexts": 4,
+      "removedIntermediateDirectories": 8,
+      "removedFiles": 276,
+      "removedLogicalBytes": 31975659,
+      "retainedReferencedAssemblyInputs": 8,
+      "removedFileMapSha256": "1b57771edb541c9d3a924b428b44a531a816e081b8e5b6099082724662796348"
+    },
+    {
+      "name": "p6-authored-benchmarks-20261106",
+      "qualification": "benchmark-authored-documents.json",
+      "hostRuntimeContexts": 4,
+      "removedIntermediateDirectories": 8,
+      "removedFiles": 276,
+      "removedLogicalBytes": 32116587,
+      "retainedReferencedAssemblyInputs": 8,
+      "removedFileMapSha256": "63499c8e33ff36e2a6c27e0e6252b6265331f684247b3444e8fc539b10d68cc1"
+    },
+    {
+      "name": "p6-direct-mechanisms-20261106",
+      "qualification": "benchmark-direct-mechanisms.json",
+      "hostRuntimeContexts": 4,
+      "removedIntermediateDirectories": 8,
+      "removedFiles": 276,
+      "removedLogicalBytes": 32386307,
+      "retainedReferencedAssemblyInputs": 8,
+      "removedFileMapSha256": "4248ca69e7ed586221a2fa36c1503cb45ace6535bf5aaab407fcfd77123cef4e"
+    }
+  ],
+  "removed": {
+    "directories": 24,
+    "files": 828,
+    "logicalBytes": 96478553,
+    "relativeToEachGeneratedProject": [
+      "a/obj",
+      "o"
+    ],
+    "fileKinds": {
+      ".json": 108,
+      ".props": 36,
+      ".targets": 36,
+      ".cache": 192,
+      ".cs": 108,
+      ".exe": 12,
+      ".stamp": 24,
+      ".Up2Date": 36,
+      ".txt": 36,
+      ".dll": 108,
+      ".editorconfig": 36,
+      ".pdb": 36,
+      ".xml": 36,
+      ".BuildWithSkipAnalyzers": 12,
+      "[no extension]": 12
+    },
+    "scope": "Generated assembly attributes/usings, restore/compiler metadata, reference/intermediate assemblies and apphosts. No SVG, PNG, font, archive, package or timed result occurs in the retired trees."
+  },
+  "retained": {
+    "files": 1332,
+    "allHashesMatch": true,
+    "retainedFileMapSha256": "2f43823741b592eb416cd71a7995b41323cf84b0a56b0cc6c657eab2bc397bc7",
+    "generatedSourceAndExecutableHashesMatchCommittedQualifications": true,
+    "referencedAssemblyInputs": 24,
+    "referenceDecision": "Each ref.props names two assemblies under a/bin. Those inputs remain even though sibling a/obj and o are compiler caches. Final b outputs, generated source/projects/locks/reference lists/build scripts, run receipts and functional evidence remain.",
+    "role": "Published packages/symbols, pinned tool archives/caches, licenses, native sources/references and unresolved historical originals retain their existing ownership and locations."
+  },
+  "validation": {
+    "activeRelevantWindowsOrLinuxConsumers": 0,
+    "reparsePoints": 0,
+    "absoluteTargetsWithinNamedWorkspaceRuns": true,
+    "allTargetsAbsentAfterRemoval": true,
+    "allRetainedFilesHashVerified": true,
+    "sourceTestsBenchmarksReferencesPackagesAndCiUnchanged": true,
+    "scope": "Filesystem and dependency validation only. No renderer benchmark, rebuild, test-suite or full CI/package rerun was needed or claimed; source and all qualified outputs remain unchanged."
+  },
+  "remaining": "The historical generated-run/provenance inventory remains open. This retires only three completed compile-only cohorts; unknown originals and source-unqualified R85/R86 material still require promotion or recovery before retirement."
+}
