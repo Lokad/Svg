@@ -1,6 +1,7 @@
 {
-  "status": "Open supported color-materialization/alpha-rounding discrepancy, independent of the closed sampling-demand omission.",
-  "priority": "HIGH before broader filter-area closure and benchmark integration.",
+  "id": "color-image",
+  "status": "Closed by the shared foreground compositor. Original failing-before source, native targets and renderer observations remain preserved below.",
+  "priority": "Combined milestone qualification remains pending; the witnessed draw-stage discrepancy is closed.",
   "input": "stage-controls/color-image.svg",
   "sourceSha256": "4e0656647135aae990bc8e8fabbf3f4a4a7a7365933695164e526deaf8e8019e",
   "width": 1024,
@@ -326,5 +327,7 @@
     "No target rewrite, relaxed comparison, source repair or unsupported-feature classification.",
     "This control remains outside ordinary passing tests until fixed; the unmodified chart and sampling-guard controls are closed separately."
   ],
-  "nextAction": "Trace deferred color-matrix materialization and source-in/foreground alpha rounding through the existing filter owners. Keep the identity prefix and exact native images; add a direct mechanism witness before changing shared arithmetic."
+  "nextAction": "Complete combined milestone qualification, preserving this source, both native targets and their independent capture triples.",
+  "rendererResultsRole": "Frozen failing-before observations under the guarded renderer.",
+  "qualification": "../release-baselines/shadow-foreground.json"
 }

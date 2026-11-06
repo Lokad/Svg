@@ -1,0 +1,8 @@
+{
+  "inputSha256": "4e0656647135aae990bc8e8fabbf3f4a4a7a7365933695164e526deaf8e8019e",
+  "rgbaSha256": {
+    "windows": "b28ca2510afae43d344df813a890e5219182e9c5b8bc9879111995ec8e313fe7",
+    "linux": "b28ca2510afae43d344df813a890e5219182e9c5b8bc9879111995ec8e313fe7"
+  },
+  "sourceEvidence": "color-materialization.json"
+}

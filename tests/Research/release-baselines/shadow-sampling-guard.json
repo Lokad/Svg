@@ -395,5 +395,121 @@
     "Bind committed-source packages and full Windows/Linux milestone qualification.",
     "Preserve and fix the independent color-matrix prefix residual before calling the broader filter area closed.",
     "Integrate larger authored benchmark workloads only after the coherent correctness milestone."
-  ]
+  ],
+  "committedSourceMilestone": {
+    "sourceCommit": "3f673a27ca9871689511094413f92c4086096021",
+    "packages": {
+      "sourceCommit": "3f673a27ca9871689511094413f92c4086096021",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "3a0ea584aaad04794304e86c178518ceb38237e569e7d92941373279286808e9",
+          "bytes": 2438088
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "c50100b948bd598a3301035c5cab273ed534ccf9bd73fe1ea9f213caad6625c3",
+          "bytes": 726153
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "71ff9c945571ee969c251976a20fe6f1940fb6744729ad55976f3790418b560b",
+        "net10.0": "a1cc25ba608e8606579ba7347bf3aa275cedc230ff6dbaf93000cb3b8207b345"
+      },
+      "byteIdenticalRepeats": true,
+      "noRuntimeDependencies": true,
+      "noSvgOrRuntimeSpecificAssets": true
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "targetFrameworks": [
+          "net10.0",
+          "net11.0"
+        ],
+        "exitCode": 0,
+        "restoredAndConsumedLibrarySha256": {
+          "net11.0": "71ff9c945571ee969c251976a20fe6f1940fb6744729ad55976f3790418b560b",
+          "net10.0": "a1cc25ba608e8606579ba7347bf3aa275cedc230ff6dbaf93000cb3b8207b345"
+        }
+      },
+      {
+        "host": "linux",
+        "targetFrameworks": [
+          "net10.0",
+          "net11.0"
+        ],
+        "exitCode": 0,
+        "restoredAndConsumedLibrarySha256": {
+          "net11.0": "71ff9c945571ee969c251976a20fe6f1940fb6744729ad55976f3790418b560b",
+          "net10.0": "a1cc25ba608e8606579ba7347bf3aa275cedc230ff6dbaf93000cb3b8207b345"
+        }
+      }
+    ],
+    "svgweb": {
+      "librarySha256": "71ff9c945571ee969c251976a20fe6f1940fb6744729ad55976f3790418b560b",
+      "originals": 204,
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        }
+      },
+      "suppliedFontContexts": 22,
+      "otherStaticDiagnostics": 13,
+      "specialSourceDiagnostics": 3,
+      "sourceBodiesRetained": 0,
+      "directoryAudit": {
+        "checkedUtc": "2026-11-06T01:48:33.567833+00:00",
+        "httpStatus": 200,
+        "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+        "directSvgFiles": 204,
+        "sameMembership": true,
+        "newOrMissingOriginalNames": [],
+        "indexBodyRetained": false,
+        "sourceSvgBodiesRetained": 0
+      }
+    },
+    "ci": {
+      "runId": 42144799924,
+      "status": "CLOSED; terminal metadata and logs captured. Never repoll or refetch.",
+      "ubuntu": {
+        "jobId": 127653562012,
+        "conclusion": "success",
+        "fullCore": 47958,
+        "fullVisual": 78365,
+        "font": 10,
+        "compatibilityCore": 12229,
+        "compatibilityVisual": 2670,
+        "compatibilityFont": 10,
+        "toolsAndPackagesPassed": true,
+        "logSha256": "ecc68db568c0e5e06546fbb39a44f5ea3ce507c83cdcf77eaa7c7f3e7e07cc20"
+      },
+      "windows": {
+        "jobId": 127653562344,
+        "conclusion": "failure",
+        "fullCore": 47958,
+        "visualPassed": 78364,
+        "visualFailed": 1,
+        "font": 10,
+        "failure": "Existing frozen Windows DejaVu reference; unchanged target/assertion/authority.",
+        "downstreamCiCompatibilityToolsAndPackageSteps": "Skipped after the visual failure; local affected and installed-package checks are separate evidence.",
+        "logSha256": "73864fd0ff1a1ac5ffb69960f4c84dd74956feb1fe8140d503ad4b13849708e6"
+      }
+    }
+  }
 }

@@ -11,8 +11,14 @@ declaration and verifies equivalent current API surfaces on both target framewor
 [Shadow sampling demand](shadow-sampling-guard.json) retains the linear transform's
 input guard separately from nearest SVG offsets and painted result bounds. Six
 mechanisms, one ownership contract and eight native rendering cases preserve the
-failing interaction and its positive boundaries. Full milestone qualification and
-the separate identity color-matrix residual remain open.
+failing interaction and its positive boundaries. Committed-source packages,
+installed consumers and all original SVGWeb replays pass; Windows full CI retains
+only the frozen DejaVu discrepancy.
+
+[Shadow foreground drawing](shadow-foreground.json) removes the duplicated image
+loop and preserves deferred color-program precision through the existing merge
+compositor. Literal packed/filtered counterparts and the identity-matrix panel
+regression pass; combined milestone qualification remains pending.
 
 [PNG color admission](png-color-admission.json) rejects `cICP` sample color-space
 metadata through the existing unsupported color-management boundary. Three

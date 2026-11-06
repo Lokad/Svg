@@ -18,9 +18,17 @@ internal static class SvgNativeControlAssertions
     {
         string directory = Path.Combine(ResearchCorpus.Root, bank);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, manifestFile)));
-        JsonElement cases = manifest.RootElement.GetProperty("cases");
-        Assert.Equal(expectedBankCases, cases.GetArrayLength());
-        JsonElement row = cases.EnumerateArray().Single(item => Required(item, "id") == identity);
+        JsonElement row = manifest.RootElement;
+        if (row.TryGetProperty("cases", out JsonElement cases))
+        {
+            Assert.Equal(expectedBankCases, cases.GetArrayLength());
+            row = cases.EnumerateArray().Single(item => Required(item, "id") == identity);
+        }
+        else
+        {
+            Assert.Equal(1, expectedBankCases);
+            Assert.Equal(identity, Required(row, "id"));
+        }
         if (row.TryGetProperty("outputScale", out JsonElement scale)) Assert.Equal(scale.GetDouble(), options.OutputScale);
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(row, "input")));
         string inputHash = row.TryGetProperty("inputSha256", out JsonElement hash)

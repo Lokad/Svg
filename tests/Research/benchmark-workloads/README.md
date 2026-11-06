@@ -38,7 +38,9 @@ shadow and independent blur/expanded-graph boundaries. Fused and expanded native
 shadows differ at seven pixels; both now match their own targets. Three selected
 diagnostics have native stability triples; four others remain exploratory.
 
-The [color-materialization control](color-materialization.json) remains open:
-an identity color-matrix prefix exposes 110 differing pixels on both hosts and
-both runtime assets. Its independent targets have healthy stability triples.
-Broader filter closure and benchmark integration wait for this separate finding.
+The [foreground qualification](../release-baselines/shadow-foreground.json) closes
+the identity color-matrix panel's 110 differing pixels through the existing merge
+compositor. The [one-pixel counterparts](foreground-mechanisms.json) retain packed
+versus deferred-program rounding, with independent native triples. All eighteen
+inputs match their own targets across both hosts/runtime assets. Benchmark
+integration waits for the combined correctness milestone.

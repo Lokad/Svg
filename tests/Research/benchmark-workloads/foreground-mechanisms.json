@@ -1,0 +1,231 @@
+{
+  "status": "Independent literal vectors distinguish packed foreground drawing from a deferred color-filter draw. No numeric boundary/context product.",
+  "license": "CC0-1.0",
+  "licenseEvidence": "Original authored controls dedicated to the public domain here.",
+  "width": 1,
+  "height": 1,
+  "scale": 1,
+  "background": "transparent",
+  "fonts": [],
+  "recipe": "White source fill-opacity 78/255, zero-deviation unshifted shadow, fixed tint. Only the identity color-matrix prefix differs. Three healthy fresh native processes per case/host.",
+  "premultipliedRecovery": "The captured straight-alpha channels uniquely recover these premultiplied lanes using round(channel * alpha / 255). No comparison tolerance or source adjustment.",
+  "cases": [
+    {
+      "id": "plain",
+      "input": "stage-controls/foreground-plain.svg",
+      "sourceSha256": "e165fad3af3a3242bb77b30a0c3234b00c28e72fcb7743f30b81cc6789aeadb0",
+      "graph": "<feDropShadow dx='0' dy='0' stdDeviation='0' flood-color='#163750' flood-opacity='.18'/>",
+      "sourcePremultiplied": [
+        78,
+        78,
+        78,
+        78
+      ],
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/foreground-plain.png",
+          "referenceSha256": "a7c8efdbe3cf9010f827108634cdd9855a49e3f2c5cc9541cfa3c6574fcb0a92",
+          "rgba": [
+            229,
+            234,
+            234,
+            87
+          ],
+          "premultiplied": [
+            78,
+            80,
+            80,
+            87
+          ],
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "toolSha256": "00ecd5bca0eb77aca610a4550651ad3eb5f774b1a1033f309649eedb6148572d",
+          "captures": [
+            {
+              "pngSha256": "a7c8efdbe3cf9010f827108634cdd9855a49e3f2c5cc9541cfa3c6574fcb0a92",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a7c8efdbe3cf9010f827108634cdd9855a49e3f2c5cc9541cfa3c6574fcb0a92",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a7c8efdbe3cf9010f827108634cdd9855a49e3f2c5cc9541cfa3c6574fcb0a92",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/foreground-plain.png",
+          "referenceSha256": "a7c8efdbe3cf9010f827108634cdd9855a49e3f2c5cc9541cfa3c6574fcb0a92",
+          "rgba": [
+            229,
+            234,
+            234,
+            87
+          ],
+          "premultiplied": [
+            78,
+            80,
+            80,
+            87
+          ],
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "toolSha256": "00ecd5bca0eb77aca610a4550651ad3eb5f774b1a1033f309649eedb6148572d",
+          "captures": [
+            {
+              "pngSha256": "a7c8efdbe3cf9010f827108634cdd9855a49e3f2c5cc9541cfa3c6574fcb0a92",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a7c8efdbe3cf9010f827108634cdd9855a49e3f2c5cc9541cfa3c6574fcb0a92",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a7c8efdbe3cf9010f827108634cdd9855a49e3f2c5cc9541cfa3c6574fcb0a92",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "filtered",
+      "input": "stage-controls/foreground-filtered.svg",
+      "sourceSha256": "93e90fb57a2eec4e04346fa90286a6f1cf2ce451c4c7e99d22c1a2252a25d339",
+      "graph": "<feColorMatrix type='saturate' values='1'/><feDropShadow dx='0' dy='0' stdDeviation='0' flood-color='#163750' flood-opacity='.18'/>",
+      "sourcePremultiplied": [
+        78,
+        78,
+        78,
+        78
+      ],
+      "platforms": {
+        "windows": {
+          "reference": "stage-controls/references/windows/foreground-filtered.png",
+          "referenceSha256": "5b904519ed0c56cbea2261d7a36b68e5217fada6a911e088d7ee3b516a52790a",
+          "rgba": [
+            229,
+            232,
+            235,
+            88
+          ],
+          "premultiplied": [
+            79,
+            80,
+            81,
+            88
+          ],
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "toolSha256": "00ecd5bca0eb77aca610a4550651ad3eb5f774b1a1033f309649eedb6148572d",
+          "captures": [
+            {
+              "pngSha256": "5b904519ed0c56cbea2261d7a36b68e5217fada6a911e088d7ee3b516a52790a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5b904519ed0c56cbea2261d7a36b68e5217fada6a911e088d7ee3b516a52790a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5b904519ed0c56cbea2261d7a36b68e5217fada6a911e088d7ee3b516a52790a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "stage-controls/references/linux/foreground-filtered.png",
+          "referenceSha256": "5b904519ed0c56cbea2261d7a36b68e5217fada6a911e088d7ee3b516a52790a",
+          "rgba": [
+            229,
+            232,
+            235,
+            88
+          ],
+          "premultiplied": [
+            79,
+            80,
+            81,
+            88
+          ],
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "toolSha256": "00ecd5bca0eb77aca610a4550651ad3eb5f774b1a1033f309649eedb6148572d",
+          "captures": [
+            {
+              "pngSha256": "5b904519ed0c56cbea2261d7a36b68e5217fada6a911e088d7ee3b516a52790a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5b904519ed0c56cbea2261d7a36b68e5217fada6a911e088d7ee3b516a52790a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5b904519ed0c56cbea2261d7a36b68e5217fada6a911e088d7ee3b516a52790a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "mechanismTest": "../../Lokad.Svg.Tests/SvgShadowTintMechanismTests.cs"
+}

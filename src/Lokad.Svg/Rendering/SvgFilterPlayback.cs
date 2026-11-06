@@ -1268,16 +1268,10 @@ internal static class SvgFilterPlayback
                         }
                     }
                     else Offset(blurred.Pixels, output, shadowX, shadowY, new(null, false), fractionalShadow ? tint : null, null, OffsetImagePaint.Packed, new(colorSpace, colorSpace, colorSpace), new(0, 0, width, height));
-                    bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
-                    bool convertSource = inputLinear != destinationLinear;
-                    token.ThrowIfCancellationRequested();
-                    for (int offset = 0; offset < bytes; offset += 4)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (convertSource) ReadPaint(input, offset, inputLinear, colorSpace).Blend(output.Slice(offset, 4), 255);
-                        else SvgConverter.BlendPremultipliedOver(output.Slice(offset, 4), input[offset], input[offset + 1], input[offset + 2], input[offset + 3]);
-                    }
-                    linear[index] = destinationLinear;
+                    // The foreground uses the same image draw as a merge child,
+                    // including any deferred color program or alpha-only shader.
+                    Composite(input, output, primitive.Input, inputLinear, colorSpace, graphic);
+                    linear[index] = colorSpace == SvgFilterColorSpace.LinearRgb;
                 }
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive is not implemented.");
                 bool clipsStoredPixels = primitive.MaterializesImage(deviation) || primitive.Kind == SvgFilterPrimitiveKind.Flood;

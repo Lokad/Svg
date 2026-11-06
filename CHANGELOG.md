@@ -4,6 +4,8 @@
 
 - Retain the linear shadow transform's input sampling guard, preserving rounded
   source coverage through cropped filter captures and compositor tiles.
+- Share shadow foreground compositing with merge inputs, preserving deferred
+  color-filter precision and alpha rounding without a second drawing loop.
 - Reconstruct embedded PNG scanlines in their admitted buffer, removing two
   scratch rows and the per-row copy while preserving pixel and ownership behavior.
 - Reject embedded PNG `cICP` color-space declarations through the existing

@@ -25,10 +25,11 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
-[Shadow source demand](Research/release-baselines/shadow-sampling-guard.json) keeps
-six direct sampling-boundary cases, one refusal/cancellation/retry contract and
-eight canonical native renderings. Integer linear shadows retain their sampling
-guard; explicit nearest offsets and expanded graphs keep distinct targets.
+[Shadow source demand](Research/release-baselines/shadow-sampling-guard.json) and
+[foreground drawing](Research/release-baselines/shadow-foreground.json) keep eight
+direct demand/precision cases, two ownership paths sharing the existing failure/
+retry helper, and nine canonical native renderings. Linear shadows retain their
+sampling guard; packed images and deferred color programs keep distinct rounding.
 
 [Comparison/PNG mechanisms](Lokad.Svg.VisualTests/PixelComparerTests.cs) retain
 26 exact channel, alpha, dimension, chunk and storage-boundary cases. The separate
