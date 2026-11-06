@@ -1,5 +1,5 @@
 {
-  "status": "Affected qualification complete for test-only ownership setup sharing; CI pending. No renderer, source fixture, native target, tolerance or test membership change.",
+  "status": "Test-only setup sharing passes affected host/runtime checks and full primary CI membership; Windows retains only the existing frozen DejaVu assertion. No renderer/reference/test membership change.",
   "parentCommit": "7164f6535829b91edb80f8035438033baac1af34",
   "qualifiedProductionSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
   "sourceTextEncoding": "UTF-8 LF",
@@ -404,12 +404,117 @@
     "projectReferencesRebuilt": false,
     "meaning": "Only the test project was built against the previously qualified renderer assets. Both library hashes remain exact; shipping code/package qualification is unchanged."
   },
-  "nextAction": "Observe this test source commit CI at the next safe point. Retain the independent existing Windows DejaVu conflict; do not weaken it.",
+  "nextAction": "The original four simplification hotspots have their current responsibility map. Preserve distinct allocation paths and investigate further changes only with a concrete coverage/cost finding.",
   "selections": {
     "focused": "FullyQualifiedName~SvgRootImageBoundaryOwnershipTests|FullyQualifiedName~SvgRootBoxOwnershipTests|FullyQualifiedName~SvgCanvasBackgroundOwnershipTests",
     "integration": {
       "core": "FullyQualifiedName~SvgCanvasBackgroundOwnershipTests|FullyQualifiedName~SvgClippedStrokeOwnershipTests|FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgEmptyFilterSourceTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgFilterBitmapRestoreTests|FullyQualifiedName~SvgFilterCaptureStorageTests|FullyQualifiedName~SvgFilterColorMatrixOwnershipTests|FullyQualifiedName~SvgFilterColorProgramCoverageTests|FullyQualifiedName~SvgFilterCommandViewTests|FullyQualifiedName~SvgFilterGeometryOwnershipTests|FullyQualifiedName~SvgFilterRegionOwnershipTests|FullyQualifiedName~SvgFilterSourceOriginOwnershipTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgMarkerCanvasOwnershipTests|FullyQualifiedName~SvgNativeLineSourceOwnershipTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPointListPaintOwnershipTests|FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgRootBoxOwnershipTests|FullyQualifiedName~SvgRootImageBoundaryOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgShadowSamplingOwnershipTests|FullyQualifiedName~SvgSingularTransformTests|FullyQualifiedName~SvgSolidPaintOwnershipTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgUseStrokeOpacityTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests|FullyQualifiedName~SvgZeroRadiusSymbolOwnershipTests",
       "visual": "FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgCanvasBackgroundReferenceTests|FullyQualifiedName~SvgRootPaddingReferenceTests|FullyQualifiedName~SvgRootBorderReferenceTests"
     }
+  },
+  "sourceCommit": "088f0017625f25d52f64dfb4acd304b9a30cd794",
+  "ci": {
+    "runId": 42297380876,
+    "sourceCommit": "088f0017625f25d52f64dfb4acd304b9a30cd794",
+    "status": "CLOSED",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "build-and-test (windows-latest)",
+        "jobId": 128166033784,
+        "conclusion": "failure",
+        "logSha256": "2c4956db0a632a7122ab4468c230f69702aa01c39082cc3030d1dfdcacffacfd",
+        "suiteSummaries": [
+          {
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "failed": 0,
+            "passed": 48246,
+            "skipped": 0,
+            "total": 48246
+          },
+          {
+            "failed": 1,
+            "passed": 78889,
+            "skipped": 0,
+            "total": 78890
+          }
+        ],
+        "failedSteps": [
+          "Run dotnet test Lokad.Svg.slnx -c Release --no-build"
+        ],
+        "skippedSteps": [
+          ".NET 10 API, ownership and numerical compatibility",
+          ".NET 10 representative native rendering compatibility",
+          ".NET 10 font host compatibility",
+          "Run tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe",
+          "Run tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests",
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+          "Allow the pinned Chrome executable to create its sandbox",
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json",
+          "Run tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe",
+          "Run tools/validate-ci-artifacts.ps1 -Platform Windows -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe -RequireCurrentHost",
+          "Run tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/validator-selftest -Platform Windows",
+          "Run dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build",
+          "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+          "Post Run actions/setup-dotnet@v4",
+          "Post Run actions/setup-dotnet@v4"
+        ]
+      },
+      {
+        "name": "build-and-test (ubuntu-latest)",
+        "jobId": 128166034200,
+        "conclusion": "success",
+        "logSha256": "b893553999e7b65b8ae8ee05b3212324fd8897302e41ac7932535e0a4890f2da",
+        "suiteSummaries": [
+          {
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "failed": 0,
+            "passed": 48246,
+            "skipped": 0,
+            "total": 48246
+          },
+          {
+            "failed": 0,
+            "passed": 78890,
+            "skipped": 0,
+            "total": 78890
+          },
+          {
+            "failed": 0,
+            "passed": 12367,
+            "skipped": 0,
+            "total": 12367
+          },
+          {
+            "failed": 0,
+            "passed": 2678,
+            "skipped": 0,
+            "total": 2678
+          },
+          {
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          }
+        ],
+        "failedSteps": [],
+        "skippedSteps": [
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+          "Run actions/upload-artifact@v4"
+        ]
+      }
+    ],
+    "scope": "Ubuntu passes every gate, including installed packages and secondary-runtime selections. Windows stops after the unchanged DejaVu assertion; downstream steps remain skipped. Both logs saved once; do not repoll/refetch."
   }
 }

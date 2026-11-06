@@ -1,6 +1,22 @@
 # Test responsibility map
 
 Production admission changes retain their [contract map](parser-validation.md).
+The original four simplification hotspots now have these separate responsibilities:
+
+| Hotspot | Current coverage |
+| --- | --- |
+| Text-node fixtures | All 855 inputs retain canonical native rendering. [24 replay cases and 14 ownership cases](../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs) protect the distinct node, shaping, fitting and resource paths; two separate shader interactions remain. The entire fixture bank no longer repeats those lifecycles. |
+| Broad API qualification | The [96-case matrix](../../Lokad.Svg.Tests/SvgConversionApiContractTests.cs) retains representative raw/prepared and destination paths. The three font-document collections retain seven routine and 30 Research twelve-form fixtures, alongside their canonical native checks. Each such fixture still executes all twelve forms; no conversion is hidden by the fixture count. |
+| Color/filter products | Direct alpha/stop boundaries stay in mechanisms. All 20,707 color-alpha, uniform-filter and source-composition inputs retain canonical native comparisons; the [edit-loop profiles](#color-and-filter-edit-loops) select focused development coverage. API and ownership matrices remain separate. |
+| Repeated ownership setup | The [root setup qualification](root-ownership-setup.json) shares one refusal/refund/exact-peak retry sequence across six existing cases. Dimensions, pixel/peak assertions and real partial-cancellation checks stay local. All 193 affected core and 35 native cases pass on both hosts/runtimes; overlapping timing distributions establish no speedup. |
+
+These counts describe retained coverage, not reduction targets. Preserve the
+source/control roles, failing-before cases and independently captured platform
+differences. Full qualification still includes routine and Research cases.
+The [shared-budget shader-stroke contracts](../../Lokad.Svg.Tests/SvgShaderStrokePathTests.cs)
+cancel after analytic painting starts; their reached-probe, retained-scene and
+exact-retry checks remain distinct from pre-cancelled separate-budget calls.
+
 The suite uses complementary layers; class names alone do not classify every case.
 Classified cases use `Mechanism`, `Contract`, `Rendering` and `Integrity`; former
 plural spellings are normalized without changing cases. The [selection qualification](test-selection.json)
