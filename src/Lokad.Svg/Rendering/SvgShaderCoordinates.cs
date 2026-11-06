@@ -142,6 +142,14 @@ internal struct SvgShaderCoordinates
         float sy = (float)(gradient.IsUserSpace ? gradient.ReferenceScaleY : box.Height) * (float)verticalScale;
         float tx = gradient.IsUserSpace ? (float)horizontalOffset : (float)box.X * (float)horizontalScale + (float)horizontalOffset;
         float ty = gradient.IsUserSpace ? (float)verticalOffset : (float)box.Y * (float)verticalScale + (float)verticalOffset;
+        if (!gradient.IsUserSpace && gradient.SourcePaint?.Data is {} unbound)
+        {
+            SvgShaderMatrix? local = unbound.Local == SvgGradientTransform.Identity ? null
+                : new((float)unbound.Local.A, (float)unbound.Local.C, (float)unbound.Local.E,
+                    (float)unbound.Local.B, (float)unbound.Local.D, (float)unbound.Local.F);
+            return Linear((float)unbound.X1, (float)unbound.Y1, (float)unbound.X2, (float)unbound.Y2,
+                new(sx, 0, tx, 0, sy, ty), local);
+        }
         float x1 = (float)(gradient.IsUserSpace ? gradient.X1 / gradient.ReferenceScaleX : gradient.X1);
         float y1 = (float)(gradient.IsUserSpace ? gradient.Y1 / gradient.ReferenceScaleY : gradient.Y1);
         float x2 = (float)(gradient.IsUserSpace ? gradient.X2 / gradient.ReferenceScaleX : gradient.X2);

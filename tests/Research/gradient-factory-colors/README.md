@@ -19,12 +19,12 @@ source/image hashes and reconstruct the embedded
 [Noto font](../supplied-font-labels/fonts/NotoSans-Regular.ttf) input from the
 [catalog](../static-css-document/font-pack.json).
 
-The [status audit](resolved-known-differences.json) selects another 283 historical
-inputs now exact on both hosts/runtimes: 16 routine controls and 267 individual
-research cases. It separately tracks 216 admitted differences (212 clip/filter
-compositions and four near-threshold spatial gradients) and 432 documented
+The [status audit](resolved-known-differences.json) selects another 287 historical
+inputs now exact on both hosts/runtimes: 20 routine controls and 267 individual
+research cases. It separately tracks 212 admitted clip/filter differences and 432 documented
 admission boundaries (144 direct mask-text children and 288 outside focal circles).
 These categories do not turn historical rejections into permanent contracts.
-[Qualification](../release-baselines/paint-claim-trace.json) binds the results and
-unchanged native authority. Candidate/control images can differ; every tested
+[The initial audit](../release-baselines/paint-claim-trace.json) and
+[reflection correction](../release-baselines/gradient-reflection.json) bind the results
+and unchanged native authority. Candidate/control images can differ; every tested
 source keeps its own target. No reference or tolerance was rewritten.

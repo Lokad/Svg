@@ -1,8 +1,8 @@
 {
   "sourceCaptureSha256": "ffc24be6957d2446bfa3c66c229da9887cb9e37b01029aba1db3ea949b076717",
   "purpose": "Select historical cases matching their unchanged independent native targets; preserve original capture results. Open differences remain tracked separately from documented admission boundaries.",
-  "qualification": "../release-baselines/paint-claim-trace.json",
-  "routineSelection": "Sixteen inputs cover radial focal-radius alias override in both directions and both output scales, translated repeat/reflect factory boundaries, and distinct clip/filter/viewport graphs. The remaining resolved historical inputs stay individually discoverable as Research.",
+  "qualification": "../release-baselines/gradient-reflection.json",
+  "routineSelection": "Twenty inputs retain the previous sixteen roles and four failing-before reflected repeat/reflect circle inputs at both output scales. Remaining resolved historical inputs stay individually discoverable as Research.",
   "resolvedHistoricalIds": [
     "spatial-240-candidate-1",
     "spatial-243-candidate-1",
@@ -286,7 +286,11 @@
     "changed-169-candidate-1",
     "changed-169-control-1",
     "changed-170-candidate-1",
-    "changed-170-control-1"
+    "changed-170-control-1",
+    "spatial-227-candidate-1",
+    "spatial-231-candidate-1p5",
+    "spatial-259-candidate-1",
+    "spatial-263-candidate-1p5"
   ],
   "routineHistoricalIds": [
     "aliases-0-candidate-1",
@@ -304,13 +308,13 @@
     "changed-4-control-1",
     "changed-9-candidate-1",
     "changed-11-candidate-1",
-    "changed-11-control-1"
-  ],
-  "unresolvedHistoricalIds": [
+    "changed-11-control-1",
     "spatial-227-candidate-1",
     "spatial-231-candidate-1p5",
     "spatial-259-candidate-1",
-    "spatial-263-candidate-1p5",
+    "spatial-263-candidate-1p5"
+  ],
+  "unresolvedHistoricalIds": [
     "changed-3-candidate-1",
     "changed-4-candidate-1",
     "changed-5-candidate-1",

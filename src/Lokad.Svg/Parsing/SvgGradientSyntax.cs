@@ -379,7 +379,7 @@ internal static class SvgGradientSyntax
         else
         {
             gradient = MapUserSpaceVector(transform, gradient, frame, state, context.CancellationToken);
-            gradient = MirrorBoundingBoxVector(transform, gradient);
+            gradient = MirrorBoundingBoxVector(transform, gradient, state, context.CancellationToken);
         }
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
@@ -548,12 +548,12 @@ internal static class SvgGradientSyntax
         if (!bindSourceMap)
         {
             gradient = MapUserSpaceVector(transform, gradient, frame, state, context.CancellationToken);
-            gradient = MirrorBoundingBoxVector(transform, gradient);
+            gradient = MirrorBoundingBoxVector(transform, gradient, state, context.CancellationToken);
         }
         if (paintStroke)
         {
             outlineGradient = MapUserSpaceVector(transform, outlineGradient, frame, state, context.CancellationToken);
-            outlineGradient = MirrorBoundingBoxVector(transform, outlineGradient);
+            outlineGradient = MirrorBoundingBoxVector(transform, outlineGradient, state, context.CancellationToken);
         }
         if (paintRadialStroke) outlineCircle = MapRadialReference(transform, outlineCircle, frame);
         bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
@@ -978,16 +978,26 @@ internal static class SvgGradientSyntax
             frame?.ScaleX ?? 1, frame?.ScaleY ?? 1, frame?.OffsetX ?? 0, frame?.OffsetY ?? 0);
     }
 
-    /// <summary>Mirrors one objectBoundingBox gradient vector when the referencing transform reflects its axis.</summary>
-    internal static SvgLinearGradient MirrorBoundingBoxVector(SvgAffineTransform transform, SvgLinearGradient gradient)
+    /// <summary>Retains object-box reflection separately from authored factory endpoints.</summary>
+    /// <remarks>The scene reserves and owns the immutable reflected map. Legacy vector fields retain
+    /// their finite fallback; native preparation uses the original endpoints and local reflection.
+    /// Cancellation precedes reservation, and prepared draws may borrow the map concurrently.</remarks>
+    internal static SvgLinearGradient MirrorBoundingBoxVector(SvgAffineTransform transform, SvgLinearGradient gradient,
+        SvgDocumentState state, CancellationToken token)
     {
+        token.ThrowIfCancellationRequested();
         if (gradient.IsUserSpace) return gradient;
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
+        bool mirrorX = transform.A < 0, mirrorY = transform.D < 0;
+        if (!mirrorX && !mirrorY) return gradient;
+        SvgLinearPaintMapData source = gradient.SourcePaint?.Data ?? throw new InvalidOperationException("Object-box reflection requires definition coordinates.");
+        SvgGradientTransform reflection = new(mirrorX ? -1 : 1, 0, 0, mirrorY ? -1 : 1, mirrorX ? 1 : 0, mirrorY ? 1 : 0);
         double x1 = transform.A < 0 ? 1 - gradient.X1 : gradient.X1;
         double x2 = transform.A < 0 ? 1 - gradient.X2 : gradient.X2;
         double y1 = transform.D < 0 ? 1 - gradient.Y1 : gradient.Y1;
         double y2 = transform.D < 0 ? 1 - gradient.Y2 : gradient.Y2;
-        return gradient with { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2 };
+        return gradient with { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2,
+            SourcePaint = state.Scene.RetainLinearPaintMap(source with { Local = SvgGradientTransform.Compose(reflection, source.Local) }) };
     }
 
     internal static SvgParsedGeometry LowerGradientStrokeRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
@@ -1010,7 +1020,7 @@ internal static class SvgGradientSyntax
             if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
             {
                 fillGradient = MapUserSpaceVector(transform, resolvedFill, frame, state, context.CancellationToken);
-                fillGradient = MirrorBoundingBoxVector(transform, fillGradient);
+                fillGradient = MirrorBoundingBoxVector(transform, fillGradient, state, context.CancellationToken);
                 hasLinearFill = true;
             }
             else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))
@@ -1102,7 +1112,7 @@ internal static class SvgGradientSyntax
             if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
             {
                 fillGradient = MapUserSpaceVector(transform, resolvedFill, frame, state, context.CancellationToken);
-                fillGradient = MirrorBoundingBoxVector(transform, fillGradient);
+                fillGradient = MirrorBoundingBoxVector(transform, fillGradient, state, context.CancellationToken);
                 hasLinearFill = true;
             }
             else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))

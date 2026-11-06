@@ -141,7 +141,7 @@ internal static class SvgOrthogonalShapeParser
                 if (paintPathOutline && !mappedOutline)
                 {
                     pathGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame, state, context.CancellationToken);
-                    pathGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, pathGradient);
+                    pathGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, pathGradient, state, context.CancellationToken);
                 }
                 else if (paintPathRadial && !mappedOutline) pathCircle = SvgGradientSyntax.MapRadialReference(shape.Transform, outlineRadialCandidate, frame);
                 // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
@@ -315,7 +315,7 @@ internal static class SvgOrthogonalShapeParser
                 if (paintOutline && !mappedOutline)
                 {
                     strokeGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame, state, context.CancellationToken);
-                    strokeGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, strokeGradient);
+                    strokeGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, strokeGradient, state, context.CancellationToken);
                 }
                 else if (paintRadialOutline && !mappedOutline) strokeCircle = SvgGradientSyntax.MapRadialReference(shape.Transform, outlineRadialCandidate, frame);
                 // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.

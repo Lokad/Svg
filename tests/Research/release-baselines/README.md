@@ -20,6 +20,9 @@ explicit XML vector-effect inheritance is supported and documented accordingly.
 The [paint trace](paint-claim-trace.json) checks paint ownership, gradients and
 patterns. Its historical factory audit recovers 283 exact inputs, distinguishes
 432 documented admission boundaries and keeps 216 admitted differences open.
+[Separate gradient reflection maps](gradient-reflection.json) subsequently close
+four near-threshold failures through the shared scene-owned paint representation;
+212 clip/filter compositions remain open.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

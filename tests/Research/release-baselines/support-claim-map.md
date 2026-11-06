@@ -108,7 +108,7 @@ Scope: [gradients and patterns][contract-paints].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Open: [shared owner/check trace][paint-record] and [historical status][factory-status]. Of 931 omitted historical cases, 283 are now exact, 432 hit documented admission boundaries, and 216 admitted inputs still differ on both hosts: four near-threshold reflected gradients and 212 clip/filter compositions. Investigate shared sampling/composition causes; preserve targets. |
+| P1 | Units/maps/templates/spread, alpha precision, degenerate colors and independent empty paint channels | Open: [shared owner/check trace][paint-record] and [historical status][factory-status]. Of 931 historical cases, 287 are now exact, 432 hit documented admission boundaries, and 212 clip/filter compositions still differ on both hosts. [Separate reflection maps][reflection-record] close four near-threshold failures; investigate shared composition causes next. Preserve targets. |
 | P2 | Paint URL fallback, missing/wrong-kind/unavailable servers, valid transparent servers and invalid/effect URLs | Reviewed: [paint selection][paint-index] → [fallback checks][fallback-tests] and independent empty-channel/font contracts → [eight-state native pattern validity][fallback-native]. [Bindings and qualification][paint-record] correct the childless/nonpainting-child distinction. |
 | P3 | Definition-local percentage bases, cross-kind template defaults, transform replacement and literal gradientUnits rules | Reviewed: [coordinate units][gradient-coordinates] / [typed registration][definition-parser] → direct length/viewport/template/unit checks → independent definition/alias viewport fixtures. [Current bindings, case identities and qualification][paint-record]. |
 | P4 | Radial focal-circle containment and independently inherited center/radius/focal overrides | Reviewed: [typed registration][definition-parser] → root/template focal checks → [native radial maps][radial-native] and 192 exact historical alias inputs. [Trace][paint-record] pins the actual percentage containment rejection; original inputs stay unchanged. |
@@ -351,3 +351,4 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [pattern-replay]: ../../../src/Lokad.Svg/Parsing/SvgPatternUseReplay.cs
 [pattern-coordinates]: ../../../src/Lokad.Svg/Parsing/SvgPatternCoordinates.cs
 [pattern-template]: ../../../src/Lokad.Svg/Parsing/SvgPatternTemplate.cs
+[reflection-record]: gradient-reflection.json

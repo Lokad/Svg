@@ -301,7 +301,7 @@ internal static class SvgPatternSyntax
             if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
             {
                 fillGradient = SvgGradientSyntax.MapUserSpaceVector(transform, resolvedFill, frame, state, context.CancellationToken);
-                fillGradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, fillGradient);
+                fillGradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, fillGradient, state, context.CancellationToken);
                 hasLinearFill = true;
             }
             else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))

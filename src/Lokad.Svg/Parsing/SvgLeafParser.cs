@@ -307,7 +307,7 @@ internal static class SvgLeafParser
             if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient foundLinear))
             {
                 linear = transform.IsAxisAligned && !foundLinear.RequiresSourceMap
-                    ? SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame, state, context.CancellationToken)) : foundLinear;
+                    ? SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame, state, context.CancellationToken), state, context.CancellationToken) : foundLinear;
                 isLinear = true;
             }
             else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
@@ -465,7 +465,7 @@ internal static class SvgLeafParser
             if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient foundLinear))
             {
                 linear = transform.IsAxisAligned && !foundLinear.RequiresSourceMap
-                    ? SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame, state, context.CancellationToken)) : foundLinear;
+                    ? SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame, state, context.CancellationToken), state, context.CancellationToken) : foundLinear;
                 isLinear = true;
             }
             else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");

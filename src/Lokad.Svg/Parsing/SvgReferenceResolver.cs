@@ -448,7 +448,7 @@ internal static class SvgReferenceResolver
             SvgLinearGradient vector = stroke.Gradient;
             SvgAffineTransform paintPlacement = instance.Transform.ComposeChecked(SvgAffineTransform.FromTranslation(instance.X, instance.Y));
             vector = SvgGradientSyntax.MapUserSpaceVector(paintPlacement, vector, viewportFrame, document, token);
-            vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+            vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector, document, token);
             SvgRectangle fill = InstancePlacement(stroke.Fill, instance);
             SvgRectangle top = InstancePlacement(stroke.Top, instance);
             SvgRectangle bottom = InstancePlacement(stroke.Bottom, instance);
@@ -681,7 +681,7 @@ internal static class SvgReferenceResolver
             {
                 box = InstanceBox(outline.Box, reference, frame);
                 vector = SvgGradientSyntax.MapUserSpaceVector(reference.Transform.ComposeChecked(SvgAffineTransform.FromTranslation(reference.X, reference.Y)), vector, frame, state, cancellationToken);
-                vector = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, vector);
+                vector = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, vector, state, cancellationToken);
             }
             SvgClipBox? clip = outline.Clip;
             if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
@@ -1458,7 +1458,7 @@ internal static class SvgReferenceResolver
                     box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
                     if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
                     vector = SvgGradientSyntax.MapUserSpaceVector(paintPlacement, vector, viewportFrame, document, cancellationToken);
-                    vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+                    vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector, document, cancellationToken);
                 }
                 SvgClipBox? clip;
                 if (source.Clip is null) clip = viewportFrame?.Clip;
@@ -1653,7 +1653,7 @@ internal static class SvgReferenceResolver
             SvgLinearGradient vector = stroke.Gradient;
             SvgAffineTransform paintPlacement = instance.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y));
             vector = SvgGradientSyntax.MapUserSpaceVector(paintPlacement, vector, viewportFrame, document, cancellationToken);
-            vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+            vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector, document, cancellationToken);
             byte opacity = MultiplyAlpha(stroke.Opacity, instance.Opacity);
             SvgColor baseColor = stroke.Fill.Color;
             SvgRectangle finished = fill with { Color = new SvgColor(baseColor.Red, baseColor.Green, baseColor.Blue, MultiplyAlpha(baseColor.Alpha, instance.Opacity)), HasFill = fill.HasFill };
@@ -1718,7 +1718,7 @@ internal static class SvgReferenceResolver
     private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform vectorTransform, SvgViewportFrame? frame, SvgStroke? stroke, SvgDocumentState state, CancellationToken token)
     {
         vector = SvgGradientSyntax.MapUserSpaceVector(vectorTransform, vector, frame, state, token);
-        vector = SvgGradientSyntax.MirrorBoundingBoxVector(vectorTransform, vector);
+        vector = SvgGradientSyntax.MirrorBoundingBoxVector(vectorTransform, vector, state, token);
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
         return FinishInstanceGradientFill(vector, box, placement, opacity, painted, stroke);
     }
@@ -1779,7 +1779,7 @@ internal static class SvgReferenceResolver
         {
             SvgAffineTransform paintPlacement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX + reference.X, offsetY + reference.Y));
             gradient = SvgGradientSyntax.MapUserSpaceVector(paintPlacement, gradient, frame, state, cancellationToken);
-            gradient = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, gradient);
+            gradient = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, gradient, state, cancellationToken);
             return FinishInstanceGradientFill(gradient, box, fillBox, reference.Opacity, reference.IsPainted, null);
         }
         if (state.RadialGradients.TryGetValue(paintId, out SvgRadialGradient circle))
