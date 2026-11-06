@@ -1,5 +1,5 @@
 {
-  "status": "Complete-input applicability correction passes focused and affected checks and all 19 supplied native contexts; final runtime/package/W1 promotion pending.",
+  "status": "Shared shaping milestone qualified within the documented subset, including complete-input applicability. Frozen Windows DejaVu remains the sole existing qualification conflict; remaining support-claim tracing stays separate.",
   "parentCommit": "a8447d202cbe05c51822a5edfad60c205b3221a5",
   "precedingMilestone": "text-feature-dispatch.json",
   "sourceTextEncoding": "UTF-8 LF",
@@ -1147,7 +1147,327 @@
   "limits": [
     "No format-3 substitution or filtered-context execution was added.",
     "Frozen Windows DejaVu target/assertion remains unchanged.",
-    "Full qualification for the follow-up source is pending; a8447d202 evidence is retained as withheld promotion.",
     "Validation timings include startup and overlapping work; no performance improvement is claimed."
-  ]
+  ],
+  "qualifiedSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+  "packages": {
+    "sourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+    "deterministic": true,
+    "hashes": {
+      "Lokad.Svg.0.4.0-dev.1.nupkg": "9d588926673f410da72a80d7f573a573119f73ec2ffbc0270320724e3047675d",
+      "Lokad.Svg.0.4.0-dev.1.snupkg": "e4955d693c16580ae193ced6203552b87db6ccea58ddc325e002b17c3369a3b4"
+    },
+    "assets": [
+      {
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 7.7458856999874115,
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d"
+      },
+      {
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 9.177497199969366,
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17"
+      }
+    ]
+  },
+  "milestone": {
+    "fullRuntimeSuites": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "ab3f1269f62a81bf7e4284c460dd40e12a7a59cd0d4b6e6d6a207c28cf72f700",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 92.4577059999574,
+        "counters": {
+          "executed": "48246",
+          "passed": "48246",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "ab3f1269f62a81bf7e4284c460dd40e12a7a59cd0d4b6e6d6a207c28cf72f700",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 132.7273238999769,
+        "counters": {
+          "executed": "48246",
+          "passed": "48246",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "c8cb206ac980748e1857d80566b314f1319f46eccbbe20d4d78b37f90ccafb33",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 299.37844150001183,
+        "counters": {
+          "executed": "78890",
+          "passed": "78889",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "c8cb206ac980748e1857d80566b314f1319f46eccbbe20d4d78b37f90ccafb33",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 279.2759143000003,
+        "counters": {
+          "executed": "78890",
+          "passed": "78890",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "7701b75b0f12160dcd53eb5aacbb2b862c68c1fb00b03df8a100104d846b0d18",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.7738226999063045,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "7701b75b0f12160dcd53eb5aacbb2b862c68c1fb00b03df8a100104d846b0d18",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.2384522000793368,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "4ac0e9243768d54de6b69145bc83e0afce120c43af789d2f4bf175202687c213",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 87.58287900011055,
+        "counters": {
+          "executed": "48246",
+          "passed": "48246",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "4ac0e9243768d54de6b69145bc83e0afce120c43af789d2f4bf175202687c213",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 138.36520579992794,
+        "counters": {
+          "executed": "48246",
+          "passed": "48246",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "ba38ce11d7b07e3a42d891ce0ad2485d0b651e4f12a7f1cc1ac80c4440a29bac",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 304.4876108998433,
+        "counters": {
+          "executed": "78890",
+          "passed": "78889",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "ba38ce11d7b07e3a42d891ce0ad2485d0b651e4f12a7f1cc1ac80c4440a29bac",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 273.87496650009416,
+        "counters": {
+          "executed": "78890",
+          "passed": "78890",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "37d99a05c98c7dcb23731ffb9340a5ee9358125fb45d09bf4eebd78d67d0cdcc",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.832596299936995,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "37d99a05c98c7dcb23731ffb9340a5ee9358125fb45d09bf4eebd78d67d0cdcc",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.1705893999896944,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "deterministicPackages": true,
+    "installedConsumers": [
+      {
+        "kind": "package-windows",
+        "exitCode": 0,
+        "seconds": 7.478683300083503
+      },
+      {
+        "kind": "package-linux",
+        "exitCode": 0,
+        "seconds": 148.38550570001826
+      }
+    ],
+    "fullValidationProcesses": [
+      {
+        "kind": "full-net10",
+        "exitCode": 0,
+        "seconds": 412.5804499001242
+      },
+      {
+        "kind": "full-net11",
+        "exitCode": 0,
+        "seconds": 412.32038219994865
+      },
+      {
+        "kind": "package-windows",
+        "exitCode": 0,
+        "seconds": 7.478683300083503
+      },
+      {
+        "kind": "package-linux",
+        "exitCode": 0,
+        "seconds": 148.38550570001826
+      }
+    ],
+    "svgweb": "text-feature-dispatch-contexts-svgweb.json",
+    "elapsedMeaning": "Validation costs include startup, fetching and overlapping work; no renderer speed or suite before/after claim."
+  },
+  "ci": {
+    "runId": 42288296567,
+    "sourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+    "status": "CLOSED",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "build-and-test (ubuntu-latest)",
+        "jobId": 128134754715,
+        "conclusion": "success",
+        "logSha256": "29384973a8ee58466b611c3bf10def5252832d2291f44fdcf626bd443717df0e",
+        "failedSteps": [],
+        "skippedSteps": [
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+          "Run actions/upload-artifact@v4"
+        ]
+      },
+      {
+        "name": "build-and-test (windows-latest)",
+        "jobId": 128134754993,
+        "conclusion": "failure",
+        "logSha256": "2caadd5100744f1c892a86a83b65a01a217f550ad6cc944a19b366fe9f5266c4",
+        "failedSteps": [
+          "Run dotnet test Lokad.Svg.slnx -c Release --no-build"
+        ],
+        "skippedSteps": [
+          ".NET 10 API, ownership and numerical compatibility",
+          ".NET 10 representative native rendering compatibility",
+          ".NET 10 font host compatibility",
+          "Run tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe",
+          "Run tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests",
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+          "Allow the pinned Chrome executable to create its sandbox",
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json",
+          "Run tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe",
+          "Run tools/validate-ci-artifacts.ps1 -Platform Windows -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe -RequireCurrentHost",
+          "Run tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/validator-selftest -Platform Windows",
+          "Run dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build",
+          "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+          "Post Run actions/setup-dotnet@v4",
+          "Post Run actions/setup-dotnet@v4"
+        ]
+      }
+    ],
+    "diagnostic": "Ubuntu passes every gate. Windows stops at unchanged frozen DejaVu; downstream steps are skipped. Full local suites and installed consumers cover both runtimes. Do not repoll or refetch terminal logs."
+  },
+  "closedOriginalFindings": [
+    "Unmarked selected ccmp work now executes through the shared shaping requirement.",
+    "Supported contextual kern work now executes for ordinary text.",
+    "Precomposed canonical input uses complete component coverage in one physical font.",
+    "Canonical coverage retains the primary program without unnecessary fallback acquisition.",
+    "Unsupported bounded contexts with no potential complete match no longer reject supplied ordinary labels; potentially matching contexts remain unsupported.",
+    "The stale contextual-positioning comment now distinguishes raw scalar admission from complete-run execution."
+  ],
+  "nextAction": "Complete source/check/native tracing for T3/T9/T10/T11/T16; passing qualification does not itself mark support claims Reviewed."
 }

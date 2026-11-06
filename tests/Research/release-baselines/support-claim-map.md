@@ -45,14 +45,16 @@ Canonical native references and representative ownership paths stay separate.
 The [shared character-admission milestone](text-layout-admission.json) closes
 covered bidi/syllabic text bypassing the declared subset and preserves every
 original/context replay. The remaining shaping rows stay pending: independent
-[shared-dispatch controls](../text-feature-dispatch/README.md) expose substitution,
-contextual positioning, canonical decomposition and fallback work before closure.
+[shared-dispatch controls](../text-feature-dispatch/README.md) protect substitution,
+contextual positioning, canonical decomposition and fallback corrections.
 The [bounded review](text-feature-dispatch-review.json) keeps their current owners,
 60 healthy capture receipts and selection/execution constraints separate from
 passing renderer qualification.
-The [complete-input refinement](text-feature-dispatch-contexts.json) preserves
-supplied-font contexts whose unsupported lookups cannot match their input;
-potential matches retain the explicit unsupported outcome.
+The [qualified complete-input refinement](text-feature-dispatch-contexts.json)
+closes those four findings and preserves supplied-font contexts whose unsupported
+lookups cannot match their input; potential matches remain explicitly unsupported.
+Full runtime/package and original/context replays are source-bound there; they do
+not replace inspection of each pending support claim below.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and

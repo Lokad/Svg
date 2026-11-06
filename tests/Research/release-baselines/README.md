@@ -1,10 +1,12 @@
 # Release baselines
 
-[Shared character admission](text-layout-admission.json) binds current source,
-full runtime/package qualification and [all original/context replays](text-layout-admission-svgweb.json).
-Its independent controls close silent bidi/syllabic misordering when glyphs are
-supplied. The [shared shaping review](text-feature-dispatch-review.json) binds four
-open dispatch/coverage findings to independently frozen controls and current owners.
+[Shared shaping qualification](text-feature-dispatch-contexts.json) closes the four
+dispatch/coverage findings in the [source-bound review](text-feature-dispatch-review.json)
+and refines applicability of unsupported contexts without adding their execution.
+It binds full runtime/package qualification and [original/context replays](text-feature-dispatch-contexts-svgweb.json).
+The earlier [character-admission milestone](text-layout-admission.json) separately
+closes silent bidi/syllabic misordering. Frozen Windows DejaVu remains asserted;
+the remaining support-claim tracing is a separate review obligation.
 
 [Native line sources](native-line-source.json) retain commands independently of
 paint availability through shared preparation. Four failing-before cases and

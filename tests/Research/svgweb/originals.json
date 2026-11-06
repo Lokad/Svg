@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/text-layout-admission-svgweb.json",
+    "evidence": "../release-baselines/text-feature-dispatch-contexts-svgweb.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "f2a15ffb1dfc2499d2c63044c25c7586004b86d6",
-    "sourceIdentity": "Packaged shared text-layout admission correction. Fresh primary-runtime replay preserves all 204 original hashes and prior outcomes/diagnostics, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics on both hosts. Complete suites, representative secondary compatibility and installed consumers remain separately qualified; references and admission boundaries are frozen.",
-    "librarySha256": "46a98bdb761a93ede686068f69ea0361ca00351b1f8f0ce8cd0b16bb258dbea1",
+    "sourceBaseline": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+    "sourceIdentity": "Packaged shared text-feature dispatch/canonical-coverage correction. Fresh primary-runtime replay preserves all 204 original hashes and prior outcomes/diagnostics, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics on both hosts. Complete suites, representative secondary compatibility and installed consumers remain separately qualified; references and admission boundaries are frozen.",
+    "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10401,7 +10401,7 @@
           "ny1-static-review.json",
           "svg2009-static-review.json"
         ],
-        "currentReplay": "../release-baselines/text-layout-admission-svgweb.json"
+        "currentReplay": "../release-baselines/text-feature-dispatch-contexts-svgweb.json"
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0
