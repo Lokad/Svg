@@ -1,0 +1,395 @@
+{
+  "status": "Active reference-document benchmark coverage qualified. All 62 prior workloads and 50 timed method bodies remain; nine licensed documents add 18 separately scoped conversion/raster workloads. Every frozen platform pixel and font identity matches on both targets. All 80 generated workloads compile on Windows/Linux without a BDN executor or timing claim.",
+  "sourceBaseCommit": "fd014f730320713fabf03b20e89a3b2e49349953",
+  "productionSourceTreeGitId": "57619b897f3f9de3fded335ac0e2f455a563b05d",
+  "runtimeQualification": "png-row-storage.json",
+  "priorBenchmarkScopeQualification": "benchmark-scopes.json",
+  "builderQualification": "benchmark-net11-qualification.json",
+  "source": {
+    "files": [
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/BenchmarkCorpus.cs",
+        "beforeLfSha256": null,
+        "afterLfSha256": "57abdbd63a7a23f96246b7873aa548742246a517f42c8c3f4628fffc71cd4045"
+      },
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/SvgGradientDocumentBenchmarks.cs",
+        "beforeLfSha256": "c58d11b48960a4d075bf557229ea43a1523f459ca0c8eaf2f786f1ed4362f672",
+        "afterLfSha256": "23a64ff94e601d7adf88b30f0ae7c84e21754241433532b8dc1ccb3d71de5f3b"
+      },
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/SvgReferenceDocumentBenchmarks.cs",
+        "beforeLfSha256": null,
+        "afterLfSha256": "b5aa65645a5e0f9c41a3bf09866cba2525445b0542edbc8f61cd52b8bcfeb721"
+      },
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/SvgTextBenchmarks.cs",
+        "beforeLfSha256": "ce3d7a37e82261d4b086433f01c938cef29f3d1d5e169a0cebdaa78c3fa58f2e",
+        "afterLfSha256": "371dc93037bbce3802c3de69f6fbb0791cd2d85c2780a79c4db937a76ca44312"
+      }
+    ],
+    "all50PriorTimedMethodBodiesByteExact": true,
+    "allExistingRuntimeTestsFixturesReferencesLocksAndCiUnchanged": true,
+    "sharedLookup": "Three asset-backed classes share the existing executable-directory then current-directory ancestor search and Lokad.Svg.slnx marker. The two extracted local copies lose only their contextual error text; existing source paths/options/timed methods remain.",
+    "noNewRuntimeDependencyOrTestingFramework": true
+  },
+  "corpus": {
+    "manifest": "../upstream-static-documents/manifest.json",
+    "manifestSha256": "ba58f69107f02f682c3b4e41385e9734371059e06ba28b984ef3f09e05a55b5a",
+    "fontCatalog": "../upstream-static-documents/font-pack.json",
+    "fontCatalogSha256": "3ba4fb9c2c7b40df7b9f3c060ba1e5c98e461894e102684585da9effb80ce990",
+    "selection": [
+      {
+        "document": "Blur",
+        "id": "blur",
+        "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+        "width": 200,
+        "height": 200,
+        "viewport": {
+          "width": 200,
+          "height": 200
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [],
+        "fontSha256": null,
+        "referenceSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b",
+        "linuxReferenceSha256": "12b21593c0967f9f2270c5cc58a2f928afbe4dea830afe2c2e9bc3b32de0ac0b"
+      },
+      {
+        "document": "BlendMultiply",
+        "id": "blend-multiply",
+        "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+        "width": 200,
+        "height": 200,
+        "viewport": {
+          "width": 200,
+          "height": 200
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [],
+        "fontSha256": null,
+        "referenceSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42",
+        "linuxReferenceSha256": "7ef352e223d0aea7218d454d4b531bfc9ead47b71ea52d3268af52bdfdbb1f42"
+      },
+      {
+        "document": "CompositeIn",
+        "id": "composite-in",
+        "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+        "width": 200,
+        "height": 200,
+        "viewport": {
+          "width": 200,
+          "height": 200
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [],
+        "fontSha256": null,
+        "referenceSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413",
+        "linuxReferenceSha256": "7ad01f6996ca0f48596979e0f7d59676ef33997677db85fffd75b088c284a413"
+      },
+      {
+        "document": "MergeColorSpaces",
+        "id": "merge-color-spaces",
+        "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+        "width": 200,
+        "height": 200,
+        "viewport": {
+          "width": 200,
+          "height": 200
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [],
+        "fontSha256": null,
+        "referenceSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0",
+        "linuxReferenceSha256": "c6af2b579db306289319e340c0880b26714b93d08c17e92e759730cda3a695f0"
+      },
+      {
+        "document": "FilterMaskClip",
+        "id": "filter-mask-clip",
+        "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+        "width": 200,
+        "height": 200,
+        "viewport": {
+          "width": 200,
+          "height": 200
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [],
+        "fontSha256": null,
+        "referenceSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009",
+        "linuxReferenceSha256": "a0889159e5231e09258b55ed6c98465330914747120b3114bc5cf858529a8009"
+      },
+      {
+        "document": "PatternAffine",
+        "id": "pattern-affine",
+        "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+        "width": 200,
+        "height": 200,
+        "viewport": {
+          "width": 200,
+          "height": 200
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [],
+        "fontSha256": null,
+        "referenceSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642",
+        "linuxReferenceSha256": "487d29d9f9812f13f8ac086893e9cdc3bf6f5ab0c1a87e9fcef09bdc3aa30642"
+      },
+      {
+        "document": "EmbeddedPng",
+        "id": "embedded-png",
+        "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+        "width": 80,
+        "height": 80,
+        "viewport": {
+          "width": 80,
+          "height": 80
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [],
+        "fontSha256": null,
+        "referenceSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a",
+        "linuxReferenceSha256": "aa5d5326f7c0f7808baff4c73c254df3b0f58cd87d68143e98c2b377fce6738a"
+      },
+      {
+        "document": "TextPath",
+        "id": "text-path",
+        "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+        "width": 200,
+        "height": 200,
+        "viewport": {
+          "width": 200,
+          "height": 200
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [
+          "NotoSans-Regular.ttf"
+        ],
+        "fontSha256": "6B04C8DD65AF6B73EB4279472ED1580B29102D6496A377340E80A40CDB3B22C9",
+        "referenceSha256": "aa7ceb7e8eda3deb91f782548205efd8da4286d9c4e6450eb587ae93a308eae3",
+        "linuxReferenceSha256": "800b91ca51360fd00ce86a7dd225acd687dd59a8652297b8e62d09887c8e7257"
+      },
+      {
+        "document": "RealItalic",
+        "id": "text-real-italic",
+        "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+        "width": 200,
+        "height": 200,
+        "viewport": {
+          "width": 200,
+          "height": 200
+        },
+        "scale": 1,
+        "background": "transparent",
+        "license": "MIT",
+        "fonts": [
+          "NotoSans-Italic.ttf"
+        ],
+        "fontSha256": "35600501DAADD3E9030EE6ED8098FD3C7F31BFD898CA58DA8EDF793A3231C48B",
+        "referenceSha256": "b9ff989403c7074885bc62541a99ec2877450aadae2057ab1c6ca79c3459069d",
+        "linuxReferenceSha256": "4bdad0b70f59972f639b0c32f6e06cbde820589df821014ca71a55b429206367"
+      }
+    ],
+    "assetsAddedOrModified": 0,
+    "qualification": "Reuse the active 26-document collection and its original source/license, native health triples, options and regular/real-italic programs. Retired authored document collections do not regain membership."
+  },
+  "partition": {
+    "beforeMethods": 50,
+    "afterMethods": 52,
+    "retainedWorkloadsPerRuntime": 62,
+    "newWorkloadsPerRuntime": 18,
+    "afterWorkloadsPerRuntime": 80,
+    "discoveryJoins": [
+      {
+        "host": "windows",
+        "targetFramework": "net11.0",
+        "retainedCasesPerRuntime": 62,
+        "addedCasesPerRuntime": 18,
+        "afterCasesPerRuntime": 80
+      },
+      {
+        "host": "linux",
+        "targetFramework": "net11.0",
+        "retainedCasesPerRuntime": 62,
+        "addedCasesPerRuntime": 18,
+        "afterCasesPerRuntime": 80
+      },
+      {
+        "host": "windows",
+        "targetFramework": "net10.0",
+        "retainedCasesPerRuntime": 62,
+        "addedCasesPerRuntime": 18,
+        "afterCasesPerRuntime": 80
+      },
+      {
+        "host": "linux",
+        "targetFramework": "net10.0",
+        "retainedCasesPerRuntime": 62,
+        "addedCasesPerRuntime": 18,
+        "afterCasesPerRuntime": 80
+      }
+    ],
+    "scope": "Complete conversion includes parsing/lowering, rasterization and PNG encoding; input I/O/catalog binding/font acquisition stay in targeted setup. Raster-only setup additionally owns one parsed root and its font snapshot; the workload allocates/rasterizes output without parsing or PNG encoding."
+  },
+  "functionalValidation": {
+    "hostTargets": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "referenceDocuments": 9,
+        "existingAssetSetupChecks": 2,
+        "cleanupVerified": true
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "referenceDocuments": 9,
+        "existingAssetSetupChecks": 2,
+        "cleanupVerified": true
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "referenceDocuments": 9,
+        "existingAssetSetupChecks": 2,
+        "cleanupVerified": true
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "referenceDocuments": 9,
+        "existingAssetSetupChecks": 2,
+        "cleanupVerified": true
+      }
+    ],
+    "independentPngDecoder": "Pillow 11.1.0",
+    "exactNativeImageJoins": 36,
+    "fullNativePixelJoinSha256": "945400a2dd0b0f36dce82ddd1aba3cbaecbbb6f3b2df8300522dde8bdad9e580",
+    "platformDifferencesRetained": [
+      {
+        "document": "TextPath",
+        "platformDifferentPixels": 1141
+      },
+      {
+        "document": "RealItalic",
+        "platformDifferentPixels": 478
+      }
+    ],
+    "checks": [
+      "Full image dimensions and exact RGBA against unchanged host-native PNGs; invisible RGB follows the existing comparison canonicalization.",
+      "Raw and parsed-root PNG bytes match; direct raster pixels match the same independent native output.",
+      "Repeated raster calls preserve source hashes, return expected lengths and refund separate scratch.",
+      "Complete conversion retains no root; seven font-free documents acquire no snapshot. Two text documents bind the exact declared regular/real-italic program.",
+      "One fixture is reused across all nine documents; cleanup is idempotent and clears root, snapshot, options and source; rasterization after cleanup rejects missing setup.",
+      "The two existing gradient/public-label setup paths still execute with the shared locator."
+    ],
+    "linuxEnvironment": "Same glibc2.43 bubblewrap native-math context used by existing qualification; no browser recapture or renderer modification."
+  },
+  "generatedCompilation": {
+    "builds": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 13.40553419990465,
+        "cases": 80,
+        "identitySha256": "cc46fb57995b8ab4e633878c39f75f8cd67f4552172f68ef91b854cd7eab693b",
+        "driverSha256": "8e72f0c9779894799feefb1384d1c0ffbee378d05b073a254ad2adb445c1f447",
+        "generated": [
+          {
+            "cases": 80,
+            "executableSha256": "fb053b865b5a0d4015546a8f30a3f00fad6ae2e4d87a84bb43100f90d42ebb48",
+            "generatedSourceSha256": "36e588cf85b80cb3b794e41605cfc7e8198a9bc21d581e4d22923a4b31796130"
+          }
+        ]
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 11.634101499803364,
+        "cases": 80,
+        "identitySha256": "cc46fb57995b8ab4e633878c39f75f8cd67f4552172f68ef91b854cd7eab693b",
+        "driverSha256": "8e72f0c9779894799feefb1384d1c0ffbee378d05b073a254ad2adb445c1f447",
+        "generated": [
+          {
+            "cases": 80,
+            "executableSha256": "b3ebb5e266f80086ca37900a8f14e3e18e7a50df52c47b203f541d5d7c97b30b",
+            "generatedSourceSha256": "36e588cf85b80cb3b794e41605cfc7e8198a9bc21d581e4d22923a4b31796130"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 63.57391419983469,
+        "cases": 80,
+        "identitySha256": "cc46fb57995b8ab4e633878c39f75f8cd67f4552172f68ef91b854cd7eab693b",
+        "driverSha256": "8e72f0c9779894799feefb1384d1c0ffbee378d05b073a254ad2adb445c1f447",
+        "generated": [
+          {
+            "cases": 80,
+            "executableSha256": "d557ac0f0014d56bb7394a4e6b3eada69e1b712586e7576824a8c44fd521655a",
+            "generatedSourceSha256": "4e27c80978013993cc5ce9daa5181e55055d362bdd77504e4bc30553c7f1dde9"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 56.794114199932665,
+        "cases": 80,
+        "identitySha256": "cc46fb57995b8ab4e633878c39f75f8cd67f4552172f68ef91b854cd7eab693b",
+        "driverSha256": "8e72f0c9779894799feefb1384d1c0ffbee378d05b073a254ad2adb445c1f447",
+        "generated": [
+          {
+            "cases": 80,
+            "executableSha256": "29942c3122b8af99520b21b3a7dc1226aee7f00ab497876ca02b0e936a389237",
+            "generatedSourceSha256": "4e27c80978013993cc5ce9daa5181e55055d362bdd77504e4bc30553c7f1dde9"
+          }
+        ]
+      }
+    ],
+    "allFourIdentityDigestsAgree": true,
+    "eachGeneratedPartitionContains80Cases": true,
+    "all18DocumentLifecycleDescriptorsVerifiedPerHostTarget": true,
+    "retainedSyntheticSceneDescriptorsAlsoVerified": true,
+    "executorCalls": 0,
+    "timedBenchmarkExecutions": 0,
+    "scope": "Pinned public CsProjBuilder generation/compilation only. Compilation wall time is not renderer performance."
+  },
+  "documentation": {
+    "testGuide": "../../README.md#retired-collections",
+    "retirementGuidance": "The active upstream collection owns complete-document acceptance; focused behavior, API/ownership and font contracts stay in their manifests without restoring retired gates/totals.",
+    "linkAudit": {
+      "trackedMarkdownFiles": 193,
+      "retirementAnchorLinks": 42,
+      "allExistingLocalLinksResolve": true,
+      "qualificationLinkPendingRecordCreation": false
+    }
+  },
+  "inheritedQualification": "Shipping renderer source and exact committed package assets remain unchanged. Existing runtime/package/W1/native qualification and the separate frozen Windows DejaVu discrepancy retain their source bindings; no full CI/package rerun is claimed for this benchmark/documentation change.",
+  "remaining": "Realistic icon/logo/chart expansion, remaining direct mechanism coverage, installed 0.3.0/native comparisons and dedicated quiet-VM performance distributions remain open. No timed benchmark, throughput, allocation-speed or native-heap result is established."
+}

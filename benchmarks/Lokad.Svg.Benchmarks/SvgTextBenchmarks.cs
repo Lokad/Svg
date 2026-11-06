@@ -18,20 +18,12 @@ public class SvgSuppliedLabelBenchmarks
     [GlobalSetup]
     public async Task SetUp()
     {
-        string directory = Path.Combine(FindRepository(), "tests", "Research", "supplied-font-labels");
+        string directory = Path.Combine(BenchmarkCorpus.FindRepository(), "tests", "Research", "supplied-font-labels");
         _svg = File.ReadAllBytes(Path.Combine(directory, "pair-and-space.svg"));
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), "public-noto-sans");
         MemoryProvider provider = new(File.ReadAllBytes(Path.Combine(directory, "fonts", "NotoSans-Regular.ttf")));
         _snapshot = await SvgFontSnapshot.CreateAsync(_svg, catalog, provider, CancellationToken.None);
         _options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, _snapshot);
-
-        static string FindRepository()
-        {
-            foreach (string start in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
-                for (DirectoryInfo? candidate = new(start); candidate is not null; candidate = candidate.Parent)
-                    if (File.Exists(Path.Combine(candidate.FullName, "Lokad.Svg.slnx"))) return candidate.FullName;
-            throw new DirectoryNotFoundException("Run label benchmarks from a Lokad.Svg checkout.");
-        }
     }
 
     [Benchmark]

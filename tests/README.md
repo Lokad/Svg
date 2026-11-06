@@ -741,6 +741,14 @@ Historical document totals, percentage gates and exploratory quotas are not
 completion criteria. Retained cases keep their own contracts regardless of the
 collection name.
 
+## Retired collections
+
+The [upstream static documents](Research/upstream-static-documents/README.md) own
+complete-document qualification. Other collections retain mechanisms, interaction
+regressions and font/API/ownership contracts under their current manifests.
+Retained SVGs and PNGs do not confer full-document membership; keep retired
+document gates and historical totals out of current acceptance criteria.
+
 ## Fixture admission
 
 1. Record a stable ID, source/revision, creator, license/rights evidence, dimensions,

@@ -12,15 +12,7 @@ public class SvgGradientDocumentBenchmarks
     [GlobalSetup]
     public void SetUp()
     {
-        _svg = File.ReadAllBytes(Path.Combine(FindRepository(), "tests", "Fixtures", "candidates", "inv-140.svg"));
-
-        static string FindRepository()
-        {
-            foreach (string start in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
-                for (DirectoryInfo? candidate = new(start); candidate is not null; candidate = candidate.Parent)
-                    if (File.Exists(Path.Combine(candidate.FullName, "Lokad.Svg.slnx"))) return candidate.FullName;
-            throw new DirectoryNotFoundException("Run gradient benchmarks from a Lokad.Svg checkout.");
-        }
+        _svg = File.ReadAllBytes(Path.Combine(BenchmarkCorpus.FindRepository(), "tests", "Fixtures", "candidates", "inv-140.svg"));
     }
 
     [Benchmark]
