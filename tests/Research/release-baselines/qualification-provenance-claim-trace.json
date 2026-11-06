@@ -190,5 +190,128 @@
     "Frozen Windows DejaVu reference authority remains Open T18.",
     "W1 original contexts, unavailable external resource bindings and original-source recovery remain explicit outstanding work.",
     "Quiet-host performance remains unmeasured; this trace and documentation reduction do not claim faster test execution."
-  ]
+  ],
+  "retentionAndReleaseReview": {
+    "reviewedAt": "2026-11-06",
+    "parentCommit": "e6ba97b1a3bbf7ffd2b39dcbf82299b024c32490",
+    "qualifiedProductionSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+    "documentationSourceSha256Lf": {
+      ".gitattributes": "6e09ae179d2123d1be7083fbcf4a46ada19e4b4e79fc3b8b7be1f5f6ccbd1cfe",
+      "tools/README.md": "60ab25597334bfdb5fa6349db0a20ea2c10ba91fcd1d31ece9a744b9671e2099"
+    },
+    "releaseIntegrity": {
+      "tag": "v0.3.0",
+      "sourceCommit": "3f770d2db64519de957f6572c4b391934313cb6b",
+      "gitTreesVerified": 6,
+      "tagEvidenceFilesVerified": 11,
+      "archivedPackagesMatchPublishedRecord": true,
+      "workingUnsignedPackageSha256": "171269a2e2cc8900654f32f10c688f6601acd476410e00a9479010ca407d7592",
+      "workingPackagePayloadByteExactToPublishedArchive": true,
+      "archiveOnlyMember": ".signature.p7s",
+      "workingSymbolsMatchArchivedSymbols": true,
+      "scope": "Local retained packages, symbols and Git objects verified; no new nuget.org download, publication or tag mutation."
+    },
+    "currentPackages": {
+      "twoRepeatedPackOutputsMatchQualifiedHashes": true,
+      "librarySha256": {
+        "net11.0": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "net10.0": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17"
+      },
+      "qualifiedPackageMemberSha256": {
+        "CHANGELOG.md": "99355cb3ddc192e9c54ee6778449da2f2cc14e38f5832c510d7f64f83107cfe1",
+        "LICENSE.txt": "900e30dc421cf7af34ae03fddb2d33cf9829fb8a061dfa08ad95fd41765f739d",
+        "README.md": "6da412bbc822f5271bdbaf654cf099902c476fcb632305369bdf8d138b5cd1d1",
+        "THIRD_PARTY_NOTICES.txt": "1f96c5195caf6060950ce025c62074f7d3577858566e97ad74d747478ae81b09",
+        "icon.png": "efb3dd6bf3fb40e2ac604b6ab192fb80e77d0c58119bd6c12be92f133d3a2caf",
+        "licenses/FreeType/FTL.TXT": "650737ec7589c35600de73b0db88dafb314f7e32e7e3cf38d0c87ceb1a7ed31b"
+      },
+      "membersDifferingFromGitOnlyByCrLf": [
+        "CHANGELOG.md",
+        "LICENSE.txt",
+        "licenses/FreeType/FTL.TXT"
+      ],
+      "textMatchesQualifiedSourceAfterLfNormalization": true,
+      "repositoryCommitMatchesQualifiedSource": true,
+      "targetFrameworks": [
+        "net10.0",
+        "net11.0"
+      ],
+      "dependencyCount": 0,
+      "nativeOrRuntimeSpecificPayloadCount": 0,
+      "symbolFrameworksMatchLibraryFrameworks": true,
+      "productionBuildDependenciesAndCiUnchanged": [
+        "src",
+        "LICENSE.txt",
+        "THIRD_PARTY_NOTICES.txt",
+        "licenses/FreeType/FTL.TXT",
+        "Directory.Build.props",
+        "Directory.Packages.props",
+        "global.json",
+        ".github/workflows/ci.yml",
+        "Lokad.Svg.slnx"
+      ]
+    },
+    "toolchain": {
+      "pinnedSdk": "11.0.100-rc.3.26522.148",
+      "verifiedUpstreamSdk": "11.0.100-rc.3.26522.148",
+      "upstreamDownload": "https://dotnet.microsoft.com/en-us/download/dotnet/11.0",
+      "upstreamReleaseSchedule": "https://github.com/dotnet/core/blob/main/release-notes/README.md",
+      "scheduledGaDate": "2026-11-10",
+      "decision": "Current RC3 matches upstream on review date; GA migration is deferred until published and deliberately qualified."
+    },
+    "retentionDecision": {
+      "closedCacheRetirement": "benchmark-cache-retention.json",
+      "closedRetiredFileCount": 828,
+      "newRemovalCandidatesEstablished": 0,
+      "decision": "Retain unresolved original/source provenance and published/qualified inputs and outputs. Historical R85/R86 needs a distinct source lead before retirement. Standing consumer-based retention is not an additional correctness finding.",
+      "scope": "Committed records and exact named package paths only; no recursive historical inventory, link traversal or deletion."
+    },
+    "qualificationDecision": {
+      "currentTestCheckpoint": "root-ownership-setup.json",
+      "closedCiSourceCommit": "088f0017625f25d52f64dfb4acd304b9a30cd794",
+      "currentFullMilestone": "text-feature-dispatch-contexts.json",
+      "greenReleaseGate": false,
+      "remainingGate": "Open T18: frozen Windows DejaVu assertion remains failing; Windows downstream CI steps remain skipped. Prior four-context installed checks are separate evidence.",
+      "scope": "No renderer suite rerun, CI/log request, corpus replay or performance measurement. Fresh package checks are recorded separately below."
+    },
+    "packageTextCheckout": {
+      "status": "Closed: explicit LF attributes make all five packed text files byte-exact to Git in both autocrlf modes.",
+      "attributeSha256Lf": "6e09ae179d2123d1be7083fbcf4a46ada19e4b4e79fc3b8b7be1f5f6ccbd1cfe",
+      "paths": [
+        "CHANGELOG.md",
+        "LICENSE.txt",
+        "THIRD_PARTY_NOTICES.txt",
+        "licenses/FreeType/FTL.TXT",
+        "src/Lokad.Svg/README.md"
+      ],
+      "materializationRows": 20,
+      "beforeNonExactRows": 5,
+      "afterAllByteExact": true,
+      "freshPackageHashes": {
+        "Lokad.Svg.0.4.0-dev.1.nupkg": "b3172ec23cd5a34a567aacde73bc0f994f38a16a397a9df14edab630a29782bc",
+        "Lokad.Svg.0.4.0-dev.1.snupkg": "e4955d693c16580ae193ced6203552b87db6ccea58ddc325e002b17c3369a3b4"
+      },
+      "changedPayloadMembers": [
+        "CHANGELOG.md",
+        "LICENSE.txt",
+        "licenses/FreeType/FTL.TXT"
+      ],
+      "changeIsCrLfToLfOnly": true,
+      "rendererLibrariesAndSymbolsUnchanged": true,
+      "packageRepositoryCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+      "installedHostAndRuntimeConsumers": [
+        {
+          "host": "windows",
+          "exitCode": 0,
+          "seconds": 15.88700190000236
+        },
+        {
+          "host": "linux",
+          "exitCode": 0,
+          "seconds": 63.23575610015541
+        }
+      ],
+      "qualificationScope": "Two Windows packs reuse the qualified renderer and explicitly retain its repository commit. Both hosts install and execute both target assets. This proves checkout-independent text payloads, not independent cross-host compilation or a green full Windows CI gate."
+    }
+  }
 }

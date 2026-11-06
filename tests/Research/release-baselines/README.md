@@ -36,6 +36,8 @@ The [qualification/provenance trace](qualification-provenance-claim-trace.json)
 completes the finite support review, condenses test guidance and corrects the
 stale chart-shadow blocker. The packaged primary asset preserves all three
 authored workloads exactly on both hosts; timed performance stays unmeasured.
+Its retention/release audit verifies the published tag and package identities;
+explicit LF rules and fresh installed checks close checkout-dependent package text.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

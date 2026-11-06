@@ -12,6 +12,8 @@ conversion has no browser dependency. [Tests and provenance](../tests/README.md)
 defines collection membership and fixture admission.
 
 Package ZIP timestamps are fixed at `1980-01-01T00:00:00Z` in the library project.
+The five packed text files have explicit LF checkout rules in
+[.gitattributes](../.gitattributes), so `core.autocrlf` does not change their bytes.
 To check reproducibility, pack unchanged Release outputs into two directories at
 different times and compare both `.nupkg` and `.snupkg` bytes. NuGet's
 `DeterministicTimestamp=true` uses the current time; a fixed timestamp is required.
@@ -134,6 +136,8 @@ references, licenses and reproducible recipes committed. Ordinary builds and tes
 must work without historical run directories or external checkouts.
 
 Retain published packages and symbols with their exact source identity and hashes.
+NuGet signing changes the package ZIP hash; keep the published archive distinct
+from its unsigned build output and compare payload members separately.
 Before retiring a run, promote unresolved original inputs, options and provenance;
 equal resulting images do not establish duplicate evidence. Compact completed
 qualification into its committed responsibility record after matching CI succeeds.
