@@ -1,5 +1,5 @@
 {
-  "status": "Open investigation; no sampling-request change or symbol-viewport correction is promoted.",
+  "status": "Nine viewport fill interactions are closed by native-clip-device-domains.json. The remaining 24 shader/placement interactions are open; no sampling-request experiment is promoted.",
   "controls": [
     {
       "source": "../gradient-factory-colors/changed-65-candidate-1.svg",
@@ -334,7 +334,7 @@
   ],
   "conclusions": {
     "shader": "The gradient witness differs in color only with both clip and filter; removing either or removing the stroke is exact. Stroke-only retains the color difference with identical alpha. A bounded dither-phase diagnostic reproduces its native pixels, establishing a phase interaction without justifying a phase offset in production.",
-    "symbol": "The symbol witness still differs without its stroke, while stroke-only is exact. Removing the filter or changing only the symbol declaration to an ordinary group instance is exact. Its mere quarter-pixel-stroke commonality did not establish a hairline cause.",
+    "symbol": "On the recorded earlier baseline, the symbol witness differed without its stroke, while stroke-only and an ordinary group instance were exact. The logical native picture/layer clip correction now closes all nine viewport fill cases; historical observations retain their original renderer identities.",
     "model": "Keep source-picture viewport classification, incoming geometric paint clipping, owned layer bounds, source-image requests and compact ink storage distinct. Both independent banks must remain exact."
   },
   "phaseDiagnostic": {
@@ -377,16 +377,247 @@
     "verdict": "The opaque witness becomes exact but previously exact opacity cases regress. A content-origin-only follow-up does not resolve those losses. Preserve this boundary for the next shared-model review; do not widen every request."
   },
   "remaining": {
-    "inputs": 33,
-    "scope": "Nine instanced-viewport fill cases and 24 shader/placement cases. Sources keep independent targets and all known interactions; no equality-based deduplication."
+    "inputs": 24,
+    "scope": "Shader/placement interactions retain their independent native targets and all known opacity/clip cases."
   },
   "nextActions": [
-    "Trace complete native source-picture and owned-layer clip domains independently of their compact addresses, retaining the existing frame and raster-scope owners.",
-    "Trace source-image sampling requests across filter opacity and isolation; qualify all accepted historical inputs and the complete source-context bank before promotion."
+    "Trace native picture, dynamic-layer and restore ownership across filter opacity before changing sampling requests or origins.",
+    "Qualify every historical outcome and the complete independent source-context bank for a justified shared-model correction; retain all exact targets and existing owner paths."
   ],
   "limits": [
     "All sources are existing repository-authored fixtures; counterfactuals are recomposed in memory. No SVG or reference PNG collection is added.",
     "The two banks add 66 fresh native captures across both hosts. Original sources retain their frozen references.",
     "No native target, comparison, tolerance or text-layout implementation is changed."
-  ]
+  ],
+  "closedViewportEvidence": "native-clip-device-domains.json",
+  "samplingOwnerReview": {
+    "sourceCommit": "fd956406959ee930c760e60c569d0e901da0f585",
+    "traces": [
+      {
+        "id": "changed-65-candidate-1",
+        "source": "../gradient-factory-colors/changed-65-candidate-1.svg",
+        "sourceSha256": "98a3216eb92617a22047b92f24590928e5a34f3fe138086582f964d7ac0fd9dd",
+        "opacity": 1,
+        "foldedOpacity": 1,
+        "ownedRasterScope": null,
+        "outputRequest": {
+          "Left": 5,
+          "Top": 5,
+          "Right": 24,
+          "Bottom": 26
+        },
+        "imageHint": {
+          "Left": 3.125,
+          "Top": 3.625,
+          "Right": 23,
+          "Bottom": 29
+        },
+        "requiredSource": {
+          "Left": 4,
+          "Top": 4,
+          "Right": 23,
+          "Bottom": 25
+        },
+        "paddedImageOrigin": {
+          "x": 3,
+          "y": 3
+        },
+        "instrumentedPngUnchanged": true
+      },
+      {
+        "id": "changed-66-control-1",
+        "source": "../gradient-factory-colors/changed-66-control-1.svg",
+        "sourceSha256": "1cd54fa74605ef68fb2dcd1889621e324e8590e1ed6faad78c6edad5d63bb165",
+        "opacity": 0.5,
+        "foldedOpacity": 1,
+        "ownedRasterScope": null,
+        "outputRequest": {
+          "Left": 0,
+          "Top": 0,
+          "Right": 32,
+          "Bottom": 32
+        },
+        "imageHint": {
+          "Left": 3.125,
+          "Top": 3.625,
+          "Right": 23,
+          "Bottom": 29
+        },
+        "requiredSource": {
+          "Left": -1,
+          "Top": -1,
+          "Right": 31,
+          "Bottom": 31
+        },
+        "paddedImageOrigin": {
+          "x": 2,
+          "y": 2
+        },
+        "instrumentedPngUnchanged": true
+      },
+      {
+        "id": "changed-68-control-1",
+        "source": "../gradient-factory-colors/changed-68-control-1.svg",
+        "sourceSha256": "ec0213c0c2726a1ef5e5c4495fbf7e69f33ab3ec81dbfaf865981dcd6ee5784d",
+        "opacity": 0.5,
+        "foldedOpacity": 1,
+        "ownedRasterScope": null,
+        "outputRequest": {
+          "Left": 0,
+          "Top": 0,
+          "Right": 32,
+          "Bottom": 32
+        },
+        "imageHint": {
+          "Left": 1.4128764,
+          "Top": 0.5812292,
+          "Right": 28,
+          "Bottom": 28
+        },
+        "requiredSource": {
+          "Left": -1,
+          "Top": -1,
+          "Right": 31,
+          "Bottom": 31
+        },
+        "paddedImageOrigin": {
+          "x": 0,
+          "y": -1
+        },
+        "instrumentedPngUnchanged": true
+      },
+      {
+        "id": "changed-77-candidate-1",
+        "source": "../gradient-factory-colors/changed-77-candidate-1.svg",
+        "sourceSha256": "c1edee91848739468ac1be325a5b097549f5ef13aab4fd3cb6c556425adbc101",
+        "opacity": 1,
+        "foldedOpacity": 1,
+        "ownedRasterScope": null,
+        "outputRequest": {
+          "Left": 5,
+          "Top": 5,
+          "Right": 24,
+          "Bottom": 26
+        },
+        "imageHint": {
+          "Left": 3.125,
+          "Top": 3.625,
+          "Right": 23,
+          "Bottom": 29
+        },
+        "requiredSource": {
+          "Left": 4,
+          "Top": 4,
+          "Right": 23,
+          "Bottom": 25
+        },
+        "paddedImageOrigin": {
+          "x": 3,
+          "y": 3
+        },
+        "instrumentedPngUnchanged": true
+      }
+    ],
+    "interpretation": "These four source-bound traces show filter command opacity is distinct from folded paint opacity and an explicit raster scope. Source-image origins use propagated requests. This is a boundary to model, not authority for an opacity-specific phase correction.",
+    "pinnedNativeSources": [
+      {
+        "file": "SkImageFilterTypes.cpp",
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp?format=TEXT",
+        "sha256": "b0dbd89e88ab4f5d4f40507cdecf450666945304258fc0db227d504ce36894ae",
+        "bytes": 113062
+      },
+      {
+        "file": "SkCanvas.cpp",
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkCanvas.cpp?format=TEXT",
+        "sha256": "8525dcfdbc72006d1020270d3d64dc7ea4777f4d00720bddd3083f88ceac71cd",
+        "bytes": 120462
+      }
+    ],
+    "nativeBehavior": "At the pinned Skia source, FilterResult::MakeFromPicture intersects mapped picture bounds with desired output and deliberately avoids boundary padding because of dither origins. SkCanvas::internalSaveLayer retains a separate device/restore operation and adds a one-pixel boundary for filtered dynamic layers. These are distinct paths.",
+    "repeatedRequestExperiment": {
+      "change": "Re-evaluate the complete retained clip tape solely for source-image sampling requests on the corrected logical native-device model; compact geometry captures are unchanged.",
+      "replays": [
+        {
+          "host": "windows",
+          "baselineLibrarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+          "candidateLibrarySha256": "7dc2d7afb1d31cb67a9af90901e33fc6a1639d89b792f5b94a32c8367b609ae6",
+          "baselineCounts": {
+            "rejected": 432,
+            "exact": 475,
+            "rendered": 24
+          },
+          "candidateCounts": {
+            "rejected": 432,
+            "exact": 471,
+            "rendered": 28
+          },
+          "gained": [
+            "changed-153-control-1",
+            "changed-162-control-1",
+            "changed-171-control-1",
+            "changed-177-control-1",
+            "changed-65-candidate-1",
+            "changed-71-candidate-1",
+            "changed-77-candidate-1",
+            "changed-81-candidate-1"
+          ],
+          "lost": [
+            "changed-154-control-1",
+            "changed-155-control-1",
+            "changed-163-control-1",
+            "changed-164-control-1",
+            "changed-172-control-1",
+            "changed-173-control-1",
+            "changed-178-control-1",
+            "changed-179-control-1",
+            "changed-66-candidate-1",
+            "changed-72-candidate-1",
+            "changed-78-candidate-1",
+            "changed-82-candidate-1"
+          ]
+        },
+        {
+          "host": "linux",
+          "baselineLibrarySha256": "4726ed0ef7f2eac6b30708026535af98afda8a396643d13c3aca0e2635f9ef0c",
+          "candidateLibrarySha256": "7dc2d7afb1d31cb67a9af90901e33fc6a1639d89b792f5b94a32c8367b609ae6",
+          "baselineCounts": {
+            "rejected": 432,
+            "exact": 475,
+            "rendered": 24
+          },
+          "candidateCounts": {
+            "rejected": 432,
+            "exact": 471,
+            "rendered": 28
+          },
+          "gained": [
+            "changed-153-control-1",
+            "changed-162-control-1",
+            "changed-171-control-1",
+            "changed-177-control-1",
+            "changed-65-candidate-1",
+            "changed-71-candidate-1",
+            "changed-77-candidate-1",
+            "changed-81-candidate-1"
+          ],
+          "lost": [
+            "changed-154-control-1",
+            "changed-155-control-1",
+            "changed-163-control-1",
+            "changed-164-control-1",
+            "changed-172-control-1",
+            "changed-173-control-1",
+            "changed-178-control-1",
+            "changed-179-control-1",
+            "changed-66-candidate-1",
+            "changed-72-candidate-1",
+            "changed-78-candidate-1",
+            "changed-82-candidate-1"
+          ]
+        }
+      ],
+      "verdict": "Rejected: eight newly exact inputs do not justify twelve regressions of previously exact opacity interactions. No candidate code is promoted; broader tests are unnecessary for this rejected variant."
+    },
+    "nextAction": "Determine the native picture/dynamic-layer/restore owner and request bounds across filter opacity and isolation before changing the shared sampling origin. Preserve all 475 accepted historical inputs and the independent source-context bank."
+  }
 }
