@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "8ffa6f8bd",
+  "license": "CC0-1.0",
+  "licenseEvidence": "Original fixture dedicated through its SPDX declaration and README.md.",
+  "mode": "Intrinsic SVG image, transparent background, physical/CSS viewport176x80, output/device scale1.",
+  "captureRecipeRevision": 3,
+  "browserPins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "win64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+      "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+      "executableRelativePath": "chrome-win64/chrome.exe",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "linux64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/linux64/chrome-linux64.zip",
+      "archiveSha256": "e66f66d4802a46d4a022667e668aa950e277cadbfbed4b3777915b47413a0ef9",
+      "executableRelativePath": "chrome-linux64/chrome",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  },
+  "toolAssemblySha256": "95511b24ea50bc09a1a517a69efb80d6ba4045869e145f017f3f6fd8e4442170",
+  "cases": [
+    {
+      "id": "nonuniform-paints",
+      "input": "nonuniform-paints.svg",
+      "inputSha256": "c4d7c56a7e48020addca943cfe89a2ca4e4b946c2913bd833abb12673891f08b",
+      "width": 176,
+      "height": 80,
+      "platforms": {
+        "windows": {
+          "reference": "references/nonuniform-paints.png",
+          "referenceSha256": "2100a8a3df53843ddff30210249cad0f0f900214a6fb4dc40c2d60d163d73993",
+          "rgbaSha256": "6dd222020b02ec0780dbd0ae9889f67fef97f675c45eee2d9d7a0c979ba18a18",
+          "captures": [
+            {
+              "pngSha256": "2100a8a3df53843ddff30210249cad0f0f900214a6fb4dc40c2d60d163d73993",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "2100a8a3df53843ddff30210249cad0f0f900214a6fb4dc40c2d60d163d73993",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "2100a8a3df53843ddff30210249cad0f0f900214a6fb4dc40c2d60d163d73993",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/nonuniform-paints.png",
+          "referenceSha256": "2100a8a3df53843ddff30210249cad0f0f900214a6fb4dc40c2d60d163d73993",
+          "rgbaSha256": "6dd222020b02ec0780dbd0ae9889f67fef97f675c45eee2d9d7a0c979ba18a18",
+          "captures": [
+            {
+              "pngSha256": "2100a8a3df53843ddff30210249cad0f0f900214a6fb4dc40c2d60d163d73993",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "2100a8a3df53843ddff30210249cad0f0f900214a6fb4dc40c2d60d163d73993",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "2100a8a3df53843ddff30210249cad0f0f900214a6fb4dc40c2d60d163d73993",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

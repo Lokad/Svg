@@ -7,6 +7,21 @@ public sealed class SvgResourceUseReplayTests
 {
     [Theory]
     [Trait("Layer", "Mechanism")]
+    [InlineData("e")]
+    [InlineData("E")]
+    public void Standalone_clip_exponent_markers_report_the_lexical_error(string marker)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><path d='M0 0Q4 4 8 0Z " + marker + "1'/></clipPath></defs><rect width='8' height='8' clip-path='url(#c)'/></svg>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        SvgException error = Assert.Throws<SvgException>(() =>
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        Assert.Contains("unexpected exponent marker", error.Message);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("M3 24Q16 0 29 24Z", "Quadratic")]
     [InlineData("M3 24C3 0 29 0 29 24Z", "Cubic")]
     [InlineData("M3 24A13 13 0 0 1 29 24Z", "Conic")]

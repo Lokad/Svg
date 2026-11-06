@@ -13,6 +13,11 @@ Windows/Linux .NET 10 checks; the [rendering milestone][render-record] owns its
 full cross-runtime rendering/package evidence. Source/runtime/platform boundaries
 remain explicit in each qualification.
 
+The [geometry/admission qualification][geometry-admission] adds five current
+traces, one independent nonuniform symbol paint fixture and a corrected lexical
+diagnostic. Its source hashes and focused checks remain separate from promotion
+of the earlier complete rendering/package milestone.
+
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
 current source/reference byte hashes. This is an evidence audit; runtime outcomes
@@ -77,10 +82,10 @@ Scope: [geometry and strokes][contract-geometry].
 | --- | --- | --- |
 | G1 | Shape/path families, winding, caps/joins/miter, dashes/pathLength, stroke paints/units and non-scaling restrictions | Pending: [native line retention][line-source-record] is fully qualified with failing-before, affine and empty-paint/parent-bound controls. Finish the remaining shape/stroke trace. |
 | G2 | Retained rectangle/path/point-list source geometry, visibility and finite singular maps | Reviewed: [retained source parsing][definition-parser] / [collapsed bounds][paint-recording] → [command/paint roles][rectangle-source-tests] / [source lifetime][point-source-tests] / [singular anchors][singular-tests] → [affine][affine-native], [visibility][visibility-native], [singular][singular-native] and [point-list controls][point-native]. [Current bindings and checked cases][geometry-record]. |
-| G3 | Nonuniform symbol viewBox source fills/outlines and lowered-polygon exclusion | Pending. |
-| G4 | Zero/degenerate dash/shape/path/point-list behavior and authored endpoint order | Pending. |
+| G3 | Nonuniform symbol viewBox source fills/outlines and lowered-polygon exclusion | Reviewed: [reference replay][reference-replay] → [source-command/paint maps and specific exclusions][use-tests] / [symbol frame ownership][symbol-frame-tests] → [eight paint roles in one native control][symbol-paint-native]. [Current qualification][geometry-admission]. |
+| G4 | Zero/degenerate dash/shape/path/point-list behavior and authored endpoint order | Reviewed: [dash syntax][stroke-syntax] / [typed primitive lowering][leaf-parser] → [zero dashes][zero-dash-tests] / [analytical endpoint order][dash-direction-tests] / [empty sources][empty-contour-tests] / [point-list degeneracy][point-admission-tests] → [empty native contours][empty-contour-native] and [cap controls][stroke-sheet-native]. [Trace][geometry-admission]. |
 | G5 | Fixed geometry units, numeric/sign admission, viewport percentage bases and excluded length domains | Reviewed: [unit splitting][css-length] / [consumer ranges][geometry-syntax] → [direct fixed-length cases][geometry-length-tests] / [stroke domains][stroke-length-tests] / [oval rejection and cleanup][oval-length-tests] → [mixed-unit native grid][geometry-length-native]. [Current trace][geometry-record]; [viewport frames][viewport-record] retain percentage reference authority. |
-| G6 | Bare point/transform numbers, whole-list native overflow, path recovery, comma/whitespace grammar and ancestor effects | Pending. |
+| G6 | Bare point/transform numbers, whole-list native overflow, path recovery, comma/whitespace grammar and ancestor effects | Reviewed: [numeric domains][geometry-syntax] / [whole-list parsing][point-tokenizer] / [path prefixes][path-parser] / [clip scan][definition-parser] → [point overflow and ancestor floods][point-number-tests] / [comma grammar][grammar-tests] / [raw/prepared recovery][separator-tests] / [clip operands and diagnostics][resource-use-tests] → [native point controls][point-native]. [Qualification][geometry-admission]. |
 
 ## Documents and instances
 
@@ -90,8 +95,8 @@ Scope: [documents and instances][contract-instances].
 | --- | --- | --- |
 | I1 | Local reference inheritance excludes source ancestors | Reviewed: [authored source bindings][definition-parser] / [rendered group capture][group-source-parser] → [translated/minified ancestor checks][use-tests] / [instance opacity][opacity-tests] / [CSS container exclusion][selector-tests] → [visibility controls][visibility-native] and [group paint controls][group-style-native]. [Source and case bindings][geometry-record]. |
 | I2 | Local switch selection, empty locale set and required feature/extension rejection | Reviewed: [traversal][traversal], [direct][font-discovery] / [instance discovery][instance-discovery] and [paint selection][paint-index] → [switch scope checks][switch-tests] → [source-bound conditional acceptance][selection-record]. All four production walks remain byte-identical to that audit ([binding][viewport-record]). |
-| I3 | Missing/cyclic/empty references, href precedence, generated filters and zero use/symbol viewport behavior | Pending. |
-| I4 | Root/nested/symbol overflow, styles and retained-content restrictions; referenced group opacity/filter and named-use placement | Pending. |
+| I3 | Missing/cyclic/empty references, href precedence, generated filters and zero use/symbol viewport behavior | Reviewed: [href syntax][local-reference-syntax] / [source replay][reference-replay] / [viewport distinction][definition-model] → [empty href][empty-use-tests] / [zero viewports and font acquisition][empty-viewport-tests] / [source-less effects][paintless-use-tests] / [graph failures][rendered-use-tests] → [empty-symbol native control][symbol-native]. [Scope and qualification][geometry-admission]. |
+| I4 | Root/nested/symbol overflow, styles and retained-content restrictions; referenced group opacity/filter and named-use placement | Reviewed: [attribute policy][attributes] / [retained rendering][symbol-renderer] → [declaration locations][support-location-tests] / [source-scope exclusions and named uses][rendered-use-tests] → [clipped alias, isolated opacity and filtered group references][rendered-use-native]. [Qualification][geometry-admission]. |
 
 ## Gradients and patterns
 
@@ -274,6 +279,34 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [render-record]: shadow-foreground.json
 [line-source-record]: native-line-source.json
 [geometry-record]: geometry-instance-trace.json
+[geometry-admission]: geometry-admission-qualification.json
+[reference-replay]: ../../../src/Lokad.Svg/Parsing/SvgReferenceResolver.cs
+[stroke-syntax]: ../../../src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs
+[leaf-parser]: ../../../src/Lokad.Svg/Parsing/SvgLeafParser.cs
+[point-tokenizer]: ../../../src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs
+[path-parser]: ../../../src/Lokad.Svg/Parsing/SvgPathDataParser.cs
+[local-reference-syntax]: ../../../src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs
+[definition-model]: ../../../src/Lokad.Svg/Parsing/SvgRoot.cs
+[symbol-renderer]: ../../../src/Lokad.Svg/Parsing/SvgSymbolContentRenderer.cs
+[symbol-frame-tests]: ../../Lokad.Svg.Tests/SvgSymbolFrameReplayTests.cs
+[zero-dash-tests]: ../../Lokad.Svg.Tests/SvgZeroDashTests.cs
+[dash-direction-tests]: ../../Lokad.Svg.Tests/SvgLineDashDirectionTests.cs
+[empty-contour-tests]: ../../Lokad.Svg.Tests/SvgEmptyContourMappingTests.cs
+[point-admission-tests]: ../../Lokad.Svg.Tests/SvgPointListAdmissionTests.cs
+[point-number-tests]: ../../Lokad.Svg.Tests/SvgPointListNumberTests.cs
+[grammar-tests]: ../../Lokad.Svg.Tests/SvgAttributeGrammarTests.cs
+[separator-tests]: ../../Lokad.Svg.Tests/OpenTypeFontTests.PathSeparators.cs
+[resource-use-tests]: ../../Lokad.Svg.Tests/SvgResourceUseReplayTests.cs
+[empty-use-tests]: ../../Lokad.Svg.Tests/OpenTypeFontTests.EmptyUses.cs
+[empty-viewport-tests]: ../../Lokad.Svg.Tests/OpenTypeFontTests.EmptyViewports.cs
+[paintless-use-tests]: ../../Lokad.Svg.Tests/OpenTypeFontTests.PaintlessFilterSources.cs
+[rendered-use-tests]: ../../Lokad.Svg.Tests/SvgRenderedUseSourceTests.cs
+[support-location-tests]: ../../Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs
+[symbol-paint-native]: ../symbol-source-paints/capture.json
+[empty-contour-native]: ../empty-contour-sources/capture.json
+[stroke-sheet-native]: ../stroke-style-exit-sheet/manifest.json
+[symbol-native]: ../symbol-instances/manifest.json
+[rendered-use-native]: ../rendered-use-sources/capture.json
 [definition-parser]: ../../../src/Lokad.Svg/Parsing/SvgDefinitionParser.cs
 [paint-recording]: ../../../src/Lokad.Svg/Parsing/SvgPaintRecording.cs
 [group-source-parser]: ../../../src/Lokad.Svg/Parsing/SvgRenderedGroupSourceParser.cs

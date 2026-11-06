@@ -1,0 +1,529 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseCommit": "8ffa6f8bd5cf6d03170ac41f07ab5cfab959748a",
+  "renderingBaseline": {
+    "evidence": "native-line-source.json",
+    "sourceCommit": "ca222b22b0390e9b4175cb4fcc8c4d4f73b7b6ff",
+    "productionChange": "Exactly one exception-message literal in ScanClipPathData; parsing, admission, arithmetic, geometry, paint and ownership logic are byte-identical after replacing that literal."
+  },
+  "status": "Focused source/native/admission qualification passes for G3/G4/G6/I3/I4. Matching committed-source CI is pending; package and original/context promotion remains at the previous milestone.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "cc5a23f5d1017aae8466bb3e87c6eacb108b5474381d387cb07d8452b2fd6f6e",
+    "src/Lokad.Svg/Parsing/SvgAuthoredPath.cs": "3e9a24562c4d9d2b6df33ed7c45ddd44792ccc768ca5993ecbd7764bd227a26f",
+    "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs": "a476d643d3a2a8067e62e85b9d61a227e23b0a844defeb397d67217de2fa4520",
+    "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs": "5deafbe25e20d2ddcc925c96576eecd80c86a54494d5bd67a1ba328a75ef1da6",
+    "src/Lokad.Svg/Parsing/SvgEllipseSyntax.cs": "a06e3b73359dd93ded86a6b5f82ba3803010854a721a072cae261089f46c1de6",
+    "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs": "d81ce9e3b762fbe24a945ea0afccf8b2f9f857062978fbc8e75b33e9a6e6b669",
+    "src/Lokad.Svg/Parsing/SvgLeafParser.cs": "fb6793f461bad3eb1b63043cf8c1320e919b56d3a4f6bde61ecb727ba27346cb",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceParser.cs": "6b91a174bb13c13957c1c3c0cf599d2a3373ab1bc8dca783405dfa21816eea31",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs": "a57eb2e40dae164661168a96aa3d42c6796ba41a982ceb5ea379551ae75c500f",
+    "src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs": "0fddb8202eb8cf5ea4e1216fe4850c824aef89d42b1094aee5c9edd926f5333a",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs": "1ecf25d06936796de8b9e7dfd2883c32a658c3ab66c60ffbd5b63dd843eb9ffa",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalShapeParser.cs": "fda7aa5e64702fc170c74bf27a602aa792e3903caf981d76529b074bccc37e8b",
+    "src/Lokad.Svg/Parsing/SvgPathDataParser.cs": "2900afe61418cab5adcc7457c7c6d129e62f6d6525198cbf4f22885a0bf053c6",
+    "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs": "084a03e0719aaf423eef1f0b7c6d1f3930aa71815582a8ecf7ea0f6bdc5da47e",
+    "src/Lokad.Svg/Parsing/SvgRenderablePathData.cs": "3cd5b0922dc86c3435507ec526d4e5e33e9ab474390b846fba3f231a4cdc9fa4",
+    "src/Lokad.Svg/Parsing/SvgRenderedGroupSourceParser.cs": "97f4c23ccd5802f70c8909f2b20930de82b3fe0cd325dfbbd9d35f4a13f89cb1",
+    "src/Lokad.Svg/Parsing/SvgRoot.cs": "47979fd0f67cd6001e61feb038c097a4e179b236a247debeca8cb3df1201e84a",
+    "src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs": "937a70cbba900715063ee0cd2d2837772b9a9d24f2ebafe239799175b2ce9fb3",
+    "src/Lokad.Svg/Parsing/SvgSymbolContentParser.cs": "7cd90149977515f59b8f8f81febfc7a4c654b5187326618113039277789a3579",
+    "src/Lokad.Svg/Parsing/SvgSymbolContentRenderer.cs": "9021445ad1951916a9ad2a4c7c423eeda3c40e517c273142e63b29f775442b4b",
+    "src/Lokad.Svg/Parsing/SvgSymbolReferenceValidator.cs": "13dd6b3d736ca0519b87e16adbfd9d6fa983f817aa316f1251bd37ef273526f1",
+    "src/Lokad.Svg/Rendering/SvgNativeDashPath.cs": "c3e176f55d6bc6745dd1079dad2b00b67421c5a4259a7585c90cd1b11476ee1a",
+    "src/Lokad.Svg/Rendering/SvgNativePathStroke.cs": "99f65547b36ec1d8cd358ee776aef9b594292ebb5987602315b1bf983a37da5d",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyUses.cs": "0e947558bcdffdbfffb5ef1b94df673bf6959deddc981a0e54dc0290b36715d5",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyViewports.cs": "4b7cb107df154e4c888df692502eaf2414c50f9a011af57ff227474450c721e5",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.PaintlessFilterSources.cs": "2c94cc188e8f651c1ae36711c93f31dc7f44487e42260f70775a95e291abb15c",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.PathSeparators.cs": "39903df28895b67da6afdbc685e1e7e1ab5b24a3d46ece2972bc6d4293a73bf9",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs": "8e235bb1a4135b840adb60542b857e5fa7faa74686c49009c15f0072aa042197",
+    "tests/Lokad.Svg.Tests/SvgAttributeGrammarTests.cs": "0f31a97acc038a9f6d63248af1cb66b64999e691e6dd07611fe84462511364be",
+    "tests/Lokad.Svg.Tests/SvgEmptyContourMappingTests.cs": "78a76aec548868c35ff6c18843044a1ae256471f78a82207388714fb2dcecede",
+    "tests/Lokad.Svg.Tests/SvgFractionalInstanceStrokeTests.cs": "ff44e77b1adbf709c36efd8f8cc73a50eb40229b8ca4e7dcde02e60bf745fbb8",
+    "tests/Lokad.Svg.Tests/SvgGroupUseClipTests.cs": "84d7e05a9aa1700ef1366b37e8c24576e13d1ada626020a3ee532df78500a7e3",
+    "tests/Lokad.Svg.Tests/SvgLineDashDirectionTests.cs": "2d6c3879b2ecdb6a85743ba2a3c1a45e23c75e5069e004577b11744361b4738a",
+    "tests/Lokad.Svg.Tests/SvgPathDataParserTests.cs": "55421102420a0bcfaa3955a33fd8bbd642257c5e76697a92d2072c0628dc4f19",
+    "tests/Lokad.Svg.Tests/SvgPointListAdmissionTests.cs": "9b7dc896c3a975888ca74e187f759736cf1b8c0c74e01fd113e21ece7fb363dd",
+    "tests/Lokad.Svg.Tests/SvgPointListNumberTests.cs": "e224ed57ee65e016d9bc7dbca498e22696850505557de3997743d8e0be6ac6ce",
+    "tests/Lokad.Svg.Tests/SvgRenderedUseSourceTests.cs": "2ca5c71d3359e71353cb8954bf7be646de4838c3317d1231b7873ff0a2ce46f3",
+    "tests/Lokad.Svg.Tests/SvgResourceUseReplayTests.cs": "817f6c11a94e7dc3e8a41bd6d7649de5bcc8b7c564f8ca63cd8568d8c0e221ed",
+    "tests/Lokad.Svg.Tests/SvgStrokeStyleSyntaxTests.cs": "9412afdf76e40915df7c66631b61b9f0c5961f600bca9ff353f64b220fd66ccb",
+    "tests/Lokad.Svg.Tests/SvgSymbolContentTests.cs": "5eb177fea151c8201f4452f3e28b5597c3e673cbe0d1ab19825f192413c466da",
+    "tests/Lokad.Svg.Tests/SvgSymbolFrameReplayTests.cs": "8398f911f597728c3cd6914a7ad2f7f12b669dd8d05f4ba1945ed36bc2c8d1cc",
+    "tests/Lokad.Svg.Tests/SvgTransformListTests.cs": "9da7cc0d8177251e8351b576edc3362388ea2064fdb45229adc9c951f5b125e5",
+    "tests/Lokad.Svg.Tests/SvgUseInstanceTests.cs": "0333a82a02bb69cafb840df03515757b435f7f07ec56cbb2c3ce36ecd93d5dca",
+    "tests/Lokad.Svg.Tests/SvgZeroAreaStrokeContourTests.cs": "8ecf76901fe9d1baef38c57db706af5c3906e1c241883fe7629ddecb76241bcf",
+    "tests/Lokad.Svg.Tests/SvgZeroDashTests.cs": "6c1b71a92ab9309961c62096eb44d4c9f8c89bc94a5aa7cf9d1931933d3e13b6",
+    "tests/Lokad.Svg.VisualTests/SvgSymbolSourcePaintReferenceTests.cs": "e444a9684618c50e1ba65879f2fa19033214cfb42d8deadf63bbb0cf3b1d1570"
+  },
+  "groups": {
+    "G3": {
+      "owner": "SvgReferenceResolver.RequireSymbolSourceCommands and ApplySymbolPolygon/GradientPolygon/RadialPolygon/PatternPolygon; retained source commands reconstruct after unequal-axis placement.",
+      "checks": [
+        "Existing positive source-command/scene-map and fractional symbol ownership cases remain. Three original lowered-polygon inputs retain their bytes; renamed exclusions now assert the source-command rejection reason.",
+        "The new canonical native fixture separates fill/stroke and solid/linear/radial/pattern paint on one unequal-axis curved source. All six browser captures match before the diagnostic change and the final four host/runtime selections pass."
+      ],
+      "sources": [
+        "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs",
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+        "src/Lokad.Svg/Parsing/SvgAuthoredPath.cs"
+      ],
+      "tests": [
+        "tests/Lokad.Svg.Tests/SvgUseInstanceTests.cs",
+        "tests/Lokad.Svg.Tests/SvgSymbolFrameReplayTests.cs",
+        "tests/Lokad.Svg.Tests/SvgFractionalInstanceStrokeTests.cs"
+      ],
+      "nativeManifests": {
+        "../symbol-source-paints/capture.json": {
+          "manifestLfSha256": "53edfec0bf5e6f042b2d2870e98dbf4ca3f33773f6ebc2a5988c76e91fc63ce4",
+          "cases": 1
+        },
+        "../symbol-fractional-frames/manifest.json": {
+          "manifestLfSha256": "8928c56d8b7611d2a900a0315a7d2faf72add01aadf7efdc037750fdd31aa5e1",
+          "cases": 4
+        }
+      }
+    },
+    "G4": {
+      "owner": "SvgStrokeStyleSyntax.ParseDasharray; SvgNativeDashPath.Stroke/measurement; SvgNativePathStroke.Build; typed primitive/path/point-list lowering.",
+      "checks": [
+        "All-zero materialization is checked directly, including odd repetition, signed zero and allocation-free validation. Authored reversed endpoints also have analytical painted-rectangle expectations.",
+        "Empty/missing shapes and paths, ellipse radius fallback, repeated/one/two-point contours and cap/marker roles retain their existing source-specific checks. Command limits, cancellation/refund and borrowed source lifetime remain separate.",
+        "Existing native empty-contour, zero-radius and cap-sheet references retain their original inputs and capture authority."
+      ],
+      "sources": [
+        "src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgLeafParser.cs",
+        "src/Lokad.Svg/Parsing/SvgEllipseSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgOrthogonalShapeParser.cs"
+      ],
+      "tests": [
+        "tests/Lokad.Svg.Tests/SvgStrokeStyleSyntaxTests.cs",
+        "tests/Lokad.Svg.Tests/SvgZeroDashTests.cs",
+        "tests/Lokad.Svg.Tests/SvgLineDashDirectionTests.cs",
+        "tests/Lokad.Svg.Tests/SvgEmptyContourMappingTests.cs",
+        "tests/Lokad.Svg.Tests/SvgPointListAdmissionTests.cs",
+        "tests/Lokad.Svg.Tests/SvgZeroAreaStrokeContourTests.cs"
+      ],
+      "nativeManifests": {
+        "../empty-contour-sources/capture.json": {
+          "manifestLfSha256": "87743cdd95c3a6267d7650dcb92ce4cd40e0704d61d9b7b72689b3eabd025f4b",
+          "cases": 20
+        },
+        "../zero-radius-paints/capture.json": {
+          "manifestLfSha256": "6aaf5bd40ccb4039cd532f3b11b48f08cc5abaf86b55ae3bb361dbb0deab1823",
+          "cases": 16
+        },
+        "../stroke-style-exit-sheet/manifest.json": {
+          "manifestLfSha256": "04ad5a76c00d7904abe5f038f32810da154c42b53b2e05bb127573e2bd24f1b9",
+          "cases": 4
+        }
+      }
+    },
+    "G6": {
+      "owner": "SvgGeometrySyntax.DelimitedTokenReader; SvgOrthogonalGeometryTokenizer.ParseFractionalPointList; SvgPathDataParser.ReadRenderablePrefix; SvgRenderablePathData.Read; SvgDefinitionParser.ScanClipPathData.",
+      "checks": [
+        "Point-list native overflow clears the whole source after validating later tokens/limits; child filters/markers are suppressed while ancestor floods can still paint. Direct/raw/prepared and canonical native cases remain distinct.",
+        "Transform/point numbers keep their bare-number domain. ASCII comma/value boundaries, separate CSS dash grammar and malformed exponent/sign forms retain their current categories.",
+        "Renderable-prefix recovery retains complete path segments, full authored command limits and cancellation. Clip commands are scanned before recovery; unsupported clip commands still reject.",
+        "Two failing-before stray exponent-marker diagnostics now identify the lexical error. The previous message incorrectly claimed curves were unsupported; only that message changed."
+      ],
+      "sources": [
+        "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs",
+        "src/Lokad.Svg/Parsing/SvgPathDataParser.cs",
+        "src/Lokad.Svg/Parsing/SvgRenderablePathData.cs",
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs"
+      ],
+      "tests": [
+        "tests/Lokad.Svg.Tests/SvgPointListNumberTests.cs",
+        "tests/Lokad.Svg.Tests/SvgPathDataParserTests.cs",
+        "tests/Lokad.Svg.Tests/SvgAttributeGrammarTests.cs",
+        "tests/Lokad.Svg.Tests/SvgTransformListTests.cs",
+        "tests/Lokad.Svg.Tests/SvgResourceUseReplayTests.cs",
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.PathSeparators.cs"
+      ],
+      "nativeManifests": {
+        "../point-list-source-maps/capture.json": {
+          "manifestLfSha256": "256304191eb799932d9b227b342ef944a9bcc9e3a29e768eedb1d1b1f21a11f7",
+          "cases": 90
+        }
+      }
+    },
+    "I3": {
+      "owner": "SvgLocalReferenceSyntax.ReadHref/ParseDimensions; SvgLocalReferenceParser.ParseUse; SvgReferenceResolver.TryGetDefinition/ApplyFilterSource; SvgDefinition.HasEmptyViewport; retained graph validation and font discovery.",
+      "checks": [
+        "Omitted/empty href and XLink precedence retain explicit cases. Missing/cyclic targets, duplicate IDs and real resource references still fail independently of empty source geometry.",
+        "Zero use dimensions affect symbol/viewport targets, not ordinary shape/group/text targets. Raw/prepared/snapshot discovery checks assert which provider is called and preserve source bytes.",
+        "Own flood/mask/clip/opacity on an absent or empty use, empty child font suppression, live external aliases, denial/cancellation/refund and retry retain separate original contracts.",
+        "The existing empty-symbol native reference and effect/canvas qualification remain bound to the previous complete rendering milestone; no new pixel promise is inferred from rejection."
+      ],
+      "sources": [
+        "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgLocalReferenceParser.cs",
+        "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs",
+        "src/Lokad.Svg/Parsing/SvgRoot.cs",
+        "src/Lokad.Svg/Parsing/SvgSymbolReferenceValidator.cs",
+        "src/Lokad.Svg/Parsing/SvgSymbolContentRenderer.cs"
+      ],
+      "tests": [
+        "tests/Lokad.Svg.Tests/SvgRenderedUseSourceTests.cs",
+        "tests/Lokad.Svg.Tests/SvgSymbolContentTests.cs",
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyUses.cs",
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.EmptyViewports.cs",
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.PaintlessFilterSources.cs"
+      ],
+      "nativeManifests": {
+        "../symbol-instances/manifest.json": {
+          "manifestLfSha256": "08963392b84c716443e763c1a32c0afd1cd95eea91ca1f8597ea308b1c6bc20f",
+          "cases": 16
+        }
+      }
+    },
+    "I4": {
+      "owner": "SvgElementAttributePolicy; SvgNestedViewportSyntax.ValidateOverflow; retained source parsers; SvgSymbolContentRenderer.ValidateRenderedGroup and its existing filter/opacity restoration.",
+      "checks": [
+        "Declaration-location cases compare attributes, inline declarations and stylesheet rules; nested inline styles and retained nested SVG still reject, independently of supported root/symbol CSS cases.",
+        "Three new boundary cases first admit the original clipped/masked/nested-viewport group, then reject its reference. This distinguishes a source-scope restriction from a failure to parse the original group and asserts owner refund.",
+        "Named uses retain authored placement, forward/backward order and graph ownership. Independent rendered-use references cover clipped aliases, group opacity and filtered groups; ordinary instance clip support remains separate from unsupported source-group scopes."
+      ],
+      "sources": [
+        "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs",
+        "src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgRenderedGroupSourceParser.cs",
+        "src/Lokad.Svg/Parsing/SvgSymbolContentParser.cs",
+        "src/Lokad.Svg/Parsing/SvgSymbolContentRenderer.cs"
+      ],
+      "tests": [
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs",
+        "tests/Lokad.Svg.Tests/SvgRenderedUseSourceTests.cs",
+        "tests/Lokad.Svg.Tests/SvgGroupUseClipTests.cs"
+      ],
+      "nativeManifests": {
+        "../rendered-use-sources/capture.json": {
+          "manifestLfSha256": "e3bc4998aab38887098cffe44af0e0bb7c7b121fb1611c1f291088d47b80038b",
+          "cases": 5
+        },
+        "../symbol-content/manifest.json": {
+          "manifestLfSha256": "54e6b331c02335d5d3e4f1871284cd426b5b5e16341d0dc089c57ad29b38fa87",
+          "cases": 16
+        },
+        "../symbol-viewport-opacity/manifest.json": {
+          "manifestLfSha256": "69b2b722c544df933e82547717acb289e625f86a578eba1f5baa74d79ba3e39b",
+          "cases": 18
+        }
+      }
+    }
+  },
+  "nativeAddition": {
+    "manifest": "../symbol-source-paints/capture.json",
+    "inputs": 1,
+    "paintRoles": 8,
+    "platformRows": 2,
+    "freshHealthyCaptures": 6,
+    "storedPngs": 1,
+    "changedPixelsBeforeProductionChange": 0,
+    "existingReferenceChanges": 0
+  },
+  "diagnosticBefore": {
+    "librarySha256": "5976a76be08bffc524e41ded0535be9813cc99e4aeafde9574c23ac725c0bd9e",
+    "testAssemblySha256": "32ace916f9ffaf2fa7cf2ccc9792a91b58278ea65ec6744b148a0c836366d0d1",
+    "executed": 2,
+    "failed": 2,
+    "trxSha256": "a753d78051ac341ef3449963fd424d0186163e3fb5b227736692d1b99ca13745",
+    "failures": [
+      "Lokad.Svg.Tests.SvgResourceUseReplayTests.Standalone_clip_exponent_markers_report_the_lexical_error(marker: \"E\")",
+      "Lokad.Svg.Tests.SvgResourceUseReplayTests.Standalone_clip_exponent_markers_report_the_lexical_error(marker: \"e\")"
+    ]
+  },
+  "preservedTestRenames": {
+    "Non_uniform_symbol_pattern_outline_uses_stay_unsupported": "Nonuniform_symbol_pattern_outlines_without_source_commands_are_unsupported",
+    "Non_uniform_symbol_radial_outline_uses_stay_unsupported": "Nonuniform_symbol_radial_outlines_without_source_commands_are_unsupported",
+    "Non_uniform_symbol_outline_uses_stay_unsupported": "Nonuniform_symbol_linear_outlines_without_source_commands_are_unsupported"
+  },
+  "initialPaintChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgUseInstanceTests|FullyQualifiedName~SvgSymbolFrameReplayTests|FullyQualifiedName~SvgFractionalInstanceStrokeTests",
+      "librarySha256": "5976a76be08bffc524e41ded0535be9813cc99e4aeafde9574c23ac725c0bd9e",
+      "testAssemblySha256": "920ccff6bf96b5d94ce03f809cf0578b26b0b557059d0c40da87c480393c8d17",
+      "seconds": 8.481352899922058,
+      "counters": {
+        "executed": "162",
+        "passed": "162",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "966e1ce9f5776027e38d7c813bd34c3ce6293169c4af5d2a2fca860dbc67863b"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgUseInstanceTests|FullyQualifiedName~SvgSymbolFrameReplayTests|FullyQualifiedName~SvgFractionalInstanceStrokeTests",
+      "librarySha256": "5976a76be08bffc524e41ded0535be9813cc99e4aeafde9574c23ac725c0bd9e",
+      "testAssemblySha256": "920ccff6bf96b5d94ce03f809cf0578b26b0b557059d0c40da87c480393c8d17",
+      "seconds": 12.919901499990374,
+      "counters": {
+        "executed": "162",
+        "passed": "162",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "e20579eeaa1b8beee0d61a5f0dc1c0ab7467165efacae327fc740b37ee0ffb10"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgSymbolSourcePaintReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "librarySha256": "5976a76be08bffc524e41ded0535be9813cc99e4aeafde9574c23ac725c0bd9e",
+      "testAssemblySha256": "755eaeee82bd033b7af2326dfc2ca04759dbe791244e3dda6387bf606c8fff59",
+      "seconds": 10.190771099878475,
+      "counters": {
+        "executed": "161",
+        "passed": "161",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "ea4c2cd258ecc9545422220620f4d6031e60bc3ab6f980447c196f106cde54ee"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgSymbolSourcePaintReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "librarySha256": "5976a76be08bffc524e41ded0535be9813cc99e4aeafde9574c23ac725c0bd9e",
+      "testAssemblySha256": "755eaeee82bd033b7af2326dfc2ca04759dbe791244e3dda6387bf606c8fff59",
+      "seconds": 11.212098400108516,
+      "counters": {
+        "executed": "161",
+        "passed": "161",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "310ac94d7cb0aa78a0671e53eb32d2d7ac499959cefb4c269da6dc059c996b25"
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgUseInstanceTests|FullyQualifiedName~SvgSymbolFrameReplayTests|FullyQualifiedName~SvgFractionalInstanceStrokeTests",
+      "librarySha256": "375d1376ec8da061f0c4670e79d93974dac3af56e3bbb4bac47af4fa5d942d32",
+      "testAssemblySha256": "b1284473356dc01403172f2afd129bdce052630aa260f66c80cab04dbf1841fb",
+      "seconds": 7.156027199933305,
+      "counters": {
+        "executed": "162",
+        "passed": "162",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "c910d1029a5bf68ccb1e7b0ea60d7678fb370fa6ce8c9a67f86b2ccdc54cfe6f"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgUseInstanceTests|FullyQualifiedName~SvgSymbolFrameReplayTests|FullyQualifiedName~SvgFractionalInstanceStrokeTests",
+      "librarySha256": "375d1376ec8da061f0c4670e79d93974dac3af56e3bbb4bac47af4fa5d942d32",
+      "testAssemblySha256": "b1284473356dc01403172f2afd129bdce052630aa260f66c80cab04dbf1841fb",
+      "seconds": 11.547510100062937,
+      "counters": {
+        "executed": "162",
+        "passed": "162",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "cb1bc3635f470d19b69a69b8fe0a7508c56218cb03d4f2fbe066c1f203d78f00"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgSymbolSourcePaintReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "librarySha256": "375d1376ec8da061f0c4670e79d93974dac3af56e3bbb4bac47af4fa5d942d32",
+      "testAssemblySha256": "7a478dab102af3ad22e7411ae41593ff24746534498232e0cfb051ad48c8096c",
+      "seconds": 8.547728599980474,
+      "counters": {
+        "executed": "161",
+        "passed": "161",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "875e4bf010863ae7c1f92d183140873fafafce14d7a2f3f6e7fd62e677bd645e"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgSymbolSourcePaintReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "librarySha256": "375d1376ec8da061f0c4670e79d93974dac3af56e3bbb4bac47af4fa5d942d32",
+      "testAssemblySha256": "7a478dab102af3ad22e7411ae41593ff24746534498232e0cfb051ad48c8096c",
+      "seconds": 8.641145400004461,
+      "counters": {
+        "executed": "161",
+        "passed": "161",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "fba7177cb134d11e8c80550bfa093600467b1fa855126219f82c515f6b1e70ba"
+    }
+  ],
+  "affectedChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgUseInstanceTests|FullyQualifiedName~SvgSymbolFrameReplayTests|FullyQualifiedName~SvgFractionalInstanceStrokeTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgResourceUseReplayTests|FullyQualifiedName~SvgPathDataParserTests|FullyQualifiedName~SvgAttributeGrammarTests|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgPointListNumberTests|FullyQualifiedName~SvgZeroDashTests|FullyQualifiedName~SvgEmptyContourMappingTests|FullyQualifiedName~SvgPointListAdmissionTests|FullyQualifiedName~Path_separator_errors|FullyQualifiedName~Clip_prefix_recovery|FullyQualifiedName~Absent_use_sources|FullyQualifiedName~Empty_symbol_viewports|FullyQualifiedName~Empty_nested_svg_viewports|FullyQualifiedName~Zero_use_dimensions|FullyQualifiedName~Parent_filters_can_paint_from_empty|FullyQualifiedName~Masks_on_filtered_empty_instances|FullyQualifiedName~Empty_instances_preserve_own_reference_validation|FullyQualifiedName~Documented_declaration_locations|FullyQualifiedName~Nested_svg_stays_unsupported",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "e353ad80ba3b33257d6c067595fc06c0e94ce33fe189385dd589f6a8e27373f2",
+      "seconds": 9.56802189978771,
+      "counters": {
+        "executed": "1853",
+        "passed": "1853",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "2e0c7760a2bd62f95dcc99b2fc0973e1cd2d3035a9b66a9ba48b3d8ff19683a5"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgUseInstanceTests|FullyQualifiedName~SvgSymbolFrameReplayTests|FullyQualifiedName~SvgFractionalInstanceStrokeTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgResourceUseReplayTests|FullyQualifiedName~SvgPathDataParserTests|FullyQualifiedName~SvgAttributeGrammarTests|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgPointListNumberTests|FullyQualifiedName~SvgZeroDashTests|FullyQualifiedName~SvgEmptyContourMappingTests|FullyQualifiedName~SvgPointListAdmissionTests|FullyQualifiedName~Path_separator_errors|FullyQualifiedName~Clip_prefix_recovery|FullyQualifiedName~Absent_use_sources|FullyQualifiedName~Empty_symbol_viewports|FullyQualifiedName~Empty_nested_svg_viewports|FullyQualifiedName~Zero_use_dimensions|FullyQualifiedName~Parent_filters_can_paint_from_empty|FullyQualifiedName~Masks_on_filtered_empty_instances|FullyQualifiedName~Empty_instances_preserve_own_reference_validation|FullyQualifiedName~Documented_declaration_locations|FullyQualifiedName~Nested_svg_stays_unsupported",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "e353ad80ba3b33257d6c067595fc06c0e94ce33fe189385dd589f6a8e27373f2",
+      "seconds": 14.605884799966589,
+      "counters": {
+        "executed": "1853",
+        "passed": "1853",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "dfd9cf3828603f3a66ecc57562ba5c7f7ac7145fdb10bda677557f5a2cf2aa7b"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgSymbolSourcePaintReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "f1ee56e8fa107de2bfe6c7c6488afdc80351eb54718624ef4b81b515ab67d602",
+      "seconds": 8.862486799946055,
+      "counters": {
+        "executed": "161",
+        "passed": "161",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "e230c9ee7c52b5899bc5a3b685d11427d1b9285f592b52b28157c7c2db97d6e0"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~SvgSymbolSourcePaintReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "librarySha256": "c08fb75d2dd642d56f7db0de4c734adb44df85f0b1bdef20cf70e1dabcaef913",
+      "testAssemblySha256": "f1ee56e8fa107de2bfe6c7c6488afdc80351eb54718624ef4b81b515ab67d602",
+      "seconds": 11.290889100171626,
+      "counters": {
+        "executed": "161",
+        "passed": "161",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "95692dd0d505c48a5af93510f758d06c9f32326c66e6ee28ce222e34e81a9fbb"
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgUseInstanceTests|FullyQualifiedName~SvgSymbolFrameReplayTests|FullyQualifiedName~SvgFractionalInstanceStrokeTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgResourceUseReplayTests|FullyQualifiedName~SvgPathDataParserTests|FullyQualifiedName~SvgAttributeGrammarTests|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgPointListNumberTests|FullyQualifiedName~SvgZeroDashTests|FullyQualifiedName~SvgEmptyContourMappingTests|FullyQualifiedName~SvgPointListAdmissionTests|FullyQualifiedName~Path_separator_errors|FullyQualifiedName~Clip_prefix_recovery|FullyQualifiedName~Absent_use_sources|FullyQualifiedName~Empty_symbol_viewports|FullyQualifiedName~Empty_nested_svg_viewports|FullyQualifiedName~Zero_use_dimensions|FullyQualifiedName~Parent_filters_can_paint_from_empty|FullyQualifiedName~Masks_on_filtered_empty_instances|FullyQualifiedName~Empty_instances_preserve_own_reference_validation|FullyQualifiedName~Documented_declaration_locations|FullyQualifiedName~Nested_svg_stays_unsupported",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "b3251202cd5ed299462f556f228421ebfd4e7adc0aba1110c312bffa09af81af",
+      "seconds": 8.30565180000849,
+      "counters": {
+        "executed": "1853",
+        "passed": "1853",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "0c2d366d5a2337608b16c1d34806ff38d95aff20ce0ed71c5ae7646226936af0"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgUseInstanceTests|FullyQualifiedName~SvgSymbolFrameReplayTests|FullyQualifiedName~SvgFractionalInstanceStrokeTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgResourceUseReplayTests|FullyQualifiedName~SvgPathDataParserTests|FullyQualifiedName~SvgAttributeGrammarTests|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgPointListNumberTests|FullyQualifiedName~SvgZeroDashTests|FullyQualifiedName~SvgEmptyContourMappingTests|FullyQualifiedName~SvgPointListAdmissionTests|FullyQualifiedName~Path_separator_errors|FullyQualifiedName~Clip_prefix_recovery|FullyQualifiedName~Absent_use_sources|FullyQualifiedName~Empty_symbol_viewports|FullyQualifiedName~Empty_nested_svg_viewports|FullyQualifiedName~Zero_use_dimensions|FullyQualifiedName~Parent_filters_can_paint_from_empty|FullyQualifiedName~Masks_on_filtered_empty_instances|FullyQualifiedName~Empty_instances_preserve_own_reference_validation|FullyQualifiedName~Documented_declaration_locations|FullyQualifiedName~Nested_svg_stays_unsupported",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "b3251202cd5ed299462f556f228421ebfd4e7adc0aba1110c312bffa09af81af",
+      "seconds": 11.95659440010786,
+      "counters": {
+        "executed": "1853",
+        "passed": "1853",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "dcfdef14137e19f3106752a5e703b3bab4c3aa12c54b9bcf5fa9755411d92b27"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgSymbolSourcePaintReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "9ca48c66064416ad196bf5d1676c61a36a2f000ae77da156781f45fef11075e0",
+      "seconds": 9.00564909982495,
+      "counters": {
+        "executed": "161",
+        "passed": "161",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "848455a7b59056ad01928bfc267a5c1b63d3ee9ea622b0d0544157ea33842844"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "selection": "FullyQualifiedName~SvgSymbolSourcePaintReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "librarySha256": "4ace0e63f32574ee6d35d2d7a684b1a5aa33ddb0e3fa020a65c914544be27c0c",
+      "testAssemblySha256": "9ca48c66064416ad196bf5d1676c61a36a2f000ae77da156781f45fef11075e0",
+      "seconds": 8.857623999938369,
+      "counters": {
+        "executed": "161",
+        "passed": "161",
+        "failed": "0"
+      },
+      "exitCode": 0,
+      "trxSha256": "5d5adcde77f2f7428e61850e403f25cd4d3a8334fda23630ca16e6749be16d3a"
+    }
+  ],
+  "limits": [
+    "Test times include discovery/startup/TRX; concurrent host pairs are not renderer benchmarks.",
+    "Unmodified native banks retain their historical platform and capture scopes. Fresh Linux authority applies to the new fixture only.",
+    "Earlier complete runtime/package/original-context evidence remains explicitly bound to ca222b22b. No repeated package publication or reference rewrite is implied.",
+    "G1 and remaining PLAN.md duties are not closed by this trace."
+  ],
+  "compiledInventory": {
+    "compiledMethods": 5169,
+    "sourceTestFiles": 746,
+    "projects": {
+      "Lokad.Svg.Tests": {
+        "Unclassified": 1128,
+        "Mechanism": 1791,
+        "Contract": 720,
+        "Rendering": 1065,
+        "Integrity": 1
+      },
+      "Lokad.Svg.VisualTests": {
+        "Unclassified": 212,
+        "Contract": 39,
+        "Integrity": 27,
+        "Rendering": 168,
+        "Mechanism": 18
+      }
+    }
+  }
+}

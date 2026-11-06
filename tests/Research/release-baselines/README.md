@@ -10,6 +10,10 @@ The [support-claim trace](support-claim-map.md) gives the current contract a fin
 review index. Reviewed claims, pending traces and unresolved authority stay distinct.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
+The [geometry/admission qualification](geometry-admission-qualification.json)
+adds five inspected groups, an independent nonuniform symbol paint fixture and
+specific source-scope rejection checks. Clip exponent errors now describe the
+lexical failure while retaining the existing admission and recovery rules.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

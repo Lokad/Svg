@@ -274,6 +274,12 @@ all 960 original inputs and 16 authored stage controls. Its 50 routine images us
 one owned-PNG path; 926 inputs remain separate research cases. Direct mechanisms
 protect canvas rounding, material-independent recording and bitmap-local clip
 containment. Existing text and ownership contracts retain their distinct duties.
+The [nonuniform symbol paint grid](Research/symbol-source-paints/README.md) checks
+retained curved fills/strokes with solid, linear, radial and pattern paint through
+canonical conversion. Six independent healthy browser captures establish its
+Windows/Linux references. Separate mechanisms pin lowered-command and source-group
+scope exclusions; [qualification](Research/release-baselines/geometry-admission-qualification.json)
+also records path recovery, zero geometry and reference admission boundaries.
 The [rectangle source controls](Research/rectangle-shader-frames/admission-review.json)
 keep 24 original admission regressions and six independent source-role images on
 the same canonical path. Six mechanisms cover cached and reconstructed strokes;

@@ -8,6 +8,25 @@ public sealed class SvgRenderedUseSourceTests
 {
     [Theory]
     [Trait("Layer", "Mechanism")]
+    [InlineData("clip-path='url(#c)'", "<rect width='8' height='8'/>")]
+    [InlineData("mask='url(#m)'", "<rect width='8' height='8'/>")]
+    [InlineData("", "<svg width='16' height='16'><rect width='8' height='8'/></svg>")]
+    public void Referenced_rendered_groups_reject_source_clip_mask_and_nested_viewport_scopes(string attributes, string children)
+    {
+        const string definitions = "<defs><clipPath id='c'><rect width='8' height='8'/></clipPath><mask id='m'><rect width='8' height='8' fill='white'/></mask></defs>";
+        string source = definitions + "<g id='source' " + attributes + ">" + children + "</g>";
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(Document(source), SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.False(scene.HasUnsupportedChild);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        SvgException error = Assert.Throws<SvgException>(() =>
+            SvgRootParser.Parse(Document(source + "<use href='#source'/>"), SvgRenderLimits.Default, budget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]

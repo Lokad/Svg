@@ -986,7 +986,7 @@ internal static class SvgDefinitionParser
                 if (current is 'e' or 'E')
                 {
                     if (index > 0 && (char.IsDigit(pathData[index - 1]) || pathData[index - 1] == '.')) continue;
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only straight clip paths are implemented.");
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip-path data contains an unexpected exponent marker.");
                 }
                 if ((current < 'A' || current > 'Z') && (current < 'a' || current > 'z')) continue;
                 if (current is not ('M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z' or 'Q' or 'q' or 'T' or 't' or 'C' or 'c' or 'S' or 's' or 'A' or 'a')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Unsupported clip-path command.");
