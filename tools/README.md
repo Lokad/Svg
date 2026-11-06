@@ -16,6 +16,55 @@ To check reproducibility, pack unchanged Release outputs into two directories at
 different times and compare both `.nupkg` and `.snupkg` bytes. NuGet's
 `DeterministicTimestamp=true` uses the current time; a fixed timestamp is required.
 
+## Installed and native comparison preflight
+
+The [common consumer](Lokad.Svg.PackageComparison/Program.cs) runs the active
+26-document corpus through an explicitly selected installed package asset on
+.NET 11. It uses public conversion APIs, unchanged input/font bytes and one process
+for the whole batch. It records identities, outcomes and repeated PNG stability;
+it collects no timings. Keep the consumer source and runtime fixed between runs.
+The [qualification](../tests/Research/release-baselines/installed-version-comparison.json)
+records the package/asset matrix and exact Chrome comparisons.
+
+Put verified, unchanged packages in a local feed. Give each package/asset pair a
+fresh root so NuGet, generated files and outputs cannot be reused across variants:
+
+```powershell
+$comparisonRoot = Join-Path (Get-Location) "artifacts/package-comparison/candidate-net11"
+$comparisonFeed = Join-Path (Get-Location) "artifacts/package-comparison/feed"
+$comparisonArgs = @(
+    "-p:LokadSvgPackageVersion=0.4.0-dev.1"
+    "-p:LokadSvgAssetFramework=net11.0"
+    "-p:BaseIntermediateOutputPath=$comparisonRoot/obj/"
+    "-p:MSBuildProjectExtensionsPath=$comparisonRoot/obj/"
+    "-p:OutputPath=$comparisonRoot/bin/"
+    "-p:NuGetLockFilePath=$comparisonRoot/packages.lock.json"
+)
+dotnet restore tools/Lokad.Svg.PackageComparison --source $comparisonFeed --packages "$comparisonRoot/packages" @comparisonArgs
+dotnet restore tools/Lokad.Svg.PackageComparison --locked-mode --source $comparisonFeed --packages "$comparisonRoot/packages" @comparisonArgs
+dotnet build tools/Lokad.Svg.PackageComparison -c Release --no-restore --no-incremental @comparisonArgs
+dotnet "$comparisonRoot/bin/net11.0/Lokad.Svg.PackageComparison.dll" tests/Research/upstream-static-documents/manifest.json "$comparisonRoot/observed"
+```
+
+The [resvg runner](resvg-comparison/src/main.rs) uses a locked, optimized build
+with explicit fonts and all source bytes loaded before parsing. It renders each
+tree twice in the same process, then encodes PNG separately. Its declared canvas
+stays independent of usvg's reported drawing extent. Build products stay ignored:
+
+```powershell
+$env:CARGO_HOME = Join-Path (Get-Location) "artifacts/tools/cargo-comparison"
+$env:CARGO_TARGET_DIR = Join-Path (Get-Location) "artifacts/package-comparison/native-target"
+cargo run --release --locked --manifest-path tools/resvg-comparison/Cargo.toml -- tests/Research/upstream-static-documents/manifest.json artifacts/package-comparison/native-observed
+```
+
+Both tools require a new output directory. Compare every PNG with its manifest's
+platform reference using the [pixel comparison procedure](#pixel-comparison).
+Chrome remains the oracle; retain native differences. This preflight does not
+measure parse/raster/PNG cost, startup, IPC, I/O, allocations or governed memory.
+Timed comparisons belong on the dedicated quiet host described in
+[benchmarks](../docs/BENCHMARKS.md). Neither isolated project joins the ordinary
+solution build or adds a shipping renderer dependency.
+
 ## Development and qualification
 
 Use the [three test responsibilities](../tests/README.md) to choose a short edit

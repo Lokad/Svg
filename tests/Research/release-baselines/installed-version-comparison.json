@@ -1,0 +1,395 @@
+{
+  "status": "Installed/native comparison preflight qualified on one Windows .NET 11 host. One common consumer source renders all 26 active originals exactly against frozen Chrome for published 0.3.0/net10 and candidate net10/net11 assets. Optimized same-process resvg 0.49.0 renders every original with deterministic repeats; all 26 Chrome differences remain explicit. No timing or performance result.",
+  "sourceBaseCommit": "1f71f95af20f34d1dfe018390f25e1c03b1219a2",
+  "runtimeQualification": "png-row-storage.json",
+  "publishedBaseline": "0.3.0.json",
+  "priorBenchmarkQualification": "benchmark-reference-documents.json",
+  "source": {
+    "files": [
+      {
+        "file": "../../../tools/Lokad.Svg.PackageComparison/Lokad.Svg.PackageComparison.csproj",
+        "lfSha256": "a9b591d1ae4220d954485aa510542243ade4d9d2b9d50ac9e6a59e078270ef5f"
+      },
+      {
+        "file": "../../../tools/Lokad.Svg.PackageComparison/Program.cs",
+        "lfSha256": "febbedeab2a3d345fd5c1e039646e47e50e7f27d14b78d7e4b5e2dec3c51d612"
+      },
+      {
+        "file": "../../../tools/resvg-comparison/Cargo.toml",
+        "lfSha256": "a3d82d5caeebf254ccfdc897f4477d4adebaa00d69e816389091f0eb558e483e"
+      },
+      {
+        "file": "../../../tools/resvg-comparison/Cargo.lock",
+        "lfSha256": "09ccfdaa4a4f86198c7d93c3d26dc4ab27fa3f59c312c382962bd5982d07c7a1"
+      },
+      {
+        "file": "../../../tools/resvg-comparison/src/main.rs",
+        "lfSha256": "43036fe509fe4b205275a6e45c02e558facd2a9063588f11a64b6976511d055b"
+      }
+    ],
+    "shippingRendererTestsReferencesDependenciesAndCiUnchanged": true,
+    "sourceOrReferenceRegeneration": false,
+    "ordinarySolutionUnchanged": true,
+    "projects": "The managed project consumes installed NuGet assets through a deliberate framework reference; the native Cargo project is isolated. Neither introduces a shipping runtime dependency or an InternalsVisibleTo grant."
+  },
+  "corpus": {
+    "manifest": "../upstream-static-documents/manifest.json",
+    "manifestSha256": "ba58f69107f02f682c3b4e41385e9734371059e06ba28b984ef3f09e05a55b5a",
+    "fontCatalogSha256": "3ba4fb9c2c7b40df7b9f3c060ba1e5c98e461894e102684585da9effb80ce990",
+    "sources": 26,
+    "sourceOptionsReferenceAndFontJoinSha256": "33a331ac861390318fdcb7f05a0e90fd780841e24bbb360ec67bfbe6f9903157",
+    "fontPrograms": [
+      {
+        "file": "fonts/NotoSans-Regular.ttf",
+        "sha256": "6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9",
+        "license": "OFL-1.1"
+      },
+      {
+        "file": "fonts/NotoSans-Italic.ttf",
+        "sha256": "35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b",
+        "license": "OFL-1.1"
+      }
+    ],
+    "context": "Original input bytes, explicit declared viewport, unit output scale, transparent background and only the committed regular/real-italic programs. Windows references stay unchanged. This finite collection does not qualify broader real-world performance or every support interaction."
+  },
+  "managed": {
+    "packages": [
+      {
+        "file": "Lokad.Svg.0.3.0.nupkg",
+        "sha256": "422b55321cf709dd004f2b8bb3d6dbee2b6a4bc5aef46e835d403835064f46f5"
+      },
+      {
+        "file": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "87dfa02c4098bb831b4486d3b8f8c1be5066e31afefd194774bc871d364fd328"
+      }
+    ],
+    "variants": [
+      {
+        "label": "published-net10",
+        "version": "0.3.0",
+        "assetFramework": "net10.0",
+        "librarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625",
+        "consumerSourceSha256": "febbedeab2a3d345fd5c1e039646e47e50e7f27d14b78d7e4b5e2dec3c51d612",
+        "consumerAssemblySha256": "d582360153482ab86f7233006102869f90bd79d2fa0bba22bf105f1b0de46b1a",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "target": ".NETCoreApp,Version=v10.0",
+        "outcomes": {
+          "rendered": 26,
+          "rejected": 0
+        },
+        "exactChromeImages": 26,
+        "rgbaIdentitySha256": "9a4653947d1a0733c64ab858c1710253b9d09828941e08611edf6bbd24e74833",
+        "pngIdentitySha256": "b1c1ee7a981db01dd66df54e96584a6978cde14c758f5b6d9c730067f3238a27",
+        "libraryVersion": "0.3.0+3f770d2db64519de957f6572c4b391934313cb6b"
+      },
+      {
+        "label": "candidate-net10",
+        "version": "0.4.0-dev.1",
+        "assetFramework": "net10.0",
+        "librarySha256": "5a60a9e207e402b24330ce2db6f5c6e3a39e4c7db4b383bd75828f2cb97c7c1e",
+        "consumerSourceSha256": "febbedeab2a3d345fd5c1e039646e47e50e7f27d14b78d7e4b5e2dec3c51d612",
+        "consumerAssemblySha256": "2bbbc21d61a04853e24cdc9a8c66aabd129f136bdade37aef95ca61ed7b33686",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "target": ".NETCoreApp,Version=v10.0",
+        "outcomes": {
+          "rendered": 26,
+          "rejected": 0
+        },
+        "exactChromeImages": 26,
+        "rgbaIdentitySha256": "9a4653947d1a0733c64ab858c1710253b9d09828941e08611edf6bbd24e74833",
+        "pngIdentitySha256": "b1c1ee7a981db01dd66df54e96584a6978cde14c758f5b6d9c730067f3238a27",
+        "libraryVersion": "0.4.0-dev.1+b04e118e445db411d0f1ab0b41c4faa96a1bb463"
+      },
+      {
+        "label": "candidate-net11",
+        "version": "0.4.0-dev.1",
+        "assetFramework": "net11.0",
+        "librarySha256": "c7b156f58ceb5415cdeeaf8604ecb37c8e0e6915c5e3b819ce1e016468edb223",
+        "consumerSourceSha256": "febbedeab2a3d345fd5c1e039646e47e50e7f27d14b78d7e4b5e2dec3c51d612",
+        "consumerAssemblySha256": "eccc49038b50c830ece6e8c479394f41012ea942ca9e503a32b8c53c2d6f8df7",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "target": ".NETCoreApp,Version=v11.0",
+        "outcomes": {
+          "rendered": 26,
+          "rejected": 0
+        },
+        "exactChromeImages": 26,
+        "rgbaIdentitySha256": "9a4653947d1a0733c64ab858c1710253b9d09828941e08611edf6bbd24e74833",
+        "pngIdentitySha256": "b1c1ee7a981db01dd66df54e96584a6978cde14c758f5b6d9c730067f3238a27",
+        "libraryVersion": "0.4.0-dev.1+b04e118e445db411d0f1ab0b41c4faa96a1bb463"
+      }
+    ],
+    "identicalRuntimeAndConsumerSource": true,
+    "lockedIsolatedRestores": true,
+    "warningsAsErrors": true,
+    "exactChromeImageComparisons": 78,
+    "unchangedSourceAndRepeatedPngBytesVerified": true,
+    "scope": "Public synchronous full conversion, including PNG, with source bytes and program data read beforehand. Font verification/preparation is separate setup. Version-default limits remain version-specific; equal pixels do not prove equivalent memory governance. Internal raster-only, allocations, throughput and latency are unmeasured."
+  },
+  "native": {
+    "renderer": "resvg 0.49.0",
+    "host": "Windows x86_64 MSVC",
+    "rustc": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+    "cargo": "cargo 1.96.0 (30a34c682 2026-05-25)",
+    "binarySha256": "9b0d08f3e38cacfdd65971dcf9b891d087f33604791cace5709c0e6be3a12c23",
+    "lockSha256": "09ccfdaa4a4f86198c7d93c3d26dc4ab27fa3f59c312c382962bd5982d07c7a1",
+    "lockedPackages": 70,
+    "profile": {
+      "opt-level": 3,
+      "debug": false,
+      "lto": true,
+      "codegen-units": 1,
+      "strip": true,
+      "incremental": false
+    },
+    "features": [
+      "text",
+      "raster-images"
+    ],
+    "systemAndMemmapFontFeaturesAbsent": true,
+    "cases": 26,
+    "rasterCallsPerParsedTree": 2,
+    "exactChromeImages": 0,
+    "unequalChromeImages": 26,
+    "skippedCases": 0,
+    "sourceAndReferenceChanges": 0,
+    "rgbaIdentitySha256": "44fc0e380145902130ce227d05e1443ab5b4d784dba0fdf836e0cd6043fc6121",
+    "mismatchColumns": [
+      "id",
+      "changedPixels",
+      "maximumChannelError",
+      "maximumAlphaError",
+      "pngSha256"
+    ],
+    "mismatches": [
+      [
+        "geometry-rect",
+        401,
+        64,
+        64,
+        "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7"
+      ],
+      [
+        "geometry-cubic",
+        1012,
+        255,
+        75,
+        "8bf45bb6922b574df35715d9a744c5f5b5a10b9231021fbacc5611528d0c1a24"
+      ],
+      [
+        "geometry-arc",
+        809,
+        255,
+        64,
+        "cbf44d4c2f8bbeca8fecf9cfd27a70316486ee466943f88cd077b3fe9bfa0431"
+      ],
+      [
+        "stroke-dashed-circle",
+        925,
+        255,
+        81,
+        "1a382b515c25170186ef588ccbe74ff17f126d70bde3da7b06810f532ac910b6"
+      ],
+      [
+        "stroke-round-join",
+        894,
+        255,
+        64,
+        "0fae808fd19c07d869c40f3a58fc085bef7e6f66a9586454308851e190057d29"
+      ],
+      [
+        "nested-affine",
+        561,
+        64,
+        64,
+        "8d662b5de69b1eea7ff5560b13bbbda78f64463ac4d158d1fba88c2d1496c869"
+      ],
+      [
+        "symbol-opacity",
+        401,
+        64,
+        64,
+        "4f77982029f7eda1a737b0fefd515b03dcba6f60d62d930dbfd6f2902c9be2fe"
+      ],
+      [
+        "linear-affine",
+        3215,
+        255,
+        64,
+        "4e86ea6e81f2afac5160e2847ef3f7c7403c11c02020cdabb87482c3ff1e8da6"
+      ],
+      [
+        "radial-affine",
+        2208,
+        170,
+        64,
+        "73c42e1d9e9f326bbb71a2de205a52de30ac14e2217a297799b48b72f815d0a6"
+      ],
+      [
+        "object-box-clip",
+        540,
+        153,
+        66,
+        "2f9a7194c457ea96616b34285cdd09b83509e90293c918bd0b65069f36264d32"
+      ],
+      [
+        "nested-clip-child",
+        924,
+        170,
+        64,
+        "fba3cf56e1a3521f4d81cf00ae2f0100cd221f5a922e722247b2f400b6e2f8e5"
+      ],
+      [
+        "clip-child-union",
+        1125,
+        128,
+        64,
+        "7ae8c46b0fa7ca99c51bcac06219b5e9fdbbe07b977d6c374728e1c859dd855b"
+      ],
+      [
+        "luminance-mask",
+        13601,
+        255,
+        64,
+        "d0e88abd509cc422f0b7b0b2f405d3dbdae40093c7b0d284efe945b2813c126e"
+      ],
+      [
+        "pattern-viewbox",
+        611,
+        255,
+        64,
+        "561779912f5c2feda40167d6602fe6f9e4cafcf5b9d0908d9c6261248079494a"
+      ],
+      [
+        "pattern-affine",
+        5108,
+        255,
+        113,
+        "0e07e86d5a1c6c924a750024209af86416b7557ab739036c5dee276f183655f2"
+      ],
+      [
+        "embedded-png",
+        161,
+        64,
+        64,
+        "8aa61614b03b6885c1799e57a8c89fd5fc6b2ae0af88b5667df8f532b6524738"
+      ],
+      [
+        "blur",
+        15433,
+        170,
+        64,
+        "48b900732019da3f387e038d1782f377744522e361ddd0a8257ad07240ae9bc8"
+      ],
+      [
+        "blend-multiply",
+        401,
+        64,
+        64,
+        "a3c7ce4ba94fe4a7ae687e000ae7f1d963338d89ebda63f0b5eaf5d0e9ba4da8"
+      ],
+      [
+        "composite-in",
+        401,
+        64,
+        64,
+        "893f913e0854a9e5acad8a7ac3162e31bc17fb2ee82ec8b46813263c8a117b4c"
+      ],
+      [
+        "merge-color-spaces",
+        6593,
+        255,
+        64,
+        "78ec0709ed9fa6e7dcea801354d3f1c811bcb4cc0e37ee18a5d4ef9f7d3d4ea4"
+      ],
+      [
+        "filter-mask-clip",
+        7223,
+        255,
+        64,
+        "b3cf9f0ac76d9273954b9a442f953b25db2c543b5e7fed18c0d31b2c3b88f844"
+      ],
+      [
+        "css-priority",
+        401,
+        64,
+        64,
+        "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7"
+      ],
+      [
+        "text-real-italic",
+        939,
+        192,
+        192,
+        "6950e7faaf84efbb6834d292a8b6813a3d6d2cf7ecb5ead09d57ed8a8f5d85b4"
+      ],
+      [
+        "text-path",
+        1736,
+        195,
+        195,
+        "a180862cdcc6e465ab008497c0cbefd768adabc6f4c8f0e9f62fd49b15a7b077"
+      ],
+      [
+        "wpt-marker-path",
+        2678,
+        255,
+        51,
+        "c2237414f8fa08787d2bbb4c60dae7008c345b51c1dfba3a61e651579a4f863d"
+      ],
+      [
+        "wpt-nested-viewport",
+        56,
+        24,
+        0,
+        "20de25b1f6c739e7c8ed0027577d4cb5a9ff35a3d664ffed5f204224e0334ef4"
+      ]
+    ],
+    "scope": "One optimized library process for the complete corpus. SVG/font I/O precedes parsing; trees stay in memory for repeated raster calls into a cleared caller-size pixmap. PNG encoding and file writes follow rasterization. The runner performs no system-font discovery, external string image resolution, per-document child launch, clocks or IPC measurements.",
+    "compilerHost": "x86_64-pc-windows-msvc"
+  },
+  "viewport": {
+    "originalAndExplicitRootTransportByteExact": true,
+    "pngSha256": "20de25b1f6c739e7c8ed0027577d4cb5a9ff35a3d664ffed5f204224e0334ef4",
+    "canvas": [
+      300,
+      150
+    ],
+    "reportedDrawingExtent": [
+      162.5,
+      112.5
+    ],
+    "caseId": "wpt-nested-viewport",
+    "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+    "captureTransportSha256": "3e38168518dce0dd1c6e559e96aeee07f427b83548c62d1a481a577e09559646",
+    "rule": "For dimensionless documents usvg can replace its reported size with a drawing extent after layout. Options.default_size supplies the layout viewport and the pixmap owns the declared output canvas. No fit/stretch/crop is inferred from the reported drawing size. The original and committed explicit-root capture transport yield identical native PNG bytes.",
+    "primarySources": [
+      "https://raw.githubusercontent.com/linebender/resvg/v0.49.0/crates/usvg/src/parser/options.rs",
+      "https://raw.githubusercontent.com/linebender/resvg/v0.49.0/crates/usvg/src/parser/converter.rs"
+    ]
+  },
+  "validation": {
+    "independentDecoder": "Pillow 11.1.0",
+    "fullImageComparisons": 104,
+    "allDimensionsExact": true,
+    "rgbaRule": "Ignore RGB only at zero alpha, preserving every partial-alpha/channel value; matches the existing PixelComparer contract.",
+    "managedBuilds": 3,
+    "nativeBuild": "cargo build --release --locked",
+    "nativeLint": "cargo clippy --release --locked -- -D warnings",
+    "nativeFormatting": "cargo fmt",
+    "existingOutputGuards": [
+      {
+        "runner": "managed",
+        "rejectedExistingOutput": true,
+        "reportSha256Unchanged": true
+      },
+      {
+        "runner": "native",
+        "rejectedExistingOutput": true,
+        "reportSha256Unchanged": true
+      }
+    ],
+    "timedExecutions": 0
+  },
+  "remaining": "Quiet-VM timing and allocation/native-memory distributions, parse+raster versus raster-only versus PNG/startup/IPC/I/O measurements, realistic icon/logo/chart workloads and broader mechanism coverage remain open. Svg.Skia stays optional. This preflight does not close P6 performance or P7 release gates; historical W1/runtime/package qualifications keep their source bindings."
+}

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks />
+    <TargetFramework>net11.0</TargetFramework>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Lokad.Svg" Version="$(LokadSvgPackageVersion)" GeneratePathProperty="true" ExcludeAssets="all" PrivateAssets="all" />
+    <Reference Include="Lokad.Svg">
+      <HintPath>$(PkgLokad_Svg)/lib/$(LokadSvgAssetFramework)/Lokad.Svg.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Target Name="RequireComparisonPackage" BeforeTargets="CollectPackageReferences">
+    <Error Condition="'$(LokadSvgPackageVersion)' == ''" Text="Pass LokadSvgPackageVersion explicitly." />
+    <Error Condition="'$(LokadSvgAssetFramework)' != 'net10.0' and '$(LokadSvgAssetFramework)' != 'net11.0'" Text="Pass LokadSvgAssetFramework=net10.0 or net11.0 explicitly." />
+  </Target>
+</Project>

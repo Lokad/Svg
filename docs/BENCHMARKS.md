@@ -64,6 +64,11 @@ real-italic font programs. Input I/O, catalog binding and acquisition stay outsi
 both timings. These focused documents complement the synthetic mechanisms;
 larger icon/logo/chart workload coverage remains separate work.
 
+The [installed/native preflight](../tests/Research/release-baselines/installed-version-comparison.json)
+qualifies package/asset identities and frozen pixels on one fixed runtime. Follow
+the [comparison procedures](../tools/README.md#installed-and-native-comparison-preflight)
+before timing; record native fidelity differences alongside performance results.
+
 For cold observations, use fresh MemoryProbe processes with
 the [diagnostic procedure](../README.md#diagnostic-tools); report initialization
 and input/output work separately. Verify output pixels when comparing changes.
