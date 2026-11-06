@@ -25,5 +25,6 @@ are representative; the rendering bank does not repeat the API matrix.
 [Independent native point vectors](../windows-font-unit-scaling/expanded-points.json)
 separate the Windows strike arithmetic from rendering consumers. The
 [milestone record](../svgweb/text-anchor-layout.json) retains failing-before
-evidence and qualification results. Text-path-local CSS remains outside the
-support contract; the path control inherits its CSS from groups.
+evidence and qualification results. The path control inherits its CSS from groups;
+the separate [text-path style controls](../text-path-styles/README.md) protect
+path-local declarations, their cascade and mixed direct/path ranges.

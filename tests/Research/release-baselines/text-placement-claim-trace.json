@@ -1,0 +1,855 @@
+{
+  "status": "T5-T8/T13-T15/T19 reviewed against shared text placement owners, distinct mechanism/contract paths and unchanged independent targets.",
+  "qualifiedProductionSourceCommit": "c780283f423090a4363a7975f00db86a09064854",
+  "priorFullQualification": "css-at-rule-admission.json",
+  "repositoryBaseCommit": "5df016eb8",
+  "hashPolicy": "Canonical LF for source/metadata; exact bytes for authored SVG, font programs and PNG references.",
+  "supportContract": "../../../docs/SUPPORT_MATRIX.md",
+  "supportContractSha256": "8ff9f3598fbf2c7475a5dcf0f1ae4f05eab8746122035b26daf1ac115715703d",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs",
+      "sha256": "dc17c91c96fd6d152e35d04e4cd2d0eb981e8be9a0a408f32049629de9f51844"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+      "sha256": "d81ce9e3b762fbe24a945ea0afccf8b2f9f857062978fbc8e75b33e9a6e6b669"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgInertPresentationSyntax.cs",
+      "sha256": "f6584dc4516e9c34dd6b04ad07def1b044fd32e0575e0a9c710a7b95a2e319c4"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgInheritedTextStyle.cs",
+      "sha256": "607c8c18f7cc343e726e3ef623f30735bf336e0795458fd7b26bf789b9659904"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs",
+      "sha256": "3bd38ff5b3d782517845991fbd4c4eb0909c3cc85f78e46da8a6165bb03096e3"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgMeasuredTextPath.cs",
+      "sha256": "d69dd5edd76c7aa871059ef40113e948218e4e7aa8a9400797fd0e70937c175d"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPendingTextLayout.cs",
+      "sha256": "d4c7b1c890aa3235627d7261c58269915c4ab3c1a7dea0e01fea83a6cce52e25"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs",
+      "sha256": "f99d68cc2ac113547e42e31caca331bdbc4d0fd33839d2c14388738a9a0f5b13"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextBaselineMetrics.cs",
+      "sha256": "08261fbe7d899169cca6b67798c6f205d18b526a692e307a6f83dda88111f3b4"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextLayoutBounds.cs",
+      "sha256": "dd820dc7ef4376180d35b9b99fc377073313affd7c7a9f725c683e9945f1dd44"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextPaintOutput.cs",
+      "sha256": "c64ef314803cfae6bfc99f88332860c09305a3c5ea8edcd18d1370a0c0882301"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextPathLayout.cs",
+      "sha256": "bbd5d158ae5c29fa661a1ecdb73bdc11593dae0e0479539f1e738fec907d36cd"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextPathSyntax.cs",
+      "sha256": "1a1d5ea9c9665b46d6940538aa100747340fa8c7e524caf41832194578777930"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextPositionBasis.cs",
+      "sha256": "f2debd78c6152fd0d8082e53a443638873c7dba7b1b8252547189c16bde3d537"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextPositionLists.cs",
+      "sha256": "70de55e80f43cdef58ac3a0f384154fe347e4e725b81f73d17280fabe3a2dbc1"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextPositionSpan.cs",
+      "sha256": "c1ad74f75e1cd4af53d4d54f1b1d8571fa5f6125c2c6b0885bfadad597f192a0"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextProjection.cs",
+      "sha256": "0d28c90231375fe31908b21b6764cadb911442610cb8c6ae8949427d7f594317"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs",
+      "sha256": "3b8a332862b8881c6b47e2bf1ea2130183e02bb9cddff0bba9052894b453ad4f"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextSyntax.cs",
+      "sha256": "39c97b2bd1ead67ff474c91c5b22d10cccf46a271038d6b772815f0e6cf249be"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs",
+      "sha256": "99a8e8f650c7d8d6214760b2fe4aea56c1e40fdb69dd76c8f035e5216370eb89"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.DescriptiveText.cs",
+      "sha256": "f9f5ad116f842e2d1fd22583e74e49e55a0cbd2c9df4ff29b7e932444099f8e4"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.InlineSize.cs",
+      "sha256": "68ddea1833dc797e9a033b596beee361d8c65e7196fb7aa1b76e127c07d918a5"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.MixedText.cs",
+      "sha256": "0dd6b41719c0dab2784644720930e7b39cdac35ae1db5bca24eef2bf26c1eb74"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.PositionLengths.cs",
+      "sha256": "840d39106750ed1bc9b3ec5cf0a0bf3df1796c178c7d603586a2e5c35775cf46"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.SharedLayout.cs",
+      "sha256": "8abb4ee16e98f1411516b4fec2b738c6906d706d5d1c16d86f58c89fa8484a10"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextAnchor.cs",
+      "sha256": "bd78141f7288e24d63fdebcb2727f36bb8503cf741d509f54a3db53f228fb2ea"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextLengthDefaults.cs",
+      "sha256": "580da4a05b810cf7cc52f1ae563646aae55a0b4055922a35782bf8d830e0f70f"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextPathPlacement.cs",
+      "sha256": "e63d9605fe7f4b4f3004b79f8621a3dc64bcf13e29d4cec1b800b4c56e0a1271"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextPathStyles.cs",
+      "sha256": "98cc52b622a1a9806315316d7f5f796a79ce6dd8ec597b6a380d69a699d5abb2"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.WeightAdmission.cs",
+      "sha256": "da1b8ba74616281455f43de591c6bd9f36068fc963d3c17f8224c22e6815711b"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgInertTypographyTests.cs",
+      "sha256": "c1ed5149b11296711234ee82ea5cf731aa7eedbd3a13457ee97f0b3c01528d10"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgLineHeightTests.cs",
+      "sha256": "26790311215ed56e226ce830739d3004170579547eb67d3d80bd221c83a7aa1b"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgTextAlignmentTests.cs",
+      "sha256": "17b8d845039ca1250bb2c9d2bed6704b3ff826c415ef3ed53406430e1184bb9f"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgTextAnchorTests.cs",
+      "sha256": "198e1c6ddb8e44f869dcc3f6cf316a291af3be1d30d00ac9af9b1b9691c2ffd3"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs",
+      "sha256": "60ae582f58b2e44ce45d514d619baa35847e8f3f11f8756a23db1cf175a0d9fd"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgTextPathOffsetSyntaxTests.cs",
+      "sha256": "d51bf80e887640ad26db5940bc33b3e9b59b8bcc7dc2da650c49ce9d09ff4043"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgTextPathTests.cs",
+      "sha256": "060c68f64545a931acd560ad9fd44bb7dd29d590a6eec1f616a5274b372eb4f0"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgTextPositionLengthTests.cs",
+      "sha256": "22dd94b907d8f7a22959f956f10f5a9af047104f0e0171a4d6ec3c6894693e82"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgTextSyntaxTests.cs",
+      "sha256": "f846dbe20c121dc4352b99a0f235f8abbb76a551af1785bfee1ae9572086a284"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgCurvedFontDocumentTests.cs",
+      "sha256": "4ba021451ade3706232caa99f14562f3e7bf8783d0b758e8396b0ea9468e423d"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgLineHeightReferenceTests.cs",
+      "sha256": "db7cebdb171ee870efc02bf390df6722a22eba076a4e5fe0bcd3d29d8470afd2"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgOriginalTextAcceptanceTests.cs",
+      "sha256": "100c920008f2a33a1e3586a1389e661b0c291719adb8b4293a9b742476921c9a"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs",
+      "sha256": "76a46d5694b5aa2f9570d65c93ce40a243a3df754020f3234ff117363d8cfc39"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgSuppliedFontTextPathTests.cs",
+      "sha256": "565ab75e2285d55b39bc145559cd83404df3de82b405fcbf17f057b24c213d93"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgTextAlignmentReferenceTests.cs",
+      "sha256": "64a8d2e656904dbf159ab78e6f2727334b70cf1c772e5e6b55c135bf5b9edbdf"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgTextAnchorReferenceTests.cs",
+      "sha256": "5f14d179bcdc7e1b9971625510183307d68bb254e83e63ce94ba028617ced47f"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgTextPathStyleReferenceTests.cs",
+      "sha256": "fb833522ec3692397b233c53098558b68292bd8135e92dd732c7c48ecb484eac"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgTextPositionLengthReferenceTests.cs",
+      "sha256": "1549769e96a08db591932d946f6b8c96d00173df9dcc0aaaa27d72361f14998b"
+    }
+  ],
+  "groups": [
+    {
+      "id": "T5",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgTextPositionBasis.cs",
+        "src/Lokad.Svg/Parsing/SvgTextPositionLists.cs",
+        "src/Lokad.Svg/Parsing/SvgTextPositionSpan.cs",
+        "src/Lokad.Svg/Parsing/SvgTextSyntax.cs"
+      ],
+      "inspected": "Declaration font size is resolved before positions and retained as an immutable basis. Root lists and descendant cursors consume normalized scalars independently of overrides; explicit relative zero and repeated rotation stay distinct. Fixed/em lengths and unitless rotations have separate finite grammars.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgTextPositionLengthTests.cs": [
+          "Root_and_span_axes_use_their_own_computed_size",
+          "Continuation_and_descendant_overrides_do_not_rebind_the_ancestor_font_basis",
+          "Numeric_extremes_do_not_narrow_early_and_unit_products_must_remain_finite"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.PositionLengths.cs": [
+          "Relative_lengths_bind_instance_fonts_and_preserve_path_y_boundaries",
+          "Declaration_relative_position_lists_preserve_borrowed_storage_on_refusal_cancellation_and_retry"
+        ]
+      }
+    },
+    {
+      "id": "T6",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgTextSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgTextPathSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs",
+        "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs"
+      ],
+      "inspected": "Bare/px spacing and textLength use the existing coordinate reader, independently of fixed/em positioning and font sizes. Percentage path offsets parse one finite numeric percentage without another length suffix. Zero textLength and one-item spacing preserve natural metrics; fitting precedes final anchoring and paint quantization.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgTextPathOffsetSyntaxTests.cs": [
+          "Percentage_offsets_do_not_accept_a_second_length_unit",
+          "Number_length_and_percentage_offsets_keep_their_finite_value_and_domain"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextLengthDefaults.cs": [
+          "Inapplicable_text_length_keeps_natural_layout_across_anchors_and_output_scales",
+          "One_shaped_glyph_uses_natural_metrics_even_when_several_scalars_form_a_ligature"
+        ],
+        "tests/Lokad.Svg.Tests/SvgTextSyntaxTests.cs": [
+          "Parses_finite_word_spacing_and_normal"
+        ]
+      }
+    },
+    {
+      "id": "T7",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgInertPresentationSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs",
+        "src/Lokad.Svg/Parsing/SvgTextSyntax.cs"
+      ],
+      "inspected": "Text-align and line-height share bounded scalar/declaration validation and retain no used layout state. White-space pre maps to the existing legacy XML preserve normalization. Explicit positions/anchors remain authoritative; automatic wrapping, line boxes and SVG2 forced-break layout are not claimed.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgTextAlignmentTests.cs": [
+          "Preformatted_alignment_is_validated_without_retained_style",
+          "Alignment_does_not_replace_anchors_or_change_discovered_characters"
+        ],
+        "tests/Lokad.Svg.Tests/SvgLineHeightTests.cs": [
+          "Explicit_line_layout_validates_line_height_without_retained_state",
+          "Line_height_does_not_change_font_or_scalar_discovery_across_styles"
+        ],
+        "tests/Lokad.Svg.Tests/SvgTextSyntaxTests.cs": [
+          "Resolves_bounded_css_whitespace_over_xml_and_inherited_modes"
+        ]
+      }
+    },
+    {
+      "id": "T8",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgInheritedTextStyle.cs",
+        "src/Lokad.Svg/Parsing/SvgTextSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs",
+        "src/Lokad.Svg/Parsing/SvgTextPathSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgPendingTextLayout.cs",
+        "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs"
+      ],
+      "inspected": "Cascade/global keywords resolve through the shared text style. Anchor-only intervals preserve shaping; absolute positions annotate owned chunk positions using the first addressed character. Mixed direct/path ranges retain local anchor selection. Text paths share span font/paint/whitespace/anchor resolution while element-specific coordinates and excluded child effects remain separate.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgTextAnchorTests.cs": [
+          "Text_interval_compaction_retains_anchor_only_changes_without_inventing_positioning",
+          "Winning_anchor_preserves_cascade_global_keywords_and_inherited_value"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextAnchor.cs": [
+          "Absolute_chunks_use_the_current_span_anchor_from_child_or_ancestor_positions",
+          "Anchor_only_scopes_keep_the_first_character_anchor_for_the_complete_chunk",
+          "Scoped_anchor_positions_release_owned_staging_after_refusal_and_retry"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextPathStyles.cs": [
+          "Prepared_styled_paths_select_emitted_fonts_in_direct_and_instance_text",
+          "Styled_path_parser_preserves_borrowed_fonts_and_storage_after_refusal_and_retry"
+        ]
+      }
+    },
+    {
+      "id": "T13",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgTextSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgInheritedTextStyle.cs",
+        "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs",
+        "src/Lokad.Svg/Parsing/SvgInertPresentationSyntax.cs"
+      ],
+      "inspected": "Family/name/list bounds retain the unchanged T12 owner/check bindings. SVG weights admit integer 1-1000, normal/bold; public literal requests keep their positive-weight contract. Positive fixed font lengths and source-specific unitless handling remain separate. Family global keywords resolve explicitly; unsupported text-property globals reject. Geometry typography validates without requiring a program or changing paint.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgTextSyntaxTests.cs": [
+          "Inline_font_size_preserves_svg_lengths_and_importance",
+          "Stylesheet_unitless_font_size_preserves_the_valid_declaration",
+          "Rejects_an_oversized_inline_font_value"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.WeightAdmission.cs": [
+          "Svg_font_weights_validate_the_css_range_before_discovery_or_selection",
+          "Literal_public_font_requests_keep_their_existing_positive_weight_contract"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.InlineSize.cs": [
+          "Prepared_inherited_inline_size_survives_a_late_unitless_rule"
+        ],
+        "tests/Lokad.Svg.Tests/SvgInertTypographyTests.cs": [
+          "Geometry_typography_preserves_all_six_outputs_and_requires_no_font",
+          "Inert_geometry_handling_does_not_hide_text_or_container_semantics"
+        ]
+      }
+    },
+    {
+      "id": "T14",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs",
+        "src/Lokad.Svg/Parsing/SvgTextPaintOutput.cs",
+        "src/Lokad.Svg/Parsing/SvgTextProjection.cs",
+        "src/Lokad.Svg/Parsing/SvgPendingTextLayout.cs",
+        "src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs",
+        "src/Lokad.Svg/Parsing/SvgTextLayoutBounds.cs",
+        "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs"
+      ],
+      "inspected": "Source text/CDATA nodes retain explicit fragment boundaries independently of reader chunks. Descriptive subtrees neither emit characters nor alter whitespace/position scopes, while XML/structural admission still applies. One shared glyph layout serves mixed ranges; object-box measurement includes unpainted characters and preserves source boxes separately from painted geometry. Actual face/paint/position barriers remain visible to shaping.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.DescriptiveText.cs": [
+          "Descriptive_characters_do_not_spend_the_rendered_text_character_allowance",
+          "Ignored_descriptions_preserve_whitespace_position_lists_and_css_ancestors"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.MixedText.cs": [
+          "Continuation_coordinate_lists_consume_prior_scalars_and_keep_rotation_repetition"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.SharedLayout.cs": [
+          "Shared_glyph_view_disposal_preserves_parent_storage_and_offset_metadata",
+          "Shared_glyph_views_release_owners_after_denial_cancellation_and_retry"
+        ],
+        "tests/Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs": [
+          "Node_metrics_preserve_platform_pixels_and_prepared_replay",
+          "Node_metadata_releases_owned_storage_after_limits_cancellation_and_retry"
+        ]
+      }
+    },
+    {
+      "id": "T15",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgTextPathSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgMeasuredTextPath.cs",
+        "src/Lokad.Svg/Parsing/SvgTextPathLayout.cs",
+        "src/Lokad.Svg/Parsing/SvgPendingTextLayout.cs"
+      ],
+      "inspected": "Measured paths borrow authored commands, apply the referenced path own transform, preserve one open/closed contour and calibrate numeric offsets separately from percentages. Placement uses advance midpoints/tangents and retains out-of-path source boxes without ink. Shared mixed text resumes at a nonempty path endpoint; empty paths preserve the cursor. Source, layout and recorded paint coordinates remain distinct.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgTextPathTests.cs": [
+          "Reuses_authored_commands_maps_and_renderable_prefix",
+          "Open_lines_and_polynomial_curves_place_the_advance_midpoint",
+          "Closing_edge_retains_its_tangent_and_composes_character_rotation",
+          "Positive_path_calibration_scales_offsets_in_composed_coordinates",
+          "Command_work_denial_and_cancellation_release_scratch_and_allow_retry"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.MixedText.cs": [
+          "Mixed_direct_path_runs_resume_at_the_path_endpoint_with_forward_definitions",
+          "Empty_path_runs_leave_default_and_positioned_source_cursors_unchanged"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextPathPlacement.cs": [
+          "General_text_path_poses_keep_horizontal_and_zero_tangent_glyphs",
+          "General_text_path_pose_denial_and_cancellation_release_owners"
+        ]
+      }
+    },
+    {
+      "id": "T19",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgTextSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgTextBaselineMetrics.cs",
+        "src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs",
+        "src/Lokad.Svg/Parsing/SvgTextPathLayout.cs"
+      ],
+      "inspected": "Alphabetic/middle/hanging syntax selects immutable baseline metrics. Platform ascent precedence, supplied/fallback x-height and output scale determine fractional layout shifts; recorded text-path paint separately uses integer baseline metrics at its effective font size. Baseline mutation owns no new buffer; existing glyph storage is released by its run owner.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs": [
+          "Baseline_layout_and_recorded_path_paint_keep_their_independent_metrics",
+          "Path_baseline_integer_boundaries_are_measured_at_the_recorded_font_size",
+          "Middle_baseline_uses_supplied_height_or_fallback_and_releases_layout_storage",
+          "Retains_native_alphabetic_metric_precedence",
+          "Short_version_zero_metadata_keeps_the_validated_hhea_metrics"
+        ]
+      }
+    }
+  ],
+  "focusedChecks": {
+    "selections": {
+      "after-core": "FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgTextPositionLengthTests|FullyQualifiedName~SvgTextPathOffsetSyntaxTests|FullyQualifiedName~SvgTextAlignmentTests|FullyQualifiedName~SvgLineHeightTests|FullyQualifiedName~SvgTextAnchorTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~SvgTextPathStyleTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgDescriptiveTextStorageTests|FullyQualifiedName~OpenTypeFontTests.Baseline_layout_and_recorded_path_paint_keep_their_independent_metrics|FullyQualifiedName~OpenTypeFontTests.Path_baseline_integer_boundaries_are_measured_at_the_recorded_font_size|FullyQualifiedName~OpenTypeFontTests.Middle_baseline_uses_supplied_height_or_fallback_and_releases_layout_storage|FullyQualifiedName~OpenTypeFontTests.Retains_native_alphabetic_metric_precedence|FullyQualifiedName~OpenTypeFontTests.Short_version_zero_metadata_keeps_the_validated_hhea_metrics|FullyQualifiedName~OpenTypeFontTests.Relative_lengths_bind_instance_fonts_and_preserve_path_y_boundaries|FullyQualifiedName~OpenTypeFontTests.Declaration_relative_position_lists_preserve_borrowed_storage_on_refusal_cancellation_and_retry|FullyQualifiedName~OpenTypeFontTests.Inapplicable_text_length_keeps_natural_layout_across_anchors_and_output_scales|FullyQualifiedName~OpenTypeFontTests.One_shaped_glyph_uses_natural_metrics_even_when_several_scalars_form_a_ligature|FullyQualifiedName~OpenTypeFontTests.Shared_direct_and_path_chunks_keep_a_uniform_child_anchor|FullyQualifiedName~OpenTypeFontTests.Scoped_anchor_positions_release_owned_staging_after_refusal_and_retry|FullyQualifiedName~OpenTypeFontTests.Css_anchor_validation_precedes_acquisition_and_prepared_replay_keeps_chunk_scope|FullyQualifiedName~OpenTypeFontTests.Absolute_chunks_use_the_current_span_anchor_from_child_or_ancestor_positions|FullyQualifiedName~OpenTypeFontTests.Anchor_only_scopes_keep_the_first_character_anchor_for_the_complete_chunk|FullyQualifiedName~OpenTypeFontTests.Text_anchor_extents_include_internal_relative_advances|FullyQualifiedName~OpenTypeFontTests.Text_anchors_cover_both_advance_edges_when_relative_positions_backtrack|FullyQualifiedName~OpenTypeFontTests.Prepared_styled_paths_select_emitted_fonts_in_direct_and_instance_text|FullyQualifiedName~OpenTypeFontTests.Styled_path_parser_preserves_borrowed_fonts_and_storage_after_refusal_and_retry|FullyQualifiedName~OpenTypeFontTests.General_text_path_poses_keep_horizontal_and_zero_tangent_glyphs|FullyQualifiedName~OpenTypeFontTests.General_text_path_pose_denial_and_cancellation_release_owners|FullyQualifiedName~OpenTypeFontTests.Mixed_direct_path_runs_resume_at_the_path_endpoint_with_forward_definitions|FullyQualifiedName~OpenTypeFontTests.Original_mixed_mask_input_keeps_one_resource_scope_and_following_siblings|FullyQualifiedName~OpenTypeFontTests.Continuation_coordinate_lists_consume_prior_scalars_and_keep_rotation_repetition|FullyQualifiedName~OpenTypeFontTests.Empty_path_runs_leave_default_and_positioned_source_cursors_unchanged|FullyQualifiedName~OpenTypeFontTests.Descriptive_characters_do_not_spend_the_rendered_text_character_allowance|FullyQualifiedName~OpenTypeFontTests.Descriptions_inside_text_do_not_emit_characters_or_change_resource_replay|FullyQualifiedName~OpenTypeFontTests.Ignored_descriptions_preserve_whitespace_position_lists_and_css_ancestors|FullyQualifiedName~OpenTypeFontTests.Mask_text_descriptions_keep_raw_replay_with_an_explicitly_prepared_face|FullyQualifiedName~OpenTypeFontTests.Oversized_unused_filter_and_marker_values_release_staging_and_allow_retry|FullyQualifiedName~OpenTypeFontTests.Filter_region_limits_apply_to_authored_lengths_before_trimming|FullyQualifiedName~OpenTypeFontTests.Marker_orientation_limits_apply_before_trimming_or_keyword_selection|FullyQualifiedName~OpenTypeFontTests.Prepared_inherited_inline_size_survives_a_late_unitless_rule|FullyQualifiedName~OpenTypeFontTests.Unicode_family_identifiers_do_not_become_global_keywords|FullyQualifiedName~OpenTypeFontTests.Normal_letter_spacing_resets_inherited_spacing_in_layout_and_discovery|FullyQualifiedName~OpenTypeFontTests.Shared_glyph_view_disposal_preserves_parent_storage_and_offset_metadata|FullyQualifiedName~OpenTypeFontTests.Repeated_own_filters_remap_only_their_source_command_ranges|FullyQualifiedName~OpenTypeFontTests.Own_filtered_shared_text_retains_output_scopes_and_neighboring_pending_uses|FullyQualifiedName~OpenTypeFontTests.Shared_glyph_views_release_owners_after_denial_cancellation_and_retry|FullyQualifiedName~OpenTypeFontTests.Discovery_and_preparation_observe_cancellation_together|FullyQualifiedName~OpenTypeFontTests.Scaled_text_discovery_requests_only_its_declared_family|FullyQualifiedName~OpenTypeFontTests.Empty_direct_text_does_not_acquire_or_require_a_font|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_acquires_the_supplied_face_for_scaled_text|FullyQualifiedName~OpenTypeFontTests.Stylesheet_group_font_properties_are_shared_by_snapshot_preparation_and_rendering|FullyQualifiedName~OpenTypeFontTests.Direct_inline_font_properties_override_a_stylesheet_group_font_family|FullyQualifiedName~OpenTypeFontTests.Stylesheet_font_properties_follow_selector_specificity_per_property|FullyQualifiedName~OpenTypeFontTests.Stylesheet_font_weight_and_style_select_the_matching_prepared_face|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_does_not_acquire_fonts_for_stylesheet_hidden_text|FullyQualifiedName~OpenTypeFontTests.Hidden_text_with_an_empty_prepared_snapshot_does_not_require_a_font_at_conversion|FullyQualifiedName~OpenTypeFontTests.Nonpainting_text_with_an_empty_prepared_snapshot_retains_validation_without_requiring_a_font|FullyQualifiedName~OpenTypeFontTests.Inherited_nonpainting_text_with_an_empty_prepared_snapshot_does_not_require_a_font|FullyQualifiedName~OpenTypeFontTests.Root_inherited_nonpainting_text_with_an_empty_prepared_snapshot_does_not_require_a_font|FullyQualifiedName~OpenTypeFontTests.Stylesheet_inherited_nonpainting_text_with_an_empty_prepared_snapshot_does_not_require_a_font|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_does_not_acquire_fonts_after_unsupported_sibling_content|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_acquires_fonts_only_after_admitted_content|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_rejects_definition_container_attributes_before_font_acquisition|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_validates_definition_child_attributes_before_font_acquisition|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_rejects_unsupported_text_attributes_before_font_acquisition|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_rejects_invalid_text_fill_rules_before_font_acquisition|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_rejects_unsupported_group_presentation_before_font_acquisition|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_matches_paint_and_opacity_admission_before_font_acquisition|FullyQualifiedName~OpenTypeFontTests.Original_nested_opacity_acquires_the_selected_program|FullyQualifiedName~OpenTypeFontTests.Original_dashed_text_inputs_acquire_the_selected_program_and_lower|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_rejects_stylesheet_group_presentation_before_font_acquisition|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_distinguishes_inactive_and_unsupported_late_rules_before_acquisition|FullyQualifiedName~OpenTypeFontTests.Lays_out_verified_glyph_advances_and_reports_missing_glyphs|FullyQualifiedName~OpenTypeFontTests.Text_run_glyph_diagnostics_retain_the_bounded_source_element_id|FullyQualifiedName~OpenTypeFontTests.Direct_text_missing_prepared_face_diagnostics_retain_the_bounded_source_element_id|FullyQualifiedName~OpenTypeFontTests.Lays_out_supplementary_scalars_with_utf16_span_bookkeeping|FullyQualifiedName~OpenTypeFontTests.Kerned_pair_adjustments_shift_rendered_pixels_relative_to_unadjusted_text|FullyQualifiedName~OpenTypeFontTests.Gpos_pair_adjustments_shift_rendered_pixels_relative_to_unadjusted_text|FullyQualifiedName~OpenTypeFontTests.Letter_spacing_shifts_rendered_glyphs_relative_to_unspaced_text|FullyQualifiedName~OpenTypeFontTests.Positions_direct_glyph_runs_for_admitted_text_anchors|FullyQualifiedName~OpenTypeFontTests.Snapshot_finds_a_prepared_face_by_case_insensitive_request|FullyQualifiedName~OpenTypeFontTests.Snapshot_font_lookup_observes_caller_cancellation|FullyQualifiedName~OpenTypeFontTests.Render_options_retain_the_caller_owned_font_snapshot|FullyQualifiedName~OpenTypeFontTests.Prepared_document_retains_a_lowered_direct_text_scene|FullyQualifiedName~OpenTypeFontTests.Prepared_scaled_circle_matches_direct_conversion|FullyQualifiedName~OpenTypeFontTests.Disposed_document_detaches_its_retained_scene|FullyQualifiedName~OpenTypeFontTests.Successful_outputs_detach_the_retained_scene|FullyQualifiedName~OpenTypeFontTests.Failed_outputs_detach_the_retained_scene|FullyQualifiedName~OpenTypeFontTests.Converted_document_releases_its_geometry_arrays_for_collection|FullyQualifiedName~OpenTypeFontTests.Disposed_document_releases_its_geometry_arrays_for_collection|FullyQualifiedName~OpenTypeFontTests.Svg_based_snapshot_skips_whitespace_only_direct_text_before_acquisition|FullyQualifiedName~OpenTypeFontTests.Direct_text_normalizes_default_whitespace_before_layout|FullyQualifiedName~OpenTypeFontTests.Direct_text_honors_admitted_xml_space_modes|FullyQualifiedName~OpenTypeFontTests.Direct_text_honors_bounded_css_whitespace_declarations|FullyQualifiedName~OpenTypeFontTests.Root_xml_space_seeds_descendant_whitespace_inheritance|FullyQualifiedName~OpenTypeFontTests.Root_inline_whitespace_overrides_root_xml_space|FullyQualifiedName~OpenTypeFontTests.Group_xml_space_seeds_descendant_whitespace_inheritance|FullyQualifiedName~OpenTypeFontTests.Group_inline_whitespace_overrides_group_xml_space|FullyQualifiedName~OpenTypeFontTests.Group_invalid_xml_space_fails_fast|FullyQualifiedName~OpenTypeFontTests.Direct_text_spans_inherit_and_override_admitted_xml_space_modes|FullyQualifiedName~OpenTypeFontTests.Nested_default_xml_space_collapses_with_siblings_and_preserves_span_edge_spaces|FullyQualifiedName~OpenTypeFontTests.Discovery_requests_a_separator_only_face_only_when_its_space_survives|FullyQualifiedName~OpenTypeFontTests.Word_spacing_cascade_keeps_root_inheritance_importance_and_span_zero_distinct|FullyQualifiedName~OpenTypeFontTests.Direct_text_reuses_a_contiguous_decoded_glyph_outline|FullyQualifiedName~OpenTypeFontTests.Direct_text_applies_scalar_letter_spacing_between_glyphs|FullyQualifiedName~OpenTypeFontTests.Nested_tspan_applies_scalar_letter_spacing_without_changing_the_parent_text_chunk_anchor|FullyQualifiedName~OpenTypeFontTests.Nested_tspan_applies_scalar_dx_and_dy_to_its_first_descendant_glyph|FullyQualifiedName~OpenTypeFontTests.Absolute_span_coordinates_start_separately_anchored_chunks|FullyQualifiedName~OpenTypeFontTests.A_y_only_span_reset_preserves_the_unanchored_current_x|FullyQualifiedName~OpenTypeFontTests.Absolute_chunk_boundaries_stop_pair_adjustment_without_disabling_pairs_inside_the_next_chunk|FullyQualifiedName~OpenTypeFontTests.Absolute_and_relative_span_coordinates_continue_into_later_parent_text|FullyQualifiedName~OpenTypeFontTests.Direct_text_applies_validated_legacy_kerning_between_adjacent_glyphs|FullyQualifiedName~OpenTypeFontTests.Direct_text_applies_validated_GPOS_pair_adjustments_between_adjacent_glyphs|FullyQualifiedName~OpenTypeFontTests.Default_text_preserves_inter_word_whitespace_around_a_visible_nested_span",
+      "after-visual": "FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgTextAlignmentReferenceTests|FullyQualifiedName~SvgLineHeightReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~SvgSuppliedFontTextPathTests.Text_path_controls_match_frozen_native_references|FullyQualifiedName~SvgCurvedFontDocumentTests.Document_and_controls_match_frozen_native_references|(FullyQualifiedName~SvgPaintInputReferenceTests&DisplayName~text-node-boundaries)",
+      "typography-core": "FullyQualifiedName~SvgInertTypographyTests|FullyQualifiedName~OpenTypeFontTests.Svg_font_weights_validate_the_css_range_before_discovery_or_selection|FullyQualifiedName~OpenTypeFontTests.Literal_public_font_requests_keep_their_existing_positive_weight_contract"
+    },
+    "runs": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 15.38649470009841,
+        "counters": {
+          "executed": "867",
+          "passed": "867",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "99f0cf03f1929b93cd28e4055ba421898010087ef5c588963996a12fb73230a5",
+        "stage": "after"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 16.863516899989918,
+        "counters": {
+          "executed": "867",
+          "passed": "867",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "99f0cf03f1929b93cd28e4055ba421898010087ef5c588963996a12fb73230a5",
+        "stage": "after"
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "099d1a05763a6f57f9613e6af9731408a2392418d379cfb962bafe0b4a17a2e0",
+        "exitCode": 0,
+        "seconds": 21.487836899934337,
+        "counters": {
+          "executed": "903",
+          "passed": "903",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "6f7e1907134d50db1cab4db4fb567e7e76711435fb76bfc8bd4057e5d9e46b76",
+        "stage": "after"
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "099d1a05763a6f57f9613e6af9731408a2392418d379cfb962bafe0b4a17a2e0",
+        "exitCode": 0,
+        "seconds": 21.338736100122333,
+        "counters": {
+          "executed": "903",
+          "passed": "903",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "6f7e1907134d50db1cab4db4fb567e7e76711435fb76bfc8bd4057e5d9e46b76",
+        "stage": "after"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "f4afb820e92a36810982f6689c2119d5acb956a742edff2472fec2683c66998a",
+        "exitCode": 0,
+        "seconds": 18.739577500149608,
+        "counters": {
+          "executed": "867",
+          "passed": "867",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "99f0cf03f1929b93cd28e4055ba421898010087ef5c588963996a12fb73230a5",
+        "stage": "after"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "f4afb820e92a36810982f6689c2119d5acb956a742edff2472fec2683c66998a",
+        "exitCode": 0,
+        "seconds": 17.195287799928337,
+        "counters": {
+          "executed": "867",
+          "passed": "867",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "99f0cf03f1929b93cd28e4055ba421898010087ef5c588963996a12fb73230a5",
+        "stage": "after"
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "a06f88d23d900bf8599c110739a644c3b1c89bb6097e599a3999184644ca3557",
+        "exitCode": 0,
+        "seconds": 17.938944900175557,
+        "counters": {
+          "executed": "903",
+          "passed": "903",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "6f7e1907134d50db1cab4db4fb567e7e76711435fb76bfc8bd4057e5d9e46b76",
+        "stage": "after"
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "a06f88d23d900bf8599c110739a644c3b1c89bb6097e599a3999184644ca3557",
+        "exitCode": 0,
+        "seconds": 20.178530999924988,
+        "counters": {
+          "executed": "903",
+          "passed": "903",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "6f7e1907134d50db1cab4db4fb567e7e76711435fb76bfc8bd4057e5d9e46b76",
+        "stage": "after"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 7.719773499993607,
+        "counters": {
+          "executed": "33",
+          "passed": "33",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "b8891b1b990dae86252abb6429c6716e867ff4cc8bd69b519e815467ad314c01",
+        "stage": "typography"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 12.253489300142974,
+        "counters": {
+          "executed": "33",
+          "passed": "33",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "b8891b1b990dae86252abb6429c6716e867ff4cc8bd69b519e815467ad314c01",
+        "stage": "typography"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "f4afb820e92a36810982f6689c2119d5acb956a742edff2472fec2683c66998a",
+        "exitCode": 0,
+        "seconds": 6.956345099955797,
+        "counters": {
+          "executed": "33",
+          "passed": "33",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "b8891b1b990dae86252abb6429c6716e867ff4cc8bd69b519e815467ad314c01",
+        "stage": "typography"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "f4afb820e92a36810982f6689c2119d5acb956a742edff2472fec2683c66998a",
+        "exitCode": 0,
+        "seconds": 10.061060199979693,
+        "counters": {
+          "executed": "33",
+          "passed": "33",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "b8891b1b990dae86252abb6429c6716e867ff4cc8bd69b519e815467ad314c01",
+        "stage": "typography"
+      }
+    ],
+    "passes": 7212,
+    "scope": "Affected checks on both hosts/runtimes, including 855 canonical text-node renderings per combination. Existing representative API/ownership contracts remain separate. Unchanged production/package bytes retain their prior full and W1 qualification; this change affects tests and documentation."
+  },
+  "nativeAudit": {
+    "directCaptureBanks": [
+      {
+        "bank": "preformatted-text-align",
+        "sourceRoles": 1,
+        "platformRows": 2,
+        "healthyReceipts": 6
+      },
+      {
+        "bank": "text-line-layout",
+        "sourceRoles": 1,
+        "platformRows": 2,
+        "healthyReceipts": 6
+      },
+      {
+        "bank": "text-shared-anchor",
+        "sourceRoles": 1,
+        "platformRows": 2,
+        "healthyReceipts": 6
+      },
+      {
+        "bank": "text-path-styles/basic",
+        "sourceRoles": 2,
+        "platformRows": 4,
+        "healthyReceipts": 12
+      },
+      {
+        "bank": "text-path-styles/cascade",
+        "sourceRoles": 2,
+        "platformRows": 4,
+        "healthyReceipts": 12
+      },
+      {
+        "bank": "text-path-styles/nested",
+        "sourceRoles": 2,
+        "platformRows": 4,
+        "healthyReceipts": 12
+      },
+      {
+        "bank": "text-path-styles/mixed",
+        "sourceRoles": 2,
+        "platformRows": 4,
+        "healthyReceipts": 12
+      },
+      {
+        "bank": "text-anchor/inherited",
+        "sourceRoles": 1,
+        "platformRows": 2,
+        "healthyReceipts": 6
+      },
+      {
+        "bank": "text-anchor/chunks",
+        "sourceRoles": 1,
+        "platformRows": 2,
+        "healthyReceipts": 6
+      },
+      {
+        "bank": "text-anchor/effects",
+        "sourceRoles": 1,
+        "platformRows": 2,
+        "healthyReceipts": 6
+      },
+      {
+        "bank": "text-anchor/path",
+        "sourceRoles": 1,
+        "platformRows": 2,
+        "healthyReceipts": 6
+      },
+      {
+        "bank": "text-position-lengths",
+        "sourceRoles": 2,
+        "platformRows": 4,
+        "healthyReceipts": 12
+      },
+      {
+        "bank": "supplied-font-text-paths",
+        "sourceRoles": 7,
+        "platformRows": 14,
+        "healthyReceipts": 42
+      },
+      {
+        "bank": "curved-font-documents",
+        "sourceRoles": 5,
+        "platformRows": 10,
+        "healthyReceipts": 30
+      },
+      {
+        "bank": "static-css-document",
+        "sourceRoles": 17,
+        "platformRows": 34,
+        "healthyReceipts": 102
+      }
+    ],
+    "directSourceRoles": 46,
+    "directPlatformRows": 92,
+    "directHealthyReceipts": 276,
+    "textNodes": {
+      "canonicalInputs": 855,
+      "platformRows": 1710,
+      "bankAttestedHealthyReceipts": 300,
+      "originalDeclarationLedgers": [
+        {
+          "ledger": "original-acceptance.json",
+          "originalDeclarations": 76,
+          "canonicalInputs": 67,
+          "individuallyRecordedHealthyReceipts": 456
+        },
+        {
+          "ledger": "path-baseline-acceptance.json",
+          "originalDeclarations": 204,
+          "canonicalInputs": 196,
+          "individuallyRecordedHealthyReceipts": 1224
+        }
+      ],
+      "scope": "Capture-bank attestations and per-original receipts remain distinct. Declaration aliases retain source/options/font/pixel equality without pretending they are additional canonical inputs. Existing integrity checks decode PNG RGBA; the focused canonical renderer checks every row."
+    },
+    "metadataBindings": [
+      {
+        "path": "tests/Research/curved-font-documents/font-provenance.json",
+        "sha256": "b92bf78462be68c84d4d610106866d9be2a87fad1551da231d875ce60c7324ca"
+      },
+      {
+        "path": "tests/Research/curved-font-documents/manifest.json",
+        "sha256": "d246568180b4cf814fd58c98a523e5b4ed909de62e25564c154b2e885f93cdcd"
+      },
+      {
+        "path": "tests/Research/preformatted-text-align/capture.json",
+        "sha256": "1ce97254091e6771d04168b0709a76230db7db1ea34df4c9a5e049ec5a9b78c4"
+      },
+      {
+        "path": "tests/Research/release-baselines/font-selection-program-claim-trace.json",
+        "sha256": "5e05dea2f621d95d1ca8ff862023f1a8f3aa2826f56ae83c9e249638ca569279"
+      },
+      {
+        "path": "tests/Research/static-css-document/font-provenance.json",
+        "sha256": "15ff0f3a5b436152f501ce85ef33e1444b4b945231113bf0561d64ccbde73f7f"
+      },
+      {
+        "path": "tests/Research/static-css-document/manifest.json",
+        "sha256": "d3a202ab8f23cac61761d0cddd8650a69dd8e6c80a56ac2d3238a80103fb65e8"
+      },
+      {
+        "path": "tests/Research/supplied-font-labels/font-provenance.json",
+        "sha256": "21c6a8101792ae1a0fa20b48bf679de481b905a48fd6c49c53fa951c04df61ec"
+      },
+      {
+        "path": "tests/Research/supplied-font-text-paths/manifest.json",
+        "sha256": "dad206d7c8ca809cb57d8ba216d882c783b1bef49eb9874f598582d466b3e484"
+      },
+      {
+        "path": "tests/Research/text-anchor/capture.json",
+        "sha256": "3f4dca23c02b3771fc3540cbaa8d39e821d51de0d5f5dd3f069cbf4791e87d47"
+      },
+      {
+        "path": "tests/Research/text-line-layout/capture.json",
+        "sha256": "8ce614a34bbc01c4e0c7e374c48a98c1135fb702d2e7ca0946d8a8cff83708e4"
+      },
+      {
+        "path": "tests/Research/text-node-boundaries/capture.json",
+        "sha256": "9ce1805925e4684077abb88b9f33e32706266849dd727732818a5d34df74ad4b"
+      },
+      {
+        "path": "tests/Research/text-node-boundaries/original-acceptance.json",
+        "sha256": "0f37d125a096bae7356dc16d813065fcf8348436adcb99f8349f0e12f202ecdb"
+      },
+      {
+        "path": "tests/Research/text-node-boundaries/path-baseline-acceptance.json",
+        "sha256": "8ef9be7cd6dd3c324f6bbe892e50d86e8b5897e92a26707ecbe9c43a05d1d8b3"
+      },
+      {
+        "path": "tests/Research/text-path-styles/basic/capture.json",
+        "sha256": "3987cf2e4c5e8949fe6c91c680415b3712fc69f785f568d75b318ee70dbc9312"
+      },
+      {
+        "path": "tests/Research/text-path-styles/cascade/capture.json",
+        "sha256": "2b9ee46c79b1512232afd62889e1d2f94eddf33ae6479afac2fae53636d0b33d"
+      },
+      {
+        "path": "tests/Research/text-path-styles/mixed/capture.json",
+        "sha256": "e142694273f7b1735908795086984e3cab8a7ad1470995be0b77b85575249d84"
+      },
+      {
+        "path": "tests/Research/text-path-styles/nested/capture.json",
+        "sha256": "75c77a71d90c5ec8dd03c772d73b5ed5dfcd42de9139344907af049b1cd08423"
+      },
+      {
+        "path": "tests/Research/text-position-lengths/capture.json",
+        "sha256": "c62f960564ff9ed5c1931fafd7d2074c47293962e2d360f72cb68451dcaa8bb5"
+      },
+      {
+        "path": "tests/Research/text-shared-anchor/capture.json",
+        "sha256": "607fbe8f4676ff8f9f1ce44d9d0d3ee07192f9e453a654bc0b686b96b99badad"
+      }
+    ],
+    "verifiedAssetPaths": 1975,
+    "verifiedAssetBindingsSha256": "85271070b0ef0b14f344197fde0ec868b85dcb664cf5949b3e8e06c5291283ff",
+    "aggregateDefinition": "SHA-256 of UTF-8 JSON of sorted [repository-relative path, digest] pairs with ASCII escapes and separators comma/colon. Referenced committed manifests retain individual source/font/reference bindings.",
+    "scope": "Existing independent source/program/reference identities rejoined; no new capture, recovery of missing receipts, reference refresh or tolerance change."
+  },
+  "testSimplification": {
+    "file": "tests/Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs",
+    "change": "Keep both x-height/fallback cases and their exact metric/refund assertions. Remove the second identical successful layout under another 1,000,000-byte allowance: it never exercised denial or retry. Rename to actual behavior and classify the three previously unclassified numeric methods as Mechanism.",
+    "layoutCallsAcrossTheTwoCases": {
+      "before": 4,
+      "after": 2
+    },
+    "retainedCases": 2,
+    "actualFailureContracts": [
+      "OpenTypeFontTests.PositionLengths.cs",
+      "OpenTypeFontTests.TextAnchor.cs",
+      "OpenTypeFontTests.TextPathStyles.cs",
+      "OpenTypeFontTests.SharedLayout.cs",
+      "OpenTypeFontTests.TextPathPlacement.cs"
+    ],
+    "measurements": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforeSeconds": 9.334213899914175,
+        "afterSeconds": 8.468756600050256,
+        "beforeTestAssemblySha256": "0e31d18e2a314881a306a236fcea144bfc447dc1a2c4bb6a49ba68f4b43c25c1",
+        "afterTestAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforeSeconds": 14.814147899858654,
+        "afterSeconds": 12.376306399935856,
+        "beforeTestAssemblySha256": "0e31d18e2a314881a306a236fcea144bfc447dc1a2c4bb6a49ba68f4b43c25c1",
+        "afterTestAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25"
+      }
+    ],
+    "timingLimits": "One fresh two-case .NET 11 process per host before/after, with two concurrent host jobs and startup/discovery/TRX included. This records validation cost, not a suite-wide speedup or renderer performance result."
+  },
+  "documentationCorrection": "The anchor guidance now points to admitted text-path-local CSS and its dedicated cascade/mixed-range controls.",
+  "retainedLimits": "Reviewed is bounded source/check evidence. Remaining paint/shaping/resource/ownership groups, W1 contexts, historical provenance, quiet-VM performance and release gates remain separate. The frozen Windows DejaVu T18 failure remains asserted; no text-layout implementation or frozen reference changed."
+}

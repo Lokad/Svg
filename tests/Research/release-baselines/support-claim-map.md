@@ -39,6 +39,9 @@ traversal, rejection cleanup and dormant declarations with live host fonts.
 The [font selection/program trace][font-program-record] reviews T1/T12 against
 host acquisition, bounded execution and lazy coverage. Frozen Windows DejaVu
 remains an explicit failing T18 gate.
+The [text placement trace][text-placement-record] reviews T5-T8/T13-T15/T19
+through shared lengths, scalar cursors, chunk anchors, paths and baseline owners.
+Canonical native references and representative ownership paths stay separate.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -200,21 +203,21 @@ Scope: [text and fonts][contract-text].
 | T2 | Dormant legacy SVG font declarations without acquisition or text-request effects | Reviewed: [definition roles](../../../src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs) / [font eligibility](../../../src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs) → [unchanged live request, host-program pixels and counted acquisition](../../Lokad.Svg.Tests/OpenTypeFontTests.LegacyDeclarations.cs). [Source/contract trace][structural-record]; font pixel conformance remains in the other T rows. |
 | T3 | LTR character/shaping subset, finite Latin/DFLT ligature table and unsupported script/font/layout forms | Pending. |
 | T4 | Affine text paints/strokes/dashes/non-scaling widths/order and solid decoration | Pending. |
-| T5 | Position-list units/declaration bases, inherited/replayed cursors and unitless rotation | Pending. |
-| T6 | Separate textLength/spacing/path-offset length domains and malformed percentages | Pending. |
-| T7 | Inert text-align/line-height, legacy whitespace and explicit-line layout | Pending. |
-| T8 | Anchor chunks/cascade, path/span styles, mixed ranges and excluded text-path positioning/effects | Pending. |
+| T5 | Position-list units/declaration bases, inherited/replayed cursors and unitless rotation | Reviewed: [declaration basis](../../../src/Lokad.Svg/Parsing/SvgTextPositionBasis.cs) / [scalar cursors](../../../src/Lokad.Svg/Parsing/SvgTextPositionSpan.cs) → [units, overrides and finite boundaries](../../Lokad.Svg.Tests/SvgTextPositionLengthTests.cs) / [instance and ownership contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.PositionLengths.cs) → [relative/numeric and text-node native controls][text-placement-record]. |
+| T6 | Separate textLength/spacing/path-offset length domains and malformed percentages | Reviewed: [text syntax](../../../src/Lokad.Svg/Parsing/SvgTextSyntax.cs) / [path offsets](../../../src/Lokad.Svg/Parsing/SvgTextPathSyntax.cs) → [percentage grammar](../../Lokad.Svg.Tests/SvgTextPathOffsetSyntaxTests.cs) / [natural-length degeneracies](../../Lokad.Svg.Tests/OpenTypeFontTests.TextLengthDefaults.cs) → [independent fitting/path references][text-placement-record]. |
+| T7 | Inert text-align/line-height, legacy whitespace and explicit-line layout | Reviewed: [inert typography](../../../src/Lokad.Svg/Parsing/SvgInertPresentationSyntax.cs) / [whitespace](../../../src/Lokad.Svg/Parsing/SvgTextSyntax.cs) → [alignment](../../Lokad.Svg.Tests/SvgTextAlignmentTests.cs) / [line-height](../../Lokad.Svg.Tests/SvgLineHeightTests.cs) mechanisms → [explicit-line and preformatted native controls][text-placement-record]. Automatic line layout remains outside this contract. |
+| T8 | Anchor chunks/cascade, path/span styles, mixed ranges and excluded text-path positioning/effects | Reviewed: [shared run/chunk owner](../../../src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs) / [path child styles](../../../src/Lokad.Svg/Parsing/SvgTextPathSyntax.cs) → [anchor mechanisms](../../Lokad.Svg.Tests/SvgTextAnchorTests.cs) / [owned-position contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.TextAnchor.cs) → [native chunks, path-local CSS and mixed-range controls][text-placement-record]. |
 | T9 | Unicode 17 case/title/word/language rules, expansions/context, source ownership and font coverage | Pending. |
 | T10 | Canonical decomposition/order/recomposition and finite ccmp substitution | Pending. |
 | T11 | Mark/ligature-component/mark-to-mark attachment, GDEF/filter sets and contextual kerning | Pending. |
 | T12 | CSS family identity/policy/directional fallback, lazy scalar coverage, request-only/raw snapshots and face boundaries | Reviewed: [family identity](../../../src/Lokad.Svg/Fonts/SvgFontFamilySyntax.cs) / [catalog policy](../../../src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs) / [lazy coverage](../../../src/Lokad.Svg/Fonts/SvgFontSnapshot.Coverage.cs) → [directional weights](../../Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs), [face boundaries](../../Lokad.Svg.Tests/OpenTypeFontTests.Coverage.cs) and [request-only/raw/acquisition contracts](../../Lokad.Svg.VisualTests/SvgGlyphFallbackTests.Selection.cs) → [ordered-family and mixed-coverage native controls][font-program-record]. |
-| T13 | Family/name/list/weight bounds, size source contexts/global keywords and inert typography on geometry | Pending. |
-| T14 | Ligature barriers, fragment metrics, relative cursors, inert descriptive text and shared paint/object boxes | Pending. |
-| T15 | Path geometry/transforms/tangents/spacing, continuation cursor, anchors and textLength degeneracies | Pending. |
+| T13 | Family/name/list/weight bounds, size source contexts/global keywords and inert typography on geometry | Reviewed: [shared font/text syntax](../../../src/Lokad.Svg/Parsing/SvgTextSyntax.cs) / [declaration context](../../../src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs) → [CSS/public weight boundaries](../../Lokad.Svg.Tests/OpenTypeFontTests.WeightAdmission.cs), [late size rules](../../Lokad.Svg.Tests/OpenTypeFontTests.InlineSize.cs) and [font-free geometry typography](../../Lokad.Svg.Tests/SvgInertTypographyTests.cs) → [current trace][text-placement-record]. Family bounds retain their [T12 bindings][font-program-record]. |
+| T14 | Ligature barriers, fragment metrics, relative cursors, inert descriptive text and shared paint/object boxes | Reviewed: [source-node output](../../../src/Lokad.Svg/Parsing/SvgTextPaintOutput.cs) / [shared layout](../../../src/Lokad.Svg/Parsing/SvgPendingTextLayout.cs) → [descriptive-text mechanisms](../../Lokad.Svg.Tests/OpenTypeFontTests.DescriptiveText.cs) / [distinct replay and ownership paths](../../Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs) → [855 canonical native text-node inputs and original declaration bindings][text-placement-record]. |
+| T15 | Path geometry/transforms/tangents/spacing, continuation cursor, anchors and textLength degeneracies | Reviewed: [measured path](../../../src/Lokad.Svg/Parsing/SvgMeasuredTextPath.cs) / [placement](../../../src/Lokad.Svg/Parsing/SvgTextPathLayout.cs) → [geometry and calibration mechanisms](../../Lokad.Svg.Tests/SvgTextPathTests.cs) / [mixed/empty cursor contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.MixedText.cs) → [unchanged native path and source-box controls][text-placement-record]. |
 | T16 | Latin/DFLT GPOS/kern precedence, extension lookup order, supported flags and invalid metadata | Pending. |
 | T17 | Live resource-context font demand, inactive-source exceptions, fitting/filter/baseline stages and Courier policy | Pending. |
 | T18 | Windows/Linux native font pixel authority | Open: the frozen Windows DejaVu target still fails full CI; its assertion remains intact and reference authority is unresolved ([CI/source evidence][diag-record]). Other font/platform claims still need T-row trace. |
-| T19 | Alphabetic/middle/hanging baselines and their explicit-line/anchor interactions | Pending. |
+| T19 | Alphabetic/middle/hanging baselines and their explicit-line/anchor interactions | Reviewed: [layout/recorded baseline metrics](../../../src/Lokad.Svg/Parsing/SvgTextBaselineMetrics.cs) → [platform ascent, x-height and rounding boundaries](../../Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs) → [source-bound original baseline contexts and platform pixels][text-placement-record]. Intermediate layout and final paint remain distinct; T18 stays open. |
 
 ## Limits, ownership and qualification
 
@@ -382,3 +385,4 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [at-rule-record]: css-at-rule-admission.json
 [structural-record]: structural-admission-claim-trace.json
 [font-program-record]: font-selection-program-claim-trace.json
+[text-placement-record]: text-placement-claim-trace.json

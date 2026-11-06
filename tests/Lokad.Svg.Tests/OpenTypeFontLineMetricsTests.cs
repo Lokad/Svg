@@ -48,9 +48,10 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData((ushort)0, 4)]
     [InlineData((ushort)2, 6)]
-    public async Task Middle_baseline_uses_supplied_height_or_fallback_and_releases_on_adjustment_denial(ushort version, double expectedShift)
+    public async Task Middle_baseline_uses_supplied_height_or_fallback_and_releases_layout_storage(ushort version, double expectedShift)
     {
         byte[] bytes = CreateFontWithMetadata(version);
         if (version == 2) WriteUInt16(bytes, FindTableOffset(bytes, 0x4F532F32) + 86, 768);
@@ -63,13 +64,10 @@ public sealed partial class OpenTypeFontTests
             Assert.All(run.Glyphs.ToArray(), glyph => Assert.Equal(3 + expectedShift, glyph.Y));
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new RenderBudget(new HostMemoryBudget(1_000_000));
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        using SvgTextRun retry = SvgTextRunBuilder.Create(style, "AA", snapshot, denied, CancellationToken.None);
-        Assert.All(retry.Glyphs.ToArray(), glyph => Assert.Equal(3 + expectedShift, glyph.Y));
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(800, -200, 750, -250, 0, 800, -200, 900, 200)]
     [InlineData(800, -200, 750, -250, 128, 750, -250, 750, 250)]
     [InlineData(0, 0, 750, -250, 0, 750, -250, 900, 200)]
@@ -89,6 +87,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Short_version_zero_metadata_keeps_the_validated_hhea_metrics()
     {
         byte[] bytes = CreateFontWithMetadata(0);

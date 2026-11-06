@@ -91,6 +91,10 @@ T1/T12 with 2,928 passing core checks, retained browser/program/contour bindings
 focused rendering checks. Both Windows runtimes retain the known DejaVu failure;
 its frozen target and the separate open T18 gate remain unchanged. A stale private
 study locator is replaced with the committed contour record's explicit scope.
+The [text placement trace](text-placement-claim-trace.json) reviews eight more groups
+with 7,212 affected passing checks, all 855 canonical text-node references and
+distinct original capture receipts. Baseline metric checks lose a duplicate
+successful pseudo-retry; actual failure contracts and every native target remain.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 
