@@ -1,0 +1,614 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "48f3df9f3abae795340ac9fcc7726aaa04cfdfb4",
+  "license": "CC0-1.0",
+  "licenseEvidence": "Original controls dedicated in README.md; the two original empty-gradient mechanism inputs retain their exact bytes.",
+  "mode": "Intrinsic SVG image, transparent background, physical/CSS viewport equal to each case dimensions, output/device scale1.",
+  "captureRecipeRevision": 3,
+  "browserPins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "win64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+      "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+      "executableRelativePath": "chrome-win64/chrome.exe",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "platform": "linux64",
+      "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/linux64/chrome-linux64.zip",
+      "archiveSha256": "e66f66d4802a46d4a022667e668aa950e277cadbfbed4b3777915b47413a0ef9",
+      "executableRelativePath": "chrome-linux64/chrome",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  },
+  "toolAssemblySha256": "2756fff45e116f6de7584543f68741099886b3a6795e994ea8e348d251b4f700",
+  "cases": [
+    {
+      "id": "gradient-line-nonuniform",
+      "input": "gradient-line-nonuniform.svg",
+      "inputSha256": "71daca5ececf88c9621dad4e4a7c7805e97b10999527c9ebc7c88505fb6a4b0d",
+      "width": 96,
+      "height": 72,
+      "platforms": {
+        "windows": {
+          "reference": "references/gradient-line-nonuniform.png",
+          "referenceSha256": "1f1bc6df7c744988d4f05af4c834cd6faa68fab5df3028aa8a1d7686ffbd4cb5",
+          "rgbaSha256": "4d28226313e430a73d7ba398a048aba9739f57ecca28c651d2bf95229471b23c",
+          "captures": [
+            {
+              "pngSha256": "1f1bc6df7c744988d4f05af4c834cd6faa68fab5df3028aa8a1d7686ffbd4cb5",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "1f1bc6df7c744988d4f05af4c834cd6faa68fab5df3028aa8a1d7686ffbd4cb5",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "1f1bc6df7c744988d4f05af4c834cd6faa68fab5df3028aa8a1d7686ffbd4cb5",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/gradient-line-nonuniform.png",
+          "referenceSha256": "1f1bc6df7c744988d4f05af4c834cd6faa68fab5df3028aa8a1d7686ffbd4cb5",
+          "rgbaSha256": "4d28226313e430a73d7ba398a048aba9739f57ecca28c651d2bf95229471b23c",
+          "captures": [
+            {
+              "pngSha256": "1f1bc6df7c744988d4f05af4c834cd6faa68fab5df3028aa8a1d7686ffbd4cb5",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "1f1bc6df7c744988d4f05af4c834cd6faa68fab5df3028aa8a1d7686ffbd4cb5",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "1f1bc6df7c744988d4f05af4c834cd6faa68fab5df3028aa8a1d7686ffbd4cb5",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gradient-line-rotated",
+      "input": "gradient-line-rotated.svg",
+      "inputSha256": "899e24f678d9016684ee1b7c58058452daf4f7ed9529269ded9a15ce08947c83",
+      "width": 96,
+      "height": 72,
+      "platforms": {
+        "windows": {
+          "reference": "references/gradient-line-rotated.png",
+          "referenceSha256": "7ff4415396dfa455e02fe8840a3c47531c20d5bd0a66c03611f70ebe44d20478",
+          "rgbaSha256": "6b0382a9b80d22f3d0792aa1f2d59cae2d1a5271afca2ae1b8af4052398abc25",
+          "captures": [
+            {
+              "pngSha256": "7ff4415396dfa455e02fe8840a3c47531c20d5bd0a66c03611f70ebe44d20478",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "7ff4415396dfa455e02fe8840a3c47531c20d5bd0a66c03611f70ebe44d20478",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "7ff4415396dfa455e02fe8840a3c47531c20d5bd0a66c03611f70ebe44d20478",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/gradient-line-rotated.png",
+          "referenceSha256": "7ff4415396dfa455e02fe8840a3c47531c20d5bd0a66c03611f70ebe44d20478",
+          "rgbaSha256": "6b0382a9b80d22f3d0792aa1f2d59cae2d1a5271afca2ae1b8af4052398abc25",
+          "captures": [
+            {
+              "pngSha256": "7ff4415396dfa455e02fe8840a3c47531c20d5bd0a66c03611f70ebe44d20478",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "7ff4415396dfa455e02fe8840a3c47531c20d5bd0a66c03611f70ebe44d20478",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "7ff4415396dfa455e02fe8840a3c47531c20d5bd0a66c03611f70ebe44d20478",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gradient-line-sheared",
+      "input": "gradient-line-sheared.svg",
+      "inputSha256": "cd6b0b24979120f1660a5f00bee3d9cf31926652109a30acd0eeb373a7dbb466",
+      "width": 96,
+      "height": 72,
+      "platforms": {
+        "windows": {
+          "reference": "references/gradient-line-sheared.png",
+          "referenceSha256": "8cbb9bcb28a186066951170a95158e4de3fd61023518821f911e3c79037127cd",
+          "rgbaSha256": "d8acf3717b361f2113b70d8eae56f7c4757cf50c6e8ef85e635a34874cab6b03",
+          "captures": [
+            {
+              "pngSha256": "8cbb9bcb28a186066951170a95158e4de3fd61023518821f911e3c79037127cd",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "8cbb9bcb28a186066951170a95158e4de3fd61023518821f911e3c79037127cd",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "8cbb9bcb28a186066951170a95158e4de3fd61023518821f911e3c79037127cd",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/gradient-line-sheared.png",
+          "referenceSha256": "8cbb9bcb28a186066951170a95158e4de3fd61023518821f911e3c79037127cd",
+          "rgbaSha256": "d8acf3717b361f2113b70d8eae56f7c4757cf50c6e8ef85e635a34874cab6b03",
+          "captures": [
+            {
+              "pngSha256": "8cbb9bcb28a186066951170a95158e4de3fd61023518821f911e3c79037127cd",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "8cbb9bcb28a186066951170a95158e4de3fd61023518821f911e3c79037127cd",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "8cbb9bcb28a186066951170a95158e4de3fd61023518821f911e3c79037127cd",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gradient-line-uniform",
+      "input": "gradient-line-uniform.svg",
+      "inputSha256": "698138f732f6a100a7f832ea67c969cc0118c32a33b41e37fe498f6403eb245c",
+      "width": 96,
+      "height": 72,
+      "platforms": {
+        "windows": {
+          "reference": "references/gradient-line-uniform.png",
+          "referenceSha256": "f65edb2b6883890cd609ab804c79b32f24ee08a994414b30539fe21c7c4ee16a",
+          "rgbaSha256": "6b5a1514e1474dde6b3971fe1550080cccc99b73e8f6d720718a541963d46b89",
+          "captures": [
+            {
+              "pngSha256": "f65edb2b6883890cd609ab804c79b32f24ee08a994414b30539fe21c7c4ee16a",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "f65edb2b6883890cd609ab804c79b32f24ee08a994414b30539fe21c7c4ee16a",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "f65edb2b6883890cd609ab804c79b32f24ee08a994414b30539fe21c7c4ee16a",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/gradient-line-uniform.png",
+          "referenceSha256": "f65edb2b6883890cd609ab804c79b32f24ee08a994414b30539fe21c7c4ee16a",
+          "rgbaSha256": "6b5a1514e1474dde6b3971fe1550080cccc99b73e8f6d720718a541963d46b89",
+          "captures": [
+            {
+              "pngSha256": "f65edb2b6883890cd609ab804c79b32f24ee08a994414b30539fe21c7c4ee16a",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "f65edb2b6883890cd609ab804c79b32f24ee08a994414b30539fe21c7c4ee16a",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "f65edb2b6883890cd609ab804c79b32f24ee08a994414b30539fe21c7c4ee16a",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "empty-gradient-nonuniform",
+      "input": "empty-gradient-nonuniform.svg",
+      "inputSha256": "5fc8a00064c40f71d7c5bbd73276bac62c7567c15af0e0a368d0201f8621aec3",
+      "width": 32,
+      "height": 32,
+      "platforms": {
+        "windows": {
+          "reference": "references/empty-gradient-nonuniform.png",
+          "referenceSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+          "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+          "captures": [
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/empty-gradient-nonuniform.png",
+          "referenceSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+          "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+          "captures": [
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "empty-gradient-uniform",
+      "input": "empty-gradient-uniform.svg",
+      "inputSha256": "1f485f857c6ff0ff3a8ccda0fe6879d811647c8dbe06af2b6a5897585d6b4f7c",
+      "width": 32,
+      "height": 32,
+      "platforms": {
+        "windows": {
+          "reference": "references/empty-gradient-nonuniform.png",
+          "referenceSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+          "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+          "captures": [
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/empty-gradient-nonuniform.png",
+          "referenceSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+          "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+          "captures": [
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "b1fae15be85b86592bacb196809845037c61633779834f6556904a4a85701438",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "empty-gradient-parent",
+      "input": "empty-gradient-parent.svg",
+      "inputSha256": "5a96812d2f9ffad6b6ad2e81f22447f39fd3c0f88a14a392bc2c71fe1067e04b",
+      "width": 32,
+      "height": 32,
+      "platforms": {
+        "windows": {
+          "reference": "references/empty-gradient-parent.png",
+          "referenceSha256": "16ef819513c3fcd89d0dbcfb3bb12c6b1cece716fa72ca927656d7ab3ef43d28",
+          "rgbaSha256": "48c74aa25da4c9082e10f71e41e6dc9e5ee9cc9ac3643b1bb9644b68cd324124",
+          "captures": [
+            {
+              "pngSha256": "16ef819513c3fcd89d0dbcfb3bb12c6b1cece716fa72ca927656d7ab3ef43d28",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "16ef819513c3fcd89d0dbcfb3bb12c6b1cece716fa72ca927656d7ab3ef43d28",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "16ef819513c3fcd89d0dbcfb3bb12c6b1cece716fa72ca927656d7ab3ef43d28",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/empty-gradient-parent.png",
+          "referenceSha256": "16ef819513c3fcd89d0dbcfb3bb12c6b1cece716fa72ca927656d7ab3ef43d28",
+          "rgbaSha256": "48c74aa25da4c9082e10f71e41e6dc9e5ee9cc9ac3643b1bb9644b68cd324124",
+          "captures": [
+            {
+              "pngSha256": "16ef819513c3fcd89d0dbcfb3bb12c6b1cece716fa72ca927656d7ab3ef43d28",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "16ef819513c3fcd89d0dbcfb3bb12c6b1cece716fa72ca927656d7ab3ef43d28",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            },
+            {
+              "pngSha256": "16ef819513c3fcd89d0dbcfb3bb12c6b1cece716fa72ca927656d7ab3ef43d28",
+              "health": {
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "sandboxAccessFailures": 0,
+                "networkServiceCrashes": 0,
+                "stderrTruncated": false
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

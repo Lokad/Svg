@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseCommit": "48f3df9f3abae795340ac9fcc7726aaa04cfdfb4",
+  "status": "Focused source/native/ownership qualification passes. Full committed-source runtime/package/original-context milestone is pending.",
+  "sharedCause": "Unpainted line strokes lost authored commands and fell into legacy contour admission. An empty object-box gradient therefore rejected a valid nonuniform line; ordinary affine painted gradient lines already matched the browser.",
+  "change": "Both native line consumers share one static local preparation function. It retains source commands independently of paint availability, preserves invariant endpoint serialization and its temporary reservation, and reuses the existing native stroke owner.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgLeafParser.cs": "fb6793f461bad3eb1b63043cf8c1320e919b56d3a4f6bde61ecb727ba27346cb",
+    "docs/SUPPORT_MATRIX.md": "68e2bfc3bdea1acfb3ed8399066ead6582fe5240f6c9f3db4fb608bbf6881919",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs": "8e235bb1a4135b840adb60542b857e5fa7faa74686c49009c15f0072aa042197",
+    "tests/Lokad.Svg.Tests/SvgNativeLineSourceOwnershipTests.cs": "78f7375e59c7bf19880796f7e8fe515b4fc2369af3d3aa240e6b27a56141487f",
+    "tests/Lokad.Svg.Tests/Lokad.Svg.Tests.csproj": "68de117081d6c8b51c2fbde5bbd3434f000db6fe5c2a0127653543b29e11a9a2",
+    "tests/Lokad.Svg.VisualTests/SvgLineDashTransformReferenceTests.cs": "5fc9284ad0073633becb5ea8ae8bb0e6a5b5f474fedc1dafcb144497d8fd4ceb",
+    "tests/Research/line-dash-transforms/capture.json": "da0a0f5860a129110948f449c83a80961717dd5eba6f1fc19d7797ad8d390ca4"
+  },
+  "regression": {
+    "failingBeforeCases": 4,
+    "newRenderingCases": 7,
+    "newOwnershipCases": 1,
+    "originalAdmissionInputs": {
+      "nonuniform": "5fc8a00064c40f71d7c5bbd73276bac62c7567c15af0e0a368d0201f8621aec3",
+      "uniform": "1f485f857c6ff0ff3a8ccda0fe6879d811647c8dbe06af2b6a5897585d6b4f7c"
+    },
+    "originalInputsByteExact": true,
+    "existingNonScalingRejectionMatrixRetained": true,
+    "existingAssertionChange": "The two original uniform/nonuniform input bytes remain. Their misleading uniform-only test becomes an explicitly named raw/prepared source-retention contract; the previously rejected empty-gradient case now expects its independently captured transparent image.",
+    "existingReferencesRewritten": 0
+  },
+  "native": {
+    "manifest": "../line-dash-transforms/capture.json",
+    "cases": 7,
+    "platformRows": 14,
+    "freshHealthyCaptures": 42,
+    "sharedByteIdenticalPngs": 6,
+    "allExpectedPixelsIndependentBeforeProductionChange": true
+  },
+  "before": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "6c3a1eba941b36e05eb47c2064e356055efea76f3e2e75944ae47d02c263725a",
+      "testAssemblySha256": "b4894b3bfd5a7a159b914e564dc359dce6e9d32af6066b264047d0d58fc7decd",
+      "selection": "FullyQualifiedName~SvgNativeLineSourceOwnershipTests|FullyQualifiedName~Dashed_gradient_line_strokes_keep_empty_paint_geometry_under_affine_placement",
+      "exitCode": 1,
+      "seconds": 8.974229299928993,
+      "counters": {
+        "executed": "3",
+        "passed": "1",
+        "failed": "2"
+      },
+      "trxSha256": "c95c6c135a6e79dc7d9ef9f25b28c89aa9b6db3ebb976dc18903a4b7048c93d6",
+      "failures": [
+        "Lokad.Svg.Tests.OpenTypeFontTests.Dashed_gradient_line_strokes_keep_empty_paint_geometry_under_affine_placement(map: \"matrix(.75 0 0 1.25 4 -4)\")",
+        "Lokad.Svg.Tests.SvgNativeLineSourceOwnershipTests.Unpainted_native_line_source_releases_shared_owners_on_refusal_cancellation_and_retry"
+      ]
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "6c3a1eba941b36e05eb47c2064e356055efea76f3e2e75944ae47d02c263725a",
+      "testAssemblySha256": "ed43caf7fd6986ac24577453ab083d15085c3525fd974252fed1437c4e230942",
+      "selection": "FullyQualifiedName~SvgLineDashTransformReferenceTests",
+      "exitCode": 1,
+      "seconds": 10.29808079986833,
+      "counters": {
+        "executed": "7",
+        "passed": "5",
+        "failed": "2"
+      },
+      "trxSha256": "af83449bb5d75438c72bcc75b20e8da6ca73f22d206c17754e5359e6c244d66e",
+      "failures": [
+        "Lokad.Svg.VisualTests.SvgLineDashTransformReferenceTests.Line_strokes_preserve_affine_source_geometry_independently_of_gradient_availability(identity: \"empty-gradient-nonuniform\")",
+        "Lokad.Svg.VisualTests.SvgLineDashTransformReferenceTests.Line_strokes_preserve_affine_source_geometry_independently_of_gradient_availability(identity: \"empty-gradient-parent\")"
+      ]
+    }
+  ],
+  "focused": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "7791061099ff22a757627f5f4bdd07c428ffce0ce9f9f405c8fe737f5c96aca7",
+      "testAssemblySha256": "73b8cd79350ce130b1c52707747367321a16504fd982452d07d5a689f0709186",
+      "selection": "FullyQualifiedName~SvgNativeLineSourceOwnershipTests|FullyQualifiedName~Dashed_gradient_line_strokes_keep_empty_paint_geometry_under_affine_placement|FullyQualifiedName~Dashed_non_scaling_strokes_keep_the_documented_affine_boundary|FullyQualifiedName~SvgLineStrokeLengthTests|FullyQualifiedName~SvgFixedStrokeLengthTests|FullyQualifiedName~SvgLineDashDirectionTests|FullyQualifiedName~SvgUseStrokeSourceTests|FullyQualifiedName~SvgNativeStrokeSourceTests",
+      "exitCode": 0,
+      "seconds": 8.33248159987852,
+      "counters": {
+        "executed": "114",
+        "passed": "114",
+        "failed": "0"
+      },
+      "trxSha256": "b8db9beabf77d1ec48621d4d2d491268d2efaab6a4820f07aed40dc61a72ea04"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "7791061099ff22a757627f5f4bdd07c428ffce0ce9f9f405c8fe737f5c96aca7",
+      "testAssemblySha256": "73b8cd79350ce130b1c52707747367321a16504fd982452d07d5a689f0709186",
+      "selection": "FullyQualifiedName~SvgNativeLineSourceOwnershipTests|FullyQualifiedName~Dashed_gradient_line_strokes_keep_empty_paint_geometry_under_affine_placement|FullyQualifiedName~Dashed_non_scaling_strokes_keep_the_documented_affine_boundary|FullyQualifiedName~SvgLineStrokeLengthTests|FullyQualifiedName~SvgFixedStrokeLengthTests|FullyQualifiedName~SvgLineDashDirectionTests|FullyQualifiedName~SvgUseStrokeSourceTests|FullyQualifiedName~SvgNativeStrokeSourceTests",
+      "exitCode": 0,
+      "seconds": 14.703836699947715,
+      "counters": {
+        "executed": "114",
+        "passed": "114",
+        "failed": "0"
+      },
+      "trxSha256": "071f2077359082c07e3ddba2f4aca3600e2122b73e3a99681b80cf8bdc4198dd"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "7791061099ff22a757627f5f4bdd07c428ffce0ce9f9f405c8fe737f5c96aca7",
+      "testAssemblySha256": "9bb28fec05f2b05c67680284fff56a0510ff35d01bc60956fb75f1a892dbc36e",
+      "selection": "FullyQualifiedName~SvgLineDashTransformReferenceTests|FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~SvgUseStrokeSourceReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "exitCode": 0,
+      "seconds": 9.084523499943316,
+      "counters": {
+        "executed": "172",
+        "passed": "172",
+        "failed": "0"
+      },
+      "trxSha256": "72754894b96c76d75d7521a2b03ae564fab3cb9ee5bbedacc7ae0d830e4641d7"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "7791061099ff22a757627f5f4bdd07c428ffce0ce9f9f405c8fe737f5c96aca7",
+      "testAssemblySha256": "9bb28fec05f2b05c67680284fff56a0510ff35d01bc60956fb75f1a892dbc36e",
+      "selection": "FullyQualifiedName~SvgLineDashTransformReferenceTests|FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~SvgUseStrokeSourceReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "exitCode": 0,
+      "seconds": 10.90385160013102,
+      "counters": {
+        "executed": "172",
+        "passed": "172",
+        "failed": "0"
+      },
+      "trxSha256": "ec2fd097d06c9961c76dee4c7e7ae2b7d9583966d335ef574a227175cab48e5d"
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c9c77856bf81b2cf1938ab4d567ad438f674f4188a1dcda0864acbd8f923e669",
+      "testAssemblySha256": "4509a8df4497fbc9b58e78cac6904f5f136008cbaa412eaf6f49f2aa6a755056",
+      "selection": "FullyQualifiedName~SvgNativeLineSourceOwnershipTests|FullyQualifiedName~Dashed_gradient_line_strokes_keep_empty_paint_geometry_under_affine_placement|FullyQualifiedName~Dashed_non_scaling_strokes_keep_the_documented_affine_boundary|FullyQualifiedName~SvgLineStrokeLengthTests|FullyQualifiedName~SvgFixedStrokeLengthTests|FullyQualifiedName~SvgLineDashDirectionTests|FullyQualifiedName~SvgUseStrokeSourceTests|FullyQualifiedName~SvgNativeStrokeSourceTests",
+      "exitCode": 0,
+      "seconds": 10.081194600090384,
+      "counters": {
+        "executed": "114",
+        "passed": "114",
+        "failed": "0"
+      },
+      "trxSha256": "27bb3e8cfd316ed2b8f7e27892c7ad0a56d0b5eb7bee35c4e312f5f909fcc5b7"
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "c9c77856bf81b2cf1938ab4d567ad438f674f4188a1dcda0864acbd8f923e669",
+      "testAssemblySha256": "4509a8df4497fbc9b58e78cac6904f5f136008cbaa412eaf6f49f2aa6a755056",
+      "selection": "FullyQualifiedName~SvgNativeLineSourceOwnershipTests|FullyQualifiedName~Dashed_gradient_line_strokes_keep_empty_paint_geometry_under_affine_placement|FullyQualifiedName~Dashed_non_scaling_strokes_keep_the_documented_affine_boundary|FullyQualifiedName~SvgLineStrokeLengthTests|FullyQualifiedName~SvgFixedStrokeLengthTests|FullyQualifiedName~SvgLineDashDirectionTests|FullyQualifiedName~SvgUseStrokeSourceTests|FullyQualifiedName~SvgNativeStrokeSourceTests",
+      "exitCode": 0,
+      "seconds": 11.247213799972087,
+      "counters": {
+        "executed": "114",
+        "passed": "114",
+        "failed": "0"
+      },
+      "trxSha256": "286751ca064bff791fff4f0a517e1375e1eb5a605aae23e7da17638692ef4853"
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "c9c77856bf81b2cf1938ab4d567ad438f674f4188a1dcda0864acbd8f923e669",
+      "testAssemblySha256": "f0574aea17df18ce504ab0ece61d87ef4fee3622f4d7592a907da372bfb41630",
+      "selection": "FullyQualifiedName~SvgLineDashTransformReferenceTests|FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~SvgUseStrokeSourceReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "exitCode": 0,
+      "seconds": 9.536633800016716,
+      "counters": {
+        "executed": "172",
+        "passed": "172",
+        "failed": "0"
+      },
+      "trxSha256": "46d06d8ac506f0aa78b7ec887bdd51550212ea0472b9649c2f1dd45e910df489"
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "c9c77856bf81b2cf1938ab4d567ad438f674f4188a1dcda0864acbd8f923e669",
+      "testAssemblySha256": "f0574aea17df18ce504ab0ece61d87ef4fee3622f4d7592a907da372bfb41630",
+      "selection": "FullyQualifiedName~SvgLineDashTransformReferenceTests|FullyQualifiedName~SvgLineStrokeLengthReferenceTests|FullyQualifiedName~SvgUseStrokeSourceReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgAffineSourceReferenceTests|FullyQualifiedName~SvgSingularSourceReferenceTests",
+      "exitCode": 0,
+      "seconds": 12.283423500135541,
+      "counters": {
+        "executed": "172",
+        "passed": "172",
+        "failed": "0"
+      },
+      "trxSha256": "f7777f2955dd872ce9a38d8e60432588892e881d92432d6dbc56798ef56b4821"
+    }
+  ],
+  "validationScope": "VSTest includes discovery/startup/TRX and concurrent host pairs. No renderer performance comparison. Current text layout and font/source/refusal policy remain unchanged.",
+  "pending": [
+    "Committed-source full Windows/Linux runtime gates",
+    "Deterministic packages and installed consumers",
+    "All204 original and declared-context RAM replay",
+    "Matching CI closure"
+  ],
+  "remaining": "Finish the finite support trace and existing PLAN.md duties. Frozen Windows DejaVu authority and quiet-VM timing remain separate."
+}

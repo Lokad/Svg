@@ -121,8 +121,9 @@ independent paints and ordinary/non-scaling widths. Stroke widths, dash entries
 and offsets accept bare numbers and `px`, `in`, `cm`, `mm`, `pt`, `pc`, `q` lengths.
 Conversion precedes numeric range admission; zero widths avoid resources needed
 only by that stroke. Percentage and font-relative stroke metrics remain unsupported.
-Dashed non-scaling line, circle and curved-path strokes reject rotation/shear;
-dashed gradient line strokes require uniform scaling. CSS/inherited vector
+Dashed non-scaling line, circle and curved-path strokes reject rotation/shear.
+Ordinary solid/gradient line strokes retain source geometry under finite affine
+placement, including when gradient paint is empty. CSS/inherited vector
 effects are unsupported.
 Local uses retain rectangle source strokes independently of fill/stroke material.
 Affine uses also retain rectangle fills and hidden path/point-list source commands;
@@ -174,7 +175,7 @@ retained symbol/pattern content is unsupported. Rendered group references retain
 source-group opacity isolation and filters. Source-group clip/mask bindings and
 nested viewports remain unsupported. Local uses may reference named uses; authored
 placement and presentation remain separate from source ancestors.
-Zero scale factors and singular pattern transforms reject.
+Singular pattern transforms reject.
 
 ### Gradients and patterns
 

@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/line-dash-transforms/empty-gradient-parent.svg" Link="TestData/line-dash-transforms/empty-gradient-parent.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/benchmark-workloads/panel-controls/panel-shadow.svg" Link="TestData/shadow-sampling/panel-shadow.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/benchmark-workloads/shadow-ownership.json" Link="TestData/shadow-sampling/ownership.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/benchmark-workloads/stage-controls/color-image.svg" Link="TestData/shadow-foreground/color-image.svg" CopyToOutputDirectory="PreserveNewest" />

@@ -4,12 +4,12 @@ Scope: every feature and limit section of the current [support contract][contrac
 The overview table is indexed by the detailed rows below; it adds no separate
 conformance promise. Labels summarize claims without duplicating the contract.
 
-Evidence base: `8442f0c9c`. Contract LF SHA-256:
-`940246099e74c54ff2d26a2756ddc98b1a87d2567138bc18b3b7f86b44cdf533`.
-Production source is unchanged since `c13ac322c`; the [diagnostic qualification][diag-record]
-records full .NET 11 CI and affected Windows/Linux .NET 10 checks. The
-[rendering milestone][render-record] owns full cross-runtime rendering/package
-evidence. Their source/runtime/platform boundaries remain distinct.
+Evidence base: `48f3df9f3`. The [native line source correction][line-source-record]
+records the current source/contract hashes and focused qualification. The earlier
+[diagnostic qualification][diag-record] records full .NET 11 CI and affected
+Windows/Linux .NET 10 checks; the [rendering milestone][render-record] owns its
+full cross-runtime rendering/package evidence. Source/runtime/platform boundaries
+remain explicit in each qualification.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -73,7 +73,7 @@ Scope: [geometry and strokes][contract-geometry].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| G1 | Shape/path families, winding, caps/joins/miter, dashes/pathLength, stroke paints/units and non-scaling restrictions | Pending. |
+| G1 | Shape/path families, winding, caps/joins/miter, dashes/pathLength, stroke paints/units and non-scaling restrictions | Pending: [native line retention][line-source-record] now has failing-before, ordinary affine and empty-paint/parent-bound controls. Finish its committed-source milestone and the remaining shape/stroke trace. |
 | G2 | Retained rectangle/path/point-list source geometry, visibility and finite singular maps | Pending. |
 | G3 | Nonuniform symbol viewBox source fills/outlines and lowered-polygon exclusion | Pending. |
 | G4 | Zero/degenerate dash/shape/path/point-list behavior and authored endpoint order | Pending. |
@@ -270,6 +270,7 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [selection-record]: resource-selection.md#conditional-selection
 [diag-record]: diagnostic-unicode-prefix.json
 [render-record]: shadow-foreground.json
+[line-source-record]: native-line-source.json
 [png-rows]: png-row-storage.json
 [png-color]: png-color-admission.json
 [w1-context]: ../svgweb/context-boundaries.json

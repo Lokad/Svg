@@ -1,5 +1,10 @@
 # Release baselines
 
+[Native line sources](native-line-source.json) retain commands independently of
+paint availability through shared preparation. Four failing-before cases and
+seven independent browser controls protect empty paint, affine placement and
+parent bounds; committed-source milestone qualification is recorded separately.
+
 The [support-claim trace](support-claim-map.md) gives the current contract a finite
 review index. Reviewed claims, pending traces and unresolved authority stay distinct.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven

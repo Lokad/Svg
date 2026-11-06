@@ -756,12 +756,8 @@ internal static class SvgLeafParser
                 return new(empty.Detach(), 0);
             }
             using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "line", false, false, int.MaxValue, state.Budget, context.CancellationToken);
-            using RenderBudget.BudgetReservation pathReservation = state.Budget.Reserve(256, SvgMemoryCategory.Parser);
-            string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");
-            return lowering.LowerStrokePath(path, 2, false, element, stroke.Value.Color, element.Presentation.IsPainted,
-                stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern,
-                stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, context.RetainInstanceStrokePath, state.Budget);
-
+            return LowerNativeLineSource(syntax, element, stroke.Value, element.Presentation.IsPainted,
+                lowering, frame, state.Budget);
         }
 
         SvgParsedGeometry LowerRoundCapLine()
@@ -830,11 +826,9 @@ internal static class SvgLeafParser
                 tile = SvgPatternReferenceResolver.ForReplay(id, tile, state, context.CancellationToken);
             }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local line paints are implemented.");
-            using RenderBudget.BudgetReservation textOwner = state.Budget.Reserve(256, SvgMemoryCategory.Parser);
-            string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");
-            SvgParsedGeometry outlines = lowering.LowerStrokePath(path, 2, false, white, stroke.Value.Color, white.Presentation.IsPainted && !(useLinear && linear.IsEmpty) && !(useRadial && radial.IsEmpty),
-                stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset,
-                stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, context.RetainInstanceStrokePath, state.Budget);
+            SvgParsedGeometry outlines = LowerNativeLineSource(syntax, white, stroke.Value,
+                white.Presentation.IsPainted && !(useLinear && linear.IsEmpty) && !(useRadial && radial.IsEmpty),
+                lowering, frame, state.Budget);
             try
             {
                 using BudgetedGeometryBuilder painted = new(state.Budget, SvgMemoryCategory.Geometry, context.CancellationToken);
@@ -854,6 +848,19 @@ internal static class SvgLeafParser
         }
         // <summary>Appends one clipped rectangle per dash-pattern on-run along a horizontal or vertical line, reporting whether any run paints.</summary>
         // <remarks><para>Callers paint over the returned rectangles and leave the single quiet rectangle unpainted, sharing the solid phase convention across paints.</para></remarks>
+        // Native line construction retains source commands independently of paint availability.
+        // Keep the established invariant serialization and its temporary reservation.
+        static SvgParsedGeometry LowerNativeLineSource(SvgLineSyntax syntax, SvgResolvedPaintableElement element,
+            SvgStrokeStyleSyntax.SvgAdmittedStroke stroke, bool hasPaint, SvgOrthogonalGeometryLowering lowering,
+            SvgViewportFrame? frame, RenderBudget budget)
+        {
+            using RenderBudget.BudgetReservation pathReservation = budget.Reserve(256, SvgMemoryCategory.Parser);
+            string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");
+            return lowering.LowerStrokePath(path, 2, false, element, stroke.Color, hasPaint,
+                stroke.Width, stroke.MiterLimit, stroke.Cap, stroke.Join, stroke.DashPattern,
+                stroke.DashOffset, stroke.PathLength, stroke.NonScalingStroke, frame, true, budget);
+        }
+
         static bool AppendLineDashRunRects(SvgLineSyntax syntax, int strokeWidth, bool squareCaps, double[] dashes, double dashOffset, double? pathLength, SvgViewportFrame? frame, RenderBudget budget, CancellationToken cancellationToken, BudgetedParserList<SvgRectangle> runs)
         {
             ArgumentNullException.ThrowIfNull(dashes);

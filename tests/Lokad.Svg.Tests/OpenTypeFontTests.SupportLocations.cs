@@ -206,12 +206,13 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
-    [InlineData("matrix(.75 0 0 1.25 4 -4)", false)]
-    [InlineData("matrix(.75 0 0 .75 4 -4)", true)]
-    public async Task Dashed_gradient_line_strokes_require_uniform_placement(string map, bool admitted)
+    [InlineData("matrix(.75 0 0 1.25 4 -4)")]
+    [InlineData("matrix(.75 0 0 .75 4 -4)")]
+    [Trait("Layer", "Contract")]
+    public async Task Dashed_gradient_line_strokes_keep_empty_paint_geometry_under_affine_placement(string map)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><line x1='4' y1='16' x2='28' y2='16' fill='none' stroke='url(#p)' stroke-width='2' stroke-dasharray='2 1' pathLength='10' transform='" + map + "'/></svg>");
-        await AssertSupportAdmission(input, admitted);
+        await AssertSupportAdmission(input, true);
     }
 
     private static async Task AssertSupportAdmission(byte[] input, bool admitted)
