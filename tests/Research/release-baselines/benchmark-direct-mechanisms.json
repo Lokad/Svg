@@ -1,0 +1,377 @@
+{
+  "status": "Direct component coverage qualified:10 new workloads complement every named pipeline area. All52 earlier timed method bodies and86 workload identities remain. All96 workloads compile on Windows/Linux for both runtimes; functional bit/lifetime checks and876 existing mechanism/storage executions pass. Timed performance remains unmeasured.",
+  "sourceBaseCommit": "f9dcf4264587db3b4b5349bcdaf8fc45b07fdcd8",
+  "runtimeQualification": "shadow-foreground.json",
+  "priorBenchmarkQualification": "benchmark-authored-documents.json",
+  "builderQualification": "benchmark-net11-qualification.json",
+  "source": {
+    "files": [
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/SvgParseBenchmarks.cs",
+        "beforeLfSha256": "42d04837bde28cc39cfd15b0c3794d651af621aeadcc5035292d8e20bd1e01e7",
+        "afterLfSha256": "81f216d7581cbeb06d51aa0dd06ac08d01f8baf65dd137efc72e1efcd4533152"
+      },
+      {
+        "file": "../../../benchmarks/Lokad.Svg.Benchmarks/SvgRasterKernelBenchmarks.cs",
+        "beforeLfSha256": null,
+        "afterLfSha256": "20e5a1df7a0b525c12c9c331e0967f302ff73d77cefdbb25ce2e33d7d6f96477"
+      }
+    ],
+    "all52PriorTimedMethodBodiesByteExact": true,
+    "priorMethodBodyMapSha256": "538a61639b007d2c5a9866a63b394d9ca9e1a6b246d9e8ec684bd39d854bcc3b",
+    "originalParserSetupBodyUnchanged": true,
+    "originalFourParserInputsByteExact": true,
+    "noProductionApiDependencyLockFixtureReferenceOrCiChanges": true
+  },
+  "partition": {
+    "beforeMethods": 52,
+    "afterMethods": 62,
+    "retainedWorkloadsPerRuntime": 86,
+    "addedWorkloadsPerRuntime": 10,
+    "afterWorkloadsPerRuntime": 96,
+    "addedMethods": [
+      "SvgParseBenchmarks.ParseEmbeddedRules",
+      "SvgParseBenchmarks.ParseInlineDeclarations",
+      "SvgRasterKernelBenchmarks.ApplyColorMatrix",
+      "SvgRasterKernelBenchmarks.BlendCoverage",
+      "SvgRasterKernelBenchmarks.BlurOneAxis",
+      "SvgRasterKernelBenchmarks.BlurTwoAxes",
+      "SvgRasterKernelBenchmarks.ConvertToLinearRgb",
+      "SvgRasterKernelBenchmarks.ConvertToSrgb",
+      "SvgRasterKernelBenchmarks.PolygonCoverage",
+      "SvgRasterKernelBenchmarks.SampleGradientRamp"
+    ],
+    "allFourGeneratedIdentityDigestsAgree": true
+  },
+  "scopes": [
+    {
+      "area": "XML/attributes",
+      "methods": [
+        "SvgParseBenchmarks.ParseAttributeHeavyShapes"
+      ],
+      "unit": "64 prepared-input rectangles; parsing/lowering and scene disposal, without raster or PNG."
+    },
+    {
+      "area": "CSS",
+      "methods": [
+        "SvgParseBenchmarks.ParseInlineDeclarations",
+        "SvgParseBenchmarks.ParseEmbeddedRules"
+      ],
+      "unit": "One declaration block with priority, or32 rules/64 selectors. Rule/string storage is admitted and disposed inside the stylesheet workload."
+    },
+    {
+      "area": "Local references",
+      "methods": [
+        "SvgParseBenchmarks.ParseDefinitionUses"
+      ],
+      "unit": "64 definitions/uses through shared parsing/lowering; no raster or PNG."
+    },
+    {
+      "area": "Geometry/coverage",
+      "methods": [
+        "SvgRasterKernelBenchmarks.PolygonCoverage"
+      ],
+      "unit": "One six-point contour sampled over16x16 pixels;256 operations/invocation."
+    },
+    {
+      "area": "Blending/gradients",
+      "methods": [
+        "SvgRasterKernelBenchmarks.BlendCoverage",
+        "SvgRasterKernelBenchmarks.SampleGradientRamp"
+      ],
+      "unit": "256 premultiplied samples or positions in a prepared uneven four-stop ramp. Blend includes resetting its1024-byte background; ramp preparation stays outside timing."
+    },
+    {
+      "area": "Text/fonts",
+      "methods": [
+        "SvgTextBenchmarks.CreateSnapshotAsync",
+        "SvgTextBenchmarks.LowerStyledText",
+        "SvgTextBenchmarks.DecodeGlyphContours",
+        "SvgTextBenchmarks.TransformAndCopyContours"
+      ],
+      "unit": "Existing acquisition, lowering, decoding and transformed-copy scopes remain distinct."
+    },
+    {
+      "area": "Filter/color",
+      "methods": [
+        "SvgRasterKernelBenchmarks.BlurOneAxis",
+        "SvgRasterKernelBenchmarks.BlurTwoAxes",
+        "SvgRasterKernelBenchmarks.ApplyColorMatrix",
+        "SvgRasterKernelBenchmarks.ConvertToLinearRgb",
+        "SvgRasterKernelBenchmarks.ConvertToSrgb"
+      ],
+      "unit": "One64x64 premultiplied frame per blur call; ring-only and ring/intermediate paths stay separate. Color operations process256 float samples, retaining ordered native evaluation."
+    },
+    {
+      "area": "PNG",
+      "methods": [
+        "PngBufferBenchmarks.EncodeHighEntropyOwned",
+        "PngBufferBenchmarks.EncodeLowEntropyStream"
+      ],
+      "unit": "Existing eight encoding/destination workloads and separate untimed tracked-storage report remain unchanged."
+    },
+    {
+      "area": "Document integration",
+      "methods": [
+        "SvgReferenceDocumentBenchmarks.ConvertDocument",
+        "SvgReferenceDocumentBenchmarks.RasterizeDocument"
+      ],
+      "unit": "Existing12 frozen documents retain both conversion and prepared-raster scopes, fonts and independent native targets."
+    }
+  ],
+  "functional": {
+    "hostTargets": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "runtime": ".NET 11.0.0-rc.3.26522.148",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "runtime": ".NET 10.0.14",
+        "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "runtime": ".NET 10.0.14",
+        "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077"
+      }
+    ],
+    "originalParserInputHashes": {
+      "_attributes": "b2b877092392b508e692fe2dac466bed075b7febc77691899b3ea7e45871b5d7",
+      "_styledText": "e2596a68f51f8d37fce87fef7492ac5159cb2f51c7007c23e525206905754c6b",
+      "_definitionUses": "9644e36c942c5653a4d1448332a09774249a53fde3a4ab0e88d7ab4d34b1bb05",
+      "_styledShapes": "c15f49bffcec018bedf33c9e1de49ea8340986da481361c0030ebe2b759e1eb5"
+    },
+    "cssInputHashes": {
+      "declarations": "79b256706ec82ff0fb542dc77494b31ea3679ff22adfb8be423ff2dda9d14a39",
+      "stylesheet": "738e330cc9c0215cc2bd2e4afd3ac93ad102943b28f04a5e22a0fc4d14afd838"
+    },
+    "kernelInputHashes": {
+      "_blurSource": "91faa61be2c40b150ee07ab2ffe9a612bb8a61728ae87af33bf5967a609f74bb",
+      "_samples": "df2bfdc99c434cab7df389323653de857114fcc91d8f742f3f3c231e055fbbd5",
+      "_linearSamples": "816bd5f1621fd85263b2fa241d485a81d0c84884f2f259299fc767a76a78d689",
+      "_contour": "32c926f0a12bd18fb219d6e8cabac1cb575984e2d4d089897e9ab9ec522b120d",
+      "_coverage": "50d24b3c71170d2ab1d55ac1123a224ab1d8f8b0474bbee5edce4dfba4ed9d1a",
+      "_background": "67eb6b5af077b1d6b035a76a7fae5545b7233b8ff365e6ea5eabc090ab30c7f3"
+    },
+    "exactKernelResults": [
+      {
+        "method": "ApplyColorMatrix",
+        "operationsPerInvoke": 256,
+        "outputSha256": "5f065381cbb2d398242f26669c80407cedeb5dfa5d2805786cbe76f8cdadf0a0",
+        "integratedCoverage": null,
+        "finalScratchBytes": 0,
+        "rampBorrowedBytes": 232
+      },
+      {
+        "method": "BlendCoverage",
+        "operationsPerInvoke": 256,
+        "outputSha256": "9b2abd1183c4dbe121f213870555ea8ff18cb0748d99956b447b6a975aba59a4",
+        "integratedCoverage": null,
+        "finalScratchBytes": 0,
+        "rampBorrowedBytes": 232
+      },
+      {
+        "method": "BlurOneAxis",
+        "operationsPerInvoke": 1,
+        "outputSha256": "7f7507c2d29b8924209bf6de467078394fa647cf9712ca89cc37bf144e3837c7",
+        "integratedCoverage": null,
+        "finalScratchBytes": 0,
+        "rampBorrowedBytes": 232
+      },
+      {
+        "method": "BlurTwoAxes",
+        "operationsPerInvoke": 1,
+        "outputSha256": "f4c82de68e4e6a8cb8a616dcfeab870d659e97544ba03d70c8eeee563ae84212",
+        "integratedCoverage": null,
+        "finalScratchBytes": 0,
+        "rampBorrowedBytes": 232
+      },
+      {
+        "method": "ConvertToLinearRgb",
+        "operationsPerInvoke": 256,
+        "outputSha256": "816bd5f1621fd85263b2fa241d485a81d0c84884f2f259299fc767a76a78d689",
+        "integratedCoverage": null,
+        "finalScratchBytes": 0,
+        "rampBorrowedBytes": 232
+      },
+      {
+        "method": "ConvertToSrgb",
+        "operationsPerInvoke": 256,
+        "outputSha256": "2fa6415433185e430b9c5e91be0aafc2d2d87825a645504a78e83bde2f9e4dbb",
+        "integratedCoverage": null,
+        "finalScratchBytes": 0,
+        "rampBorrowedBytes": 232
+      },
+      {
+        "method": "PolygonCoverage",
+        "operationsPerInvoke": 256,
+        "outputSha256": "9e9c38584e480e100638d80a1886af07ccdefd4d15afbcd2e2dd952119627fea",
+        "integratedCoverage": 134.0625,
+        "finalScratchBytes": 0,
+        "rampBorrowedBytes": 232
+      },
+      {
+        "method": "SampleGradientRamp",
+        "operationsPerInvoke": 256,
+        "outputSha256": "647cf48f7ab3352c8346340e9f714a07fa1eefa9fe73eeb8a92c2ee583e01c11",
+        "integratedCoverage": null,
+        "finalScratchBytes": 0,
+        "rampBorrowedBytes": 232
+      }
+    ],
+    "allFourInputsAndOutputBitsAgree": true,
+    "checks": [
+      "Fresh targeted CSS setup retains none of the four document inputs; priority yields navy and stylesheet parsing yields64 selectors on repeated calls.",
+      "Each batch advertises256 operations; each blur advertises one frame. Component arrays remain caller-owned outside timing.",
+      "Repeated calls overwrite deliberately disturbed output storage; outputs are nonempty, blending changes its background and nonidentity blurs change source pixels.",
+      "Every caller input remains byte/bit-exact. CSS/blur scratch refunds reach zero; the multi-stop owner stays borrowed until cleanup.",
+      "Cleanup is idempotent, clears all arrays and releases ramp storage. Setup works again after cleanup.",
+      "Original setup is compiled as an audit-only input factory; all four legacy input arrays and six workload results retain their existing behavior."
+    ],
+    "authority": "Exact cross-context component output joins are functional checks, not replacement pixel references. Existing independent native/numerical tests retain their own authority."
+  },
+  "componentQualification": {
+    "selection": "FullyQualifiedName~SvgGaussianBlurTests|FullyQualifiedName~SvgFilterColorMatrixTests|FullyQualifiedName~SvgGradientRampTests|FullyQualifiedName~SvgShaderPaintTests|FullyQualifiedName~SvgPolygonCoverageTests|FullyQualifiedName~SvgStyleSheetTests|FullyQualifiedName~SvgStyleSheetStorageTests",
+    "executions": 876,
+    "hostTargets": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+        "testAssemblySha256": "1e2b420132c6c96317d66aa87ae945aad39d677164c1aa0f88a10a2b2fbdd525",
+        "exitCode": 0,
+        "seconds": 7.578609100077301,
+        "counters": {
+          "executed": "219",
+          "passed": "219",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+        "testAssemblySha256": "1e2b420132c6c96317d66aa87ae945aad39d677164c1aa0f88a10a2b2fbdd525",
+        "exitCode": 0,
+        "seconds": 11.588835200062022,
+        "counters": {
+          "executed": "219",
+          "passed": "219",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077",
+        "testAssemblySha256": "501b8f001f2eb16486348907c1de5018cb88dec519fee35be661e2c2a30fca53",
+        "exitCode": 0,
+        "seconds": 6.8477818998508155,
+        "counters": {
+          "executed": "219",
+          "passed": "219",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "librarySha256": "b33a0f6216fb25d515615f8705a4cd10d3912f58b548abb280b4316465434077",
+        "testAssemblySha256": "501b8f001f2eb16486348907c1de5018cb88dec519fee35be661e2c2a30fca53",
+        "exitCode": 0,
+        "seconds": 11.035765799926594,
+        "counters": {
+          "executed": "219",
+          "passed": "219",
+          "failed": "0"
+        }
+      }
+    ]
+  },
+  "generatedCompilation": {
+    "builds": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 14.468088999856263,
+        "cases": 96,
+        "identitySha256": "9eafa2b1ffa5c64f98d286db151cee325ed08f102d82e4b0f4154d91a3f5c8fa",
+        "driverSha256": "7f4202a3b788f72179154203d4488f05ff750b07e4bc9edfdc46d41c851a1e89",
+        "generated": [
+          {
+            "cases": 96,
+            "executableSha256": "91ee38f13b5ea090024ea2cd2b28d56b0a6231c717cd002570ba15f2563c1636",
+            "generatedSourceSha256": "4ad1c54d1f1a8dfe13f0add899cb85f62d9709e32960ee10a4d3d79b581897c6"
+          }
+        ]
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 15.888724700082093,
+        "cases": 96,
+        "identitySha256": "9eafa2b1ffa5c64f98d286db151cee325ed08f102d82e4b0f4154d91a3f5c8fa",
+        "driverSha256": "7f4202a3b788f72179154203d4488f05ff750b07e4bc9edfdc46d41c851a1e89",
+        "generated": [
+          {
+            "cases": 96,
+            "executableSha256": "bfdd4fbe640694c9d9031545dc95b95a4982291661295f1246bbbe881ae1085c",
+            "generatedSourceSha256": "4ad1c54d1f1a8dfe13f0add899cb85f62d9709e32960ee10a4d3d79b581897c6"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 72.11158180003986,
+        "cases": 96,
+        "identitySha256": "9eafa2b1ffa5c64f98d286db151cee325ed08f102d82e4b0f4154d91a3f5c8fa",
+        "driverSha256": "7f4202a3b788f72179154203d4488f05ff750b07e4bc9edfdc46d41c851a1e89",
+        "generated": [
+          {
+            "cases": 96,
+            "executableSha256": "43e8b56465ad273deae0a8a4252362f4d6de09a39eba076616f73aa5055dc9cb",
+            "generatedSourceSha256": "ccabe2a2fbbb2626bcbbe8ad820fcf03bdf52b26b78d3e5063f9461a36b9106e"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 62.46540500014089,
+        "cases": 96,
+        "identitySha256": "9eafa2b1ffa5c64f98d286db151cee325ed08f102d82e4b0f4154d91a3f5c8fa",
+        "driverSha256": "7f4202a3b788f72179154203d4488f05ff750b07e4bc9edfdc46d41c851a1e89",
+        "generated": [
+          {
+            "cases": 96,
+            "executableSha256": "d5c4133999620a4d3cbf3f19b8abd60e3273af0e997ca3153517dfb971dfe730",
+            "generatedSourceSha256": "ccabe2a2fbbb2626bcbbe8ad820fcf03bdf52b26b78d3e5063f9461a36b9106e"
+          }
+        ]
+      }
+    ],
+    "allEightParserAndEightKernelLifecyclesVerified": true,
+    "priorSceneAndDocumentLifecyclesVerified": true,
+    "executorCalls": 0,
+    "timedBenchmarkExecutions": 0,
+    "scope": "Pinned public CsProjBuilder generation/compilation only; durations describe validation, not renderer performance."
+  },
+  "inherited": "Shipping source and exact qualified renderer DLL/PDB/XML assets remain unchanged. Existing native/W1/package/full-suite qualification and the separate frozen Windows DejaVu discrepancy retain their source binding. No full CI/package rerun or native recapture is claimed for this benchmark-only change.",
+  "closure": "The requested representative component scope expansion is integrated. Future scenarios need a new correctness witness or profiling result; quiet-VM timing/distributions, installed/native comparisons, allocation/GC and memory measurement remain open."
+}

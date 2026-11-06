@@ -1,6 +1,7 @@
 using BenchmarkDotNet.Attributes;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Benchmarks;
 
@@ -12,8 +13,12 @@ public class SvgParseBenchmarks
     private byte[] _styledText = [];
     private byte[] _definitionUses = [];
     private byte[] _styledShapes = [];
+    private string _declarations = string.Empty;
+    private string _styleSheet = string.Empty;
+    private readonly RenderBudget _cssBudget = new();
 
-    [GlobalSetup]
+    [GlobalSetup(Targets = [nameof(ConvertAttributeHeavyShapes), nameof(ParseAttributeHeavyShapes),
+        nameof(ParseDefinitionUses), nameof(DiscoverStyledTextRequests), nameof(ParseStyledShapes), nameof(ConvertStyledShapes)])]
     public void SetUp()
     {
         System.Text.StringBuilder soup = new("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>");
@@ -81,4 +86,30 @@ public class SvgParseBenchmarks
 
     [Benchmark]
     public int ConvertStyledShapes() => SvgConverter.ConvertToPng(_styledShapes, SvgRenderOptions.Default, CancellationToken.None).Length;
+
+    [GlobalSetup(Targets = [nameof(ParseInlineDeclarations), nameof(ParseEmbeddedRules)])]
+    public void SetUpCss()
+    {
+        _declarations = "fill: steelblue; fill-opacity: .5; stroke: #123456; stroke-width: 2; opacity: .75; "
+            + "stroke-linecap: round; stroke-linejoin: bevel; paint-order: stroke fill; fill: navy !important";
+        System.Text.StringBuilder rules = new("/* supplied benchmark declarations */");
+        for (int index = 0; index < 32; index++)
+            rules.Append(".cell").Append(index).Append(", g > .cell").Append(index)
+                .Append(" { fill: steelblue; fill-opacity: .5; stroke: #123456; stroke-width: 2; }");
+        _styleSheet = rules.ToString();
+    }
+
+    [Benchmark]
+    public string ParseInlineDeclarations()
+        => SvgInlineStyleParser.Parse(_declarations, CancellationToken.None).Fill
+            ?? throw new InvalidOperationException("The supplied declarations require a fill.");
+
+    [Benchmark]
+    public int ParseEmbeddedRules()
+    {
+        using BudgetedParserStringStore strings = new(_cssBudget);
+        using BudgetedParserList<CssRule> rules = new(_cssBudget, SvgMemoryCategory.Parser, CancellationToken.None);
+        SvgStyleSheet.Parse(_styleSheet, SvgRenderLimits.Default.MaximumNodes, rules, strings, _cssBudget, CancellationToken.None);
+        return rules.Count;
+    }
 }

@@ -8,6 +8,12 @@ Reference images remain beside their existing licensed source collections.
 The [API migration audit](api-migration.json) accounts for every removed published
 declaration and verifies equivalent current API surfaces on both target frameworks.
 
+[Direct benchmark components](benchmark-direct-mechanisms.json) add CSS parsing,
+coverage, blending, gradient sampling, blur and color operations through existing
+production components. All 86 prior workloads and 52 timed bodies remain. The 96
+generated cases compile on both hosts/runtimes; functional outputs, ownership and
+876 existing mechanism/storage executions pass. Timing still requires a quiet host.
+
 [Symbol/document manifest lifetime](symbol-manifest-lifetime.json) removes repeated
 metadata parsing through one class fixture. All 1,629 original cases, assertions
 and native references remain; focused Windows/Linux qualification passes on both
