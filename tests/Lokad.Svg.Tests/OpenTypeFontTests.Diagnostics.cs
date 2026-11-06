@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class OpenTypeFontTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Missing_scalar_index_counts_original_run_scalars_after_a_ligature_and_releases_scratch()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateLigatureFont(false))], CancellationToken.None);
@@ -19,6 +20,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Unprepared_bold_italic_request_is_actionable_and_deliberate_catalog_fallback_still_works()
     {
         (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = CreateExamplePack(CreateTriangleFont());
@@ -39,6 +41,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Missing_glyph_reports_scalar_index_face_and_source_in_raw_and_prepared_paths()
     {
         (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = CreateExamplePack(CreateTriangleFont());
@@ -62,6 +65,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Forward_use_preserves_original_text_location_and_instance_identity()
     {
         (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = CreateExamplePack(CreateTriangleFont());
@@ -77,6 +81,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Provider_failure_retains_discovered_request_style_and_source_position()
     {
         (SvgFontPackCatalog catalog, _, _) = CreateExamplePack(CreateTriangleFont());

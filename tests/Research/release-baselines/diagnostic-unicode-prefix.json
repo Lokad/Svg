@@ -116,12 +116,205 @@
     }
   ],
   "validationLimits": "VSTest wall times include whole-assembly discovery/startup and TRX; host pairs overlap. They are functional qualification, not performance measurements. Full renderer/package qualification remains a coherent milestone duty; no new native captures were required for diagnostic text.",
-  "inventory": {
+  "correctnessCommit": "c13ac322c22de53099e60fedb37936b230a2a1b2",
+  "responsibilitySelection": {
+    "baselineCommit": "c13ac322c22de53099e60fedb37936b230a2a1b2",
+    "changedMethods": 9,
+    "retainedCases": 11,
+    "mechanismCases": 5,
+    "contractCases": 6,
+    "roles": {
+      "Unsupported_input_identifies_its_element_attribute_value_and_position": "Mechanism",
+      "Inspection_and_conversion_share_actionable_sizing_failures": "Contract",
+      "Source_enrichment_keeps_sink_integrity_and_first_failure": "Contract",
+      "Source_context_is_bounded_and_old_exception_constructors_remain_available": "Contract",
+      "Missing_scalar_index_counts_original_run_scalars_after_a_ligature_and_releases_scratch": "Mechanism",
+      "Unprepared_bold_italic_request_is_actionable_and_deliberate_catalog_fallback_still_works": "Contract",
+      "Missing_glyph_reports_scalar_index_face_and_source_in_raw_and_prepared_paths": "Contract",
+      "Forward_use_preserves_original_text_location_and_instance_identity": "Mechanism",
+      "Provider_failure_retains_discovered_request_style_and_source_position": "Contract"
+    },
+    "sourceLfSha256": {
+      "tests/Lokad.Svg.Tests/SvgSourceDiagnosticTests.cs": "58d6086342cdfca67355ba7229b0119acb7690eb8ea66eefc9a6f5a38a1c6f6a",
+      "tests/Lokad.Svg.Tests/OpenTypeFontTests.Diagnostics.cs": "ce94744c61207bad4809e7edb1fa0d298ad13c8812a2490ad4d0ff588abc2459"
+    },
+    "proof": "The only source changes are nine method-level Trait insertions. Every method body, assertion, input and existing trait is unchanged. All other compiled method metadata rows are equal.",
+    "selectedCaseIdentitySha256": "cd47ca57de223906c16c7ddea855fa1831f4f38d3c7432109a78710a93b9743e",
+    "affectedQualification": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "librarySha256": "1d13493ee7b580295a8ac430e79ff67b592e60901ff8c2e4ba37a250d5ce08b8",
+        "testAssemblySha256": "a9100c7e6e0c399727ae5cb5111fd0690c2f2cb4fba7b0ec42d2b751c875559b",
+        "seconds": 9.503045300021768,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "baselineTrxSha256": "483fd0da73bf72b467eb103ec9ef588ff620d94065722b97fba482e93d39d00f",
+        "trxSha256": "97d4cc5e6970a2e7bb35a468ce4fd445b7fcff6a5d1a0c013390730554764712"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "librarySha256": "1d13493ee7b580295a8ac430e79ff67b592e60901ff8c2e4ba37a250d5ce08b8",
+        "testAssemblySha256": "a9100c7e6e0c399727ae5cb5111fd0690c2f2cb4fba7b0ec42d2b751c875559b",
+        "seconds": 13.644053000025451,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "baselineTrxSha256": "96869dd7867f7c7c5408eab2a82725c4f986cbacc10670e3995e50f5e0b8f99e",
+        "trxSha256": "16b0c20a62969980eec9bc5b86dca3f4d8351c8ff2a5d7f8e0238c460c6433b6"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "librarySha256": "bffac3ad298c4857f956efc97f1b992651996e68755b9ca891df033240316088",
+        "testAssemblySha256": "62e436858cb5a4667a1a7f1dd193ebf09bf112788f4a5fe228b50f22451ccd05",
+        "seconds": 8.925179000012577,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "baselineTrxSha256": "4b86b4866622ca67f442bd8c7c882d8600670e8d83f01a7f3376ca211b0e3415",
+        "trxSha256": "1f4f957a64696371ba01fd76b9595c6f770aea0980e64363b010f2a98ae700a0"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "librarySha256": "bffac3ad298c4857f956efc97f1b992651996e68755b9ca891df033240316088",
+        "testAssemblySha256": "62e436858cb5a4667a1a7f1dd193ebf09bf112788f4a5fe228b50f22451ccd05",
+        "seconds": 10.384375399909914,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "baselineTrxSha256": "fcba3a34c7c3b0c87274ce9ff15d679b01b4ba5f9361fb345eb2dda6098563fa",
+        "trxSha256": "53c286af0adc4c1e54e9552f08ff67bf6982068c05dd5d1eedd65543b103fc28"
+      }
+    ],
+    "limits": "The eleven original cases enter the fast layers; no case is removed or moved to Research. Mixed OpenType partials keep method-level traits. Wall times include whole-assembly discovery/startup and are not a speedup comparison. No tests are batched and no new matrix/helper/framework is added.",
+    "inventory": {
+      "methods": 5162,
+      "coreUnclassified": 1129,
+      "visualUnclassified": 212
+    }
+  },
+  "inventoryAtCorrectnessQualification": {
     "methods": 5162,
     "csharpFiles": 742,
     "coreMethods": 4700,
     "visualMethods": 462,
     "coreUnclassified": 1138,
     "visualUnclassified": 212
+  },
+  "closedCiQualification": {
+    "sourceCommit": "c13ac322c22de53099e60fedb37936b230a2a1b2",
+    "runId": 42162934250,
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalLogsFetchedOnce": true,
+    "jobs": [
+      {
+        "runId": 42162934250,
+        "jobId": 127712637555,
+        "host": "linux",
+        "status": "completed",
+        "conclusion": "success",
+        "logSha256": "50652494eea23e05027233ead3a7b59c6d38976b7489406fe3f3443d1158e2f6",
+        "tests": [
+          {
+            "project": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "executed": 10,
+            "passed": 10,
+            "failed": 0,
+            "skipped": 0
+          },
+          {
+            "project": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "executed": 47973,
+            "passed": 47973,
+            "failed": 0,
+            "skipped": 0
+          },
+          {
+            "project": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "executed": 78366,
+            "passed": 78366,
+            "failed": 0,
+            "skipped": 0
+          },
+          {
+            "project": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "executed": 12245,
+            "passed": 12245,
+            "failed": 0,
+            "skipped": 0
+          },
+          {
+            "project": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "executed": 2671,
+            "passed": 2671,
+            "failed": 0,
+            "skipped": 0
+          },
+          {
+            "project": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "executed": 10,
+            "passed": 10,
+            "failed": 0,
+            "skipped": 0
+          }
+        ],
+        "gates": "Full .NET 11, .NET 10 compatibility, memory, pinned Linux Chrome, font probe, artifact validators, pack and installed-package smoke passed."
+      },
+      {
+        "runId": 42162934250,
+        "jobId": 127712638144,
+        "host": "windows",
+        "status": "completed",
+        "conclusion": "failure",
+        "logSha256": "6d085fccd03202a14f4ddb50c17bcc07f3a92630a49da076c8005c930860127e",
+        "tests": [
+          {
+            "project": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "executed": 10,
+            "passed": 10,
+            "failed": 0,
+            "skipped": 0
+          },
+          {
+            "project": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "executed": 47973,
+            "passed": 47973,
+            "failed": 0,
+            "skipped": 0
+          },
+          {
+            "project": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "executed": 78366,
+            "passed": 78365,
+            "failed": 1,
+            "skipped": 0
+          }
+        ],
+        "onlyFailure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+        "gates": "Full .NET 11 core and font-host passed; visual retains the recorded frozen DejaVu conflict. Subsequent compatibility/tools/package steps were skipped."
+      }
+    ]
   }
 }

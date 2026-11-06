@@ -3,7 +3,8 @@
 [Diagnostic text boundaries](diagnostic-unicode-prefix.json) replace three cuts
 with one bounded prefix operation that preserves surrogate pairs. Direct boundary
 and field checks complement immediate/deferred parser regressions; image references
-and the API/ownership matrix remain unchanged.
+and the API/ownership matrix remain unchanged. Nine retained methods add eleven
+existing cases to the appropriate fast layers, with every body and assertion intact.
 
 [0.3.0.json](0.3.0.json) records the published package and library hashes, exact
 source tag, Git identities of the test/reference trees, license/support document

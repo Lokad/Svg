@@ -156,6 +156,7 @@ public sealed class SvgSourceDiagnosticTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("<foreignObject id='foreign'/>", "foreignObject", "foreign", "", "")]
     [InlineData("<rect id='shape' width='8' height='8' transform-origin='center'/>", "rect", "shape", "transform-origin", "center")]
     [InlineData("<path id='edge' d='M0 0L8 8' stroke='red' stroke-linejoin='arcs'/>", "path", "edge", "stroke-linejoin", "arcs")]
@@ -172,6 +173,7 @@ public sealed class SvgSourceDiagnosticTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Inspection_and_conversion_share_actionable_sizing_failures()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' id='root'\n width='12em' height='16'/>"u8.ToArray();
@@ -188,6 +190,7 @@ public sealed class SvgSourceDiagnosticTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Source_enrichment_keeps_sink_integrity_and_first_failure()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>\n<rect id='first' transform-origin='center'/>\n<foreignObject id='later'/>\n</svg>"u8.ToArray();
@@ -204,6 +207,7 @@ public sealed class SvgSourceDiagnosticTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Source_context_is_bounded_and_old_exception_constructors_remain_available()
     {
         SvgSourceDiagnostic source = new(new string('x', 300), new string('i', 300), new string('a', 300), new string('v', 300), null, null, new string('u', 300));

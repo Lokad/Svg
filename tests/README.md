@@ -242,6 +242,8 @@ successful retry through the shared gate in
 [Diagnostic boundaries](Research/release-baselines/diagnostic-unicode-prefix.json)
 exercise UTF-16 truncation directly, check each public source/font field once, and
 retain immediate and deferred parser failures without another output-path matrix.
+Related parsing and font diagnostics carry method-level Mechanism/Contract traits;
+raw/prepared parity, sink integrity and provider failures remain separate contracts.
 
 The [text-paint correction](Research/release-baselines/precision-current.md) combines
 direct matrix/source-box mechanisms, all 39 original images across four banks and
