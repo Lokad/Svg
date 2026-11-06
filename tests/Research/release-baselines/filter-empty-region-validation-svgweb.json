@@ -1,0 +1,760 @@
+{
+  "legacyLinuxProfileReplay": {
+    "profile": "linux-glibc-2.39",
+    "sourceSha256": "f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a",
+    "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+    "libraryPngSha256": "6270d140b852258201361b48813bfde0aaa5185afb7e6ce1d7234703ebbc89c0",
+    "unchangedQualifiedLegacyPng": true,
+    "sourceBodiesRetained": 0
+  },
+  "status": "Primary-runtime replay of all 204 unchanged originals and every declared supplied/static context is exact or retains its original admission outcome on Windows/Linux. This does not close unsupported/dynamic/resource contexts.",
+  "qualifiedSourceCommit": "0b44105157567e38c2d88ebfe62c4d861f3dd448",
+  "qualification": "filter-empty-region-validation.json",
+  "packages": {
+    "sourceCommit": "0b44105157567e38c2d88ebfe62c4d861f3dd448",
+    "packageSha256": "b783e72f7e5c76dfa3b83e1185e40a47b0b0400aec04a4ed17eda7d7e95167ea",
+    "symbolPackageSha256": "148eac2f79556d96b37d6d975393fe35aba9b56e14ce21cbdb3a3c6e64689251",
+    "librarySha256": {
+      "net11.0": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+      "net10.0": "fb9bb8948451f8b569ab0a7a7e896c5ad67ca559deae6ead5a1704db37b898d5"
+    }
+  },
+  "originalLedger": "../svgweb/originals.json",
+  "outcomes": "../svgweb/default-outcomes.csv",
+  "outcomesSha256": "582ae5c51d785db0c92acf401ef2e27a45a05a3f90936028e69dc1b59a348fcc",
+  "liveIndex": {
+    "directory": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/",
+    "httpStatus": 200,
+    "sha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+    "directSvgFiles": 204,
+    "namesMatchFrozenInventory": true
+  },
+  "defaults": {
+    "framework": "net11.0",
+    "options": "Transparent, output scale 1, natural viewport, default limits, no supplied font/resource source.",
+    "originalSourceSetSha256": "98ecf4d5a1cf3e31dff4873101e6e5521726d264407793e9086d74e8e6b058aa",
+    "observationsSha256": "d056cff60ec8b48d5dc08fe9ab82673ff6b6ba06451ebf58ac66f81c666e205e",
+    "seconds": 297.10751460003667,
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "metadataUnchangedPerHost": {
+      "windows": 204,
+      "linux": 204
+    },
+    "nativeAuthority": "Earlier source-bound references remain frozen. Windows 168/Linux 167 current PNGs equal the CSV hashes; svg.svg on Linux uses the separately recaptured glibc 2.43 companion. All 168 per host equal the preceding qualified source outputs."
+  },
+  "nativeMathProfiles": {
+    "inputs": 1,
+    "case": "svg.svg",
+    "retainedHealthyCaptures": 9,
+    "explicitImageViewport": [
+      300,
+      150
+    ],
+    "profileDifferences": [
+      {
+        "name": "svg.svg",
+        "host": "linux",
+        "csvProfile": "glibc 2.39",
+        "currentReplayProfile": "glibc 2.43",
+        "csvLibraryPngSha256": "6270d140b852258201361b48813bfde0aaa5185afb7e6ce1d7234703ebbc89c0",
+        "currentLibraryPngSha256": "9ba32e3633726806dc788447d8fa7fca21dc25f1c0ac0e17a7b5abd9dd8cf718"
+      }
+    ],
+    "observations": [
+      {
+        "profile": "windows",
+        "sourceSha256": "f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a",
+        "librarySha256": "b67b058d6eb711425689c3458410e4882135f43131baf82585895aec441999aa",
+        "toolAssemblySha256": "47b4e750ebe60bd873622f587a8b4cb31e30035943913a2d27f422084f42c2cf",
+        "browserExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "libraryPngSha256": "9ba32e3633726806dc788447d8fa7fca21dc25f1c0ac0e17a7b5abd9dd8cf718",
+        "nativePngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+        "rgbaSha256": "1c9d04d9d63767acaabb91b8e45a741c071db31e06acdb69ead7fb3385d1f178",
+        "width": 300,
+        "height": 150,
+        "changedPixels": 0,
+        "captures": [
+          {
+            "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome.exe",
+              "elapsedMilliseconds": 587,
+              "debuggerReadyMilliseconds": 156,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "\r\nDevTools listening on [redacted URL]\r\n[69480:13208:1106/094633.135:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          },
+          {
+            "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome.exe",
+              "elapsedMilliseconds": 518,
+              "debuggerReadyMilliseconds": 151,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "\r\nDevTools listening on [redacted URL]\r\n[99064:86448:1106/094633.957:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          },
+          {
+            "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome.exe",
+              "elapsedMilliseconds": 508,
+              "debuggerReadyMilliseconds": 130,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "\r\nDevTools listening on [redacted URL]\r\n[62032:56712:1106/094634.537:ERROR:chrome\\browser\\ui\\webui\\ntp\\new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\r\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          }
+        ]
+      },
+      {
+        "profile": "linux-glibc-2.43",
+        "sourceSha256": "f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a",
+        "librarySha256": "b67b058d6eb711425689c3458410e4882135f43131baf82585895aec441999aa",
+        "toolAssemblySha256": "47b4e750ebe60bd873622f587a8b4cb31e30035943913a2d27f422084f42c2cf",
+        "browserExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "libraryPngSha256": "9ba32e3633726806dc788447d8fa7fca21dc25f1c0ac0e17a7b5abd9dd8cf718",
+        "nativePngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+        "rgbaSha256": "1c9d04d9d63767acaabb91b8e45a741c071db31e06acdb69ead7fb3385d1f178",
+        "width": 300,
+        "height": 150,
+        "changedPixels": 0,
+        "captures": [
+          {
+            "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 3547,
+              "debuggerReadyMilliseconds": 2482,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "[623:623:1106/094639.281078:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[623:623:1106/094639.308664:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[623:656:1106/094640.073077:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[623:623:1106/094640.995284:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[623:656:1106/094641.051431:ERROR:crypto/nss_util.cc:256] Error initializing NSS with a persistent database (sql:%USERPROFILE%/.local/share/pki/nssdb): NSS error code: -8126\n[623:623:1106/094641.118664:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[623:623:1106/094641.177835:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          },
+          {
+            "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 2701,
+              "debuggerReadyMilliseconds": 1730,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "[1138:1138:1106/094642.993901:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[1138:1138:1106/094643.015556:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[1138:1173:1106/094643.560024:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[1138:1138:1106/094644.346170:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[1138:1173:1106/094644.396057:ERROR:crypto/nss_util.cc:256] Error initializing NSS with a persistent database (sql:%USERPROFILE%/.local/share/pki/nssdb): NSS error code: -8126\n[1138:1138:1106/094644.476521:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[1138:1138:1106/094644.524011:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          },
+          {
+            "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 3001,
+              "debuggerReadyMilliseconds": 1845,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "[1612:1612:1106/094646.425957:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[1612:1612:1106/094646.445334:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n[1612:1649:1106/094647.155995:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open %USERPROFILE%/.config/google-chrome-for-testing/Crash Reports/settings.dat: Read-only file system (30)\n\nDevTools listening on [redacted URL]\n[1612:1612:1106/094648.031776:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[1612:1649:1106/094648.093397:ERROR:crypto/nss_util.cc:256] Error initializing NSS with a persistent database (sql:%USERPROFILE%/.local/share/pki/nssdb): NSS error code: -8126\n[1612:1612:1106/094648.183209:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[1612:1612:1106/094648.242454:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          }
+        ]
+      },
+      {
+        "profile": "linux-glibc-2.39",
+        "sourceSha256": "f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a",
+        "librarySha256": "b67b058d6eb711425689c3458410e4882135f43131baf82585895aec441999aa",
+        "toolAssemblySha256": "47b4e750ebe60bd873622f587a8b4cb31e30035943913a2d27f422084f42c2cf",
+        "browserExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "libraryPngSha256": "6270d140b852258201361b48813bfde0aaa5185afb7e6ce1d7234703ebbc89c0",
+        "nativePngSha256": "9fe354018c0e06ce1034fd5530cfd3b29e2d71846295abd7f8e151a1d3c7b58a",
+        "rgbaSha256": "1403807cea74768c6810d896eb8de58f7a23020128cc4367b1c5c29e0a5982cf",
+        "width": 300,
+        "height": 150,
+        "changedPixels": 0,
+        "captures": [
+          {
+            "pngSha256": "9fe354018c0e06ce1034fd5530cfd3b29e2d71846295abd7f8e151a1d3c7b58a",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 3608,
+              "debuggerReadyMilliseconds": 2485,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "\nDevTools listening on [redacted URL]\n[622:622:1106/094640.995380:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[622:622:1106/094641.118900:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[622:622:1106/094641.177839:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          },
+          {
+            "pngSha256": "9fe354018c0e06ce1034fd5530cfd3b29e2d71846295abd7f8e151a1d3c7b58a",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 2761,
+              "debuggerReadyMilliseconds": 1731,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "\nDevTools listening on [redacted URL]\n[1139:1139:1106/094644.346194:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[1139:1139:1106/094644.476734:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[1139:1139:1106/094644.523622:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          },
+          {
+            "pngSha256": "9fe354018c0e06ce1034fd5530cfd3b29e2d71846295abd7f8e151a1d3c7b58a",
+            "health": {
+              "schemaVersion": 1,
+              "executableName": "chrome",
+              "elapsedMilliseconds": 3008,
+              "debuggerReadyMilliseconds": 1862,
+              "sandboxAccessFailures": 0,
+              "networkServiceCrashes": 0,
+              "stderrTruncated": false,
+              "stderr": "\nDevTools listening on [redacted URL]\n[1613:1613:1106/094648.061143:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[1613:1613:1106/094648.183788:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.NetworkManager was not provided by any .service files\n[1613:1613:1106/094648.242454:ERROR:chrome/browser/ui/webui/ntp/new_tab_ui.cc:54] Requested load of chrome://newtab/ for incorrect profile type.\n",
+              "profileCleaned": true,
+              "startupHealth": "healthy"
+            }
+          }
+        ]
+      }
+    ],
+    "authority": "The legacy Linux and Windows fresh PNGs exactly reproduce their original frozen native hashes. Fresh Linux glibc 2.43 captures independently establish the current matching companion; neither source nor reference changes."
+  },
+  "suppliedPrograms": {
+    "inputs": 22,
+    "normalContexts": 19,
+    "additionalContexts": 2,
+    "originalXmlNotoPreserveAspectRatio": 1,
+    "nativeFontQualification": "../svgweb/supplied-original-contexts.json",
+    "additionalQualification": "../svgweb/supplied-original-contexts-additional.json",
+    "originalSetSha256": "bdee19d4c67fae8ef32f09597acd10ca0ecaf122190a0231387e9f0d38c8630a",
+    "nativeComparisons": 38,
+    "exactPriorQualifiedPngComparisons": 6,
+    "sourceOptionFontBridgeUnchanged": true
+  },
+  "staticDiagnostics": {
+    "inputs": 13,
+    "nativeComparisons": 26,
+    "exact": 26,
+    "membership": "../svgweb/remaining-static-gates.json",
+    "observations": [
+      {
+        "name": "anim1.svg",
+        "inputSha256": "7942478aa2b6d43600b66d59ff0233bb8c3b968f8ac95cd328554689b8ba37ec",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "993fcf0ea8e9a2d342ef2bb19652a1f77f2589600a858801f8e44246807a4f02",
+            "nativePngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "435b865f90ab3d76a366181f6cf9361706ee9eb5a56ad45a66afc5aef6138ced",
+            "nativePngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288"
+          }
+        ]
+      },
+      {
+        "name": "anim2.svg",
+        "inputSha256": "7942478aa2b6d43600b66d59ff0233bb8c3b968f8ac95cd328554689b8ba37ec",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "993fcf0ea8e9a2d342ef2bb19652a1f77f2589600a858801f8e44246807a4f02",
+            "nativePngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "435b865f90ab3d76a366181f6cf9361706ee9eb5a56ad45a66afc5aef6138ced",
+            "nativePngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288"
+          }
+        ]
+      },
+      {
+        "name": "anim3.svg",
+        "inputSha256": "01d0fc4eb0736ab7a69911cf8e641d4d47148b5c6777768c468de3a649042fa3",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "c4e22d2c1310669c33a0d707656545ebc2e185c0f6af84c61458fd8149de2cfb",
+            "nativePngSha256": "34f9054fae52dce9bf6224cf48bd3e2388ea061b0a4061e8058f578e77a0a761"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "82c248ed136cff062458ec7b7e35cac1794d26d4870f2651f25772db82ad32f5",
+            "nativePngSha256": "a32ee0d4effc15e8a806848bf527017ed0d1f398f9b0395be9cd892293e58ebc"
+          }
+        ]
+      },
+      {
+        "name": "pservers-grad-03-b-anim.svg",
+        "inputSha256": "901cbcd0c88a9bfe6d3535156cd9c291fcb8f02c6f4fe42281cef13fa03f9ca5",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "1ce781a8367158c3e21db5acfe9870132531e369be4d8886dffb17fa9a2c2fab",
+            "nativePngSha256": "6ab7834804b2182923973cbbf1772dff0768ba2f96b6926b946c92dee516e3e8"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "8ddb43ea9413642aee25b14066695ee9376ae340f3e411ce4d357ca5b379a682",
+            "nativePngSha256": "2427b1dea2e7bd5addba981d19b38ffca77818969a1d71af7978da645ef82a75"
+          }
+        ]
+      },
+      {
+        "name": "scimitar-anim.svg",
+        "inputSha256": "5f84c4415144324bda6ddace3fb123bdea17cd0806cdd97a6c187cf88955716d",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+            "nativePngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+            "nativePngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408"
+          }
+        ]
+      },
+      {
+        "name": "x11.svg",
+        "inputSha256": "3e8f6019ec6704ba591a22a77cc9d6c074d24f284f39acfed30aa6dc3367a764",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+            "nativePngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+            "nativePngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1"
+          }
+        ]
+      },
+      {
+        "name": "video1.svg",
+        "inputSha256": "acbd75d5d0eb797c0cb376fa4cbb0ba2144913434b6def13169e44f6b7d19602",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "bda76c338abf09180cdc368d80b1abb7b950ccde26904aa41ef8f67c3ff99eea",
+            "nativePngSha256": "b97ecc46a3d59adb48e6544fc937b24afb172bdedac39d0054f1c4dd952a5725"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "e99b29665fdd6701b57dd2b1b3dad16e58c2eb4a880e3afc1fc087a58571b56d",
+            "nativePngSha256": "ef467d4beadcabd2bc1266f697e38ba8af836e45d51d7b6c75d706b9a911eac2"
+          }
+        ]
+      },
+      {
+        "name": "image.svg",
+        "inputSha256": "cf26f013032b40b4c4ac540c98af4fa35dde742398cab8e74247c713b6479e58",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "56dc8696b09b4057390551dfe0b95e11f3684abf4bab7673b85457f1dd7e3715",
+            "nativePngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "56dc8696b09b4057390551dfe0b95e11f3684abf4bab7673b85457f1dd7e3715",
+            "nativePngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44"
+          }
+        ]
+      },
+      {
+        "name": "masking-path-04-b.svg",
+        "inputSha256": "254f228ce38a5a0b95ead459c3aea3ef45c48acdabc939dc7a45623dfd5269c5",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": null,
+            "beforeOutcome": "UnsupportedFeature",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "2df347e1732aa74871f900e9fe889f39d10c563ef28221adab092a37d844e5f3",
+            "nativePngSha256": "68f9f6ca560d6330020bad121ba7a33420737f6eb8bb984537bb569dbfa5749e"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": null,
+            "beforeOutcome": "UnsupportedFeature",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "807cd8586c848dba61e4dadae89175966deb9fcb6c5a88db55964e74ae5734b5",
+            "nativePngSha256": "93272bd8ac0baac031914f36596fe7adf53d527d65ad5e5378bfc7a65e157600"
+          }
+        ]
+      },
+      {
+        "name": "oscon.svg",
+        "inputSha256": "89e05955e9800c33d5c53a82461cc64a6b12f0830b0088824ae866dbd7411a19",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 2,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "4a8d892bc4f4a9527f7d5e9edb65efd6b99c373b2d4064c042b38fd8300d59e0",
+            "nativePngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 2,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "4a8d892bc4f4a9527f7d5e9edb65efd6b99c373b2d4064c042b38fd8300d59e0",
+            "nativePngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4"
+          }
+        ]
+      },
+      {
+        "name": "gaussian1.svg",
+        "inputSha256": "5b6a23f654d8217924129ca25f6d66a9ce36fd277e0bb2435024bffad1579152",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "f51862edd26e7f7b15548315cd6ebd4ceea8f94addb91fbf51ea6de438425a3b",
+            "nativePngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "f51862edd26e7f7b15548315cd6ebd4ceea8f94addb91fbf51ea6de438425a3b",
+            "nativePngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283"
+          }
+        ]
+      },
+      {
+        "name": "preserveAspectRatio.svg",
+        "inputSha256": "62a47bc4adf71c74c077a183888197ef2c0a695ae19bdbed4d57a8417efe53b2",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "641ee5d3d7c5ea99bb250bdd37f089b3d74a983d796f8f3f2c7b887bd52dc37d",
+            "nativePngSha256": "a648bf1fcf846d9fee98425008a9a73978c98ce8e4cf3ff9ba2656cf46d5981a"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "d2c319886593b0e911c69f8f7ca321531f00a9c3304151cd32e82aa244f4daa6",
+            "nativePngSha256": "232179316391a5376d83149b5b10adaa64ce7bae36e19185e7e1dda628fae235"
+          }
+        ]
+      },
+      {
+        "name": "smile.svg",
+        "inputSha256": "bc7e3c73c861478283e3d8d81553b971dea08fcb9f7b12a26feb94c8a30049bd",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+            "nativePngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "beforeOutcome": "rendered",
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+            "nativePngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a"
+          }
+        ]
+      }
+    ]
+  },
+  "separateSourceReviews": {
+    "inputs": 3,
+    "nativeComparisons": 6,
+    "exact": 6,
+    "membership": "../svgweb/special-static-replay.json",
+    "observations": [
+      {
+        "name": "ny1.svg",
+        "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+        "diagnosticInputSha256": "85bce8c43bf349c9accb3a34ef2b349fe46e47131c3f481167f451ea5c944988",
+        "nativeInputSha256": "6836c9b27080fbdd21921aa912abc64edb2fc8395afcd8fc095697ebaba43695",
+        "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+        "hosts": [
+          {
+            "host": "windows",
+            "seconds": 2.7091904000844806,
+            "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+            "libraryPngSha256": "68375e64d687b615d8b6c595ed63b3a52ecf0be00c27c247de5827d0fe1e0a60",
+            "nativePngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1",
+            "rgbaSha256": "feb7c63b2f604c7439fba0759a3d0df33f66d792b4c347a9367d22a8d3b733d6",
+            "width": 600,
+            "height": 388,
+            "changedPixels": 0,
+            "unchangedQualifiedLibraryPng": true
+          },
+          {
+            "host": "linux",
+            "seconds": 19.098614100134,
+            "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+            "libraryPngSha256": "894d41161c338e74e514efbb75d8a1ee039b0d58adfdf7a128769e0974069d0d",
+            "nativePngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a",
+            "rgbaSha256": "6cf4835c9ea5fac9058191e851cd855135d1368aa91004725b481460b8ba3f19",
+            "width": 600,
+            "height": 388,
+            "changedPixels": 0,
+            "unchangedQualifiedLibraryPng": true
+          }
+        ],
+        "sourceBodiesRetained": 0,
+        "rawAttributeValuesRetained": 0
+      },
+      {
+        "name": "displayWebStats.svg",
+        "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
+        "diagnosticInputSha256": "eee3a71669f060293f50a2ad5e18df3a1bd4c0a61bcdded4ffb01609829d7668",
+        "nativeInputSha256": "5097794849ca64f51701af6684abbee2ca1a4da302a76658202f420e1e7d3765",
+        "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+        "hosts": [
+          {
+            "host": "windows",
+            "seconds": 3.102542799897492,
+            "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+            "libraryPngSha256": "a5d57028415487baa68574cf7708b2ef279260863c815d923028b729dfdc1deb",
+            "nativePngSha256": "8fc5f8e01b41bbc17a42565b4f42202211db2b06f1f06f837fd02aaaa5b763f4",
+            "rgbaSha256": "6f21efb966af4c0821c0de89a4e8e1fdc3558a70794dfb6956ff6ea3cdbb4171",
+            "width": 300,
+            "height": 150,
+            "changedPixels": 0,
+            "unchangedQualifiedLibraryPng": true
+          },
+          {
+            "host": "linux",
+            "seconds": 4.871900600148365,
+            "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+            "libraryPngSha256": "7aa04163714793daeefc751b7498782d385a942016cfafb20e63bc094b242e8d",
+            "nativePngSha256": "5c460f80227e66b72fdbb66bee2b763c20033a6545db015bea8d3a5e3bda7ff9",
+            "rgbaSha256": "63e283ffc915fd08c043bd185daaa91ab177f0e10c40349cd5d4fa04736bf12c",
+            "width": 300,
+            "height": 150,
+            "changedPixels": 0,
+            "unchangedQualifiedLibraryPng": true
+          }
+        ],
+        "sourceBodiesRetained": 0,
+        "rawAttributeValuesRetained": 0
+      },
+      {
+        "name": "svg2009.svg",
+        "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+        "diagnosticInputSha256": "35ac8215e277b1ec6adfa3b0cc63502996b85b36be3f9d44123e9981bb022b1e",
+        "nativeInputSha256": "4a028a1495eadb04e26f259c829be9bd16ec42a8419ce4817d9c8266809031a7",
+        "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+        "hosts": [
+          {
+            "host": "windows",
+            "seconds": 4.459779400145635,
+            "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+            "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+            "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+            "rgbaSha256": "fe4b03be37596a5941b414d7d4065466490c3d035d8f2f73cf295d14e5e88844",
+            "width": 850,
+            "height": 200,
+            "changedPixels": 0,
+            "unchangedQualifiedLibraryPng": true
+          },
+          {
+            "host": "linux",
+            "seconds": 10.572407900122926,
+            "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+            "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+            "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+            "rgbaSha256": "fe6829ca6177705e69a39b15d31972002f73127e35c5bfb0451a65d1dab355c6",
+            "width": 850,
+            "height": 200,
+            "changedPixels": 0,
+            "unchangedQualifiedLibraryPng": true
+          }
+        ],
+        "sourceBodiesRetained": 0,
+        "rawAttributeValuesRetained": 0
+      }
+    ]
+  },
+  "corpusPartition": {
+    "status": "All 204 original identities and source hashes join a disjoint current evidence partition. Declared projections do not qualify unchanged original admission.",
+    "default": {
+      "count": 168,
+      "selection": "Rendered rows in default-outcomes.csv; current full replay in evidence above."
+    },
+    "suppliedPrograms": {
+      "count": 22,
+      "evidence": [
+        "supplied-original-contexts.json",
+        "supplied-original-contexts-additional.json",
+        "../xml-entities/qualification.json",
+        "../release-baselines/command-view-qualification.json"
+      ],
+      "selection": "19 supplied original contexts, Steps/bloglines, and unchanged original XML preserveAspectRatio with Noto."
+    },
+    "otherStaticDiagnostics": {
+      "count": 11,
+      "evidence": [
+        "remaining-static-gates.json",
+        "../release-baselines/command-view-qualification.json"
+      ],
+      "selection": "The 13 declared diagnostic rows excluding smile (already default exact) and preserveAspectRatio (supplied-program context)."
+    },
+    "separateSourceReviews": {
+      "count": 3,
+      "evidence": [
+        "display-web-stats-static.json",
+        "ny1-static-review.json",
+        "svg2009-static-review.json"
+      ],
+      "currentReplay": "../release-baselines/filter-empty-region-validation-svgweb.json"
+    },
+    "sourceBodiesRetained": 0,
+    "rawAttributeValuesRetained": 0
+  },
+  "replayScope": "484 host invocations: 408 defaults, 44 supplied programs, 26 declared static projections and six separately reviewed projections. Primary runtime only; full runtime/package gates are recorded separately.",
+  "bodyHandling": {
+    "sourceBodiesRetained": 0,
+    "rawAttributeValuesRetained": 0,
+    "protocol": "Fetch and verify each hosted body in bounded RAM; pass bytes through stdin. Reconstruct declared projections/fonts only in RAM; retain PNGs and metadata only. SVG-named result directories are not SVG files."
+  },
+  "limits": [
+    "Default and declared supplied/repaired contexts remain distinct; exact projections do not qualify unchanged-original admission.",
+    "Three original external-image bindings still lack source-bound resources. Nine animation/media/CSS/duplicate-ID decisions remain explicitly scoped.",
+    "No reference, tolerance, original source/sample record or default-outcome row changed.",
+    "No renderer performance claim; elapsed replay includes fetching, process startup and overlapping work.",
+    "Frozen Windows DejaVu authority and remaining support-claim traces remain separate open work; all 499 admitted historical paint compositions are exact."
+  ]
+}

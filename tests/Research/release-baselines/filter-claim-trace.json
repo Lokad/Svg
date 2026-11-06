@@ -1,0 +1,566 @@
+{
+  "status": "F2/F4/F5/F6 claim traces reviewed against current owners, direct mechanism/contract checks and independently referenced rendering. No additional production change is required by this bounded review.",
+  "qualifiedSourceCommit": "0b44105157567e38c2d88ebfe62c4d861f3dd448",
+  "qualification": "filter-empty-region-validation.json",
+  "supportContract": "../../../docs/SUPPORT_MATRIX.md",
+  "supportContractSha256": "c696d0b98bb082ecb3445a7d882d2d6ab283e5a92dfe16a4d0feba1f777ff938",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgFilterColorMatrixSyntax.cs",
+      "sha256": "845006e88a19ba5b695659b5e046f2a70ecc605c8c5e31197c4a292c224c7625"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs",
+      "sha256": "0c963ccbe255b08e113bbff764eb4a94a819683444819f0c4f0bca320cc56718"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgLeafParser.cs",
+      "sha256": "d5cf43ebddfd3630666e6f00e18b8d6f5573c8568890c4a38fb282d976e3fe6f"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgPaintRecording.cs",
+      "sha256": "479fab685933102a5fa5d99cc918bc0b2c9310174c4818502f7944638322d3ce"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs",
+      "sha256": "f99d68cc2ac113547e42e31caca331bdbc4d0fd33839d2c14388738a9a0f5b13"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgRoot.cs",
+      "sha256": "47979fd0f67cd6001e61feb038c097a4e179b236a247debeca8cb3df1201e84a"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgFilterColorMatrix.cs",
+      "sha256": "c4a469e2288a04f839210de8581b606aeb00970dbf0f230b94b9620d4d2d20df"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+      "sha256": "3165644b367cd72640c9f9aa723a30401c3cd0fd40a692c7399ca7de42c7643e"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgGaussianBlur.cs",
+      "sha256": "2ac87f26e20140d03e1020221499461dc8bbedfba67a6b892999b4310532e7f4"
+    },
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgShaderSamplingContext.cs",
+      "sha256": "c8ce088807ea423638499d13cdb6e658d3833f7af41d26c7d9e4aab9d48a49ba"
+    },
+    {
+      "path": "src/Lokad.Svg/SvgConverter.cs",
+      "sha256": "c8a74b7e4adfc0209bcad57f457d7799b1fe3a9d40f9d4dc6706ffb41e4a4a06"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.FilterSourceEligibility.cs",
+      "sha256": "bcf54f70fa799a6e20148cb4987bb379276c364d9cb9be87f34ca812c042aea3"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.PaintlessFilterSources.cs",
+      "sha256": "2c94cc188e8f651c1ae36711c93f31dc7f44487e42260f70775a95e291abb15c"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterBitmapRestoreTests.cs",
+      "sha256": "df810ad8a1a7b87c702939275c9d3824a78c0321934ce93c2323aa28365db7f9"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterColorMatrixTests.cs",
+      "sha256": "a78ac991f7b7886e67cd6f07d9e8388190cb5602665124db44cd9389c35d6f7a"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs",
+      "sha256": "d1b5f0b638ecb551fcbf30a908b524ae12a3c4be5a54e5313998ee168e2a3314"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterImageStorageTests.cs",
+      "sha256": "3209042b308128f608ed50b84acc9d56cf343f673f6ebf54f897ca0b68158c71"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterLengthTests.cs",
+      "sha256": "1971d8f8f92d556fd90ae5c5f1d1b086d441c40dcb90d19587137aa4c9b88e16"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterOutputBoundsTests.cs",
+      "sha256": "8a1b3747b075361d4660f67638b2a3fac80fac1759139b6d6ecf4a167dd88fbc"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterPlaybackTests.cs",
+      "sha256": "ef1787f244f64e5f511c4db8f7a9a7dabb4d5c7a2a52129bcccea6e9186fab78"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs",
+      "sha256": "c6d52819a88cbcf1538d787a9911b71e4ea907133377590bbdf84b74f2ba0042"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgGaussianBlurTests.cs",
+      "sha256": "01cfcd8ba7a8df88b32d8f54bdaec6a93764adf7d935e7cdefbdd545974110df"
+    }
+  ],
+  "groups": [
+    {
+      "id": "F2",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs",
+        "src/Lokad.Svg/Parsing/SvgFilterColorMatrixSyntax.cs",
+        "src/Lokad.Svg/Rendering/SvgFilterColorMatrix.cs",
+        "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs"
+      ],
+      "inspected": "The streaming definition builder admits the finite primitive/input/operator/unit/region/color-space subset and defers dormant-definition errors. Matrix syntax enforces type/arity/finite float coefficients; defaults and luminance-to-alpha are distinct. Evaluation unpremultiplies, evaluates straight channels, clamps and repremultiplies. Positive alpha bias extends primitive-region output independently of source ink.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgFilterColorMatrixTests.cs": [
+          "Matrix_evaluates_straight_channels_and_repremultiplies_after_clamping",
+          "Output_bounds_distinguish_input_ink_from_alpha_generated_across_the_primitive_region",
+          "Omitted_values_keep_the_identity_default",
+          "Matrix_arity_is_checked_at_the_definition_boundary",
+          "Scalar_modes_require_one_finite_unitless_number"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFilterLengthTests.cs": [
+          "Fixed_region_and_primitive_lengths_are_bounded_before_coordinate_resolution",
+          "Percentage_lengths_keep_their_viewport_relative_domain"
+        ]
+      },
+      "native": [
+        "../filter-color-matrix/capture.json",
+        "../filter-stage-boundaries/capture.json"
+      ],
+      "evidence": [
+        "filter-empty-region-validation.json"
+      ]
+    },
+    {
+      "id": "F4",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgPaintRecording.cs",
+        "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs",
+        "src/Lokad.Svg/Parsing/SvgLeafParser.cs",
+        "src/Lokad.Svg/Parsing/SvgRoot.cs",
+        "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs"
+      ],
+      "inspected": "Eligibility checks display, collapsed placement, positive basic-shape dimensions and usable image sources before activating own filters. Existing recording/source scopes retain paintless eligible geometry and distinguish object/visual bounds. Groups and uses can filter transparent child input. Flood alpha, offset, crop, transfer and enclosing opacity remain separate stages.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.FilterSourceEligibility.cs": [
+          "Enclosing_containers_can_filter_suppressed_child_sources",
+          "Nonrenderable_leaves_do_not_activate_their_own_filters",
+          "Zero_size_varied_images_release_decoded_storage_and_still_validate_the_source"
+        ],
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.PaintlessFilterSources.cs": [
+          "Paintless_source_bounds_survive_affine_filter_replay",
+          "Source_less_use_composes_filter_mask_clip_and_opacity",
+          "Ancestor_filter_bounds_distinguish_suppressed_leaves_from_paintless_geometry"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFilterOutputBoundsTests.cs": [
+          "Filter_output_bounds_include_floods_independently_of_source_placement",
+          "Source_dependent_results_remain_transparent_for_offscreen_sources",
+          "Offscreen_filter_output_keeps_viewport_transform_clip_and_composition"
+        ]
+      },
+      "native": [
+        "../filter-empty-sources/capture.json",
+        "../filter-alpha-stages/capture.json",
+        "../filter-shadow-stages/capture.json"
+      ],
+      "evidence": [
+        "native-line-source.json",
+        "filter-empty-region-validation.json"
+      ]
+    },
+    {
+      "id": "F5",
+      "owners": [
+        "src/Lokad.Svg/SvgConverter.cs",
+        "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+        "src/Lokad.Svg/Rendering/SvgShaderSamplingContext.cs"
+      ],
+      "inspected": "Stored-image classification distinguishes deferred, transparent padding, initialized padding and cropped images. Cropped/initialized edges retain image AA rather than transparent-clamp assumptions. Restoration keeps active clip, pending transfer, fractional channels and source/bitmap origins. Sampling destination, logical paint clip, capture/storage request and nonopaque painted-output bounds remain distinct.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgFilterImageStorageTests.cs": [
+          "Bounds_retain_materialization_and_padding_history",
+          "Image_alias_boundary_is_distinct_from_copying_kernel_identity",
+          "Source_aliases_retain_their_sampling_color_filter"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFilterBitmapRestoreTests.cs": [
+          "Final_linear_transfer_keeps_fractional_channels_until_destination_composition"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs": [
+          "Tiled_source_capture_releases_storage_after_refusal_cancellation_and_retry"
+        ],
+        "tests/Lokad.Svg.Tests/SvgGaussianBlurTests.cs": [
+          "Cropped_parent_bitmap_restoration_clears_samples_and_releases_denied_owners_before_retry"
+        ]
+      },
+      "native": [
+        "../filter-restoration/capture.json",
+        "../filter-affine-restoration/capture.json",
+        "../filter-image-placement/capture.json",
+        "../filter-stored-images/capture.json",
+        "../filter-opacity-sampling/capture.json"
+      ],
+      "evidence": [
+        "blur-image-identity.json",
+        "filter-sampling-device.json",
+        "filter-empty-region-validation.json"
+      ]
+    },
+    {
+      "id": "F6",
+      "owners": [
+        "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs",
+        "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+        "src/Lokad.Svg/Rendering/SvgGaussianBlur.cs"
+      ],
+      "inspected": "Mapped shadow deviations are narrowed before the inclusive 135-axis comparison; Gaussian mapping clamps at 532 before narrowing, with image-alias and copying-kernel decisions separate. The builder rejects unsupported primitive/input/composite/blend forms when referenced, while dormant definitions remain inert. Unsupported filter-function lists remain outside local-reference syntax.",
+      "checks": {
+        "tests/Lokad.Svg.Tests/SvgFilterPlaybackTests.cs": [
+          "Shadow_deviations_observe_mapped_axis_bounds_and_release_storage",
+          "Primitive_pixel_admissions_preserve_output_and_explicit_boundaries",
+          "Dormant_filter_errors_do_not_change_unfiltered_drawing",
+          "Referenced_graph_errors_release_partial_parser_owners"
+        ],
+        "tests/Lokad.Svg.Tests/SvgGaussianBlurTests.cs": [
+          "Kernel_and_rescaling_admissions_preserve_output_and_resource_boundaries",
+          "Cancellation_during_either_axis_releases_temporary_owners_and_retries_identically"
+        ],
+        "tests/Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs": [
+          "Culled_nodes_keep_numeric_and_reference_validation"
+        ]
+      },
+      "native": [
+        "../filter-shadow-stages/capture.json",
+        "../filter-stage-boundaries/capture.json"
+      ],
+      "evidence": [
+        "shadow-sampling-guard.json",
+        "shadow-foreground.json",
+        "blur-image-identity.json",
+        "filter-empty-region-validation.json"
+      ]
+    }
+  ],
+  "nativeBankAudit": [
+    {
+      "family": "filter-clip-ownership",
+      "metadataSha256": "c5f69c26dfbd8ae17ed022c7e2953d06ce6a693bb3beb73bceae7542215c6f21",
+      "cases": 14,
+      "platformRows": 28,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "8c8fa9711db4dbaddd05d4d2b99607a8b3d2f24eb0b93a1c44dd39f479a4380e"
+    },
+    {
+      "family": "filter-restoration",
+      "metadataSha256": "8ffb08ff31a260b2da8a038064fe60d13f75d0ca49a08d1d34dcfc703fda79c8",
+      "cases": 30,
+      "platformRows": 60,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "80fd31da0647e655a666e2c4ed2928b08b86be11f7dfd10d5452707d081f40d9"
+    },
+    {
+      "family": "filter-affine-restoration",
+      "metadataSha256": "2771f6a5c3591e87d9c4a0b600c04e3a1fdd3bf138a2897946da0e53eb987af9",
+      "cases": 35,
+      "platformRows": 70,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "d0079e6d3f3e3b658f318c298ac90ea1d230aa2356ec75832bfc7ea981a319f6"
+    },
+    {
+      "family": "filter-shadow-stages",
+      "metadataSha256": "93420978b55be52b600418388cb57b7ffe9299347ac89c01b7f9dcd495c1954c",
+      "cases": 60,
+      "platformRows": 120,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "18f9efef7b62238f1b9256e42794e7da8028bea48dfc919a98fcf47477a829e3"
+    },
+    {
+      "family": "filter-alpha-stages",
+      "metadataSha256": "d4e7b9cc15c6cad829e0b958348a7b2fd2795c94c8cbb924947105566a3cc4dd",
+      "cases": 15,
+      "platformRows": 30,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "863193aedc96b9cc308d16c670ef001a2e5433d02c5d6c572cfee8e9a029b333"
+    },
+    {
+      "family": "filter-image-placement",
+      "metadataSha256": "5751f2804f6ccaed4c51ab6a705d4b6489f479433fb0a675cc3be4c95536bf88",
+      "cases": 12,
+      "platformRows": 24,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "3c0904e2581bb27ffdd817648688b6d26bc3aec6d10e96f7ea056b094d14220f"
+    },
+    {
+      "family": "filter-stored-images",
+      "metadataSha256": "5e385f885ea16462b889cd0cd1e48728513c10f418d485a345850de324301663",
+      "cases": 19,
+      "platformRows": 38,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "fabafbbe11fe312c798adff0bd5432a8e9e02849cfadffafcad7b093ad3e93ec"
+    },
+    {
+      "family": "filter-stage-boundaries",
+      "metadataSha256": "d13eca6fe3d3109d480e76ba3c21eefc0748ac8b106a61ee525aa18a197611f4",
+      "cases": 17,
+      "platformRows": 34,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "edb0f1b1a719f5b83de738b7d2fe556df0310de2641966e9a06f40b5c50ea9d1"
+    },
+    {
+      "family": "filter-opacity-sampling",
+      "metadataSha256": "88c1343391a6afe7b5301c5abda5e47848eb7a756929ffd50d00094ae4830021",
+      "cases": 53,
+      "platformRows": 106,
+      "threeCaptureHashBindings": true,
+      "healthScope": "Bank-level healthy/clean attestation and three equal hashes per platform/case.",
+      "identitySetSha256": "a2692fee4ad527e5dafb662887ad0f6b3386d57dadc7699a60db27a3e9ad3e28"
+    },
+    {
+      "family": "filter-color-matrix",
+      "metadataSha256": "b2a4696c59ded5726b5750d21946cabc706078f5705fc4ea0294aa798d9a97e3",
+      "cases": 27,
+      "platformRows": 54,
+      "freshHealthyCaptureReceipts": 162,
+      "identitySetSha256": "d5fcae0ac37ccabc43a2cb7bab7594dee05d49a22311ce99894a4e18311a143d"
+    },
+    {
+      "family": "filter-empty-sources",
+      "metadataSha256": "9384578979cbf7f725c8926fb46601cf88a22ef9cb15dffed0509e6588b9b108",
+      "cases": 20,
+      "referenceRows": 20,
+      "authorityScope": {
+        "originalProcesses": 6,
+        "controlComparisons": 72,
+        "controlProcesses": 6,
+        "stableTriplesPerHost": true,
+        "sourceAndTargetIdentitiesUnchanged": true,
+        "fullAliasComparisons": 20496,
+        "originalImageComparisons": 48
+      },
+      "identitySetSha256": "a0d26c1c6f07337f62ce9ec46e6ee68492c6e9f5048685051b72030a708b72b8"
+    }
+  ],
+  "hueBoundaryControls": {
+    "recipe": "8x8 transparent SVG; a full '#1975bd' rectangle references a filter containing only feColorMatrix type='hueRotate' with the listed angle. Default options; no fonts/resources.",
+    "sourceTemplate": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><filter id='f'><feColorMatrix type='hueRotate' values='{angle}'/></filter></defs><rect width='8' height='8' fill='#1975bd' filter='url(#f)'/></svg>",
+    "packagedReplay": {
+      "sourceCommit": "0b44105157567e38c2d88ebfe62c4d861f3dd448",
+      "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+      "inputs": 4,
+      "platformComparisons": 8,
+      "exact": 8
+    },
+    "observations": [
+      {
+        "host": "windows",
+        "angle": "90",
+        "inputSha256": "41886100b835db854ea5a1850b53866f2b2494fcddcd0317c88ee66b66ee7f47",
+        "libraryPngSha256": "214891ce0ee811b87eb2fd1b3a1a60af864a590674b19d1d6561e365918c2170",
+        "nativePngSha256": "fbbbf2755df6e0696a6a1a03378db6741f376096705a853905ed9552b0d24cf0",
+        "changedPixels": 0,
+        "libraryPixel": [
+          189,
+          62,
+          154,
+          255
+        ],
+        "nativePixel": [
+          189,
+          62,
+          154,
+          255
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "angle": "1e38",
+        "inputSha256": "af0e51bc481b3db61b33fb4ebf1e3007def786abf748025cce54865c647c6fa4",
+        "libraryPngSha256": "f1e3ae4c6eb6529f63c15c7acf82064da74609df0bbd3c7cd65160651b322f4b",
+        "nativePngSha256": "82dca0b5c1318d7134e2778a89435462471853a0fec359c328cf154e8703212b",
+        "changedPixels": 0,
+        "libraryPixel": [
+          194,
+          64,
+          121,
+          255
+        ],
+        "nativePixel": [
+          194,
+          64,
+          121,
+          255
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "angle": "-1e38",
+        "inputSha256": "fe93d22174b94c022546f8c693d27415983940daac263fb2796e62214e0f1ec8",
+        "libraryPngSha256": "c9559d3d52909858e98a9d86251e7b29f2309f80016cc092dd01a9ba68d54073",
+        "nativePngSha256": "016c03347103b133ce4d545d475849e84686bf039ec32ce20a5a2ab28ac8e502",
+        "changedPixels": 0,
+        "libraryPixel": [
+          0,
+          142,
+          0,
+          255
+        ],
+        "nativePixel": [
+          0,
+          142,
+          0,
+          255
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "windows",
+        "angle": "3e38",
+        "inputSha256": "868ff95c3f12fa72eb8d551279dafa89691a0502c9530fa4a3efac5362fda5f6",
+        "libraryPngSha256": "91bb3b8328cbb7380a0b54cd5d9df1b98d0b72a0b9cebc7a075c907db2a61511",
+        "nativePngSha256": "26f41cfcdf30f4703901c03e9beabcb7161613c0fc43cf2bbec5ace0114beb65",
+        "changedPixels": 0,
+        "libraryPixel": [
+          0,
+          132,
+          169,
+          255
+        ],
+        "nativePixel": [
+          0,
+          132,
+          169,
+          255
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "angle": "90",
+        "inputSha256": "41886100b835db854ea5a1850b53866f2b2494fcddcd0317c88ee66b66ee7f47",
+        "libraryPngSha256": "214891ce0ee811b87eb2fd1b3a1a60af864a590674b19d1d6561e365918c2170",
+        "nativePngSha256": "fbbbf2755df6e0696a6a1a03378db6741f376096705a853905ed9552b0d24cf0",
+        "changedPixels": 0,
+        "libraryPixel": [
+          189,
+          62,
+          154,
+          255
+        ],
+        "nativePixel": [
+          189,
+          62,
+          154,
+          255
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "angle": "1e38",
+        "inputSha256": "af0e51bc481b3db61b33fb4ebf1e3007def786abf748025cce54865c647c6fa4",
+        "libraryPngSha256": "f1e3ae4c6eb6529f63c15c7acf82064da74609df0bbd3c7cd65160651b322f4b",
+        "nativePngSha256": "82dca0b5c1318d7134e2778a89435462471853a0fec359c328cf154e8703212b",
+        "changedPixels": 0,
+        "libraryPixel": [
+          194,
+          64,
+          121,
+          255
+        ],
+        "nativePixel": [
+          194,
+          64,
+          121,
+          255
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "angle": "-1e38",
+        "inputSha256": "fe93d22174b94c022546f8c693d27415983940daac263fb2796e62214e0f1ec8",
+        "libraryPngSha256": "c9559d3d52909858e98a9d86251e7b29f2309f80016cc092dd01a9ba68d54073",
+        "nativePngSha256": "016c03347103b133ce4d545d475849e84686bf039ec32ce20a5a2ab28ac8e502",
+        "changedPixels": 0,
+        "libraryPixel": [
+          0,
+          142,
+          0,
+          255
+        ],
+        "nativePixel": [
+          0,
+          142,
+          0,
+          255
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      },
+      {
+        "host": "linux",
+        "angle": "3e38",
+        "inputSha256": "868ff95c3f12fa72eb8d551279dafa89691a0502c9530fa4a3efac5362fda5f6",
+        "libraryPngSha256": "91bb3b8328cbb7380a0b54cd5d9df1b98d0b72a0b9cebc7a075c907db2a61511",
+        "nativePngSha256": "26f41cfcdf30f4703901c03e9beabcb7161613c0fc43cf2bbec5ace0114beb65",
+        "changedPixels": 0,
+        "libraryPixel": [
+          0,
+          132,
+          169,
+          255
+        ],
+        "nativePixel": [
+          0,
+          132,
+          169,
+          255
+        ],
+        "freshHealthyAgreeingCaptures": 3,
+        "profilesCleaned": true
+      }
+    ],
+    "browserPins": [
+      {
+        "host": "windows",
+        "pin": "../../../tools/chrome-for-testing.json",
+        "pinSha256": "00c552e6c8b97f04258ae4755a4d3026abfd886578bfbcfd7274651b8ffc3d95",
+        "version": "153.0.8010.52",
+        "platform": "win64",
+        "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+      },
+      {
+        "host": "linux",
+        "pin": "../../../tools/chrome-for-testing.linux64.json",
+        "pinSha256": "a938d2e6c8caf1f3e6e565d7210c601283cdcd8abb13325b384d0dd730c215ae",
+        "version": "153.0.8010.52",
+        "platform": "linux64",
+        "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+      }
+    ],
+    "captureRecipe": "Recipe 3 page/image screenshot, 8x8, transparent; three fresh healthy agreeing processes and cleaned profiles on each host."
+  },
+  "validation": {
+    "fullPrimary": "Matching Windows/Linux CI; only frozen Windows DejaVu remains asserted.",
+    "fullSecondary": "Complete explicitly rebuilt Windows/Linux suites; same sole Windows assertion.",
+    "affected": "828 core plus 277 existing rendering checks per host/runtime, with four direct result-name cases separately rebuilt. Existing matrices and distinct allocation paths remain.",
+    "packages": "Deterministic packages and all four installed host/runtime consumers; source/assets in the linked qualification.",
+    "svgweb": "filter-empty-region-validation-svgweb.json"
+  },
+  "boundaries": [
+    "Reviewed means this finite claim trace is inspected and source-bound; it is not universal browser conformance.",
+    "Nine stage banks retain bank-level healthy/clean attestations and three equal native hashes per platform/case. The 27-case matrix bank retains individual healthy capture receipts. Twenty empty-source cases retain their separately declared shared-reference authority. These scopes are not interchangeable.",
+    "The hue controls add 24 fresh native captures and no production special case. Pixel values and exact source/target hashes are retained here; inputs are authored, not hosted SVGWeb bodies.",
+    "No source SVG, native target, tolerance, comparison, text layout, public API or runtime dependency changed during this documentation review.",
+    "No renderer-performance or test-suite speedup claim; validation times remain in the linked source qualifications."
+  ]
+}

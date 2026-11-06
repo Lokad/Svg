@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/filter-sampling-device-svgweb.json",
+    "evidence": "../release-baselines/filter-empty-region-validation-svgweb.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "c32cf69111312b924e7cab592e14607469fe155a",
-    "sourceIdentity": "Packaged filter sampling-destination correction. Fresh primary-runtime replay preserves all 204 original hashes and prior outcomes/diagnostics, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics on both hosts. Complete suites, representative secondary compatibility and installed consumers remain separately qualified; references and admission boundaries are frozen.",
-    "librarySha256": "b30c1a3acbcd83041e04710d587041de31ce2893914d581ce15ce1833d2c14de",
+    "sourceBaseline": "0b44105157567e38c2d88ebfe62c4d861f3dd448",
+    "sourceIdentity": "Packaged pixel-free filter validation correction. Fresh primary-runtime replay preserves all 204 original hashes and prior outcomes/diagnostics, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics on both hosts. Complete suites, representative secondary compatibility and installed consumers remain separately qualified; references and admission boundaries are frozen.",
+    "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10401,7 +10401,7 @@
           "ny1-static-review.json",
           "svg2009-static-review.json"
         ],
-        "currentReplay": "../release-baselines/filter-sampling-device-svgweb.json"
+        "currentReplay": "../release-baselines/filter-empty-region-validation-svgweb.json"
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0
