@@ -61,6 +61,10 @@ public static partial class SvgConverter
             return new(clip.Left, clip.Right);
         }
 
+        /// <summary>Retains AA paint routing even when the complete path needs no construction clipping.</summary>
+        internal SvgAnalyticPaintClip GetPaintClip(SvgCpuRasterContext context)
+            => Clip is {} bounds ? SvgAnalyticRectangleClip.Classify(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom, context.BitmapClip, ClipAntialiasing) : SvgAnalyticPaintClip.Binary;
+
         private SvgAnalyticClipBounds GetBitmapClip(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip)
         {
             SvgAnalyticClipBounds bitmap = context.BitmapClip;

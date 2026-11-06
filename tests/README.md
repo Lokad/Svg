@@ -6,6 +6,14 @@ Windows/Linux/package qualification at coherent milestones. The
 package and reference evidence; the [support matrix](../docs/SUPPORT_MATRIX.md)
 defines supported behavior.
 
+Changes to filter source capture or clip domains also require
+`FullyQualifiedName~SvgFilterSourceContextReferenceTests`, including its Research
+rows, alongside the affected paint fixtures. Its independently referenced
+rectangle/path pairs exercise different source and layer routes. A
+[withdrawn parent-domain candidate](Research/release-baselines/parent-picture-clip-domain.json)
+passed the paint selection while regressing this bank; equal images or a routine-only
+selection do not establish those routes are interchangeable.
+
 The [claim trace](Research/release-baselines/support-claim-map.md) links current
 claims to implementation, direct checks and native evidence, keeping unfinished
 reviews and unresolved authority explicit.

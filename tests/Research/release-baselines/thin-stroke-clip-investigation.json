@@ -203,10 +203,101 @@
     "commonality": "All sources have quarter-pixel strokes; image equality between controls is not used to discard cases."
   },
   "conclusion": "For this witness the same 27 pixels differ with and without the filter. Removing either the clip or stroke is exact; stroke alone still differs. The shared hairline clip/paint-dispatch boundary merits investigation before further filter-map changes.",
-  "nextAction": "Trace scalar rectangle and active viewport clip dispatch against independent native coverage. Preserve binary containing-clip pair rounding, partial clip-alpha multiplication, shader/solid material paths and all existing context/origin checks.",
+  "nextAction": "First resolve the parent-domain/source-layer boundary against both the historical and independent source-context banks. Then resume the saved hairline construction/dispatch prototype and its 24 remaining shader/placement interactions; no additional production case is accepted.",
   "limits": [
     "This control bank establishes a witnessed separation, not a cause for all 36 residuals.",
     "Five counterfactuals have 30 fresh native captures across both hosts; the original keeps its existing frozen target.",
     "No reference, comparison rule or production implementation changed for this investigation."
-  ]
+  ],
+  "boundedExperiments": {
+    "status": "Research only; production source restored after the experiment. No additional cases promoted.",
+    "observations": [
+      {
+        "change": "Classify a scalar rectangle against the parent bitmap; route its AA-wrapped solid paint through scalar span rounding.",
+        "contexts": [
+          {
+            "host": "windows",
+            "librarySha256": "15f3f11ac7ef10ce4df3ca220550b92e92853bc9b87359f1d62cc5b63a5b16e6",
+            "counts": {
+              "rejected": 432,
+              "exact": 463,
+              "rendered": 36
+            },
+            "receiptSha256": "a5a8eb2acefdfe24fe758b0ef979ad0e7cbda0ad4dfd243ed8f1b443c4e18f8f"
+          },
+          {
+            "host": "linux",
+            "librarySha256": "15f3f11ac7ef10ce4df3ca220550b92e92853bc9b87359f1d62cc5b63a5b16e6",
+            "counts": {
+              "rejected": 432,
+              "exact": 463,
+              "rendered": 36
+            },
+            "receiptSha256": "d1ba01c795f951c558bf341fbab5eb9b0c0cb8c2df351c5ae87a17a27ba34d97"
+          }
+        ]
+      },
+      {
+        "change": "Additionally use the rectangle\u2019s rounded integer enclosure for hairline construction, retaining its original bitmap origin.",
+        "contexts": [
+          {
+            "host": "windows",
+            "librarySha256": "f8a704951f697692c2d6a431bb841481ccbeb0c05ec767065cef4d9a7ab4098f",
+            "counts": {
+              "rejected": 432,
+              "exact": 475,
+              "rendered": 24
+            },
+            "receiptSha256": "95331681c712fb9ff7c124f36d74ab868f2cbc07c4b5514dcfe1bd740e54bc5c"
+          },
+          {
+            "host": "linux",
+            "librarySha256": "f8a704951f697692c2d6a431bb841481ccbeb0c05ec767065cef4d9a7ab4098f",
+            "counts": {
+              "rejected": 432,
+              "exact": 475,
+              "rendered": 24
+            },
+            "receiptSha256": "fc20c3f85326cf8906609a078776bac5ece0551bbe72d5e2ebd16a0d94cf6a96"
+          }
+        ]
+      }
+    ],
+    "prototypeLfSha256": "0e36ff1f7f0df79f082c1d4728739b67c67d03774aa93113efe04e63c48ada9c",
+    "focusedMechanisms": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "f8a704951f697692c2d6a431bb841481ccbeb0c05ec767065cef4d9a7ab4098f",
+        "testAssemblySha256": "c3f8bb6d1536847a3ca8a2f65b2344a4d0076520d63c5d27a66c7b65bd888a4a",
+        "selection": "FullyQualifiedName~SvgHairlineCoverageTests",
+        "exitCode": 0,
+        "seconds": 12.452561000129208,
+        "counters": {
+          "executed": "13",
+          "passed": "13",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "f8a704951f697692c2d6a431bb841481ccbeb0c05ec767065cef4d9a7ab4098f",
+        "testAssemblySha256": "c3f8bb6d1536847a3ca8a2f65b2344a4d0076520d63c5d27a66c7b65bd888a4a",
+        "selection": "FullyQualifiedName~SvgHairlineCoverageTests",
+        "exitCode": 0,
+        "seconds": 22.482953099999577,
+        "counters": {
+          "executed": "13",
+          "passed": "13",
+          "failed": "0"
+        }
+      }
+    ],
+    "result": "The first change reduces pixel differences without closing any input. The combined construction/dispatch change makes the solid witness and all five counterfactuals exact, preserves all 463 resolved inputs and closes 12 exploratory inputs; 24 still differ.",
+    "promotionGate": "Review construction versus bitmap/paint bounds, retain compiled kernel and origin contracts, qualify affected hairline solid/shader/native rendering paths and cancellation/budget checks before promotion. Trace the 24 remaining shader/placement interactions against their own authority.",
+    "baseLimitation": "The prototype was built over the subsequently withdrawn parent-domain candidate. Its 475/24 historical outcomes and 26 mechanism passes do not resolve the 164 source-context regressions exposed by full CI."
+  }
 }
