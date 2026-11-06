@@ -42,6 +42,11 @@ remains an explicit failing T18 gate.
 The [text placement trace][text-placement-record] reviews T5-T8/T13-T15/T19
 through shared lengths, scalar cursors, chunk anchors, paths and baseline owners.
 Canonical native references and representative ownership paths stay separate.
+The [shared character-admission milestone](text-layout-admission.json) closes
+covered bidi/syllabic text bypassing the declared subset and preserves every
+original/context replay. The remaining shaping rows stay pending: an independent
+[ordinary-run ccmp witness](../text-ccmp-dispatch/README.md) exposes shared dispatch
+work before their closure.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and

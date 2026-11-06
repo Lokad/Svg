@@ -1,0 +1,17 @@
+{
+  "packId": "text-ccmp-dispatch",
+  "files": [
+    {
+      "relativePath": "font.ttf",
+      "byteSize": 1556,
+      "sha256": "7c40590d5dbed2e2501b13d487036fdbe0d31e9723ec82805447ce63dae2c319"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "CcmpProbe",
+      "resolvedFamily": "CcmpProbe",
+      "relativeFontFile": "font.ttf"
+    }
+  ]
+}
