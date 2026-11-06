@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseCommit": "cfc10204d82788a304ef8930757515e6c88ab637",
+  "renderingQualification": "native-line-source.json",
+  "renderingSourceCommit": "ca222b22b0390e9b4175cb4fcc8c4d4f73b7b6ff",
+  "status": "G1 reviewed. Current inspected implementation code and existing test/native inputs match the qualified rendering source; the only stroke source edit corrects XML documentation attached to the cap enum. No new runtime qualification is inferred.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgLeafParser.cs": "fb6793f461bad3eb1b63043cf8c1320e919b56d3a4f6bde61ecb727ba27346cb",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalShapeParser.cs": "fda7aa5e64702fc170c74bf27a602aa792e3903caf981d76529b074bccc37e8b",
+    "src/Lokad.Svg/Parsing/SvgPathDataParser.cs": "2900afe61418cab5adcc7457c7c6d129e62f6d6525198cbf4f22885a0bf053c6",
+    "src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs": "937a70cbba900715063ee0cd2d2837772b9a9d24f2ebafe239799175b2ce9fb3",
+    "src/Lokad.Svg/Parsing/SvgPaintableElementContext.cs": "2d436b174f9231e3cde971a913681749e094782a256f4ee19a2e553db40ae156",
+    "src/Lokad.Svg/Parsing/SvgComputedStyle.cs": "220371429fc8b5e654a59135148d7680552247d3bf2d70dffaf486e8a34a78c5",
+    "src/Lokad.Svg/Parsing/SvgAuthoredDashSource.cs": "ece6e65f62bbdb6fc030f6cc1a4a8ade4b1582dab9713f263f120e760787a7d8",
+    "src/Lokad.Svg/Rendering/SvgStrokeOutline.cs": "d81d8a882f497d8d7325e1f72af0958f9150da14b039018a1ec4bf220af92fa0",
+    "src/Lokad.Svg/Rendering/SvgNativePathStroke.cs": "99f65547b36ec1d8cd358ee776aef9b594292ebb5987602315b1bf983a37da5d",
+    "src/Lokad.Svg/Rendering/SvgNativeDashPath.cs": "c3e176f55d6bc6745dd1079dad2b00b67421c5a4259a7585c90cd1b11476ee1a",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs": "0ac72d6d21672482c329433cc65d024ff2bbe29cbd87d60731659a10493b476e",
+    "tests/Lokad.Svg.Tests/SvgPathDataParserTests.cs": "55421102420a0bcfaa3955a33fd8bbd642257c5e76697a92d2072c0628dc4f19",
+    "tests/Lokad.Svg.Tests/SvgStrokeOutlineTests.cs": "d953a7a5a8eacbcea17a515e2a30ce7bb225aa732f51249caebb8866791e7537",
+    "tests/Lokad.Svg.Tests/SvgNativeStrokeOutlineTests.cs": "85d4485ff798931b6608bbb917724a29a91167a9ba5de47e7dd1439055d2c61b",
+    "tests/Lokad.Svg.Tests/SvgNativePathStrokeTests.cs": "7dcf199097274f470f3905ee2c6accd4b7f8cf0a94fcd7e36065405f1dcf4202",
+    "tests/Lokad.Svg.Tests/SvgPolygonFillTests.cs": "da8d4a78338ac03d6f6c796d330ba762af0a35c20195f1c710448346b953b514",
+    "tests/Lokad.Svg.Tests/SvgStrokeFillTests.cs": "6a20627cf20df6ee8d9887e3fbc8c1a87f59cc0f583c00008ab11dcf33a28911",
+    "tests/Lokad.Svg.Tests/SvgPaintFillStrokeOwnershipTests.cs": "7f4dc0ca8d52e615d9748acbc4e9a4c5c4c844b846739620ba5c05bdcdb1093c",
+    "tests/Lokad.Svg.Tests/SvgVectorEffectTests.cs": "d1cde2924a6a499b7a9d8500a32d4f6605dda68682e86bc8c1653e2ac6a1d765",
+    "tests/Lokad.Svg.Tests/SvgFixedStrokeLengthTests.cs": "7e8a0273b252dc52112df96d4db3598d9e7cdfc00e4adb063549866f4439f1e3",
+    "docs/SUPPORT_MATRIX.md": "f7ac407df0aad0e16f009ec57155aa647c628bff968951f0c8f5ebb26c9cddb6"
+  },
+  "trace": [
+    {
+      "claim": "Primitive/path families and nonzero/even-odd fills",
+      "owner": "Typed leaf/point/path parsing retains authored source commands. Analytic coverage uses winding mask1 for parity and -1 for nonzero; stroke outlines always keep their own winding.",
+      "checks": "Parser command operands, reversed/same-wound/self-crossing contours, fill/stroke paint order and fill-rule-independent stroke coverage have direct geometric or analytical pixel expectations."
+    },
+    {
+      "claim": "Caps, joins and miter limits",
+      "owner": "Native path stroker and straight native/conventional kernels validate finite positive metrics, retain float join/cap construction and apply miter-to-bevel fallback.",
+      "checks": "Direct cap vertices, directed overlap/winding, compiled-native float miter vectors and rational curve outline checks supplement independent cap/join reference inputs."
+    },
+    {
+      "claim": "Dashes, pathLength, independent paints and zero-width resource selection",
+      "owner": "Shared stroke syntax normalizes fixed units, finite pattern/offset and authored pathLength; retained dash sources own commands/patterns and scale length before culling.",
+      "checks": "Direct metrics and zero materialization, analytical endpoint order, independent fill/stroke ownership and native primitive/paint grids retain their distinct duties. G4/G5 own detailed degenerate/unit traces."
+    },
+    {
+      "claim": "Non-scaling placement and XML inheritance",
+      "owner": "ResolveVectorEffect passes the instance parent only for explicit XML inherit. Missing vector-effect returns false. Source/non-scaling maps remain distinct; the existing dashed rotation/shear exclusions are retained.",
+      "checks": "The original 18-case exclusion matrix remains. use-inherited-effect and use-effect-not-inherited are separate existing native inputs; direct instance ownership/cancellation cases remain."
+    }
+  ],
+  "nativeManifests": {
+    "../primitive-stroke-sheet/manifest.json": {
+      "manifestLfSha256": "c8e721aebd6bb30258f4ff6cdf9a6bd381c56d3368643ca845f1dc45fdcef1b7",
+      "cases": 4
+    },
+    "../stroke-style-exit-sheet/manifest.json": {
+      "manifestLfSha256": "04ad5a76c00d7904abe5f038f32810da154c42b53b2e05bb127573e2bd24f1b9",
+      "cases": 4
+    },
+    "../native-path-replay/manifest.json": {
+      "manifestLfSha256": "d02ed0ee6769532cc784aa96e73b065f985a1b60a473775e2ef533ef30d2c385",
+      "cases": 62
+    },
+    "../vector-effects/manifest.json": {
+      "manifestLfSha256": "0aacd8df00a03569f266f85b4c3a5cb26f0a56807b9b64122a18bb747e538f06",
+      "cases": 10
+    },
+    "../use-stroke-style/manifest.json": {
+      "manifestLfSha256": "f630a4ee9b62a0fe4c485021b112078fd7ea4b3d357ac27276a87038639b5ff9",
+      "cases": 99
+    },
+    "../affine-oval-strokes/manifest.json": {
+      "manifestLfSha256": "eb80cd9562bfa4361a8281f7f38b0f4901746071a6af8db663c3eefbac291878",
+      "cases": 6
+    }
+  },
+  "checkedSecondaryRuntimeReceipts": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "qualification": "native-line-source.json",
+      "trxSha256": "6bddb64b4573035424c4eed2e7cdad34427518fe2b188fb411b90aac6276cbaf",
+      "passedCases": {
+        "SvgPathDataParserTests.": 36,
+        "SvgStrokeOutlineTests.": 27,
+        "SvgNativeStrokeOutlineTests.": 24,
+        "SvgNativePathStrokeTests.": 14,
+        "SvgPolygonFillTests.": 149,
+        "SvgStrokeFillTests.": 229,
+        "SvgPaintFillStrokeOwnershipTests.": 10,
+        "SvgVectorEffectTests.": 17,
+        "SvgFixedStrokeLengthTests.": 39,
+        "Dashed_non_scaling_strokes_keep_the_documented_affine_boundary": 18
+      }
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "qualification": "native-line-source.json",
+      "trxSha256": "73bc48a52672e70f82f81ebee80c51df226621377fc7e0abb0486eadae77b309",
+      "passedCases": {
+        "family: \"primitive-stroke-sheet\"": 4,
+        "family: \"stroke-style-exit-sheet\"": 4,
+        "family: \"native-path-replay\"": 62,
+        "family: \"vector-effects\"": 10,
+        "family: \"use-stroke-style\"": 99,
+        "family: \"affine-oval-strokes\"": 6
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "qualification": "native-line-source.json",
+      "trxSha256": "b782435f61d4fc7af162a0531b290624a6c7fc6ec3a0f70d4995156f7695cd9c",
+      "passedCases": {
+        "SvgPathDataParserTests.": 36,
+        "SvgStrokeOutlineTests.": 27,
+        "SvgNativeStrokeOutlineTests.": 24,
+        "SvgNativePathStrokeTests.": 14,
+        "SvgPolygonFillTests.": 149,
+        "SvgStrokeFillTests.": 229,
+        "SvgPaintFillStrokeOwnershipTests.": 10,
+        "SvgVectorEffectTests.": 17,
+        "SvgFixedStrokeLengthTests.": 39,
+        "Dashed_non_scaling_strokes_keep_the_documented_affine_boundary": 18
+      }
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "qualification": "native-line-source.json",
+      "trxSha256": "eb2829e14fd009b46af8079bc6af9977744f6174a80cf9ab1ad6e7b4c918a012",
+      "passedCases": {
+        "family: \"primitive-stroke-sheet\"": 4,
+        "family: \"stroke-style-exit-sheet\"": 4,
+        "family: \"native-path-replay\"": 62,
+        "family: \"vector-effects\"": 10,
+        "family: \"use-stroke-style\"": 99,
+        "family: \"affine-oval-strokes\"": 6
+      }
+    }
+  ],
+  "documentationCorrections": [
+    "Replaced the false blanket inherited-vector-effect exclusion with the supported explicit XML source/use rule. CSS vector-effect declarations remain unsupported.",
+    "Removed a displaced verbose kernel comment from SvgStrokeCap and documented SvgStrokeOutline itself. Executable stroke source is unchanged."
+  ],
+  "limits": [
+    "This is a bounded owner/check/reference trace, not proof of every combination.",
+    "Existing native captures keep their recorded platform scope, recipes and Linux qualification; no reference or tolerance was rewritten.",
+    "Matching CI for the separate clip-diagnostic change is recorded in geometry-admission-qualification.json. Package/original-context promotion remains separately source-bound."
+  ]
+}

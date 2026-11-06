@@ -6,7 +6,7 @@
     "sourceCommit": "ca222b22b0390e9b4175cb4fcc8c4d4f73b7b6ff",
     "productionChange": "Exactly one exception-message literal in ScanClipPathData; parsing, admission, arithmetic, geometry, paint and ownership logic are byte-identical after replacing that literal."
   },
-  "status": "Focused source/native/admission qualification passes for G3/G4/G6/I3/I4. Matching committed-source CI is pending; package and original/context promotion remains at the previous milestone.",
+  "status": "Source/native/admission qualification passes for G3/G4/G6/I3/I4. Matching committed-source CI is closed: Ubuntu passes every gate; Windows retains only the unchanged frozen DejaVu assertion. Full secondary-runtime package/original-context promotion remains at the earlier rendering milestone; this change corrects one diagnostic literal.",
   "sourceLfSha256": {
     "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "cc5a23f5d1017aae8466bb3e87c6eacb108b5474381d387cb07d8452b2fd6f6e",
     "src/Lokad.Svg/Parsing/SvgAuthoredPath.cs": "3e9a24562c4d9d2b6df33ed7c45ddd44792ccc768ca5993ecbd7764bd227a26f",
@@ -524,6 +524,90 @@
         "Rendering": 168,
         "Mechanism": 18
       }
+    }
+  },
+  "qualifiedSourceCommit": "cfc10204d82788a304ef8930757515e6c88ab637",
+  "ci": {
+    "runId": 42177792138,
+    "status": "CLOSED; terminal metadata and both job logs captured once. Never repoll/refetch.",
+    "windows": {
+      "jobId": 127760181184,
+      "conclusion": "failure",
+      "logSha256": "8acf41dff8e455f3107a8ee0236e55ab9c3f27ef1510377f9ef732e6752ac0a2",
+      "testTotals": [
+        {
+          "failed": 0,
+          "passed": 10,
+          "total": 10,
+          "suite": "Lokad.Svg.FontProbe.Tests.dll",
+          "framework": "net11.0"
+        },
+        {
+          "failed": 0,
+          "passed": 47986,
+          "total": 47986,
+          "suite": "Lokad.Svg.Tests.dll",
+          "framework": "net11.0"
+        },
+        {
+          "failed": 1,
+          "passed": 78373,
+          "total": 78374,
+          "suite": "Lokad.Svg.VisualTests.dll",
+          "framework": "net11.0"
+        }
+      ],
+      "downstreamToolsAndPackages": "Skipped after the known DejaVu assertion; not relabeled as passed."
+    },
+    "ubuntu": {
+      "jobId": 127760181385,
+      "conclusion": "success",
+      "logSha256": "b5aa55f74467bf416d99b06ac0c448b6ada2cbc4ae6ebbd2517a38dd70d794f7",
+      "testTotals": [
+        {
+          "failed": 0,
+          "passed": 10,
+          "total": 10,
+          "suite": "Lokad.Svg.FontProbe.Tests.dll",
+          "framework": "net11.0"
+        },
+        {
+          "failed": 0,
+          "passed": 47986,
+          "total": 47986,
+          "suite": "Lokad.Svg.Tests.dll",
+          "framework": "net11.0"
+        },
+        {
+          "failed": 0,
+          "passed": 78374,
+          "total": 78374,
+          "suite": "Lokad.Svg.VisualTests.dll",
+          "framework": "net11.0"
+        },
+        {
+          "failed": 0,
+          "passed": 12246,
+          "total": 12246,
+          "suite": "Lokad.Svg.Tests.dll",
+          "framework": "net10.0"
+        },
+        {
+          "failed": 0,
+          "passed": 2671,
+          "total": 2671,
+          "suite": "Lokad.Svg.VisualTests.dll",
+          "framework": "net10.0"
+        },
+        {
+          "failed": 0,
+          "passed": 10,
+          "total": 10,
+          "suite": "Lokad.Svg.FontProbe.Tests.dll",
+          "framework": "net10.0"
+        }
+      ],
+      "downstreamToolsAndPackages": "All applicable compatibility, tool and package steps passed."
     }
   }
 }

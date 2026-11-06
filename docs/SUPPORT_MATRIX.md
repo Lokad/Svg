@@ -123,8 +123,8 @@ Conversion precedes numeric range admission; zero widths avoid resources needed
 only by that stroke. Percentage and font-relative stroke metrics remain unsupported.
 Dashed non-scaling line, circle and curved-path strokes reject rotation/shear.
 Ordinary solid/gradient line strokes retain source geometry under finite affine
-placement, including when gradient paint is empty. CSS/inherited vector
-effects are unsupported.
+placement, including when gradient paint is empty. XML `vector-effect='inherit'`
+on a referenced source follows the use instance. CSS vector effects are unsupported.
 Local uses retain rectangle source strokes independently of fill/stroke material.
 Affine uses also retain rectangle fills and hidden path/point-list source commands;
 visibility continues to control painting independently of geometry retention.

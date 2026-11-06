@@ -14,6 +14,9 @@ The [geometry/admission qualification](geometry-admission-qualification.json)
 adds five inspected groups, an independent nonuniform symbol paint fixture and
 specific source-scope rejection checks. Clip exponent errors now describe the
 lexical failure while retaining the existing admission and recovery rules.
+The [stroke trace](stroke-claim-trace.json) completes the geometry/instance claim
+groups using direct vertices, native miter vectors and existing browser controls;
+explicit XML vector-effect inheritance is supported and documented accordingly.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

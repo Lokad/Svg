@@ -1,22 +1,5 @@
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Expands device-space polylines into bounded stroke outlines with butt/round/square caps and miter/round joins.</summary>
-/// <remarks>
-/// <para>Joins miter within the caller limit and fall back to bevel, exactly the admitted miter-linejoin
-/// semantics including its limit; reversals always bevel. Round joins arc the outer side through a flatness-bounded
-/// fan while the inner side keeps the plain corner. Open ends close butt across the tips or arc a semicircular
-/// cap. Curves, dashes and non-solid strokes stay outside this kernel. Callers passing curve-derived
-/// polylines must bound flattening error before stroke expansion.</para>
-/// <para>Chains use the math-convention perpendicular. Open loops seal one forward and one mirrored
-/// backward chain into the stroked band. Closed loops emit one contour per side with opposite windings
-/// (inner reversed), except degenerate centerlines: fewer than two distinct points draw nothing, and exactly two emit
-/// the single boundary that fills under either fill rule. Spike reversals retrace both chains, which
-/// nonzero winding still fills; route spike loops through contour-structure validation before even-odd
-/// filling since coincident retracing cancels there. Acute inner turns may self-intersect with the same
-/// nonzero caveat. Zero-length segments are skipped; all-degenerate solid open input draws nothing with butt caps,
-/// a flatness-bounded disc with round caps, and an axis-aligned square with square caps per the zero-length subpath rule, while dashed outlining discards zero-length runs before stroking. This kernel holds
-/// no budget itself and allocates nothing beyond the caller buffer it fills through.</para>
-/// </remarks>
 /// <summary>Selects the admitted open-end cap style for one stroke.</summary>
 internal enum SvgStrokeCap
 {
@@ -43,6 +26,10 @@ internal enum SvgStrokeJoin
     Bevel,
 }
 
+/// <summary>Expands straight centerlines into bounded cap and join outlines.</summary>
+/// <remarks>Native and conventional kernels retain their own float and winding rules.
+/// Callers own output builders and admit their storage; mutable builders cannot be shared
+/// concurrently. Contour walks observe cancellation. Curved source stroking has a separate owner.</remarks>
 internal static class SvgStrokeOutline
 {
     /// <summary>Appends native float joins for a straight open centerline, preserving its directed winding overlaps.</summary>

@@ -17,6 +17,8 @@ The [geometry/admission qualification][geometry-admission] adds five current
 traces, one independent nonuniform symbol paint fixture and a corrected lexical
 diagnostic. Its source hashes and focused checks remain separate from promotion
 of the earlier complete rendering/package milestone.
+The [stroke trace][stroke-record] completes G1 against existing geometric/native
+checks and corrects the inherited-vector-effect restriction without changing rendering.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -80,7 +82,7 @@ Scope: [geometry and strokes][contract-geometry].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| G1 | Shape/path families, winding, caps/joins/miter, dashes/pathLength, stroke paints/units and non-scaling restrictions | Pending: [native line retention][line-source-record] is fully qualified with failing-before, affine and empty-paint/parent-bound controls. Finish the remaining shape/stroke trace. |
+| G1 | Shape/path families, winding, caps/joins/miter, dashes/pathLength, stroke paints/units and non-scaling restrictions | Reviewed: [stroke syntax][stroke-syntax] / [source reconstruction][leaf-parser] → [exact outlines][outline-tests] / [compiled-native miter checks][native-outline-tests] / [winding and paint selection][stroke-fill-tests] → [primitive controls][primitive-stroke-native], [cap/join controls][stroke-sheet-native] and [explicit XML inheritance][vector-native]. [Full trace and unchanged-source bindings][stroke-record]; [line retention][line-source-record] closes its earlier source defect. |
 | G2 | Retained rectangle/path/point-list source geometry, visibility and finite singular maps | Reviewed: [retained source parsing][definition-parser] / [collapsed bounds][paint-recording] → [command/paint roles][rectangle-source-tests] / [source lifetime][point-source-tests] / [singular anchors][singular-tests] → [affine][affine-native], [visibility][visibility-native], [singular][singular-native] and [point-list controls][point-native]. [Current bindings and checked cases][geometry-record]. |
 | G3 | Nonuniform symbol viewBox source fills/outlines and lowered-polygon exclusion | Reviewed: [reference replay][reference-replay] → [source-command/paint maps and specific exclusions][use-tests] / [symbol frame ownership][symbol-frame-tests] → [eight paint roles in one native control][symbol-paint-native]. [Current qualification][geometry-admission]. |
 | G4 | Zero/degenerate dash/shape/path/point-list behavior and authored endpoint order | Reviewed: [dash syntax][stroke-syntax] / [typed primitive lowering][leaf-parser] → [zero dashes][zero-dash-tests] / [analytical endpoint order][dash-direction-tests] / [empty sources][empty-contour-tests] / [point-list degeneracy][point-admission-tests] → [empty native contours][empty-contour-native] and [cap controls][stroke-sheet-native]. [Trace][geometry-admission]. |
@@ -280,6 +282,12 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [line-source-record]: native-line-source.json
 [geometry-record]: geometry-instance-trace.json
 [geometry-admission]: geometry-admission-qualification.json
+[stroke-record]: stroke-claim-trace.json
+[outline-tests]: ../../Lokad.Svg.Tests/SvgStrokeOutlineTests.cs
+[native-outline-tests]: ../../Lokad.Svg.Tests/SvgNativeStrokeOutlineTests.cs
+[stroke-fill-tests]: ../../Lokad.Svg.Tests/SvgStrokeFillTests.cs
+[primitive-stroke-native]: ../primitive-stroke-sheet/manifest.json
+[vector-native]: ../vector-effects/manifest.json
 [reference-replay]: ../../../src/Lokad.Svg/Parsing/SvgReferenceResolver.cs
 [stroke-syntax]: ../../../src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs
 [leaf-parser]: ../../../src/Lokad.Svg/Parsing/SvgLeafParser.cs
