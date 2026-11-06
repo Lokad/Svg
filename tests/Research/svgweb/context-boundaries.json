@@ -339,7 +339,91 @@
         }
       ]
     },
-    "limits": "Matching case filenames and image-reference spellings do not establish resource identity. Both SVGWeb releases have a different masking source; the live official-suite source and published suite archive also differ. Two live raster responses differ in bytes; pixel equivalence was not measured. The archive is not substituted for the original hosted context."
+    "limits": "Matching case filenames and image-reference spellings do not establish resource identity. Both SVGWeb releases have a different masking source; the live official-suite source and published suite archive also differ. Two live raster responses differ in bytes; pixel equivalence was not measured. The archive is not substituted for the original hosted context.",
+    "publisherSourceArchive": {
+      "sourceBaseCommit": "a25759425072b48979a602391a70a1c57167066f",
+      "url": "https://storage.googleapis.com/google-code-archive-source/v2/code.google.com/svgweb/source-archive.zip",
+      "archiveBytes": 146466263,
+      "archiveSha256": "24d001c428a4b788758cd7a36c3e8ea59ee1f214730e833f55e7992bff5a475f",
+      "archiveMemberCount": 33981,
+      "hostedNamesCompared": 204,
+      "working": {
+        "sourceCopiesReviewed": 739,
+        "byteExactHostedNames": 188,
+        "sourceIdentityMapSha256": "fbf1eaf9754a3bd7290e85abfc109ca2b620feb0fed84eb8081c2d0030730bd2"
+      },
+      "svnPristine": {
+        "sourceCopiesReviewed": 739,
+        "byteExactHostedNames": 188,
+        "everyCopyEqualsItsWorkingFile": true,
+        "sourceIdentityMapSha256": "28229c835d4813d9cefde3667a34bf9bf347a077c42c35dcaa1a409f3cb6440e"
+      },
+      "selected": [
+        {
+          "name": "image.svg",
+          "workingSourceCopies": 7,
+          "byteExactHostedCopies": 6,
+          "sourceVariants": {
+            "6c183668da499d712611df9dfb85820f7d92e5b0813d2edc5927e93d4f4ac052": 6,
+            "001cd5bd3970ecce2a57aed24177ac29c2d73e76c04bd37e5442a48c672300f8": 1
+          },
+          "imageBindingOccurrences": 7,
+          "relativeAssetsFound": 0,
+          "externalSameBasenameCandidateCount": 0,
+          "historicalRasterContents": []
+        },
+        {
+          "name": "masking-path-04-b.svg",
+          "workingSourceCopies": 9,
+          "byteExactHostedCopies": 0,
+          "sourceVariants": {
+            "a71fe1cd58b542f1073003b0c3a7e05b174aca1bc6581d5ceefea69c44f4151e": 3,
+            "ccba3ccfe586255b25ec10b7b2bf11b92fdd491efabd3de4f3da69f9158a2944": 6
+          },
+          "imageBindingOccurrences": 18,
+          "relativeAssetsFound": 12,
+          "externalSameBasenameCandidateCount": 0,
+          "historicalRasterContents": [
+            {
+              "bytes": 37497,
+              "sha256": "f6014b59072aaeb9e97ee4d6c3ba6cd10eb0f341e42faf730fa23d9e51d525e0",
+              "format": "png",
+              "chunks": [
+                "IHDR",
+                "gAMA",
+                "tEXt",
+                "PLTE",
+                "IDAT",
+                "IEND"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "oscon.svg",
+          "workingSourceCopies": 3,
+          "byteExactHostedCopies": 3,
+          "sourceVariants": {
+            "e265238fd7c1eb1bb7272d2d4646f93bee75392edb4e01404a3136b19f673ee7": 3
+          },
+          "imageBindingOccurrences": 3,
+          "relativeAssetsFound": 0,
+          "externalSameBasenameCandidateCount": 0,
+          "historicalRasterContents": []
+        }
+      ],
+      "newlyQualifiedHostedBindings": 0,
+      "historicalMaskingAsset": "The archived 37,497-byte PNG equals the earlier live W3C body f6014b59; all eighteen masking references have the hosted attribute hash. None of nine masking source copies equals the hosted XML. This corroborates a historical asset without qualifying its hosted binding or pixel interpretation.",
+      "recipe": "Read the pinned ZIP only in RAM (192 MiB archive/8 MiB member caps). Compare ordinary member basenames and SVN .svg.svn-base counterparts with originals.json SHA-256 values. Resolve relative image targets beside each source copy; do not bind external URIs by filename. Source identity rows sort by name/archiveSourceMember, then hash UTF-8 JSON with sorted keys and comma/colon separators.",
+      "retention": {
+        "archiveBodies": 0,
+        "svgBodies": 0,
+        "rasterBodies": 0,
+        "rawSourceAttributes": 0
+      },
+      "limits": "The three external-image originals remain unqualified. The historical indexed PNG includes gAMA, an existing unsupported color declaration; no raster is normalized, substituted, rendered or given a new reference. Both working and SVN pristine copies of this archive are now reviewed; do not download it again without a distinct source-bound lead.",
+      "recordedUtc": "2026-11-06T04:44:46.713037+00:00"
+    }
   },
   "actualPngAdmission": {
     "authoredImageOnlyInputSha256": "a4969ab48f49692705b7ecc3303fa2780c78022a9e936eea606adc173c9b3653",
@@ -443,7 +527,7 @@
     "productionTestsApisPackagesAndCiUnchanged": true
   },
   "nextActions": [
-    "Obtain a source-bound original raster archive or stable publisher binding before qualifying the three external-image originals; do not repeat live failures without new evidence.",
+    "Obtain a new publisher/resource archive or stable original URI binding for the three external-image originals. The pinned publisher source archive and its SVN pristine copies are reviewed; neither they nor the earlier two release ZIPs establish the missing binding. Do not repeat those downloads or failed live requests without a distinct lead.",
     "Keep the nine dynamic originals and strict CSS/duplicate-ID sources explicitly outside unchanged-original admission. Their exact declared diagnostics remain regressions.",
     "Continue supported static/support-contract and structural review; these context findings require no additional resolver, animation engine, CSS recovery or duplicate-ID special case."
   ],

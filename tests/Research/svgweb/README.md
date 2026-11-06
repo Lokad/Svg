@@ -28,7 +28,10 @@ Seven transported font contexts retain their separate SVG-font limitation.
 
 The [context audit](context-boundaries.json) pins the remaining 14 source hashes
 and the current exclusions. Three original image bindings lack source-bound
-raster authority: live requests fail and inspected archive revisions differ.
+raster authority: live requests fail and publisher archives do not establish the
+bindings. The source archive's 739 working copies and 739 identical SVN pristine
+copies are reviewed. Its historical masking PNG matches an earlier W3C response,
+but none of its masking XML copies matches the hosted source.
 One separately transported live PNG reaches the existing color-metadata boundary;
 it does not qualify the original. Dynamic base states, strict CSS and duplicate-ID
 repairs retain their declared contexts and frozen references.
