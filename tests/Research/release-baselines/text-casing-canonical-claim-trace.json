@@ -1,0 +1,199 @@
+{
+  "status": "Reviewed T9 and T10 against current production owners, direct checks, representative contracts and independent native controls. Other shaping rows remain separate.",
+  "qualifiedSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+  "qualification": "text-feature-dispatch-contexts.json",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "src/Lokad.Svg/Parsing/SvgTextCasing.cs": "712436c583169e6181bc9b9b53cbf0d3b8f304be7aeb83713569b3b636f0380e",
+    "src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs": "298b5be4c252739e24d2af7e60ff56c5d9170fb976095e86211506f11ab56a5a",
+    "src/Lokad.Svg/Parsing/SvgTextProjection.cs": "0d28c90231375fe31908b21b6764cadb911442610cb8c6ae8949427d7f594317",
+    "src/Lokad.Svg/Parsing/SvgInheritedTextStyle.cs": "607c8c18f7cc343e726e3ef623f30735bf336e0795458fd7b26bf789b9659904",
+    "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs": "718c4f7f5bc38fb958c0f0c92fd9f900194e7536d5e89953e082e15439ba16b2",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.cs": "e199bcdbe88d388f6ac1623defd57f3066ee539ea8c1841ede70ef29bdae9f50",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.Data.cs": "b18c8604219d7ba0b3d826c73013788257682f74d51c5f6758f3854882fbac9c",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.Shaping.cs": "0592d1d55813decef9d4b89c6141d68d1c550731be476e4ba30ea3014270a622",
+    "src/Lokad.Svg/Fonts/SvgTextShaping.cs": "767d9a992fa8352041bfc1c412e4d9efddb44e9471db72e82b261e3b18bf1bd2",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Composition.cs": "505af2840b6fa5feecef0badcb4eba96e6914c171c67b70d1c48caf4f885d0b9",
+    "tools/generate-unicode-case-data.py": "36e71b1cfbf338d9bfe9c4034b23898c5b4fee619e78c3c3e16df106a7781ab8",
+    "tools/generate-unicode-canonical-data.py": "4645e2d181541b835002a51fc1b2231caeff4984e36faae5682a4aa3b839a219",
+    "tests/Lokad.Svg.Tests/SvgTextProjectionTests.cs": "2564201e08db80a9685415da9f14650b30648b3dc9c3e268634cc2a6bbecc7e2",
+    "tests/Lokad.Svg.Tests/SvgCapitalizationContextTests.cs": "9537d391667ad7fc2fb66139f8dca91ea71029bd7ef6372d790068fa9099e2b4",
+    "tests/Lokad.Svg.Tests/SvgLowercaseContextTests.cs": "67ca415c5b78c0bf134b2d3687386941c7c1546ab74684d36f9dc504d1903265",
+    "tests/Lokad.Svg.Tests/SvgLanguageCasingTests.cs": "3977e74d922e86eb8b67107a389333564480917f3f8972c5075f8ba9f19b4346",
+    "tests/Lokad.Svg.Tests/SvgLanguageCasingOwnershipTests.cs": "79262fc36c366d6a2e26c23d26c30874cf53025f532d012109754838abb0dc28",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.Casing.cs": "299cfb533d8f1b3276d8469dbe1019edbaef49b579302a192b1316a4dee2cea7",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.CanonicalShaping.cs": "288f7a4d799b816ef754bb4c3ac981102e2b358302eaea3dfe6954903c540af4",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.CanonicalContexts.cs": "3ecb2c57d6bcc26967c3d241769373df807e1633838dfa6f0b98e90567b1033b",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.CanonicalOwnership.cs": "d6f364899f73a37bdec400b509cae185bcf7a42562f7b9e3c0601ca7824a1022",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.FeatureDispatch.cs": "bb070cbb19d9987a78c295e58d334b6c45e29b03d6d26c9fea1f55d0cafc6538",
+    "tests/Lokad.Svg.VisualTests/NativeFontFixture.cs": "dcda17f6e9d80202db9974316ec50e988de53607521c5f6069e79c633acb2727",
+    "tests/Lokad.Svg.VisualTests/SvgTextCaseReferenceTests.cs": "c8f354f7f2778f5c6949540a4faabbf4f54d2f36e2399bc1f57815d98b231431",
+    "tests/Lokad.Svg.VisualTests/SvgTextMarkReferenceTests.cs": "217bbd902bc73a7a0bfb624bffad170cee514f41c493749da4428ff752fd9947",
+    "tests/Lokad.Svg.VisualTests/SvgShapingIntervalReferenceTests.cs": "cc9fe91d3631fed617204421eec8f379fad02d91f482779ce4a0c6cc38d1d307",
+    "tests/Lokad.Svg.VisualTests/SvgTextFeatureDispatchReferenceTests.cs": "5a499b641136a9b471f6623077a031b07884b543395bdc346460d78a0b1f7e05",
+    "docs/SUPPORT_MATRIX.md": "b6323483e2adce0a48e471edaf57134ca5a4b4a59604ff27652d0b5de91a975b",
+    "tests/Research/text-case-mapping/unicode-capitalization.csv": "94e03e834440c9b53471526a91191ac62aa9131d3a30223362bfa567b5b6b1de",
+    "tests/Research/text-case-mapping/unicode-casing-properties.csv": "00040cbe681d8ccbca424cc5eacd36043b86a3a04ba61423a43f97482c4e42ba",
+    "tests/Research/text-case-mapping/unicode-casing-words.csv": "f117cff696afd022605e1778b8678cb45df7e86d8af5c192abe96e3491c4325b",
+    "tests/Research/text-case-mapping/unicode-lowercase.csv": "da264ec4c9b90a7d2e9ec180e394a13e57e98f88b299feda2147951e4e0adeae",
+    "tests/Research/text-case-mapping/unicode-uppercase.csv": "a8f9efec4e9cbf5de397506340b79340175d5d345d88f8278482e5346287fd84"
+  },
+  "claims": {
+    "T9": {
+      "owner": "SvgTextCasing owns scalar rules/context. SvgTextProjection and SvgFontCoverageDiscovery share those rules while retaining distinct projection and streaming storage.",
+      "inspected": [
+        "Pinned full upper/lower/title mappings and expansions; original case-ignorable context for final sigma.",
+        "Word-start reduction uses the two preceding relevant classes; generation asserts every changed capitalization scalar is ALetter except ignored U+0345.",
+        "Turkic Before_Dot/After_I and Lithuanian More_Above/After_Soft_Dotted decisions use original text, including language subtags and dot deletion.",
+        "Projection maps original scalar addresses into emitted spans/positions/paths/recording owners; streaming deferral retains the original font and flushes/resets at logical text ends.",
+        "Transform selection retains CSS inheritance/priority/global keywords; unsupported tailoring remains explicit."
+      ],
+      "mechanisms": [
+        "All pinned upper/lower/capitalization CSV vectors and casing/word property boundaries.",
+        "Original word/sigma context across chunks, styles, fonts, paths and supplementary scalar splits.",
+        "Expansion/deletion transfer of positions, relative displacement and empty recording/font owners."
+      ],
+      "contracts": [
+        "Projection refusal, cancellation, cleanup/retry and borrowed identity.",
+        "Prepared direct/instance discovery selects only emitted glyphs; deleted-only spans acquire no font."
+      ],
+      "rendering": "Fifteen canonical native case banks, including complete Turkic/Lithuanian clusters. Literal counterparts and CSS observations retain separate roles."
+    },
+    "T10": {
+      "owner": "SvgCanonicalText owns decomposition/properties/composition and font-aware normalization. SvgTextShaping partitions shared source storage and selected ccmp execution.",
+      "inspected": [
+        "Recursive canonical decomposition retains compatibility distinctions; algorithmic Hangul and excluded composition pairs remain explicit.",
+        "Stable nonzero-class ordering uses original order as a secondary key; class-zero characters block reordering. Covered recomposition applies canonical blocking and keeps original owners separate from merged clusters.",
+        "Normalization work includes singleton/precomposed scalars; one physical font must cover every decomposition component when the direct glyph is absent.",
+        "Selected ccmp single/ligature/class-context execution retains strict definition validation and lookup output order. Unsupported inputs stay dormant only when checked complete bounded input cannot match.",
+        "Shared partitions use face/size, paint, spacing, absolute positions and scaled element boundaries; text-path transitions do not create an extra barrier."
+      ],
+      "mechanisms": [
+        "Recursive and compatibility decomposition, Hangul bounds/exclusions, mark category versus combining class and stable source-owner sequences.",
+        "Single substitution formats, nested-action validation, unmarked dispatch, complete coverage and evolving lookup output.",
+        "Eleven complete-input applicability rows distinguish absent context from potentially matching unsupported work."
+      ],
+      "contracts": [
+        "The same marked/unmarked glyph owner is checked for peak-minus-one refusal, partial cancellation after storage exists, zero retained bytes and exact-peak retry.",
+        "Prepared coverage retains the primary program, acquires it once and preserves the shared allowance."
+      ],
+      "rendering": "Canonical mark/outline/boundary controls plus the separately qualified dispatch and normalization controls; native references remain unchanged."
+    }
+  },
+  "retainedNativeEvidence": {
+    "banks": 18,
+    "healthyCaptureReceipts": 108,
+    "inspection": "Every manifest input, literal control where present, supplied program and platform reference hash was checked against committed bytes; three agreeing healthy/profile-cleaned receipts per platform. The manifest identities bind the individual program/reference fields without duplicating them here.",
+    "manifests": {
+      "text-case-mapping/basic/capture.json": "a981b9e56f41ef2874fee3dbb2364f5bd876c0777816145bff83ffdb93e3a7f3",
+      "text-case-mapping/capitalize/capture.json": "75be5b9e79e6e4a1a9530d54d09bf78d8790a9175a7f9846bfc5cf59878ec1d5",
+      "text-case-mapping/capitalize-indexed/capture.json": "e3ae77c65d64b8ef8df1f418abbe5be1464f9651b7aa238cb7fe16723e333d32",
+      "text-case-mapping/capitalize-path/capture.json": "61f9aa98096fcf460a9ac0060cb33931bac0f2f9fbeefd6ca002ca4b0e54346a",
+      "text-case-mapping/capitalize-words/capture.json": "9fbf826edd3208bdd525328da45c68aa073d6d77fc58fe3ba5cfa68fe7ef9c7f",
+      "text-case-mapping/indexed/capture.json": "08cf65fba3c42a7dd97457b374663e9335e2b68ac1850e533eee2bd0fa40171b",
+      "text-case-mapping/language-indexed/capture.json": "de82bf1c494092f7ec89434d3743299090268005b93ae48d8abc4510775b866c",
+      "text-case-mapping/language-nodes/capture.json": "86220e8bf0f9af86733384500a3836ddce0ecb0318844bb7e13d1a4f48a74b7d",
+      "text-case-mapping/language-path/capture.json": "1bd4c0ee9d698a486b915afe5e31b1d2740002fccc9857571aa457492950499a",
+      "text-case-mapping/language-simple/capture.json": "2630a67d631d7d7a720523e604b1bbbf3f624753bda75c7d5f0ba9c383873e12",
+      "text-case-mapping/lithuanian/capture.json": "203b6b570e1e6d1a9c716e8d24f67bebc2f1fe0f5d97961ba3c84679c2f3519c",
+      "text-case-mapping/lowercase/capture.json": "8b0b824a0f0f79ae2ba9733892927c1978e1154aa0a6fe2d5915ea829fe9fa07",
+      "text-case-mapping/lowercase-path/capture.json": "3baef2d2ab6f0d6838d23efa0139156a0534511758c6f368a88517f42d4ab4f0",
+      "text-case-mapping/path/capture.json": "fbab65b87856d78e815c4fc8229e0b342a2ea9cdbedaf5a1a822a83334801d28",
+      "text-case-mapping/turkic/capture.json": "f7cff0fcdf3dbd8752c36a95b9fce1fd8ac29f2b85e98a6e58a55935b613cf0f",
+      "text-mark-shaping/capture.json": "ceff77703b4be5a103db0d69a59366208211f6a5482884a94d3ff51c15c73da5",
+      "text-canonical-path/capture.json": "7f1580473deda753e34ec361dd976dc952ea2cc1d8188ffb909477ada4e25b0e",
+      "text-shaping-boundaries/capture.json": "97436b670ab781f0e0d522b650a095cda3e84aa815a12272119bb52cf259bbe7"
+    }
+  },
+  "validation": {
+    "selectionMeaning": "Named existing checks extracted from all four already completed unfiltered runtime/host suites; no new execution or test consolidation.",
+    "groups": {
+      "core": {
+        "SvgCapitalizationContextTests": 4713,
+        "SvgLowercaseContextTests": 3959,
+        "SvgTextProjectionTests": 1595,
+        "Canonical_class_and_unicode_mark": 8,
+        "Canonical_decomposition_is_recursive": 9,
+        "SvgLanguageCasingTests": 57,
+        "Canonical_work_distinguishes": 13,
+        "SvgLanguageCasingOwnershipTests": 1,
+        "Canonical_coverage_requires": 7,
+        "Canonical_composition_keeps_exclusions": 13,
+        "Canonical_shaping_keeps_source_owners": 9,
+        "Canonical_context_admission_checks": 10,
+        "Canonical_lookup_admission_observes": 2,
+        "Canonical_shaping_releases_partial": 2,
+        "Unsupported_coverage_context_requires": 11,
+        "Canonical_single_substitutions": 2,
+        "Prepared_deleted_only_font": 1,
+        "Unmarked_runs_execute": 2,
+        "Prepared_uppercase_discovers": 1,
+        "Prepared_lowercase_discovers": 1,
+        "Prepared_capitalization_discovers": 1,
+        "Canonical_demand_keeps": 2
+      },
+      "visual": {
+        "SvgTextCaseReferenceTests": 15,
+        "SvgTextMarkReferenceTests": 2,
+        "SvgTextFeatureDispatchReferenceTests": 8,
+        "SvgShapingIntervalReferenceTests": 1
+      }
+    },
+    "results": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 10419
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 26
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 10419
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 26
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 10419
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 26
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 10419
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 26
+      }
+    ]
+  },
+  "limits": [
+    "This is a finite support trace, not exhaustive Unicode/OpenType combination conformance.",
+    "CSS-path/language/indexing observations do not become literal-control authority; both roles remain committed.",
+    "T3, T11 and T16 still need their own completed trace; frozen Windows DejaVu remains Open T18.",
+    "No source, reference, tolerance, test membership or public contract changed during this trace."
+  ]
+}
