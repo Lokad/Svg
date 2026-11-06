@@ -28,6 +28,10 @@ and drawing bounds, inactive-source exceptions and native capture scopes distinc
 The [limits/ownership trace](limits-ownership-claim-trace.json) completes the
 remaining resource contracts and absorbed HTTP/host handoff against current
 owners, representative API/cleanup checks and installed package consumers.
+The [root ownership setup](root-ownership-setup.json) shares one refusal/retry
+sequence across six existing cases while retaining local pixel, storage-bound and
+partial-cancellation assertions. Affected host/runtime checks preserve membership;
+startup-heavy validation timings establish no speedup.
 The [qualification/provenance trace](qualification-provenance-claim-trace.json)
 completes the finite support review, condenses test guidance and corrects the
 stale chart-shadow blocker. The packaged primary asset preserves all three

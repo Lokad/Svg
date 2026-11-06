@@ -27,15 +27,7 @@ public sealed class SvgCanvasBackgroundOwnershipTests
         long peak = 26 * 17 * 4;
         Assert.Equal(peak, rasterBudget.Snapshot().PeakBytes);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
-        HostMemoryBudget host = new(peak - 1);
-        RenderBudget limited = new(host);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgConverter.Rasterize(root, options, limited, CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, limited.Snapshot().CurrentBytes);
-        host.Limit = peak;
-        using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, options, limited, CancellationToken.None))
-            Assert.Equal(expected, retry.Pixels);
-        Assert.Equal(0, limited.Snapshot().CurrentBytes);
+        SvgRasterOwnershipAssertions.RefusalReleasesAndRetriesBorrowedScene(root, sceneBudget, options, peak, expected);
         Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
     }
 }

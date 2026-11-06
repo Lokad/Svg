@@ -1,0 +1,415 @@
+{
+  "status": "Affected qualification complete for test-only ownership setup sharing; CI pending. No renderer, source fixture, native target, tolerance or test membership change.",
+  "parentCommit": "7164f6535829b91edb80f8035438033baac1af34",
+  "qualifiedProductionSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "tests/Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs": "bcf36789364f710c6e521b29a9f11b749e8aa5b0a6e43c213dd635793f777291",
+    "tests/Lokad.Svg.Tests/SvgCanvasBackgroundOwnershipTests.cs": "73a1fc7a69285b454736180cfd0b7664603b2006a468ab383fcf6f5cd4f14f62",
+    "tests/Lokad.Svg.Tests/SvgRootBoxOwnershipTests.cs": "68e820d7398c579d6812bc3aa3135a6ecf127fb827df4b95697eab93a1f63cb1",
+    "tests/Lokad.Svg.Tests/SvgRootImageBoundaryOwnershipTests.cs": "008fc06dabe79c83cc3a1eb9304fb5652ef43efee64ca4258d9f9015a4c3db35"
+  },
+  "consolidation": {
+    "owner": "SvgRasterOwnershipAssertions.RefusalReleasesAndRetriesBorrowedScene",
+    "sharedSequence": [
+      "create raster allowance at measured peak minus one",
+      "require LimitExceeded and zero raster charge",
+      "retain the borrowed scene charge immediately after refusal",
+      "raise the same allowance to the exact measured peak",
+      "retry and compare the complete expected pixel array",
+      "dispose retry surface and retain scene charge with zero raster charge"
+    ],
+    "retainedLocally": [
+      "dimensions, edge pixels and exact/ranged peak checks",
+      "all original root/canvas/box inputs and six independent case identities",
+      "the root-boundary mid-background cancellation token, cleanup and retry under the same returned allowance",
+      "scene-owner disposal and final refund checks"
+    ],
+    "clarified": "The root-boundary test additionally checks the original scene charge before entering the common refusal sequence. The helper checks borrowed scene charge immediately after refusal and retry for all callers.",
+    "scope": "One method in the existing helper, three caller classes. No callback protocol, flags, new fixture abstraction, API matrix or assertion batching."
+  },
+  "retainedCases": [
+    "Lokad.Svg.Tests.SvgCanvasBackgroundOwnershipTests.Canvas_paint_borrows_the_root_boundary_without_extra_storage_and_retries_after_refusal",
+    "Lokad.Svg.Tests.SvgRootBoxOwnershipTests.Root_box_paths_release_allowance_after_refusal_and_retry(declarations: \"border-top:2px solid rgba(220,20,0,.25);border-lef\"\u00b7\u00b7\u00b7, oversizedContent: False, surfaces: 2, scratchAllowance: 65536)",
+    "Lokad.Svg.Tests.SvgRootBoxOwnershipTests.Root_box_paths_release_allowance_after_refusal_and_retry(declarations: \"border:2px solid rgba(220,20,0,.5)\", oversizedContent: False, surfaces: 1, scratchAllowance: 4096)",
+    "Lokad.Svg.Tests.SvgRootBoxOwnershipTests.Root_box_paths_release_allowance_after_refusal_and_retry(declarations: \"padding-right:3px\", oversizedContent: True, surfaces: 1, scratchAllowance: 4096)",
+    "Lokad.Svg.Tests.SvgRootImageBoundaryOwnershipTests.Root_boundary_borrows_coverage_and_preserves_refusal_cleanup_and_retry(group: False)",
+    "Lokad.Svg.Tests.SvgRootImageBoundaryOwnershipTests.Root_boundary_borrows_coverage_and_preserves_refusal_cleanup_and_retry(group: True)"
+  ],
+  "timing": {
+    "before": {
+      "results": [
+        {
+          "host": "windows",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "ab3f1269f62a81bf7e4284c460dd40e12a7a59cd0d4b6e6d6a207c28cf72f700",
+          "exitCode": 0,
+          "seconds": 8.347590900026262,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "windows",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "ab3f1269f62a81bf7e4284c460dd40e12a7a59cd0d4b6e6d6a207c28cf72f700",
+          "exitCode": 0,
+          "seconds": 6.725560699822381,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "windows",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "ab3f1269f62a81bf7e4284c460dd40e12a7a59cd0d4b6e6d6a207c28cf72f700",
+          "exitCode": 0,
+          "seconds": 6.663011699914932,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "linux",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "ab3f1269f62a81bf7e4284c460dd40e12a7a59cd0d4b6e6d6a207c28cf72f700",
+          "exitCode": 0,
+          "seconds": 13.074307000031695,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "linux",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "ab3f1269f62a81bf7e4284c460dd40e12a7a59cd0d4b6e6d6a207c28cf72f700",
+          "exitCode": 0,
+          "seconds": 9.551096100127324,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "linux",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "ab3f1269f62a81bf7e4284c460dd40e12a7a59cd0d4b6e6d6a207c28cf72f700",
+          "exitCode": 0,
+          "seconds": 10.094911199994385,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        }
+      ],
+      "medians": {
+        "windows": 6.725560699822381,
+        "linux": 10.094911199994385
+      },
+      "scope": "Three serial fresh-process focused validation runs per host, primary runtime. Includes startup/discovery; no renderer-performance claim."
+    },
+    "after": {
+      "results": [
+        {
+          "host": "windows",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "42c421cc57297768725cb772cd7dcf8f90ea99bac5e775c0d737183cb31f569a",
+          "exitCode": 0,
+          "seconds": 6.892183100106195,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "windows",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "42c421cc57297768725cb772cd7dcf8f90ea99bac5e775c0d737183cb31f569a",
+          "exitCode": 0,
+          "seconds": 5.972777699818835,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "windows",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "42c421cc57297768725cb772cd7dcf8f90ea99bac5e775c0d737183cb31f569a",
+          "exitCode": 0,
+          "seconds": 6.339173499960452,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "linux",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "42c421cc57297768725cb772cd7dcf8f90ea99bac5e775c0d737183cb31f569a",
+          "exitCode": 0,
+          "seconds": 12.550050999969244,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "linux",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "42c421cc57297768725cb772cd7dcf8f90ea99bac5e775c0d737183cb31f569a",
+          "exitCode": 0,
+          "seconds": 8.797093800036237,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        },
+        {
+          "host": "linux",
+          "kind": "core",
+          "framework": "net11.0",
+          "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+          "testAssemblySha256": "42c421cc57297768725cb772cd7dcf8f90ea99bac5e775c0d737183cb31f569a",
+          "exitCode": 0,
+          "seconds": 9.130882000084966,
+          "counters": {
+            "executed": "6",
+            "passed": "6",
+            "failed": "0"
+          },
+          "failures": []
+        }
+      ],
+      "medians": {
+        "windows": 6.339173499960452,
+        "linux": 9.130882000084966
+      },
+      "scope": "Three serial fresh-process focused validation runs per host, primary runtime. Includes startup/discovery; no renderer-performance claim."
+    },
+    "interpretation": "Three serial fresh-process runs per host, primary runtime. Startup/discovery dominate; observed ranges overlap. The medians do not establish a speedup or renderer-performance change."
+  },
+  "affectedIntegration": {
+    "coreConsumerFiles": [
+      "tests/Lokad.Svg.Tests/SvgCanvasBackgroundOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgClippedStrokeOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgContainerShaderInheritanceTests.cs",
+      "tests/Lokad.Svg.Tests/SvgEmptyFilterSourceTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterBitmapRestoreTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterCaptureStorageTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterColorMatrixOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterColorProgramCoverageTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterCommandViewTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterGeometryOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterRegionOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgInstanceShaderOpacityTests.cs",
+      "tests/Lokad.Svg.Tests/SvgMarkerCanvasOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgNativeLineSourceOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgOrderedClipOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgPointListPaintOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgRectangleShaderOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgRenderedGroupStyleTests.cs",
+      "tests/Lokad.Svg.Tests/SvgRootBoxOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgRootImageBoundaryOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgShaderHairlineOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgShadowSamplingOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgSingularTransformTests.cs",
+      "tests/Lokad.Svg.Tests/SvgSolidPaintOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgUniformFilterOwnershipTests.cs",
+      "tests/Lokad.Svg.Tests/SvgUseStrokeOpacityTests.cs",
+      "tests/Lokad.Svg.Tests/SvgUseStrokeStyleTests.cs",
+      "tests/Lokad.Svg.Tests/SvgViewportPercentageTests.cs",
+      "tests/Lokad.Svg.Tests/SvgZeroRadiusSymbolOwnershipTests.cs"
+    ],
+    "results": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "42c421cc57297768725cb772cd7dcf8f90ea99bac5e775c0d737183cb31f569a",
+        "exitCode": 0,
+        "seconds": 10.120688499882817,
+        "counters": {
+          "executed": "193",
+          "passed": "193",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "c8cb206ac980748e1857d80566b314f1319f46eccbbe20d4d78b37f90ccafb33",
+        "exitCode": 0,
+        "seconds": 10.441922599915415,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "42c421cc57297768725cb772cd7dcf8f90ea99bac5e775c0d737183cb31f569a",
+        "exitCode": 0,
+        "seconds": 12.982307199854404,
+        "counters": {
+          "executed": "193",
+          "passed": "193",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "testAssemblySha256": "c8cb206ac980748e1857d80566b314f1319f46eccbbe20d4d78b37f90ccafb33",
+        "exitCode": 0,
+        "seconds": 12.268114000093192,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "a24f43ed1f5807586c7026ddee6dfe59deffd3eefecad0950749921d8a609a2c",
+        "exitCode": 0,
+        "seconds": 12.148125500185415,
+        "counters": {
+          "executed": "193",
+          "passed": "193",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "ba38ce11d7b07e3a42d891ce0ad2485d0b651e4f12a7f1cc1ac80c4440a29bac",
+        "exitCode": 0,
+        "seconds": 11.557565700029954,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "a24f43ed1f5807586c7026ddee6dfe59deffd3eefecad0950749921d8a609a2c",
+        "exitCode": 0,
+        "seconds": 12.229866500012577,
+        "counters": {
+          "executed": "193",
+          "passed": "193",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "testAssemblySha256": "ba38ce11d7b07e3a42d891ce0ad2485d0b651e4f12a7f1cc1ac80c4440a29bac",
+        "exitCode": 0,
+        "seconds": 11.495031999889761,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "build": {
+    "targets": [
+      "net11.0",
+      "net10.0"
+    ],
+    "warnings": 0,
+    "errors": 0,
+    "projectReferencesRebuilt": false,
+    "meaning": "Only the test project was built against the previously qualified renderer assets. Both library hashes remain exact; shipping code/package qualification is unchanged."
+  },
+  "nextAction": "Observe this test source commit CI at the next safe point. Retain the independent existing Windows DejaVu conflict; do not weaken it.",
+  "selections": {
+    "focused": "FullyQualifiedName~SvgRootImageBoundaryOwnershipTests|FullyQualifiedName~SvgRootBoxOwnershipTests|FullyQualifiedName~SvgCanvasBackgroundOwnershipTests",
+    "integration": {
+      "core": "FullyQualifiedName~SvgCanvasBackgroundOwnershipTests|FullyQualifiedName~SvgClippedStrokeOwnershipTests|FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgEmptyFilterSourceTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgFilterBitmapRestoreTests|FullyQualifiedName~SvgFilterCaptureStorageTests|FullyQualifiedName~SvgFilterColorMatrixOwnershipTests|FullyQualifiedName~SvgFilterColorProgramCoverageTests|FullyQualifiedName~SvgFilterCommandViewTests|FullyQualifiedName~SvgFilterGeometryOwnershipTests|FullyQualifiedName~SvgFilterRegionOwnershipTests|FullyQualifiedName~SvgFilterSourceOriginOwnershipTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgMarkerCanvasOwnershipTests|FullyQualifiedName~SvgNativeLineSourceOwnershipTests|FullyQualifiedName~SvgOrderedClipOwnershipTests|FullyQualifiedName~SvgPointListPaintOwnershipTests|FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgRootBoxOwnershipTests|FullyQualifiedName~SvgRootImageBoundaryOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgShadowSamplingOwnershipTests|FullyQualifiedName~SvgSingularTransformTests|FullyQualifiedName~SvgSolidPaintOwnershipTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgUseStrokeOpacityTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests|FullyQualifiedName~SvgZeroRadiusSymbolOwnershipTests",
+      "visual": "FullyQualifiedName~SvgRootImageBoundaryReferenceTests|FullyQualifiedName~SvgCanvasBackgroundReferenceTests|FullyQualifiedName~SvgRootPaddingReferenceTests|FullyQualifiedName~SvgRootBorderReferenceTests"
+    }
+  }
+}

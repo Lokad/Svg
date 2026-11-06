@@ -35,15 +35,7 @@ public sealed class SvgRootBoxOwnershipTests
         // source; the scratch allowance cannot hide another full-size surface.
         Assert.InRange(peak, 152 * 122 * 4 * surfaces, 152 * 122 * 4 * surfaces + scratchAllowance);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
-        HostMemoryBudget host = new(peak - 1);
-        RenderBudget limited = new(host);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgConverter.Rasterize(root, options, limited, CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, limited.Snapshot().CurrentBytes);
-        host.Limit = peak;
-        using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, options, limited, CancellationToken.None))
-            Assert.Equal(expected, retry.Pixels);
-        Assert.Equal(0, limited.Snapshot().CurrentBytes);
+        SvgRasterOwnershipAssertions.RefusalReleasesAndRetriesBorrowedScene(root, sceneBudget, options, peak, expected);
         root.Dispose();
         Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
     }

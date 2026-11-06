@@ -34,16 +34,9 @@ public sealed class SvgRootImageBoundaryOwnershipTests
             long peak = 26 * 17 * 4 * (group ? 2L : 1L);
             Assert.Equal(peak, rasterBudget.Snapshot().PeakBytes);
             Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
-            HostMemoryBudget limitedHost = new(peak - 1);
-            RenderBudget limited = new(limitedHost);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgConverter.Rasterize(root, options, limited, CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, limited.Snapshot().CurrentBytes);
             Assert.Equal(retained, sceneBudget.Snapshot().CurrentBytes);
-            limitedHost.Limit = peak;
-            using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, options, limited, CancellationToken.None))
-                Assert.Equal(expected, retry.Pixels);
-            Assert.Equal(0, limited.Snapshot().CurrentBytes);
+            RenderBudget limited = SvgRasterOwnershipAssertions.RefusalReleasesAndRetriesBorrowedScene(
+                root, sceneBudget, options, peak, expected);
 
             if (group)
             {

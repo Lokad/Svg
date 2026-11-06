@@ -8,6 +8,28 @@ namespace Lokad.Svg.Tests;
 /// <summary>Checks separate or shared parsing/raster lifetimes while borrowing input, scene and font/options owners.</summary>
 internal static class SvgRasterOwnershipAssertions
 {
+    /// <summary>Checks peak-minus-one raster refusal and exact-peak retry without refunding the borrowed scene.</summary>
+    /// <remarks>The caller keeps the scene, its budget, options and expected pixels alive.
+    /// This method owns its raster allowance and surfaces, and returns the uncharged allowance
+    /// at the measured peak for any subsequent caller-specific probes. Calls share no mutable state.</remarks>
+    internal static RenderBudget RefusalReleasesAndRetriesBorrowedScene(SvgRoot scene, RenderBudget sceneBudget,
+        SvgRenderOptions options, long peakBytes, byte[] expectedPixels)
+    {
+        long retained = sceneBudget.Snapshot().CurrentBytes;
+        HostMemoryBudget host = new(peakBytes - 1);
+        RenderBudget limited = new(host);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgConverter.Rasterize(scene, options, limited, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, limited.Snapshot().CurrentBytes);
+        Assert.Equal(retained, sceneBudget.Snapshot().CurrentBytes);
+        host.Limit = peakBytes;
+        using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, options, limited, CancellationToken.None))
+            Assert.Equal(expectedPixels, retry.Pixels);
+        Assert.Equal(0, limited.Snapshot().CurrentBytes);
+        Assert.Equal(retained, sceneBudget.Snapshot().CurrentBytes);
+        return limited;
+    }
+
     /// <summary>Checks separate parser/raster allowances while a sibling scene reservation stays borrowed.</summary>
     /// <remarks>Each call owns its scenes, surfaces, allowances, pixel copy and cancellation source.
     /// Input stays borrowed and unchanged. Parser refusal excludes the sibling charge; raster refusal
