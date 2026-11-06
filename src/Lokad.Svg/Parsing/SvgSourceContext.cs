@@ -10,7 +10,7 @@ internal readonly record struct SvgSourceContext(string ElementName, string Elem
         (int? line, int? position) = Position(reader);
         string name = reader.LocalName;
         string id = reader.GetAttribute("id") ?? string.Empty;
-        return new(name.Length <= 256 ? name : name[..256], id.Length <= 256 ? id : id[..256], line, position);
+        return new(SvgDiagnosticText.Bound(name), SvgDiagnosticText.Bound(id), line, position);
     }
 
     internal SvgSourceDiagnostic Describe(string attribute, string value)

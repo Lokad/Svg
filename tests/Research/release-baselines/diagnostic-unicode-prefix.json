@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-06",
+  "baselineCommit": "a410c84ace343bf361efc76caffcf8e42effc268",
+  "finding": "Three independent 256-code-unit prefix cuts could leave a lone high surrogate from a valid input pair.",
+  "change": "Source and font diagnostics and early parser capture share SvgDiagnosticText.Bound. A pair crossing the limit is omitted whole; pairs ending at the limit are retained.",
+  "contract": {
+    "maximumUtf16CodeUnits": 256,
+    "nullInput": "ArgumentNullException, unchanged",
+    "shortInput": "Returned unchanged; no Unicode validation or normalization is added."
+  },
+  "sourceLfSha256": {
+    "src/Lokad.Svg/SvgDiagnosticText.cs": "c6d645bfc3be7144f9b22a32612cd6843f7a9da26ec53ce3c0ec0f38347ca96c",
+    "src/Lokad.Svg/SvgSourceDiagnostic.cs": "903ad4d4f3eba0b984a4b2a8c01a7020077754afba6795f521d8e3305165f51d",
+    "src/Lokad.Svg/Fonts/SvgFontDiagnostic.cs": "726587529decf99441ca1c075a2e808439f3c894827089ef1fa4a5354516dcbe",
+    "src/Lokad.Svg/Parsing/SvgSourceContext.cs": "5ca3e39338a98a0bfb38501882fe4130e80db295ec8656f44348a8ca2b601bbe",
+    "tests/Lokad.Svg.Tests/SvgSourceDiagnosticTests.cs": "079eb456250d203340966ada1a161c007704cccbf60e69a5a969a1dfa3a8b7bc",
+    "docs/SUPPORT_MATRIX.md": "940246099e74c54ff2d26a2756ddc98b1a87d2567138bc18b3b7f86b44cdf533"
+  },
+  "regressions": {
+    "newMethods": 4,
+    "newCases": 12,
+    "boundaries": "Eight direct prefix cases cover short input and pairs before, at and across the boundary, with and without trailing text.",
+    "contracts": "Each of five public source fields and four font fields is checked once with a crossing pair.",
+    "integration": "Immediate unsupported-element and deferred duplicate-pattern diagnostics retain complete IDs; duplicate lookup and error codes remain intact.",
+    "preserved": "All pre-existing test source is unchanged. No image/reference/tolerance, API shape, ownership matrix, rendering path or admission policy changes."
+  },
+  "failingBefore": {
+    "host": "windows",
+    "framework": "net11.0",
+    "librarySha256": "8cb4ba4ab671cdff500ddebe93f21c027f8ab49cc9692400f72724234e922722",
+    "testAssemblySha256": "a78730a041ed0c4c4af2dfb7cca1f97deebd7e962d2977c6a97214668806d0aa",
+    "selection": "FullyQualifiedName~Diagnostic_prefix_keeps_complete_surrogate_pairs|FullyQualifiedName~Every_source_diagnostic_field_preserves_the_bounded_unicode_prefix|FullyQualifiedName~Every_font_diagnostic_field_preserves_the_bounded_unicode_prefix|FullyQualifiedName~Captured_source_ids_keep_complete_pairs_at_immediate_and_deferred_failures",
+    "exitCode": 1,
+    "seconds": 10.528380800038576,
+    "counters": {
+      "executed": "12",
+      "passed": "6",
+      "failed": "6"
+    },
+    "failures": [
+      "Lokad.Svg.Tests.SvgSourceDiagnosticTests.Every_source_diagnostic_field_preserves_the_bounded_unicode_prefix",
+      "Lokad.Svg.Tests.SvgSourceDiagnosticTests.Diagnostic_prefix_keeps_complete_surrogate_pairs(prefixLength: 255, suffixLength: 1, expectedLength: 255)",
+      "Lokad.Svg.Tests.SvgSourceDiagnosticTests.Every_font_diagnostic_field_preserves_the_bounded_unicode_prefix",
+      "Lokad.Svg.Tests.SvgSourceDiagnosticTests.Diagnostic_prefix_keeps_complete_surrogate_pairs(prefixLength: 255, suffixLength: 0, expectedLength: 255)",
+      "Lokad.Svg.Tests.SvgSourceDiagnosticTests.Captured_source_ids_keep_complete_pairs_at_immediate_and_deferred_failures(deferred: False)",
+      "Lokad.Svg.Tests.SvgSourceDiagnosticTests.Captured_source_ids_keep_complete_pairs_at_immediate_and_deferred_failures(deferred: True)"
+    ],
+    "trxSha256": "26fa2bbd405ef1c33690579423844744d40efefd0f4d7f8f51ce8d3f626eb45f",
+    "stdoutSha256": "28e73014811c64c643d5f711d8bc7b6f25ae037372d3c6e4e1ace62b85feadf2"
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "librarySha256": "73a8544373491d4d296ede6a7e28b23bb7376c203ec11b85908f82e5d62c2801",
+      "testAssemblySha256": "44e418fdede6952a36bf3c28dc5ca3509fdde755239be3caae325616ce07e016",
+      "selection": "FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgDeferredPaintLeafTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgTransformBoundaryTests",
+      "exitCode": 0,
+      "seconds": 37.44606170011684,
+      "counters": {
+        "executed": "13711",
+        "passed": "13711",
+        "failed": "0"
+      },
+      "trxSha256": "483fd0da73bf72b467eb103ec9ef588ff620d94065722b97fba482e93d39d00f",
+      "stdoutSha256": "e1762e17c837380bc07ef6f0fc6a2329dad15766604dd7df3cd5f474808ba75f"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "librarySha256": "73a8544373491d4d296ede6a7e28b23bb7376c203ec11b85908f82e5d62c2801",
+      "testAssemblySha256": "44e418fdede6952a36bf3c28dc5ca3509fdde755239be3caae325616ce07e016",
+      "selection": "FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgDeferredPaintLeafTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgTransformBoundaryTests",
+      "exitCode": 0,
+      "seconds": 33.8682655999437,
+      "counters": {
+        "executed": "13711",
+        "passed": "13711",
+        "failed": "0"
+      },
+      "trxSha256": "96869dd7867f7c7c5408eab2a82725c4f986cbacc10670e3995e50f5e0b8f99e",
+      "stdoutSha256": "836982a4798d9117866071fc892f0710136944c843546fff908ac60fb4faaf29"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "librarySha256": "25d51c64cb1a49b65eebc0a58b4ebca7efd93eddce407a428120ab72ef19c9ad",
+      "testAssemblySha256": "cfd0512b2e217f167ce678b0cb93e81e7a851517ffc3200e19724de448c720d9",
+      "selection": "FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgDeferredPaintLeafTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgTransformBoundaryTests",
+      "exitCode": 0,
+      "seconds": 38.088358000153676,
+      "counters": {
+        "executed": "13711",
+        "passed": "13711",
+        "failed": "0"
+      },
+      "trxSha256": "4b86b4866622ca67f442bd8c7c882d8600670e8d83f01a7f3376ca211b0e3415",
+      "stdoutSha256": "5de8dd7606a560f27e93f8540bd31506b13a1b39454656842d5a089d27772652"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "librarySha256": "25d51c64cb1a49b65eebc0a58b4ebca7efd93eddce407a428120ab72ef19c9ad",
+      "testAssemblySha256": "cfd0512b2e217f167ce678b0cb93e81e7a851517ffc3200e19724de448c720d9",
+      "selection": "FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgCssGeometryDimensionTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgDeferredPaintLeafTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgTransformBoundaryTests",
+      "exitCode": 0,
+      "seconds": 33.61241120006889,
+      "counters": {
+        "executed": "13711",
+        "passed": "13711",
+        "failed": "0"
+      },
+      "trxSha256": "fcba3a34c7c3b0c87274ce9ff15d679b01b4ba5f9361fb345eb2dda6098563fa",
+      "stdoutSha256": "eabbfd015fb6a60ec5faf705006faca699235f8c40c7a12efe6590e7b83bf961"
+    }
+  ],
+  "validationLimits": "VSTest wall times include whole-assembly discovery/startup and TRX; host pairs overlap. They are functional qualification, not performance measurements. Full renderer/package qualification remains a coherent milestone duty; no new native captures were required for diagnostic text.",
+  "inventory": {
+    "methods": 5162,
+    "csharpFiles": 742,
+    "coreMethods": 4700,
+    "visualMethods": 462,
+    "coreUnclassified": 1138,
+    "visualUnclassified": 212
+  }
+}

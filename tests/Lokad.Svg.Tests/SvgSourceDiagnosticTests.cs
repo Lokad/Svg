@@ -7,6 +7,70 @@ public sealed class SvgSourceDiagnosticTests
 {
     [Theory]
     [Trait("Layer", "Mechanism")]
+    [InlineData(0, 0, 2)]
+    [InlineData(0, 1, 3)]
+    [InlineData(254, 0, 256)]
+    [InlineData(254, 1, 256)]
+    [InlineData(255, 0, 255)]
+    [InlineData(255, 1, 255)]
+    [InlineData(256, 0, 256)]
+    [InlineData(256, 1, 256)]
+    public void Diagnostic_prefix_keeps_complete_surrogate_pairs(int prefixLength, int suffixLength, int expectedLength)
+    {
+        string value = new string('x', prefixLength) + "\U0001F680" + new string('y', suffixLength);
+        SvgSourceDiagnostic source = new("", "", "", value, null, null);
+        Assert.Equal(value[..expectedLength], source.AttributeValue);
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
+    public void Every_source_diagnostic_field_preserves_the_bounded_unicode_prefix()
+    {
+        string expected = new('x', 255);
+        string value = expected + "\U0001F680suffix";
+        SvgSourceDiagnostic source = new(value, value, value, value, null, null, value);
+        Assert.Equal(expected, source.ElementName);
+        Assert.Equal(expected, source.ElementId);
+        Assert.Equal(expected, source.AttributeName);
+        Assert.Equal(expected, source.AttributeValue);
+        Assert.Equal(expected, source.InstanceElementId);
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
+    public void Every_font_diagnostic_field_preserves_the_bounded_unicode_prefix()
+    {
+        string expected = new('x', 255);
+        string value = expected + "\U0001F680suffix";
+        Fonts.SvgFontDiagnostic font = new(Fonts.SvgFontFailureStage.Selection, value, value, value, value);
+        Assert.Equal(expected, font.RequestedFamily);
+        Assert.Equal(expected, font.ResolvedFamily);
+        Assert.Equal(expected, font.FaceIdentity);
+        Assert.Equal(expected, font.SourceElementId);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Captured_source_ids_keep_complete_pairs_at_immediate_and_deferred_failures(bool deferred)
+    {
+        string expected = new('i', 255);
+        string id = expected + "\U0001F680suffix";
+        string content = deferred
+            ? $"<defs><pattern id='{id}' width='1' height='1'/><pattern id='{id}' width='1' height='1'/></defs>"
+            : $"<audio id='{id}'/>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + content + "</svg>");
+        SvgException error = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(deferred ? SvgErrorCode.MalformedInput : SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        SvgSourceDiagnostic source = Assert.IsType<SvgSourceDiagnostic>(error.SourceDiagnostic);
+        Assert.Equal(expected, source.ElementId);
+        Assert.Equal(deferred ? "pattern" : "audio", source.ElementName);
+        if (deferred) Assert.Equal(expected, source.AttributeValue);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("<g id='same'/>", "<g id='same'/>\n", "g", "definition")]
     [InlineData("<use id='same'/>", "<use id='same'/>", "use", "definition")]
     [InlineData("<path id='same' d='M0 0L1 1'/>", "<rect id='same' width='1' height='1'/>", "rect", "definition")]

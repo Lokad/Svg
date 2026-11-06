@@ -1,5 +1,10 @@
 # Release baselines
 
+[Diagnostic text boundaries](diagnostic-unicode-prefix.json) replace three cuts
+with one bounded prefix operation that preserves surrogate pairs. Direct boundary
+and field checks complement immediate/deferred parser regressions; image references
+and the API/ownership matrix remain unchanged.
+
 [0.3.0.json](0.3.0.json) records the published package and library hashes, exact
 source tag, Git identities of the test/reference trees, license/support document
 hashes and qualification selections. These are inherited release results, not

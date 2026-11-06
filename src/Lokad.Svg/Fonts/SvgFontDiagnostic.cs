@@ -24,12 +24,11 @@ public enum SvgFontFailureStage
 /// <summary>
 /// Provides bounded font-selection context for an SVG failure. It never includes
 /// font-program bytes or the layout string. Empty values mean that the corresponding context was
-/// unavailable at the reporting boundary.
+/// unavailable at the reporting boundary. Strings are limited to 256 UTF-16 code units
+/// without splitting surrogate pairs.
 /// </summary>
 public sealed class SvgFontDiagnostic
 {
-    private const int MaximumValueLength = 256;
-
     /// <summary>Initializes one bounded font diagnostic.</summary>
     public SvgFontDiagnostic(SvgFontFailureStage stage, string requestedFamily, string resolvedFamily, string faceIdentity, string sourceElementId)
         : this(stage, requestedFamily, resolvedFamily, faceIdentity, sourceElementId, null, null, null, null, null)
@@ -43,10 +42,10 @@ public sealed class SvgFontDiagnostic
         if (requestedWeight <= 0) throw new ArgumentOutOfRangeException(nameof(requestedWeight));
         if (unicodeScalar is {} scalar && !System.Text.Rune.IsValid(scalar)) throw new ArgumentOutOfRangeException(nameof(unicodeScalar));
         if (scalarIndex < 0) throw new ArgumentOutOfRangeException(nameof(scalarIndex));
-        RequestedFamily = Bound(requestedFamily);
-        ResolvedFamily = Bound(resolvedFamily);
-        FaceIdentity = Bound(faceIdentity);
-        SourceElementId = Bound(sourceElementId);
+        RequestedFamily = SvgDiagnosticText.Bound(requestedFamily);
+        ResolvedFamily = SvgDiagnosticText.Bound(resolvedFamily);
+        FaceIdentity = SvgDiagnosticText.Bound(faceIdentity);
+        SourceElementId = SvgDiagnosticText.Bound(sourceElementId);
         Stage = stage;
         RequestedWeight = requestedWeight; RequestedItalic = requestedItalic; IsFallback = isFallback;
         UnicodeScalar = unicodeScalar; ScalarIndex = scalarIndex;
@@ -70,10 +69,4 @@ public sealed class SvgFontDiagnostic
     public int? UnicodeScalar { get; }
     /// <summary>Gets the zero-based Unicode-scalar index in the normalized layout run before ligature substitution.</summary>
     public int? ScalarIndex { get; }
-
-    private static string Bound(string value)
-    {
-        ArgumentNullException.ThrowIfNull(value);
-        return value.Length <= MaximumValueLength ? value : value[..MaximumValueLength];
-    }
 }

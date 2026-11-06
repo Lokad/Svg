@@ -239,6 +239,10 @@ the source diagnostic, one preparation, borrowed owners, released charges and
 successful retry through the shared gate in
 [invocation/output code](../src/Lokad.Svg/SvgConverter.Invocation.cs).
 
+[Diagnostic boundaries](Research/release-baselines/diagnostic-unicode-prefix.json)
+exercise UTF-16 truncation directly, check each public source/font field once, and
+retain immediate and deferred parser failures without another output-path matrix.
+
 The [text-paint correction](Research/release-baselines/precision-current.md) combines
 direct matrix/source-box mechanisms, all 39 original images across four banks and
 three independent vector controls. Each image uses one canonical conversion;

@@ -57,7 +57,8 @@ switch selection and pattern content inheritance.
 `SvgException.SourceDiagnostic` carries available element/ID, attribute or property,
 value and one-based XML location. Retained text keeps its source location; direct
 text instances also identify their referencing element. Unavailable fields are
-empty/null; strings are bounded to 256 UTF-16 code units. One failure is reported.
+empty/null; source and font diagnostic strings are bounded to 256 UTF-16 code units
+without splitting surrogate pairs. One failure is reported.
 An earlier unsupported source keeps its diagnostic when a later text node rejects. Duplicate-ID
 rejections identify the second declaration's `id` attribute, including resources
 registered after their children are parsed.

@@ -1,8 +1,9 @@
 namespace Lokad.Svg;
 
 /// <summary>Identifies the source construct associated with one conversion failure.</summary>
-/// <remarks>Strings are limited to 256 UTF-16 code units. Empty strings and null positions mean
-/// unavailable context. Positions are one-based XML positions, not normalized text offsets.</remarks>
+/// <remarks>Strings are limited to 256 UTF-16 code units without splitting surrogate pairs.
+/// Empty strings and null positions mean unavailable context. Positions are one-based XML
+/// positions, not normalized text offsets.</remarks>
 public sealed class SvgSourceDiagnostic
 {
     /// <summary>Initializes bounded source context without a local-reference instance.</summary>
@@ -18,10 +19,10 @@ public sealed class SvgSourceDiagnostic
     {
         if (lineNumber <= 0) throw new ArgumentOutOfRangeException(nameof(lineNumber));
         if (linePosition <= 0) throw new ArgumentOutOfRangeException(nameof(linePosition));
-        ElementName = Bound(elementName); ElementId = Bound(elementId);
-        AttributeName = Bound(attributeName); AttributeValue = Bound(attributeValue);
+        ElementName = SvgDiagnosticText.Bound(elementName); ElementId = SvgDiagnosticText.Bound(elementId);
+        AttributeName = SvgDiagnosticText.Bound(attributeName); AttributeValue = SvgDiagnosticText.Bound(attributeValue);
         LineNumber = lineNumber; LinePosition = linePosition;
-        InstanceElementId = Bound(instanceElementId);
+        InstanceElementId = SvgDiagnosticText.Bound(instanceElementId);
     }
 
     public string ElementName { get; }
@@ -32,10 +33,4 @@ public sealed class SvgSourceDiagnostic
     public int? LineNumber { get; }
     public int? LinePosition { get; }
     public string InstanceElementId { get; }
-
-    private static string Bound(string value)
-    {
-        ArgumentNullException.ThrowIfNull(value);
-        return value.Length <= 256 ? value : value[..256];
-    }
 }
