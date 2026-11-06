@@ -1,0 +1,538 @@
+{
+  "status": "Independent admission-boundary controls frozen before the shared Unicode admission correction.",
+  "sourceBaseline": "c780283f423090a4363a7975f00db86a09064854",
+  "width": 128,
+  "height": 72,
+  "outputScale": 1,
+  "fontRecipe": {
+    "source": "../kerning-precedence/fonts/PlainKern.ttf",
+    "sourceSha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+    "license": "../kerning-precedence/LICENSE.txt",
+    "fontToolsVersion": "4.66.1",
+    "procedure": "Load the unchanged CC0 program with TTFont(..., recalcTimestamp=False). In every Unicode cmap, alias each listed scalar to its listed original Latin scalar glyph. Save without modifying outlines, metrics or instructions."
+  },
+  "nativeFontBinding": "Insert one @font-face stylesheet binding BidiProbe to the exact program bytes as a data URL, normal style/400 weight and font-synthesis:none. Input is captured through an SVG image at transparent 128x72, scale 1.",
+  "browserPins": {
+    "windows": "../../../tools/chrome-for-testing.json",
+    "linux": "../../../tools/chrome-for-testing.linux64.json"
+  },
+  "cases": [
+    {
+      "id": "rtl",
+      "font": "rtl/font.ttf",
+      "fontSha256": "465b81752dfb1bc2e5786356972eb6189d2328f9adda3b1f5e5e9f5990c3366c",
+      "fontPack": "rtl/font-pack.json",
+      "packId": "text-layout-admission-rtl",
+      "aliases": {
+        "05D0": "0041",
+        "05D1": "0056"
+      },
+      "roles": {
+        "source": {
+          "input": "rtl/source.svg",
+          "inputSha256": "1517d4aff5c57f7192e72311437ef6478aca91fb93d9e5b19489d0fc2e30f9d6",
+          "expected": "UnsupportedFeature",
+          "platforms": {
+            "windows": {
+              "reference": "references/b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b.png",
+              "referenceSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+              "nativeInputSha256": "675b58ba1b99d6c5cf73ca7ab43cecdd5018b1cc20d5e4904aabbd6520bb3b7f",
+              "captures": [
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ],
+              "before": {
+                "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+                "outcome": "rendered",
+                "png": "before/3d46a3f12036e75a39810690730dcfc7dece64293e6f1c8e88b6c37c81c835e2.png",
+                "pngSha256": "3d46a3f12036e75a39810690730dcfc7dece64293e6f1c8e88b6c37c81c835e2",
+                "mismatchPixels": 640,
+                "matchesLogicalControl": true,
+                "nativeMatchesVisualControl": true,
+                "asciiControlMismatch": 0
+              }
+            },
+            "linux": {
+              "reference": "references/95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf.png",
+              "referenceSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+              "nativeInputSha256": "675b58ba1b99d6c5cf73ca7ab43cecdd5018b1cc20d5e4904aabbd6520bb3b7f",
+              "captures": [
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ],
+              "before": {
+                "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+                "outcome": "rendered",
+                "png": "before/c78252719aeaf5ed9bee3df0c06c06382071c6e2d1608c3626a12806acea7002.png",
+                "pngSha256": "c78252719aeaf5ed9bee3df0c06c06382071c6e2d1608c3626a12806acea7002",
+                "mismatchPixels": 660,
+                "matchesLogicalControl": true,
+                "nativeMatchesVisualControl": true,
+                "asciiControlMismatch": 0
+              }
+            }
+          }
+        },
+        "logical": {
+          "input": "rtl/logical.svg",
+          "inputSha256": "16a0821838aa9dcfcd65dfed3e3e21c276f484d118e471842471ce4addcd04cc",
+          "expected": "rendered",
+          "platforms": {
+            "windows": {
+              "reference": "references/f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b.png",
+              "referenceSha256": "f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b",
+              "nativeInputSha256": "546af11d07f22cd9fb2ab47a98c9e4ffeb45a98021ff49b8c714a0bbcd45f549",
+              "captures": [
+                {
+                  "pngSha256": "f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ]
+            },
+            "linux": {
+              "reference": "references/a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1.png",
+              "referenceSha256": "a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1",
+              "nativeInputSha256": "546af11d07f22cd9fb2ab47a98c9e4ffeb45a98021ff49b8c714a0bbcd45f549",
+              "captures": [
+                {
+                  "pngSha256": "a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ]
+            }
+          }
+        },
+        "visual": {
+          "input": "rtl/visual.svg",
+          "inputSha256": "240426afa5553f8f39c39155b54474f114e94ff0d9d8b2b0017e23c655204b34",
+          "expected": "rendered",
+          "platforms": {
+            "windows": {
+              "reference": "references/b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b.png",
+              "referenceSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+              "nativeInputSha256": "9b830e851961cc097d49aabbde2660300ca69e3b811f2340df1094a02647446f",
+              "captures": [
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ]
+            },
+            "linux": {
+              "reference": "references/95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf.png",
+              "referenceSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+              "nativeInputSha256": "9b830e851961cc097d49aabbde2660300ca69e3b811f2340df1094a02647446f",
+              "captures": [
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "syllabic",
+      "font": "syllabic/font.ttf",
+      "fontSha256": "9b3a3c4011159d486ff8b43ef5ec37b3bc3a54d32b0b5d7f610c3d58a1616fea",
+      "fontPack": "syllabic/font-pack.json",
+      "packId": "text-layout-admission-syllabic",
+      "aliases": {
+        "0915": "0041",
+        "093F": "0056"
+      },
+      "roles": {
+        "source": {
+          "input": "syllabic/source.svg",
+          "inputSha256": "947a10b479e341f966622b8b7b4b83f1addad328d06599195212b1effee547d5",
+          "expected": "UnsupportedFeature",
+          "platforms": {
+            "windows": {
+              "reference": "references/b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b.png",
+              "referenceSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+              "nativeInputSha256": "669d6454839a997b084f6bf4fea5273f9ac50e7e26f91af2b9e648fc88f3f395",
+              "captures": [
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ],
+              "before": {
+                "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+                "outcome": "rendered",
+                "png": "before/3d46a3f12036e75a39810690730dcfc7dece64293e6f1c8e88b6c37c81c835e2.png",
+                "pngSha256": "3d46a3f12036e75a39810690730dcfc7dece64293e6f1c8e88b6c37c81c835e2",
+                "mismatchPixels": 640,
+                "matchesLogicalControl": true,
+                "nativeMatchesVisualControl": true,
+                "asciiControlMismatch": 0
+              }
+            },
+            "linux": {
+              "reference": "references/95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf.png",
+              "referenceSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+              "nativeInputSha256": "669d6454839a997b084f6bf4fea5273f9ac50e7e26f91af2b9e648fc88f3f395",
+              "captures": [
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ],
+              "before": {
+                "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+                "outcome": "rendered",
+                "png": "before/c78252719aeaf5ed9bee3df0c06c06382071c6e2d1608c3626a12806acea7002.png",
+                "pngSha256": "c78252719aeaf5ed9bee3df0c06c06382071c6e2d1608c3626a12806acea7002",
+                "mismatchPixels": 660,
+                "matchesLogicalControl": true,
+                "nativeMatchesVisualControl": true,
+                "asciiControlMismatch": 0
+              }
+            }
+          }
+        },
+        "logical": {
+          "input": "syllabic/logical.svg",
+          "inputSha256": "16a0821838aa9dcfcd65dfed3e3e21c276f484d118e471842471ce4addcd04cc",
+          "expected": "rendered",
+          "platforms": {
+            "windows": {
+              "reference": "references/f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b.png",
+              "referenceSha256": "f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b",
+              "nativeInputSha256": "667a7763194e8360b53157491e80f96943609c660eb40a8fca2265780549523d",
+              "captures": [
+                {
+                  "pngSha256": "f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "f2dabfeeb2136476c6b7165b8acf93bae65cf46afd2a663f4207d099deda529b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ]
+            },
+            "linux": {
+              "reference": "references/a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1.png",
+              "referenceSha256": "a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1",
+              "nativeInputSha256": "667a7763194e8360b53157491e80f96943609c660eb40a8fca2265780549523d",
+              "captures": [
+                {
+                  "pngSha256": "a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "a1aa9d2ff58e4615b4180423aa43afdc1ae9e595e8fe03778f46c0f9c5cf2af1",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ]
+            }
+          }
+        },
+        "visual": {
+          "input": "syllabic/visual.svg",
+          "inputSha256": "240426afa5553f8f39c39155b54474f114e94ff0d9d8b2b0017e23c655204b34",
+          "expected": "rendered",
+          "platforms": {
+            "windows": {
+              "reference": "references/b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b.png",
+              "referenceSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+              "nativeInputSha256": "8a8316aeb572ae37d232ed4462bafe0b38d039ae768ab1a607f5f53f599bf3b8",
+              "captures": [
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "b44a70c5014d1b9ff18f0a83b02b6e19648f2cf9ecf936a21340fc295cea5d4b",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ]
+            },
+            "linux": {
+              "reference": "references/95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf.png",
+              "referenceSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+              "nativeInputSha256": "8a8316aeb572ae37d232ed4462bafe0b38d039ae768ab1a607f5f53f599bf3b8",
+              "captures": [
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                },
+                {
+                  "pngSha256": "95d337c3b5956f325119f3e1c7b6f40c3d1db3cabe8c73c39c0c6f10e2719ebf",
+                  "terminalExitCode": 0,
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "stderrTruncated": false,
+                  "sandboxAccessFailures": 0,
+                  "networkServiceCrashes": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "interpretation": "The two source inputs exercise different ordering requirements despite matching visual controls. Both were wrongly painted in logical order. Their ASCII logical/visual controls protect unused font coverage and unchanged ordinary glyph layout. Source cases require UnsupportedFeature under the existing finite contract; this does not implement bidi or syllabic shaping."
+}

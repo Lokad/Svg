@@ -187,6 +187,8 @@
     <None Include="../Research/supplied-font-labels/fonts/NotoSans-Regular.ttf" Link="TestData/text-paint-bounds/sans.ttf" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/supplied-font-documents/fonts/NotoSansMono-Bold.ttf" Link="TestData/text-paint-bounds/mono.ttf" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/kerning-precedence/fonts/PlainKern.ttf" Link="TestData/kerning-precedence/PlainKern.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-layout-admission/rtl/font.ttf" Link="TestData/text-layout-admission/rtl.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-layout-admission/syllabic/font.ttf" Link="TestData/text-layout-admission/syllabic.ttf" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../Research/windows-font-unit-scaling/fonts/*.ttf" Link="TestData/windows-font-unit-scaling/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

@@ -26,9 +26,11 @@ ordering/zero adjustment, malformed definitions, cancellation and cleanup.
 RIGHT_TO_LEFT is ignored for type-2 lookups; it does not enable bidi text.
 IgnoreBaseGlyphs/IgnoreLigatures filter GDEF classes 1/2. IgnoreMarks, attachment
 classes and mark-filtering sets require valid referenced definitions, while
-actual GDEF-mark runs keep an explicit unsupported outcome. Metadata admission
-does not implement mark positioning, filtered contextual lookups or general
-shaping. The original Aptos/Calibri compatibility reports remain separately
+raw scalar positioning rejects actual GDEF-mark runs. The canonical shaping path
+separately admits attached marks through its finite
+[mark-positioning contract](../text-mark-shaping/README.md); metadata admission
+alone does not implement filtered contextual lookups or general shaping.
+The original Aptos/Calibri compatibility reports remain separately
 pending; these public fonts qualify shared mechanisms only.
 
 The separate [extension control](extension.svg) uses a CC0 derivative of GposMarks

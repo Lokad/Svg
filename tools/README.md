@@ -507,8 +507,13 @@ classes needed by conditional language rules.
 Run `python -X utf8 tools/generate-unicode-canonical-data.py` for the separate
 [canonical shaping table](../src/Lokad.Svg/Fonts/SvgCanonicalText.Data.cs) and its
 [source hashes](../tests/Research/text-case-mapping/unicode-canonical-data.json).
-It pins combining classes, recursive decompositions, composition exclusions and
-default-ignorable properties, using the same hash-checked, memory-only downloads.
+It pins combining classes, recursive decompositions, composition exclusions,
+default-ignorable properties and layout admission, using hash-checked, memory-only
+downloads. Admission combines Scripts, IndicSyllabicCategory, DerivedJoiningType,
+DerivedBidiClass (including missing defaults) and Bidi_Control. Joining/syllabic
+scripts and Hangul are conservatively excluded from the finite Latin layout
+subset; assigned direction classes override reserved-range defaults. These flags
+share the property table without changing canonical mark/combining values.
 It does not capture rendering references. Data licensing is included in
 [third-party notices](../THIRD_PARTY_NOTICES.txt); the [case bank](../tests/Research/text-case-mapping/README.md)
 describes native admission and the independent literal controls.

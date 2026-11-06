@@ -665,6 +665,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
             coverage?.BeginText();
             foreach (SvgExtractedTextRun run in runs.AsSpan())
             {
+                char pending = '\0';
+                SvgCanonicalText.ValidateSimpleLayout(run.Layout.Value.AsSpan(), ref pending, style.SourceContext, _token);
                 _token.ThrowIfCancellationRequested();
                 if (run.FontSpans.Items.Length == 0)
                 {

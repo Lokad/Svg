@@ -1,0 +1,17 @@
+{
+  "packId": "text-layout-admission-syllabic",
+  "files": [
+    {
+      "relativePath": "font.ttf",
+      "byteSize": 1488,
+      "sha256": "9b3a3c4011159d486ff8b43ef5ec37b3bc3a54d32b0b5d7f610c3d58a1616fea"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "BidiProbe",
+      "resolvedFamily": "BidiProbe",
+      "relativeFontFile": "font.ttf"
+    }
+  ]
+}

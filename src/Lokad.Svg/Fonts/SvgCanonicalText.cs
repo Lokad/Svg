@@ -1,6 +1,10 @@
 namespace Lokad.Svg.Fonts;
 
 using System.Text;
+using Lokad.Svg.Parsing;
+
+[Flags]
+internal enum SvgTextLayoutRequirement { None = 0, Bidirectional = 512, ComplexScript = 1024 }
 
 /// <summary>Pinned canonical Unicode primitives for font-aware shaping; no text or font ownership.</summary>
 internal static partial class SvgCanonicalText
@@ -27,7 +31,55 @@ internal static partial class SvgCanonicalText
     /// <summary>Returns the canonical combining class and Unicode mark category, independently of GDEF glyph classes.</summary>
     internal static (byte CombiningClass, bool IsMark) GetProperties(Rune scalar)
     {
-        if (scalar.Value < 0x300) return (0, false);
+        int properties = GetPackedProperties(scalar);
+        return ((byte)(properties & 255), (properties & 256) != 0);
+    }
+
+    /// <summary>Reads pinned layout requirements independently of font coverage and canonical mark properties.</summary>
+    internal static SvgTextLayoutRequirement GetLayoutRequirements(Rune scalar)
+        => (SvgTextLayoutRequirement)(GetPackedProperties(scalar) & 1536);
+
+    /// <summary>Enforces the finite text-layout subset before font demand or glyph layout.</summary>
+    /// <remarks>No storage or font is acquired. Callers retain source context and observe cancellation while traversing scalars.</remarks>
+    internal static void ValidateSimpleLayout(Rune scalar)
+    {
+        SvgTextLayoutRequirement required = GetLayoutRequirements(scalar);
+        if ((required & SvgTextLayoutRequirement.Bidirectional) != 0)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bidirectional text layout is not implemented.");
+        if ((required & SvgTextLayoutRequirement.ComplexScript) != 0)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "This script requires text shaping outside the supported subset.");
+    }
+
+    /// <summary>Validates borrowed discovery chunks, retaining only a split surrogate and attaching the active source on failure.</summary>
+    /// <remarks>Input is XML-validated UTF-16; the caller starts with a zero pending character. No storage or font is acquired; cancellation is checked per scalar.</remarks>
+    internal static void ValidateSimpleLayout(ReadOnlySpan<char> text, ref char pending, SvgSourceContext? source, CancellationToken token)
+    {
+        try
+        {
+            int first = 0, end = text.Length;
+            if (pending != '\0' && end != 0)
+            {
+                token.ThrowIfCancellationRequested();
+                ValidateSimpleLayout(new Rune(pending, text[0]));
+                pending = '\0'; first = 1;
+            }
+            if (first < end && char.IsHighSurrogate(text[end - 1])) pending = text[--end];
+            foreach (Rune scalar in text[first..end].EnumerateRunes())
+            {
+                token.ThrowIfCancellationRequested();
+                ValidateSimpleLayout(scalar);
+            }
+        }
+        catch (SvgException exception)
+        {
+            if (source is {} context) exception.AttachSource(context.Describe(string.Empty, string.Empty));
+            throw;
+        }
+    }
+
+    private static int GetPackedProperties(Rune scalar)
+    {
+        if (scalar.Value < 0x300) return 0;
         ReadOnlySpan<int> rows = CanonicalProperties;
         int low = 0, high = rows.Length / 3;
         while (low < high)
@@ -35,9 +87,9 @@ internal static partial class SvgCanonicalText
             int middle = low + (high - low) / 2, offset = middle * 3;
             if (scalar.Value < rows[offset]) high = middle;
             else if (scalar.Value > rows[offset + 1]) low = middle + 1;
-            else return ((byte)(rows[offset + 2] & 255), (rows[offset + 2] & 256) != 0);
+            else return rows[offset + 2];
         }
-        return (0, false);
+        return 0;
     }
 
     /// <summary>Writes the fully recursive canonical decomposition, retaining compatibility distinctions.</summary>

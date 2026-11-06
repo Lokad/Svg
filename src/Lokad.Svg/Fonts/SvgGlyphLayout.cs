@@ -131,6 +131,7 @@ internal static class SvgGlyphLayout
         foreach (Rune scalar in text.EnumerateRunes())
         {
             cancellationToken.ThrowIfCancellationRequested();
+            SvgCanonicalText.ValidateSimpleLayout(scalar);
             if (glyphCount == SvgTextLimits.MaximumCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text glyph count exceeds the admitted layout limit.");
             glyphCount++;
         }

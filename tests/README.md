@@ -47,6 +47,11 @@ counts protect behavior independently of equal images. The
 [coverage/cost record](Research/release-baselines/weight-admission-responsibilities.json)
 maps the original matrix and its regression sensitivity.
 
+[Text layout admission](Research/text-layout-admission/README.md) separates direct
+Unicode boundaries from raw/prepared acquisition and cleanup contracts. Four
+canonical ASCII controls keep independent native pixels with fonts that also
+cover rejected scripts; source rejection is tested independently of font coverage.
+
 [Shadow source demand](Research/release-baselines/shadow-sampling-guard.json) and
 [foreground drawing](Research/release-baselines/shadow-foreground.json) keep eight
 direct demand/precision cases, two ownership paths sharing the existing failure/

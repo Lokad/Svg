@@ -1,0 +1,232 @@
+{
+  "status": "Focused qualification complete; full runtime/package/original-context milestone pending.",
+  "parentCommit": "e5c8f0ec8e566b292674ce9dff49b1c877de5b5f",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.cs": "7345383864ea0201e791dcba4338c91535f9d78ebd01b274e269ce4d11c7e0df",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.Data.cs": "b18c8604219d7ba0b3d826c73013788257682f74d51c5f6758f3854882fbac9c",
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "d445a9aaa015c416a1fee0da1512e8ef43db787640b04ad75a8171a0fee41abf",
+    "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "92805adc76aff11589c6acbcccfd21980b33ad7e1fd5405e6bb3847ee0486fca",
+    "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs": "fc712cc2aa282203bdbb16bfc75b72db523ee649214320b4fc33acf8c5853e4b",
+    "tools/generate-unicode-canonical-data.py": "4645e2d181541b835002a51fc1b2231caeff4984e36faae5682a4aa3b839a219",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextLayoutAdmission.cs": "d235103872e4c352ca2ebda1f43cc894a1dd2a8ad4eacb3edac2a7eaf059a026",
+    "tests/Lokad.Svg.VisualTests/SvgTextLayoutAdmissionReferenceTests.cs": "ad39cd712fc41c3237951e78a5e66a0d412778d74e337793f61f3a8b233ca052"
+  },
+  "finding": "Covered glyphs bypassed the documented bidi and complex-script exclusion; native Hebrew and Devanagari ordering differed from logical-order library ink.",
+  "independentEvidence": "../text-layout-admission/capture.json",
+  "sharedCorrection": "Pinned Unicode admission in direct/resource request discovery, including the one-file fast path, and raw glyph layout; no general shaper or new allocation owner.",
+  "unicodeTableIntegrity": {
+    "scalarCount": 1114112,
+    "originalMarkAndCombiningPropertiesUnchanged": true,
+    "otherTablesUnchanged": [
+      "CanonicalCompositions",
+      "DefaultIgnorableRanges",
+      "CanonicalDecompositions"
+    ],
+    "generatedLfSha256": "b18c8604219d7ba0b3d826c73013788257682f74d51c5f6758f3854882fbac9c"
+  },
+  "deterministicRegeneration": true,
+  "responsibility": {
+    "mechanism": 36,
+    "contracts": 13,
+    "canonicalRendering": 4,
+    "retainedPaths": [
+      "raw borrowed stream",
+      "prepared direct",
+      "symbol",
+      "pattern",
+      "one-file catalog",
+      "coverage catalog",
+      "inactive content",
+      "shared allowance retry"
+    ]
+  },
+  "before": {
+    "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+    "testAssemblySha256": "b3085985a91309338c90151fa955a5ead1b282ab029e782abbfc3f0734fb987a",
+    "executed": 14,
+    "failed": 10,
+    "passed": 4,
+    "failureMeaning": "Nine formerly accepted covered inputs now reject; an earlier combining mark cannot hide later unsupported script admission.",
+    "failures": [
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_layout_keeps_raw_stream_empty_fonts_borrowed_and_retry_usable(fixture: Syllabic)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_layout_rejects_before_prepared_acquisition_and_reuses_the_allowance(fixture: Bidirectional, scope: Symbol)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_layout_rejects_before_prepared_acquisition_and_reuses_the_allowance(fixture: Bidirectional, scope: Pattern)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_layout_rejects_before_prepared_acquisition_and_reuses_the_allowance(fixture: Syllabic, scope: Pattern)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_layout_rejects_before_prepared_acquisition_and_reuses_the_allowance(fixture: Syllabic, scope: Direct)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_layout_keeps_raw_stream_empty_fonts_borrowed_and_retry_usable(fixture: Bidirectional)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Coverage_catalog_rejects_unsupported_layout_before_source_acquisition",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.A_prior_mark_cannot_hide_a_later_unsupported_layout_scalar",
+        "message": "Assert.Equal() Failure: Values differ\r\nExpected: UnsupportedFeature\r\nActual:   UnresolvedResource"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_layout_rejects_before_prepared_acquisition_and_reuses_the_allowance(fixture: Syllabic, scope: Symbol)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.OpenTypeFontTests.Unsupported_layout_rejects_before_prepared_acquisition_and_reuses_the_allowance(fixture: Bidirectional, scope: Direct)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      }
+    ],
+    "identicalFinalTestAssembly": true
+  },
+  "focused": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "623ccc2f4ac3c1e667d0193b9447a95375dca24268aa0bd85e5cf0082e2b47b6",
+      "testAssemblySha256": "b3085985a91309338c90151fa955a5ead1b282ab029e782abbfc3f0734fb987a",
+      "selection": "FullyQualifiedName~Layout_requirements|FullyQualifiedName~Unsupported_layout_|FullyQualifiedName~Inactive_unsupported_text|FullyQualifiedName~A_prior_mark|FullyQualifiedName~Discovery_layout_admission|FullyQualifiedName~Coverage_catalog_rejects",
+      "exitCode": 0,
+      "seconds": 8.872540200129151,
+      "counters": {
+        "executed": "49",
+        "passed": "49",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "623ccc2f4ac3c1e667d0193b9447a95375dca24268aa0bd85e5cf0082e2b47b6",
+      "testAssemblySha256": "b3085985a91309338c90151fa955a5ead1b282ab029e782abbfc3f0734fb987a",
+      "selection": "FullyQualifiedName~Layout_requirements|FullyQualifiedName~Unsupported_layout_|FullyQualifiedName~Inactive_unsupported_text|FullyQualifiedName~A_prior_mark|FullyQualifiedName~Discovery_layout_admission|FullyQualifiedName~Coverage_catalog_rejects",
+      "exitCode": 0,
+      "seconds": 10.477277599973604,
+      "counters": {
+        "executed": "49",
+        "passed": "49",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "ad3534a5435f9beeeae5994af8b376f4a46c5caca15a97a0f21bd104469207ce",
+      "testAssemblySha256": "77ac78b4d4d7044ece7b9efbc5209589aff5ae5b7e8c7e852205589fcb8df728",
+      "selection": "FullyQualifiedName~Layout_requirements|FullyQualifiedName~Unsupported_layout_|FullyQualifiedName~Inactive_unsupported_text|FullyQualifiedName~A_prior_mark|FullyQualifiedName~Discovery_layout_admission|FullyQualifiedName~Coverage_catalog_rejects",
+      "exitCode": 0,
+      "seconds": 10.314507300034165,
+      "counters": {
+        "executed": "49",
+        "passed": "49",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "ad3534a5435f9beeeae5994af8b376f4a46c5caca15a97a0f21bd104469207ce",
+      "testAssemblySha256": "77ac78b4d4d7044ece7b9efbc5209589aff5ae5b7e8c7e852205589fcb8df728",
+      "selection": "FullyQualifiedName~Layout_requirements|FullyQualifiedName~Unsupported_layout_|FullyQualifiedName~Inactive_unsupported_text|FullyQualifiedName~A_prior_mark|FullyQualifiedName~Discovery_layout_admission|FullyQualifiedName~Coverage_catalog_rejects",
+      "exitCode": 0,
+      "seconds": 12.261398900067434,
+      "counters": {
+        "executed": "49",
+        "passed": "49",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affected": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "623ccc2f4ac3c1e667d0193b9447a95375dca24268aa0bd85e5cf0082e2b47b6",
+      "testAssemblySha256": "c0ac455b7c27994038aa5eacdfe2c6cfbdf0192de4cd559e8ed2b466f46c94ea",
+      "selection": "(FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgText|FullyQualifiedName~SvgPatternText|FullyQualifiedName~SvgRetainedText|FullyQualifiedName~SvgDescriptiveText)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 31.580167999956757,
+      "counters": {
+        "executed": "11675",
+        "passed": "11675",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "623ccc2f4ac3c1e667d0193b9447a95375dca24268aa0bd85e5cf0082e2b47b6",
+      "testAssemblySha256": "038767325ab2c78c701c5a68687d2ea3fc3d538919d9976069378278f4e0dbeb",
+      "selection": "(FullyQualifiedName~SvgTextCaseReferenceTests|FullyQualifiedName~SvgTextMarkReferenceTests|FullyQualifiedName~SvgKerningPrecedenceTests|FullyQualifiedName~SvgTextLayoutAdmissionReferenceTests|FullyQualifiedName~SvgSuppliedFontTextPathTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 13.999499900033697,
+      "counters": {
+        "executed": "59",
+        "passed": "59",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "623ccc2f4ac3c1e667d0193b9447a95375dca24268aa0bd85e5cf0082e2b47b6",
+      "testAssemblySha256": "c0ac455b7c27994038aa5eacdfe2c6cfbdf0192de4cd559e8ed2b466f46c94ea",
+      "selection": "(FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgText|FullyQualifiedName~SvgPatternText|FullyQualifiedName~SvgRetainedText|FullyQualifiedName~SvgDescriptiveText)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 36.756482100114226,
+      "counters": {
+        "executed": "11675",
+        "passed": "11675",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "623ccc2f4ac3c1e667d0193b9447a95375dca24268aa0bd85e5cf0082e2b47b6",
+      "testAssemblySha256": "038767325ab2c78c701c5a68687d2ea3fc3d538919d9976069378278f4e0dbeb",
+      "selection": "(FullyQualifiedName~SvgTextCaseReferenceTests|FullyQualifiedName~SvgTextMarkReferenceTests|FullyQualifiedName~SvgKerningPrecedenceTests|FullyQualifiedName~SvgTextLayoutAdmissionReferenceTests|FullyQualifiedName~SvgSuppliedFontTextPathTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 10.058548399945721,
+      "counters": {
+        "executed": "59",
+        "passed": "59",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "limitations": [
+    "No renderer performance claim; validation costs include concurrent local work.",
+    "Frozen Windows DejaVu target/assertion remains unchanged.",
+    "Full shaping claim trace remains pending; these controls close character admission only."
+  ]
+}

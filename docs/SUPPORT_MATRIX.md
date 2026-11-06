@@ -452,7 +452,7 @@ keep this boundary separate from supplied-program rendering.
 | Area | Accepted boundary |
 | --- | --- |
 | Programs | Standalone static TrueType, face index 0, composites and bounded hinting; unsupported executed instructions fail. |
-| Characters | Horizontal LTR ASCII, covered Latin combining sequences and supplementary scalars; no bidi, joining or general complex-script shaping. |
+| Characters | Horizontal LTR ASCII, covered Latin combining sequences and admitted supplementary scalars. RTL characters, bidi controls and scripts requiring joining/syllabic shaping (including Hangul) reject with `UnsupportedFeature`, even when glyphs are supplied. |
 | Layout | Ordered text/CDATA/whitespace, nested spans, inherited/per-span styles, scalar/list x/y/dx/dy/rotate, anchors, spacing, explicit lines, textLength spacing/spacingAndGlyphs and alphabetic/middle/hanging baselines. |
 | Painting | Affine solid/gradient/pattern fills and strokes, dashes/non-scaling widths/paint order and solid-color underline/overline/line-through. |
 | Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, bare-number/px/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
@@ -515,6 +515,10 @@ their exact scope. Other content-language tailoring remains unsupported.
 
 Canonical Unicode 17 decomposition, stable combining-class ordering and
 font-covered recomposition precede selected Latin/DFLT `ccmp` substitution.
+Character admission uses pinned Unicode direction, script, joining and syllabic
+properties; it conservatively excludes whole scripts requiring unsupported
+layout. [Independent ordering controls](../tests/Research/text-layout-admission/README.md)
+distinguish admission from cmap coverage. Dormant text creates no font demand.
 The admitted substitutions are unfiltered single, ligature and bounded
 class-context substitutions calling single lookups. Shared source clusters retain
 original paint/position ownership. Selected GPOS `mark`/`mkmk` supports base,

@@ -1,0 +1,17 @@
+{
+  "packId": "text-layout-admission-rtl",
+  "files": [
+    {
+      "relativePath": "font.ttf",
+      "byteSize": 1480,
+      "sha256": "465b81752dfb1bc2e5786356972eb6189d2328f9adda3b1f5e5e9f5990c3366c"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "BidiProbe",
+      "resolvedFamily": "BidiProbe",
+      "relativeFontFile": "font.ttf"
+    }
+  ]
+}

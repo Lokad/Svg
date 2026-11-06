@@ -455,7 +455,8 @@ internal static class SvgFontRequestDiscovery
                         SvgInheritedTextStyle currentFont = inheritedLevels[^1].Text;
                         SvgFontCoverageDiscovery? visibleCoverage = paint.IsDisplayed ? coverage : null;
                         visibleCoverage?.SetFont(currentFont);
-                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, visibleCoverage, cancellationToken, out bool hasCharacters, out bool endsWithCollapsible);
+                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, visibleCoverage, paint.IsDisplayed,
+                            directTextLevels[activeCandidateLevel].SourceContext, cancellationToken, out bool hasCharacters, out bool endsWithCollapsible);
                         if (hasRenderable && paint.IsDisplayed && pendingWhitespace is {} separator)
                         {
                             ObserveFont(separator);
@@ -626,9 +627,11 @@ internal static class SvgFontRequestDiscovery
         requests.Add(new TextRequestKey(family, candidate.Weight, candidate.Italic) { SourceContext = candidate.SourceContext });
     }
 
-    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, SvgFontCoverageDiscovery? coverage, CancellationToken cancellationToken, out bool hasCharacters, out bool endsWithCollapsible)
+    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, SvgFontCoverageDiscovery? coverage,
+        bool validateLayout, SvgSourceContext? source, CancellationToken cancellationToken, out bool hasCharacters, out bool endsWithCollapsible)
     {
         bool hasRenderableText = false;
+        char pending = '\0';
         hasCharacters = false;
         endsWithCollapsible = false;
         int read;
@@ -637,6 +640,7 @@ internal static class SvgFontRequestDiscovery
             read = reader.ReadValueChunk(chunk, 0, chunk.Length);
             if (read != 0)
             {
+                if (validateLayout) SvgCanonicalText.ValidateSimpleLayout(chunk.AsSpan(0, read), ref pending, source, cancellationToken);
                 hasCharacters = true;
                 endsWithCollapsible = chunk[read - 1] is ' ' or '\t' or '\r' or '\n';
                 hasRenderableText |= whitespaceMode == SvgTextWhitespaceMode.Preserve
