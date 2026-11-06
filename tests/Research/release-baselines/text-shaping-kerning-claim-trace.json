@@ -1,0 +1,263 @@
+{
+  "status": "Reviewed T3, T11 and T16 against current owners, direct execution/admission checks and independent native scopes. No production change or new test matrix.",
+  "qualifiedSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+  "qualification": "text-feature-dispatch-contexts.json",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "src/Lokad.Svg/Fonts/OpenTypeFont.cs": "04449a6836077613f4a34f8d3435d67979fffd7e7a94fc6dce1977372aeba67a",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Layout.cs": "bae4ade1e476074f9dc1440e6669c5ae063fa242ab8d67c74161be62e07f2f39",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Ligatures.cs": "32928d5377c67f763543f6755a05fb8729c5a13b81ebc19ddb8e8c0f496fdfb6",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Composition.cs": "505af2840b6fa5feecef0badcb4eba96e6914c171c67b70d1c48caf4f885d0b9",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Context.cs": "232effe2590ba7a7406182f76b976672dbd3a7e01bafcb0cbce9130404d3feec",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.ContextAdvances.cs": "cce1223662bb31d98b0645054dc714f04020b6cd76aab24ff40bacbf5fe24b4e",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Marks.cs": "0d0fa577e6a66219fbb77e8b618e4e7bce5109a45b4c9058922023e6a5900df3",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Gpos.cs": "602da8f40d6330f10c1c39606ede14399fd036678fa81779422d04e31bf0759b",
+    "src/Lokad.Svg/Fonts/SvgTextShaping.cs": "767d9a992fa8352041bfc1c412e4d9efddb44e9471db72e82b261e3b18bf1bd2",
+    "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs": "f5ac5745d2d34b9c7cadfe8348019a717c32d3aa346251f6744b027b9ebc48c5",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.cs": "e199bcdbe88d388f6ac1623defd57f3066ee539ea8c1841ede70ef29bdae9f50",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.Data.cs": "b18c8604219d7ba0b3d826c73013788257682f74d51c5f6758f3854882fbac9c",
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "d445a9aaa015c416a1fee0da1512e8ef43db787640b04ad75a8171a0fee41abf",
+    "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "92805adc76aff11589c6acbcccfd21980b33ad7e1fd5405e6bb3847ee0486fca",
+    "tests/Lokad.Svg.Tests/OpenTypeFontGposTests.cs": "5268c8ff4b415037fc5dd836f70319d33cccece7e7f2114f89d7a0a288829141",
+    "tests/Lokad.Svg.Tests/OpenTypeFontLigatureTests.cs": "fae1effbfd300c0ce3118a1908b27d4d0d0e489fff68894d08b84b4a91784bd3",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.GposExtensions.cs": "f489ea8c3c8d7860ef9cc6d0c23a807f0b4ddd1be29f29a228af17d25cdc45d0",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.GposFilters.cs": "a48ddfaa2aab763181cbd8786a434409f25c19df01b1d99b548173cba33db195",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.CanonicalContexts.cs": "3ecb2c57d6bcc26967c3d241769373df807e1633838dfa6f0b98e90567b1033b",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.CanonicalShaping.cs": "288f7a4d799b816ef754bb4c3ac981102e2b358302eaea3dfe6954903c540af4",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.CanonicalOwnership.cs": "d6f364899f73a37bdec400b509cae185bcf7a42562f7b9e3c0601ca7824a1022",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.FeatureDispatch.cs": "bb070cbb19d9987a78c295e58d334b6c45e29b03d6d26c9fea1f55d0cafc6538",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextLayoutAdmission.cs": "d235103872e4c352ca2ebda1f43cc894a1dd2a8ad4eacb3edac2a7eaf059a026",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.ShapingIntervals.cs": "e91a3418ce07588b839240a9ad2eaaaf96fe4a247309d19c08ad61655361dd6a",
+    "tests/Lokad.Svg.VisualTests/SvgKerningPrecedenceTests.cs": "7a6e06e77c2bed551ecb1462294a2f6e9f07ad5bcf32ca48dff9e2d81642399a",
+    "tests/Lokad.Svg.VisualTests/SvgKerningPrecedenceTests.Recording.cs": "c35ce5bb5d2e24cfd93ea6470f74d1ed0f4b813837bbb40f0ae9675ecb8f3566",
+    "tests/Lokad.Svg.VisualTests/SvgTextMarkReferenceTests.cs": "217bbd902bc73a7a0bfb624bffad170cee514f41c493749da4428ff752fd9947",
+    "tests/Lokad.Svg.VisualTests/SvgShapingIntervalReferenceTests.cs": "cc9fe91d3631fed617204421eec8f379fad02d91f482779ce4a0c6cc38d1d307",
+    "tests/Lokad.Svg.VisualTests/SvgTextLayoutAdmissionReferenceTests.cs": "ad39cd712fc41c3237951e78a5e66a0d412778d74e337793f61f3a8b233ca052",
+    "docs/SUPPORT_MATRIX.md": "b6323483e2adce0a48e471edaf57134ca5a4b4a59604ff27652d0b5de91a975b"
+  },
+  "sharedModel": [
+    "The Latin/DFLT feature selector and deduplicated LookupList iterator are shared across substitution, context positioning, pair positioning and attachment.",
+    "Pair and mark owners share IsLookupGlyphIgnored for GDEF class, attachment-class and filter-set decisions; outer extension flags remain authoritative.",
+    "GSUB and GPOS share bounded class-context validation/matching, with distinct nested substitution versus X-advance actions. Strict whole-feature and active-run applicability retain separate contracts.",
+    "Glyph staging owns source/cluster/component identities. Mark anchors remain font-unit parent relationships until existing layout resolves native metrics, fitting and rounding.",
+    "Font/style partitions, complete-run shaping and scalar fast paths retain separate validation requirements; no new owner, cache or special-case renderer is required."
+  ],
+  "claims": {
+    "T3": {
+      "inspected": [
+        "Pinned direction/script/joining/syllabic admission precedes direct/resource font acquisition and raw glyph layout.",
+        "Selected default Latin precedes DFLT; language-specific/unselected features do not leak into the finite liga route.",
+        "One unfiltered type-4 liga lookup retains ordered subtables, font preference and bounded 2-8 Basic Latin components. Canonical ccmp has its separate qualified scope.",
+        "Face/size, paint, spacing and absolute positions bound merging; anchor-only styles retain continuous shaping and supplementary source addresses remain intact.",
+        "Published unsupported container/outline/font forms reuse the inspected font-program owner and checks."
+      ],
+      "directChecks": [
+        "Layout property boundaries and prepared/resource/coverage-fast-path rejection before acquisition.",
+        "Raw-stream rejection, dormant-font independence, cleanup and retry.",
+        "Ligature selection, malformed metadata/limits, interval ownership, refusal/cancellation and source cursor/cluster boundaries."
+      ],
+      "nativeScope": "Hebrew/Devanagari source/logical/visual controls justify admission boundaries; canonical mark and anchor-only ligature controls qualify the admitted path.",
+      "reusedFontProgramTrace": {
+        "evidence": "font-selection-program-claim-trace.json",
+        "unchangedOwners": [
+          "src/Lokad.Svg/Fonts/OpenTypeFont.CompositeTrueType.cs",
+          "src/Lokad.Svg/Fonts/OpenTypeFont.TrueType.cs",
+          "src/Lokad.Svg/Fonts/OpenTypeFont.cs"
+        ]
+      }
+    },
+    "T11": {
+      "inspected": [
+        "mark/mkmk selection validates GDEF classes, attachment classes, selected mark sets and bounded base/ligature/mark anchor arrays.",
+        "Attachment scans respect each lookup filter. Parent coordinates stay in font units; following unfiltered ligature marks use the recorded final component only when actual component count agrees.",
+        "Format-1 anchors and direct/extension types 4/5/6 are admitted. Unattached required marks, mismatched component associations and attached marks on paths retain explicit exclusions.",
+        "Unfiltered format-2 class contexts call only validated SinglePos X-advance actions; complete glyph context survives positioning, then mark/default-ignorable advances are zeroed."
+      ],
+      "directChecks": [
+        "Independent font-unit vectors for contextual advances, mark-to-base, actual ligature components and mark-to-mark chains.",
+        "Malformed anchors/classes/counts/sets and nested context actions retain exact error categories and release staging.",
+        "Marked/unmarked storage refusal, cancellation after partial allocation, cleanup and exact-peak retry share one contract."
+      ],
+      "nativeScope": "Complete mark/ligature/default-ignorable documents, fitting/outline controls and the independent ordinary contextual-kern source/control bank in the full qualification."
+    },
+    "T16": {
+      "inspected": [
+        "A selected GPOS kern graph, including a matching zero adjustment, supersedes legacy kern; only required legacy parsing enforces its single horizontal format-0 contract.",
+        "Lookup indices execute once in LookupList order. First matching subtable wins, including zero; missing pair-list second glyphs may fall through to later class pairs.",
+        "Format-1 type-9 extensions use full-width offsets, reject recursive/mixed types and retain outer flags. Pair lists/classes share the same execution after routing.",
+        "Each lookup filters its own starting glyph and partner. RIGHT_TO_LEFT does not change pair behavior; reserved fields, malformed GDEF and unsupported filtered contexts retain their categories."
+      ],
+      "directChecks": [
+        "Pair/class formats, zero/fallthrough/selection order, cancellation and lookup/subtable limits.",
+        "Extension offsets through 65,544 bytes, outer flags, malformed payloads and immutability.",
+        "Filtered partners across face/size/absolute/scaled-element boundaries, supplementary source lengths and ligature clusters."
+      ],
+      "nativeScope": "Independent precedence and thirteen-row filter documents plus a separate extension control. Twenty-four HarfBuzz metric rows bind exact font programs; browser documents retain three healthy captures per host and changed-program controls."
+    }
+  },
+  "nativeEvidence": {
+    "manifests": {
+      "text-mark-shaping/capture.json": "ceff77703b4be5a103db0d69a59366208211f6a5482884a94d3ff51c15c73da5",
+      "text-canonical-path/capture.json": "7f1580473deda753e34ec361dd976dc952ea2cc1d8188ffb909477ada4e25b0e",
+      "text-shaping-boundaries/capture.json": "97436b670ab781f0e0d522b650a095cda3e84aa815a12272119bb52cf259bbe7",
+      "kerning-precedence/manifest.json": "134026a5217a79d2b29b24a4107d5b1d2ac028fd794578e539e5e8ca52048f18",
+      "kerning-flags/manifest.json": "f62f07641d57f6f81e1fb7c84ad245723007f7ac975a8b2d5ae023d579fda08b",
+      "kerning-flags/extension.json": "d95d6a8e8c4c9f5017a9e97dff3a53f73575ce7cc533201ee7f6d9ac65aeddb6",
+      "kerning-precedence/metrics.json": "fb2a415d1d83a7168073bc055bcf7fb095ee706f95e6819337e9f0f6355d590d",
+      "kerning-precedence/declaration.json": "1b86fa6a32c9732bb37e24713514aeadf1e6e3b5078d4deaa83655f565c99fd5",
+      "kerning-precedence/font-pack.json": "a9ee3195fc49f560bf426f2cd91e9ea094e8df33ed645895e1a5f335a7c15582",
+      "kerning-flags/metrics.json": "9e10e627b46a764f3f9c4a952c1f9838094190448a6f26d296a1606d9cf44dc5",
+      "kerning-flags/declaration.json": "79951a0bfdb327f7b92ecb843ccc1ce85e235df65c71e556d177fb9c4cb790e4",
+      "kerning-flags/font-pack.json": "a0560f9096dc3627e7b5b566bf85e0ae081f65fba92ce2cf5d85b80a71039f6c",
+      "text-layout-admission/capture.json": "232436b6cdc2f30bf08edaf94fb90a62a3fbb03fef1d5e59a06e3cd8268b4713"
+    },
+    "healthyBrowserReceipts": 72,
+    "admissionReceipts": 36,
+    "renderingReceipts": 36,
+    "independentMetricRows": 24,
+    "inspection": "Input/program/reference hashes and capture health checked against committed bytes; manifest identities bind individual fields. Admission source/logical/visual roles remain distinct from rendering acceptance."
+  },
+  "validation": {
+    "selection": "Existing named methods/classes extracted from completed unfiltered suites; groups have identical membership and all pass on both hosts/runtimes.",
+    "groups": {
+      "core": {
+        "Gpos_class_pairs_use_coverage_lists_or_ranges": 2,
+        "Layout_requirements_keep_direction_script_and_mark_boundaries_distinct": 33,
+        "Canonical_class_and_unicode_mark_category_are_distinct": 8,
+        "Gpos_pair_flags_admit_the_declared_nonmark_runs": 5,
+        "Canonical_decomposition_is_recursive_without_compatibility_folding": 9,
+        "Canonical_fitting_preserves_the_qualified_paint_origin_and_source_scale": 2,
+        "Canonical_shaping_applies_selected_contexts_and_filtered_attachment_chains": 5,
+        "Unsupported_layout_rejects_before_prepared_acquisition_and_reuses_the_allowance": 6,
+        "Gpos_extension_admission_validates_payload_domains": 12,
+        "Gpos_extension_payloads_share_pair_execution_and_full_width_offsets": 4,
+        "Canonical_attachment_admission_checks_selected_tables_and_releases_staging": 9,
+        "Canonical_work_distinguishes_singletons_marks_ignorables_and_compatibility": 13,
+        "Ligature_table_failures_are_categorized_and_release_layout_storage": 13,
+        "Gpos_filters_reject_malformed_definitions_and_lookup_fields": 13,
+        "Gpos_mark_metadata_does_not_silently_enable_mark_positioning": 4,
+        "Canonical_coverage_requires_a_direct_glyph_or_every_component": 7,
+        "Latin_ligatures_follow_font_preference_and_retain_only_positioned_clusters": 4,
+        "Canonical_composition_keeps_exclusions_and_hangul_boundaries": 13,
+        "Canonical_shaping_keeps_source_owners_separate_from_shared_clusters": 9,
+        "Canonical_context_admission_checks_complete_rules_and_nested_actions": 10,
+        "Gpos_class_pairs_reject_invalid_ranges_indices_and_matrix_lengths": 4,
+        "Gpos_filtered_lookahead_stops_at_later_font_size_and_absolute_boundaries": 4,
+        "Latin_ligatures_use_the_selected_default_language_feature": 4,
+        "Unsupported_layout_keeps_raw_stream_empty_fonts_borrowed_and_retry_usable": 2,
+        "Canonical_default_ignorables_use_pinned_category_boundaries": 10,
+        "Run_validation_preserves_irrelevant_forms_and_rejects_covered_unsupported_forms": 2,
+        "Gpos_lookup_and_subtable_limits_are_explicit": 2,
+        "Canonical_lookup_admission_observes_the_previous_lookups_output": 2,
+        "Font_interval_coalescing_preserves_original_boundary_validation": 4,
+        "Inactive_unsupported_text_remains_font_free": 4,
+        "Discovery_layout_admission_retains_a_scalar_split_between_chunks": 2,
+        "Canonical_shaping_releases_partial_and_exact_storage_after_refusal_cancellation_and_retry": 2,
+        "Gpos_filtered_runs_retain_ligature_source_lengths_at_absolute_boundaries": 2,
+        "Gpos_first_matching_subtable_includes_zero_adjustment": 2,
+        "Canonical_context_advances_match_complete_classes_and_marks_zero_after_gpos": 6,
+        "A_prior_mark_cannot_hide_a_later_unsupported_layout_scalar": 1,
+        "Gpos_parse_and_query_preserve_cancellation": 1,
+        "Unsupported_coverage_context_requires_its_complete_bounded_input": 11,
+        "Filtered_contextual_lookups_keep_the_explicit_shaping_boundary": 2,
+        "Gpos_extensions_retain_outer_filter_flags": 3,
+        "Gpos_extensions_retain_zero_matches_and_mixed_lookup_order": 2,
+        "Canonical_single_substitutions_use_delta_and_indexed_formats": 2,
+        "Anchor_only_intervals_preserve_continuous_ligature_shaping": 2,
+        "Gpos_dormant_context_does_not_poison_uncovered_glyphs_but_guards_a_single_glyph": 1,
+        "Ligature_layout_releases_temporary_clusters_on_memory_and_cancellation_denial": 1,
+        "Late_ligatures_preserve_supplementary_prefixes_and_following_face_positions": 1,
+        "Coalesced_font_intervals_release_ligature_staging_after_refusal_and_retry": 1,
+        "Ligatures_keep_relative_clusters_and_respect_spacing_and_absolute_boundaries": 3,
+        "Ligature_clusters_preserve_following_utf16_position_adjustments": 1,
+        "Unmarked_runs_execute_selected_features_and_keep_source_addresses": 2,
+        "Gpos_filters_skip_partners_and_filter_starting_glyphs": 2,
+        "Gpos_filtered_partners_observe_scaled_element_boundaries": 5,
+        "Effective_font_size_changes_still_end_shaping_intervals": 1,
+        "Gpos_IgnoreMarks_requires_definitions_and_rejects_actual_mark_runs": 1,
+        "Path_glyph_midpoint_uses_the_kerned_advance_before_device_rounding": 2,
+        "Coverage_catalog_rejects_unsupported_layout_before_source_acquisition": 1,
+        "Gpos_each_lookup_filters_its_own_partner_and_selected_lookups_accumulate_once": 1,
+        "Gpos_filtered_scans_preserve_tokens_and_release_layout_storage": 1,
+        "Gpos_filtered_runs_count_supplementary_scalars_in_utf16_chunks": 2,
+        "Canonical_path_storage_is_exclusive_and_released_after_refusal_and_retry": 1,
+        "Gpos_pair_list_missing_second_glyph_falls_through_to_class_pairs": 1,
+        "Gpos_extension_context_coverage_and_mark_runs_keep_their_rejections": 1,
+        "Gpos_extension_scans_preserve_cancellation": 1,
+        "Canonical_demand_keeps_the_primary_program_and_reuses_the_shared_allowance": 2,
+        "Unsupported_active_lookup_keeps_the_stream_and_allowance_reusable": 1,
+        "Canonical_unused_mark_features_do_not_poison_a_plain_physical_font_partition": 1,
+        "Gpos_distinct_selected_lookups_accumulate_once_in_lookup_order": 1,
+        "A_cmap_only_program_lends_empty_shaping_storage": 1,
+        "Native_cursor_items_do_not_require_retaining_paint_fragments": 1
+      },
+      "visual": {
+        "SvgKerningPrecedenceTests": 15,
+        "SvgTextMarkReferenceTests": 2,
+        "SvgShapingIntervalReferenceTests": 1,
+        "SvgTextLayoutAdmissionReferenceTests": 4
+      }
+    },
+    "results": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "assembly": "core",
+        "passed": 294
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "assembly": "visual",
+        "passed": 22
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "assembly": "core",
+        "passed": 294
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "assembly": "visual",
+        "passed": 22
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "assembly": "core",
+        "passed": 294
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "assembly": "visual",
+        "passed": 22
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "assembly": "core",
+        "passed": 294
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "assembly": "visual",
+        "passed": 22
+      }
+    ]
+  },
+  "relatedEvidence": [
+    "text-casing-canonical-claim-trace.json",
+    "text-layout-admission.json",
+    "text-feature-dispatch-review.json",
+    "text-feature-dispatch-contexts.json"
+  ],
+  "limits": [
+    "Finite reviewed subset, not general OpenType/Unicode shaping conformance.",
+    "No new runtime execution, native capture, reference, tolerance or test membership change during this trace.",
+    "Frozen Windows DejaVu remains asserted and Open T18. Resource/ownership and outstanding SVGWeb contexts remain separate."
+  ]
+}

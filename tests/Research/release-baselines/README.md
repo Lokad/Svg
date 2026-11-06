@@ -19,6 +19,9 @@ review index. Reviewed claims, pending traces and unresolved authority stay dist
 The [casing/canonical trace](text-casing-canonical-claim-trace.json) completes two
 shaping groups against shared owners, pinned mapping/boundary mechanisms,
 representative ownership contracts and 108 healthy native capture receipts.
+The [shaping/kerning trace](text-shaping-kerning-claim-trace.json) completes
+admission, ligature, mark and pair-positioning review against shared owners,
+direct checks and independently bound metrics/browser controls.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)
