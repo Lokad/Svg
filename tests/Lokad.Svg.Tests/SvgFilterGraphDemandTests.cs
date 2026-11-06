@@ -186,6 +186,106 @@ public sealed class SvgFilterGraphDemandTests
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
 
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("stage", "stage", true)]
+    [InlineData("stage", "Stage", false)]
+    [InlineData(" stage ", " stage ", true)]
+    [InlineData(" stage ", "stage", false)]
+    public void Result_names_preserve_case_and_whitespace(string result, string input, bool accepted)
+    {
+        string graph = "<feFlood result='" + result + "'/><feOffset in='" + input + "'/>";
+        RenderBudget parser = new(new HostMemoryBudget(2_000_000));
+        if (accepted)
+        {
+            using SvgRoot root = Parse(graph, parser);
+            Assert.Equal(new SvgFilterInput(0), Resource(root).Primitives.Items[1].Input);
+        }
+        else
+        {
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+            {
+                using SvgRoot root = Parse(graph, parser);
+            }).ErrorCode);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("shadow", false)]
+    [InlineData("shadow", true)]
+    [InlineData("offset", false)]
+    [InlineData("offset", true)]
+    [InlineData("primary", false)]
+    [InlineData("primary", true)]
+    [InlineData("secondary", false)]
+    [InlineData("merge", false)]
+    public void Culled_nodes_keep_numeric_and_reference_validation(string role, bool selected)
+    {
+        string branch = Branch(role is "shadow" or "offset" or "merge" ? role : "blend")
+            .Replace("result='unused'", "x='80' y='80' width='1' height='1' result='unused'", StringComparison.Ordinal);
+        RenderBudget parser = new(new HostMemoryBudget(2_000_000));
+        byte[] source = Source(), unchanged = source.ToArray();
+        using (SvgRoot root = Parse(branch + (selected ? "" : "<feFlood/>"), parser))
+        {
+            SvgFilterResource resource = Resource(root);
+            SvgFilterPrimitive[] primitives = resource.Primitives.Items.ToArray();
+            if (role == "shadow") primitives[0] = primitives[0] with { SigmaX = 136 };
+            else if (role == "offset") primitives[0] = primitives[0] with { OffsetX = (double)int.MaxValue + 1 };
+            else if (role == "primary") primitives[0] = primitives[0] with { Input = new(0) };
+            else if (role == "secondary") primitives[0] = primitives[0] with { SecondInput = new(0) };
+            else
+            {
+                SvgFilterInput[] inputs = resource.MergeInputs.Items.ToArray();
+                inputs[0] = new(0);
+                resource = resource with { MergeInputs = new(inputs, null) };
+            }
+            resource = resource with { Primitives = new(primitives, null) };
+            using HostMemoryBudget host = new(2_000_000);
+            RenderBudget raster = new(host);
+            SvgException error = Assert.Throws<SvgException>(() =>
+            {
+                using SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 64, 64, resource,
+                    new(1, 1) { Regions = new(SvgAffineTransform.Identity, new(64, 64), new(0, 0, 64, 64)) },
+                    raster, CancellationToken.None);
+            });
+            Assert.Equal(role == "shadow" ? SvgErrorCode.UnsupportedFeature
+                : role == "offset" ? SvgErrorCode.LimitExceeded : SvgErrorCode.MalformedInput, error.ErrorCode);
+            Assert.Equal(0, host.Reserved);
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+            Assert.Equal(unchanged, source);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Culled_source_alpha_needs_no_additional_pixel_plane(bool selected)
+    {
+        byte[] source = Source(), unchanged = source.ToArray(), expected = new byte[source.Length];
+        if (!selected)
+            for (int offset = 0; offset < expected.Length; offset += 4)
+            { expected[offset] = 13; expected[offset + 1] = 51; expected[offset + 2] = 95; expected[offset + 3] = 128; }
+        string branch = Branch("offset").Replace("result='unused'", "width='0' height='0' result='unused'", StringComparison.Ordinal);
+        RenderBudget parser = new(new HostMemoryBudget(2_000_000));
+        using (SvgRoot root = Parse(branch + (selected ? "" : "<feFlood flood-color='#1965bd' flood-opacity='.5'/>"), parser))
+        {
+            using HostMemoryBudget host = new(source.Length * 2 - 1);
+            RenderBudget raster = new(host);
+            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 64, 64, Resource(root),
+                new(1, 1) { Regions = new(SvgAffineTransform.Identity, new(64, 64), new(0, 0, 64, 64)) },
+                raster, CancellationToken.None))
+                Assert.Equal(expected, result.Pixels);
+            Assert.Equal(0, host.Reserved);
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+            Assert.Equal(unchanged, source);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
     private static byte[] Source()
     {
         byte[] source = new byte[64 * 64 * 4];

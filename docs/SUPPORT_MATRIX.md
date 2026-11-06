@@ -403,8 +403,9 @@ region beyond source ink. [Native controls](../tests/Research/filter-color-matri
 cover transfer, sampling, crops and existing filter consumers.
 Result/input names retain case and whitespace; missing/forward/cyclic references
 fail explicitly. Intermediate surfaces obey dimension, pixel and memory limits.
-Pixel evaluation follows the final result's dependencies. Unread branches retain
-reference, region and mapped-scalar validation without materializing pixel planes.
+Pixel evaluation follows the final result's dependencies. Unread branches and empty
+primitive regions retain reference, region and mapped-scalar validation without
+materializing pixel planes.
 Their halos do not enlarge source capture; [native controls](../tests/Research/filter-capture-demand/README.md)
 retain fractional source placement and the selected single-blur path.
 

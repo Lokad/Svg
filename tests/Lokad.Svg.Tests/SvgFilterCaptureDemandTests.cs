@@ -57,6 +57,22 @@ public sealed class SvgFilterCaptureDemandTests
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
 
+    [Theory]
+    [InlineData(" x='80' y='80' width='1' height='1'")]
+    [InlineData(" width='0' height='0'")]
+    public void Culled_unread_shadow_keeps_its_public_deviation_error(string region)
+    {
+        byte[] input = Input("<feDropShadow in='SourceAlpha' stdDeviation='136' result='unused'" + region + "/><feFlood flood-color='red'/>"),
+            unchanged = input.ToArray();
+        SvgException error = Assert.Throws<SvgException>(() =>
+        {
+            _ = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None);
+        });
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        Assert.Equal("Drop-shadow deviations above 135 device pixels per axis are not implemented.", error.Message);
+        Assert.Equal(unchanged, input);
+    }
+
     private static byte[] Input(string graph) => TextEncoding.UTF8.GetBytes(
         "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><filter id='f' filterUnits='userSpaceOnUse' primitiveUnits='userSpaceOnUse' x='0' y='0' width='64' height='64' color-interpolation-filters='sRGB'>"
         + graph + "</filter></defs><rect x='4' y='4' width='56' height='56' fill='#1965bd' filter='url(#f)'/></svg>");

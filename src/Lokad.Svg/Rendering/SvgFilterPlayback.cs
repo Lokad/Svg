@@ -671,14 +671,13 @@ internal static class SvgFilterPlayback
             {
                 token.ThrowIfCancellationRequested();
                 SvgFilterPrimitive primitive = resource.Primitives.Items[index];
-                if (map.Regions is not null && (regions[index].Right <= regions[index].Left || regions[index].Bottom <= regions[index].Top))
+                bool emptyRegion = map.Regions is not null && (regions[index].Right <= regions[index].Left || regions[index].Bottom <= regions[index].Top);
+                if (emptyRegion || !needed[index])
                 {
-                    imageBounds[index] = regions[index];
-                    continue;
-                }
-                if (!needed[index])
-                {
-                    ValidateUnread(primitive, index, graphic);
+                    // Pixel culling cannot discard live graph validation.
+                    // This path reads metadata without acquiring input planes.
+                    ValidateWithoutPixels(primitive, index, graphic);
+                    if (emptyRegion) imageBounds[index] = regions[index];
                     continue;
                 }
                 bool nearestSampling = false;
@@ -1370,7 +1369,7 @@ internal static class SvgFilterPlayback
                 paint.Color.Blue / 255f * paint.Alpha, paint.Alpha);
 
         // Pixel dependencies differ from region defaults and declaration validation.
-        void ValidateUnread(SvgFilterPrimitive primitive, int index, ReadOnlySpan<byte> graphic)
+        void ValidateWithoutPixels(SvgFilterPrimitive primitive, int index, ReadOnlySpan<byte> graphic)
         {
             ReadInput(primitive.Input, index, graphic, false);
             PrepareDeviation(primitive);

@@ -1,28 +1,8 @@
 {
-  "status": "Open F3 validation inconsistency; the separate sampling-destination milestone is fully qualified. Private repair prototype is not promoted.",
-  "qualifiedSourceCommit": "c32cf69111312b924e7cab592e14607469fe155a",
-  "librarySha256": "b30c1a3acbcd83041e04710d587041de31ce2893914d581ce15ce1833d2c14de",
+  "status": "Fixed: culled selected/unread nodes retain metadata validation before pixel dispatch is skipped. Six failing-before checks pass; direct guards, public admission witnesses and affected rendering pass on both hosts/runtimes. Broader source promotion follows the coherent commit.",
   "framework": "net11.0",
   "host": "windows",
   "publicCall": "SvgConverter.ConvertToPng(source, SvgRenderOptions.Default, CancellationToken.None)",
-  "sourceBindings": [
-    {
-      "path": "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
-      "sha256": "4b2d60db1fe1186b5702221800b3c01710c92cdeb9d6a04b1f4c48023ef383e4"
-    },
-    {
-      "path": "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs",
-      "sha256": "0c963ccbe255b08e113bbff764eb4a94a819683444819f0c4f0bca320cc56718"
-    },
-    {
-      "path": "tests/Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs",
-      "sha256": "8fc1f5199ab5b422693d9722ef2c40ae464c489987181662252bf83eaac9ba1a"
-    },
-    {
-      "path": "tests/Lokad.Svg.Tests/SvgFilterCaptureDemandTests.cs",
-      "sha256": "237b713f3a80fc1eda373f1f9b194a693f8de1923834163cb7ae741d4b67207e"
-    }
-  ],
   "contract": "Live filter graphs retain reference and mapped-scalar validation independently of final-result pixel demand. A drop-shadow deviation above 135 mapped device pixels is unsupported; culling its pixel region must not bypass that validation.",
   "reproduction": {
     "sourceTemplate": "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><feDropShadow in='SourceAlpha' stdDeviation='136' result='unread'{region}/><feFlood flood-color='red'/></filter></defs><rect width='8' height='8' filter='url(#f)'/></svg>",
@@ -52,27 +32,347 @@
         "message": null,
         "pngSha256": "b201e2de7fd1a6eee7faf6b18a27ff99e0816f951b5d826f2c0b8436e0b60320"
       }
-    ]
-  },
-  "cause": "ApplyCore continues past empty placed regions before invoking its pixel-free validation path. A final live flood keeps this a live graph even though the invalid shadow is unread.",
-  "existingCoverage": "Graph-demand tests cover malformed primary/secondary/merge references and mapped shadow/offset limits for unread nodes, but their regions are nonempty. Capture-demand tests preserve unused halo and deviation validation. They do not cover this culling interaction.",
-  "nextActions": [
-    "Add individually discoverable failing-before mechanism cases for selected/unread culled nodes, numeric limits and reference roles; add representative public admission checks.",
-    "Share the existing local validation path before skipping empty regions, without materializing pixel planes or adding owners.",
-    "Preserve valid empty-region output, dormant definitions/empty-element eligibility, cancellation, cleanup and exact references. Run focused affected checks; promote broader qualification at a coherent milestone."
-  ],
-  "prototype": {
-    "scope": "Private source copy only.",
-    "change": "Merge empty-region and unread-node dispatch; invoke the existing pixel-free validation path before either continue.",
-    "publicOutcomes": [
-      "UnsupportedFeature",
-      "UnsupportedFeature",
-      "UnsupportedFeature"
     ],
-    "productionCodeChanged": false
+    "stage": "Before correction; byte identities are retained for the passing repair replay."
   },
+  "cause": "Empty-region dispatch skipped the pixel-free validation path. A final live flood kept the graph active even though the invalid shadow was unread.",
+  "existingCoverage": "Before the correction, graph-demand checks covered malformed primary/secondary/merge references and mapped shadow/offset limits for unread nodes with nonempty regions. The added individually discovered cases protect the missing culling interaction.",
+  "nextActions": [],
   "limits": [
     "All reproduction bytes are newly authored; no hosted SVG bodies/fragments/raw attributes are retained.",
     "This is an admission/validation contract, not a browser pixel claim. No new image reference or tolerance is needed."
-  ]
+  ],
+  "beforeSourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+      "sha256": "4b2d60db1fe1186b5702221800b3c01710c92cdeb9d6a04b1f4c48023ef383e4"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs",
+      "sha256": "0c963ccbe255b08e113bbff764eb4a94a819683444819f0c4f0bca320cc56718"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs",
+      "sha256": "8fc1f5199ab5b422693d9722ef2c40ae464c489987181662252bf83eaac9ba1a"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterCaptureDemandTests.cs",
+      "sha256": "237b713f3a80fc1eda373f1f9b194a693f8de1923834163cb7ae741d4b67207e"
+    }
+  ],
+  "sourceBaseCommit": "fa0048c4f4b220c67f202a721762611f7937e26c",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+      "sha256": "3165644b367cd72640c9f9aa723a30401c3cd0fd40a692c7399ca7de42c7643e"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs",
+      "sha256": "0c963ccbe255b08e113bbff764eb4a94a819683444819f0c4f0bca320cc56718"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterGraphDemandTests.cs",
+      "sha256": "d1b5f0b638ecb551fcbf30a908b524ae12a3c4be5a54e5313998ee168e2a3314"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterCaptureDemandTests.cs",
+      "sha256": "2a7b801f05af63a690895297c8ba4b0d4f74e28bb80cc88e5ad07e65bb7db17b"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFilterSourceDependencyTests.cs",
+      "sha256": "f80e430010761ec6fdebe5ce9553ae5973dffca1f2fa81ac55538aeb7ff87239"
+    },
+    {
+      "path": "docs/SUPPORT_MATRIX.md",
+      "sha256": "c696d0b98bb082ecb3445a7d882d2d6ab283e5a92dfe16a4d0feba1f777ff938"
+    }
+  ],
+  "repair": {
+    "change": "Merge empty-region and unread-node dispatch and call the existing local pixel-free validator before either continue. Retain empty image bounds, cancellation, selected pixel operations and all owners unchanged.",
+    "beforeChecks": {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "81c765054ee18c6b853b96daf92cfe71810b8ddc4eead070fbadff569266f007",
+      "testAssemblySha256": "98ce70eed9da60224e3c067486bdf115aa9903e841475cb4ab63583876f7f3b1",
+      "selection": "FullyQualifiedName~SvgFilterGraphDemandTests.Culled_|FullyQualifiedName~SvgFilterCaptureDemandTests.Culled_",
+      "exitCode": 1,
+      "seconds": 10.682974600000307,
+      "counters": {
+        "executed": "12",
+        "passed": "6",
+        "failed": "6"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Culled_nodes_keep_numeric_and_reference_validation(role: \"offset\", selected: False)",
+          "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Culled_nodes_keep_numeric_and_reference_validation(role: \"shadow\", selected: True)",
+          "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterCaptureDemandTests.Culled_unread_shadow_keeps_its_public_deviation_error(region: \" width='0' height='0'\")",
+          "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterCaptureDemandTests.Culled_unread_shadow_keeps_its_public_deviation_error(region: \" x='80' y='80' width='1' height='1'\")",
+          "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Culled_nodes_keep_numeric_and_reference_validation(role: \"offset\", selected: True)",
+          "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+        },
+        {
+          "name": "Lokad.Svg.Tests.SvgFilterGraphDemandTests.Culled_nodes_keep_numeric_and_reference_validation(role: \"shadow\", selected: False)",
+          "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+        }
+      ]
+    },
+    "responsibilities": {
+      "mechanisms": "Eight individually discovered culled numeric/reference cases cover selected/unread paths and primary/secondary/merge references. Four direct parser cases preserve exact earlier-result case/whitespace semantics.",
+      "contracts": "Two valid selected/unread SourceAlpha cases fit below a second pixel-plane allowance, preserve the expected output/source and release parser/raster reservations. Existing refusal/cancellation/retry and dormant/nonrenderable eligibility checks remain.",
+      "public": "Two canonical public admission cases retain the deviation error for offscreen and zero-size unread regions. The original three byte-identical authored witnesses are replayed separately.",
+      "rendering": "277 existing independent filter-stage, empty-source and capture-demand references per host/runtime retain their exact targets. No API matrix is multiplied by the boundary cases."
+    },
+    "affectedChecks": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "51a9a449a022c6bec4a279acb65d039d8f91270fd228ac02b98aefea7c92a465",
+        "testAssemblySha256": "b093f12a52ceb48a058941102d7eac1d29f3efb28efb357fb02ce08a1c4ff947",
+        "selection": "(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilter|FullyQualifiedName~SvgDropShadow|FullyQualifiedName~SvgGaussianBlur|FullyQualifiedName~OpenTypeFontTests.Enclosing_containers_can_filter_suppressed_child_sources|FullyQualifiedName~OpenTypeFontTests.Nonrenderable_leaves_do_not_activate_their_own_filters|FullyQualifiedName~OpenTypeFontTests.Zero_size_varied_images|FullyQualifiedName~OpenTypeFontTests.An_empty_filter_graph)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 12.990636899834499,
+        "counters": {
+          "executed": "828",
+          "passed": "828",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "51a9a449a022c6bec4a279acb65d039d8f91270fd228ac02b98aefea7c92a465",
+        "testAssemblySha256": "b093f12a52ceb48a058941102d7eac1d29f3efb28efb357fb02ce08a1c4ff947",
+        "selection": "(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilter|FullyQualifiedName~SvgDropShadow|FullyQualifiedName~SvgGaussianBlur|FullyQualifiedName~OpenTypeFontTests.Enclosing_containers_can_filter_suppressed_child_sources|FullyQualifiedName~OpenTypeFontTests.Nonrenderable_leaves_do_not_activate_their_own_filters|FullyQualifiedName~OpenTypeFontTests.Zero_size_varied_images|FullyQualifiedName~OpenTypeFontTests.An_empty_filter_graph)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 20.424057299969718,
+        "counters": {
+          "executed": "828",
+          "passed": "828",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "51a9a449a022c6bec4a279acb65d039d8f91270fd228ac02b98aefea7c92a465",
+        "testAssemblySha256": "49c8d29daf48f43ca3d595b92e87fa6fb9106a420bc390caa9fab67a035a19e9",
+        "selection": "FullyQualifiedName~SvgFilterCaptureDemandReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests",
+        "exitCode": 0,
+        "seconds": 23.47183550009504,
+        "counters": {
+          "executed": "277",
+          "passed": "277",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "51a9a449a022c6bec4a279acb65d039d8f91270fd228ac02b98aefea7c92a465",
+        "testAssemblySha256": "49c8d29daf48f43ca3d595b92e87fa6fb9106a420bc390caa9fab67a035a19e9",
+        "selection": "FullyQualifiedName~SvgFilterCaptureDemandReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests",
+        "exitCode": 0,
+        "seconds": 21.401727699907497,
+        "counters": {
+          "executed": "277",
+          "passed": "277",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e984bc02b5ad5e52f14f0b10b0f88bf2ceefbd6c0ca77ab3fe2dde61db6ddef2",
+        "testAssemblySha256": "0663d83421386eb775884aba44ae5dc3ad495b5be340497f69001a3600c56aba",
+        "selection": "(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilter|FullyQualifiedName~SvgDropShadow|FullyQualifiedName~SvgGaussianBlur|FullyQualifiedName~OpenTypeFontTests.Enclosing_containers_can_filter_suppressed_child_sources|FullyQualifiedName~OpenTypeFontTests.Nonrenderable_leaves_do_not_activate_their_own_filters|FullyQualifiedName~OpenTypeFontTests.Zero_size_varied_images|FullyQualifiedName~OpenTypeFontTests.An_empty_filter_graph)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 16.628198399906978,
+        "counters": {
+          "executed": "828",
+          "passed": "828",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e984bc02b5ad5e52f14f0b10b0f88bf2ceefbd6c0ca77ab3fe2dde61db6ddef2",
+        "testAssemblySha256": "0663d83421386eb775884aba44ae5dc3ad495b5be340497f69001a3600c56aba",
+        "selection": "(FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgEmptyFilter|FullyQualifiedName~SvgDropShadow|FullyQualifiedName~SvgGaussianBlur|FullyQualifiedName~OpenTypeFontTests.Enclosing_containers_can_filter_suppressed_child_sources|FullyQualifiedName~OpenTypeFontTests.Nonrenderable_leaves_do_not_activate_their_own_filters|FullyQualifiedName~OpenTypeFontTests.Zero_size_varied_images|FullyQualifiedName~OpenTypeFontTests.An_empty_filter_graph)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 23.949563100002706,
+        "counters": {
+          "executed": "828",
+          "passed": "828",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e984bc02b5ad5e52f14f0b10b0f88bf2ceefbd6c0ca77ab3fe2dde61db6ddef2",
+        "testAssemblySha256": "170574af43304345174c2a885065709d20cbaae62fa1e876db1178d1d6c0ec3a",
+        "selection": "FullyQualifiedName~SvgFilterCaptureDemandReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests",
+        "exitCode": 0,
+        "seconds": 19.922747500007972,
+        "counters": {
+          "executed": "277",
+          "passed": "277",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "e984bc02b5ad5e52f14f0b10b0f88bf2ceefbd6c0ca77ab3fe2dde61db6ddef2",
+        "testAssemblySha256": "170574af43304345174c2a885065709d20cbaae62fa1e876db1178d1d6c0ec3a",
+        "selection": "FullyQualifiedName~SvgFilterCaptureDemandReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests",
+        "exitCode": 0,
+        "seconds": 16.88572850008495,
+        "counters": {
+          "executed": "277",
+          "passed": "277",
+          "failed": "0"
+        }
+      }
+    ],
+    "resultNameChecks": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "51a9a449a022c6bec4a279acb65d039d8f91270fd228ac02b98aefea7c92a465",
+        "testAssemblySha256": "d22cb798526c2fec4b4df5cd3b1f9826fa49de63bfb961e1e47da6c764f48e77",
+        "selection": "FullyQualifiedName~SvgFilterGraphDemandTests.Result_names_preserve_case_and_whitespace",
+        "exitCode": 0,
+        "seconds": 10.028748499928042,
+        "counters": {
+          "executed": "4",
+          "passed": "4",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "51a9a449a022c6bec4a279acb65d039d8f91270fd228ac02b98aefea7c92a465",
+        "testAssemblySha256": "d22cb798526c2fec4b4df5cd3b1f9826fa49de63bfb961e1e47da6c764f48e77",
+        "selection": "FullyQualifiedName~SvgFilterGraphDemandTests.Result_names_preserve_case_and_whitespace",
+        "exitCode": 0,
+        "seconds": 16.148201199946925,
+        "counters": {
+          "executed": "4",
+          "passed": "4",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e984bc02b5ad5e52f14f0b10b0f88bf2ceefbd6c0ca77ab3fe2dde61db6ddef2",
+        "testAssemblySha256": "25761021d029a6e3856fe9e7cf681e52457a684001a62b300e6fcd2dcbfc71ab",
+        "selection": "FullyQualifiedName~SvgFilterGraphDemandTests.Result_names_preserve_case_and_whitespace",
+        "exitCode": 0,
+        "seconds": 9.127220599912107,
+        "counters": {
+          "executed": "4",
+          "passed": "4",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "e984bc02b5ad5e52f14f0b10b0f88bf2ceefbd6c0ca77ab3fe2dde61db6ddef2",
+        "testAssemblySha256": "25761021d029a6e3856fe9e7cf681e52457a684001a62b300e6fcd2dcbfc71ab",
+        "selection": "FullyQualifiedName~SvgFilterGraphDemandTests.Result_names_preserve_case_and_whitespace",
+        "exitCode": 0,
+        "seconds": 11.387398399878293,
+        "counters": {
+          "executed": "4",
+          "passed": "4",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "finalTestBinding": "The complete affected selection precedes only four additive parser-name cases. Separately rebuilt name selections bind the final test source; production library hashes are unchanged.",
+    "publicReproduction": {
+      "librarySha256": "51a9a449a022c6bec4a279acb65d039d8f91270fd228ac02b98aefea7c92a465",
+      "rows": [
+        {
+          "name": "nonempty",
+          "sourceSha256": "8bf605c2ae0c57feef848abf1c2e3709a94e976ffdeb61aea1104a63789e8c8b",
+          "outcome": "UnsupportedFeature",
+          "message": "Drop-shadow deviations above 135 device pixels per axis are not implemented."
+        },
+        {
+          "name": "outside",
+          "sourceSha256": "849905c7e2a3753c75aaddbd6a6e9767a561f5811a75f3a729b57b56498ea792",
+          "outcome": "UnsupportedFeature",
+          "message": "Drop-shadow deviations above 135 device pixels per axis are not implemented."
+        },
+        {
+          "name": "zero",
+          "sourceSha256": "5121a02e9b262cea32a93b612f1c0475c850c84331497ed32ad1f99cac5a4bf7",
+          "outcome": "UnsupportedFeature",
+          "message": "Drop-shadow deviations above 135 device pixels per axis are not implemented."
+        }
+      ]
+    },
+    "broaderQualification": "Full primary CI and packaged source promotion follow the coherent source commit. The prior complete source/runtime/package/SVGWeb milestone remains explicitly bound to c32cf6911 until the new qualification completes.",
+    "selectedPublicReproduction": {
+      "librarySha256": "51a9a449a022c6bec4a279acb65d039d8f91270fd228ac02b98aefea7c92a465",
+      "rows": [
+        {
+          "name": "nonempty",
+          "sourceSha256": "abe52e33f31a9edb9af7d3dc676d05f2c4efeba74a9ab7ed9acb6d042f35ff5e",
+          "outcome": "UnsupportedFeature",
+          "message": "Drop-shadow deviations above 135 device pixels per axis are not implemented."
+        },
+        {
+          "name": "outside",
+          "sourceSha256": "4341466cb802e83d4e83e8a76a0f2ccb5ec438f3f3701f90c1937fdc09371d5c",
+          "outcome": "UnsupportedFeature",
+          "message": "Drop-shadow deviations above 135 device pixels per axis are not implemented."
+        },
+        {
+          "name": "zero",
+          "sourceSha256": "acf89044cfc893d4f50fbb98621966559e85959f836e74d540bedbf0beb47c4e",
+          "outcome": "UnsupportedFeature",
+          "message": "Drop-shadow deviations above 135 device pixels per axis are not implemented."
+        }
+      ]
+    }
+  },
+  "beforeQualifiedSourceCommit": "c32cf69111312b924e7cab592e14607469fe155a",
+  "beforeLibrarySha256": "b30c1a3acbcd83041e04710d587041de31ce2893914d581ce15ce1833d2c14de"
 }
