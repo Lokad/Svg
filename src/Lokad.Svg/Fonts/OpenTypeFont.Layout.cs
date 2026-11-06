@@ -4,6 +4,17 @@ using Lokad.Svg.Parsing;
 
 internal static partial class OpenTypeFont
 {
+    /// <summary>Tests previously validated input coverage against borrowed current glyphs; cancellable and allocation-free.</summary>
+    private static bool CoverageIntersectsRun(ReadOnlySpan<byte> data, int coverage, ReadOnlySpan<SvgShapingGlyph> glyphs, CancellationToken token)
+    {
+        foreach (SvgShapingGlyph glyph in glyphs)
+        {
+            token.ThrowIfCancellationRequested();
+            if (GetGlyphCoverageIndex(data, coverage, glyph.GlyphIndex, token) >= 0) return true;
+        }
+        return false;
+    }
+
     /// <summary>Visits a validated feature union in LookupList order, once per selected index.</summary>
     /// <remarks>Borrowed feature offsets must already have bounded counts and valid lookup indices.
     /// Allocates no selection array; observes cancellation while scanning each small feature.</remarks>

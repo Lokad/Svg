@@ -12,6 +12,37 @@ internal static partial class OpenTypeFont
     /// change sequence indices. Every traversal is bounded and observes cancellation.</remarks>
     internal static OpenTypeGsubCompositionTable? GetCanonicalSubstitutions(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, CancellationToken token)
     {
+        if (SelectCanonicalFeature(bytes, metrics, token) is not {} graph) return null;
+        ReadOnlySpan<byte> data = bytes.Span;
+        OpenTypeTableRange table = graph.Range;
+        int lookups = graph.LookupList;
+        int previous = -1, records = 0;
+        Span<int> validatedReferences = stackalloc int[MaximumCompositionLookups];
+        int validatedReferenceCount = 0;
+        while (TryGetNextSelectedLookup(data, table, lookups, [graph.Feature], ref previous, out int lookup, token))
+        {
+            int count = ValidateCompositionLookup(data, table, lookup);
+            for (int index = 0; index < count; index++)
+            {
+                token.ThrowIfCancellationRequested();
+                GsubSubtable subtable = ReadGsubSubtable(data, table, lookup, index);
+                if (subtable.Type == 1) ValidateSingleSubstitution(data, table, subtable.Offset, metrics.GlyphCount, token);
+                else if (subtable.Type == 4) ValidateLigatureSubtable(data, table, subtable.Offset, metrics.GlyphCount, ref records, token);
+                else if (subtable.Type == 6) ValidateClassContext(data, table, lookups, subtable.Offset, metrics.GlyphCount, ref records, validatedReferences, ref validatedReferenceCount, ContextActionKind.Substitution, token);
+                else throw new SvgException(SvgErrorCode.UnsupportedFeature, "This GSUB ccmp lookup type is not supported.");
+                if (index != 0 && subtable.Type != ReadGsubSubtable(data, table, lookup, 0).Type)
+                    throw InvalidFont("GSUB extension subtables must have the same lookup type.");
+            }
+        }
+        return graph;
+    }
+
+    /// <summary>Checks selected feature work without requiring marks or acquiring glyph storage.</summary>
+    internal static bool HasCanonicalSubstitutions(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, CancellationToken token)
+        => SelectCanonicalFeature(bytes, metrics, token) is {} graph && ReadUInt16(bytes.Span, graph.Feature + 2) != 0;
+
+    private static OpenTypeGsubCompositionTable? SelectCanonicalFeature(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, CancellationToken token)
+    {
         if (metrics.Gsub is not {} table) return null;
         ReadOnlySpan<byte> data = bytes.Span;
         token.ThrowIfCancellationRequested();
@@ -32,26 +63,7 @@ internal static partial class OpenTypeFont
             token.ThrowIfCancellationRequested();
             if (ReadUInt16(data, feature + 4 + index * 2) >= lookupCount) throw InvalidFont("A GSUB ccmp lookup index is invalid.");
         }
-        var graph = new OpenTypeGsubCompositionTable(table, feature, lookups);
-        int previous = -1, records = 0;
-        Span<int> validatedReferences = stackalloc int[MaximumCompositionLookups];
-        int validatedReferenceCount = 0;
-        while (TryGetNextSelectedLookup(data, table, lookups, [feature], ref previous, out int lookup, token))
-        {
-            int count = ValidateCompositionLookup(data, table, lookup);
-            for (int index = 0; index < count; index++)
-            {
-                token.ThrowIfCancellationRequested();
-                GsubSubtable subtable = ReadGsubSubtable(data, table, lookup, index);
-                if (subtable.Type == 1) ValidateSingleSubstitution(data, table, subtable.Offset, metrics.GlyphCount, token);
-                else if (subtable.Type == 4) ValidateLigatureSubtable(data, table, subtable.Offset, metrics.GlyphCount, ref records, token);
-                else if (subtable.Type == 6) ValidateClassContext(data, table, lookups, subtable.Offset, metrics.GlyphCount, ref records, validatedReferences, ref validatedReferenceCount, ContextActionKind.Substitution, token);
-                else throw new SvgException(SvgErrorCode.UnsupportedFeature, "This GSUB ccmp lookup type is not supported.");
-                if (index != 0 && subtable.Type != ReadGsubSubtable(data, table, lookup, 0).Type)
-                    throw InvalidFont("GSUB extension subtables must have the same lookup type.");
-            }
-        }
-        return graph;
+        return new(table, feature, lookups);
     }
 
     private static int ValidateCompositionLookup(ReadOnlySpan<byte> data, OpenTypeTableRange table, int lookup)
@@ -102,23 +114,89 @@ internal static partial class OpenTypeFont
         ReadOnlySpan<byte> data = bytes.Span;
         int previous = -1;
         while (TryGetNextSelectedLookup(data, graph.Range, graph.LookupList, [graph.Feature], ref previous, out int lookup, token))
+            ApplyCanonicalLookup(data, graph, lookup, ref glyphs, token);
+        return glyphs.Length;
+    }
+
+    /// <summary>Validates and executes selected ccmp against the current borrowed complete run, in lookup order.</summary>
+    /// <remarks>Unsupported forms may be ignored only when their bounded input coverage excludes every current glyph.
+    /// Supported definitions retain full validation, including nested actions. Each lookup observes prior substitutions.
+    /// Compaction preserves source ownership; the caller owns storage, serialization, cancellation and cleanup on failure.</remarks>
+    internal static int ApplyCanonicalSubstitutionsForRun(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, Span<SvgShapingGlyph> glyphs, CancellationToken token)
+    {
+        if (SelectCanonicalFeature(bytes, metrics, token) is not {} graph) return glyphs.Length;
+        ReadOnlySpan<byte> data = bytes.Span;
+        int previous = -1, records = 0, validatedCount = 0;
+        Span<int> validated = stackalloc int[MaximumCompositionLookups];
+        while (TryGetNextSelectedLookup(data, graph.Range, graph.LookupList, [graph.Feature], ref previous, out int lookup, token))
         {
-            int count = ReadUInt16(data, lookup + 4);
-            for (int index = 0; index < glyphs.Length;)
+            int flags = ReadUInt16(data, lookup + 2), count = ReadUInt16(data, lookup + 4);
+            if (count > MaximumCompositionSubtables) throw new SvgException(SvgErrorCode.LimitExceeded, "The GSUB ccmp subtable count exceeds the admitted limit.");
+            RequireTableRange(graph.Range, lookup, 6 + count * 2 + ((flags & 16) != 0 ? 2 : 0), "GSUB ccmp lookup");
+            for (int index = 0; index < count; index++)
             {
                 token.ThrowIfCancellationRequested();
-                int progress = 1;
-                for (int subtableIndex = 0; subtableIndex < count; subtableIndex++)
+                GsubSubtable subtable = ReadGsubSubtable(data, graph.Range, lookup, index);
+                if (index != 0 && subtable.Type != ReadGsubSubtable(data, graph.Range, lookup, 0).Type)
+                    throw InvalidFont("GSUB extension subtables must have the same lookup type.");
+                if (flags == 0 && IsSupportedCanonicalSubtable(data, subtable))
                 {
-                    GsubSubtable subtable = ReadGsubSubtable(data, graph.Range, lookup, subtableIndex);
-                    if (subtable.Type == 1 && ApplySingle(data, subtable.Offset, ref glyphs[index], token)) break;
-                    if (subtable.Type == 4 && ApplyLigature(data, subtable.Offset, ref glyphs, index, glyphs.Length, token)) break;
-                    if (subtable.Type == 6 && ApplyClassContext(data, graph, subtable.Offset, glyphs, index, token, out progress)) break;
+                    if (subtable.Type == 1) ValidateSingleSubstitution(data, graph.Range, subtable.Offset, metrics.GlyphCount, token);
+                    else if (subtable.Type == 4) ValidateLigatureSubtable(data, graph.Range, subtable.Offset, metrics.GlyphCount, ref records, token);
+                    else ValidateClassContext(data, graph.Range, graph.LookupList, subtable.Offset, metrics.GlyphCount, ref records,
+                        validated, ref validatedCount, ContextActionKind.Substitution, token);
+                    continue;
                 }
-                index += progress;
+                int coverage = ReadInputCoverage(data, graph.Range, subtable);
+                ValidateGlyphCoverage(data, graph.Range, coverage, metrics.GlyphCount, token);
+                if (CoverageIntersectsRun(data, coverage, glyphs, token))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "The run requires an unsupported canonical GSUB lookup.");
             }
+            if (flags == 0) ApplyCanonicalLookup(data, graph, lookup, ref glyphs, token);
         }
         return glyphs.Length;
+
+        static int ReadInputCoverage(ReadOnlySpan<byte> data, OpenTypeTableRange table, GsubSubtable subtable)
+        {
+            int offset = subtable.Offset, format = ReadUInt16(data, offset), field = offset + 2;
+            if (subtable.Type is 5 or 6 && format == 3)
+            {
+                if (subtable.Type == 6)
+                {
+                    int backtrack = ReadUInt16(data, field);
+                    RequireTableRange(table, field, 2 + backtrack * 2 + 4, "GSUB context input coverage");
+                    field += 2 + backtrack * 2;
+                }
+                else RequireTableRange(table, field, 6, "GSUB context input coverage");
+                if (ReadUInt16(data, field) == 0) throw InvalidFont("A GSUB context input cannot be empty.");
+                field += subtable.Type == 5 ? 4 : 2;
+            }
+            else if (subtable.Type is < 1 or > 8 || subtable.Type == 7 || format is < 1 or > 2)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "This canonical GSUB input format is not supported.");
+            return GetTableOffset(table, offset, ReadUInt16(data, field), 4, "GSUB input coverage");
+        }
+    }
+
+    private static bool IsSupportedCanonicalSubtable(ReadOnlySpan<byte> data, GsubSubtable subtable)
+        => (subtable.Type, ReadUInt16(data, subtable.Offset)) is (1, 1 or 2) or (4, 1) or (6, 2);
+
+    private static void ApplyCanonicalLookup(ReadOnlySpan<byte> data, OpenTypeGsubCompositionTable graph, int lookup, ref Span<SvgShapingGlyph> glyphs, CancellationToken token)
+    {
+        int count = ReadUInt16(data, lookup + 4);
+        for (int index = 0; index < glyphs.Length;)
+        {
+            token.ThrowIfCancellationRequested();
+            int progress = 1;
+            for (int subtableIndex = 0; subtableIndex < count; subtableIndex++)
+            {
+                GsubSubtable subtable = ReadGsubSubtable(data, graph.Range, lookup, subtableIndex);
+                if (!IsSupportedCanonicalSubtable(data, subtable)) continue;
+                if (subtable.Type == 1 && ApplySingle(data, subtable.Offset, ref glyphs[index], token)) break;
+                if (subtable.Type == 4 && ApplyLigature(data, subtable.Offset, ref glyphs, index, glyphs.Length, token)) break;
+                if (subtable.Type == 6 && ApplyClassContext(data, graph, subtable.Offset, glyphs, index, token, out progress)) break;
+            }
+            index += progress;
+        }
 
         static bool ApplyClassContext(ReadOnlySpan<byte> data, OpenTypeGsubCompositionTable graph, int offset,
             Span<SvgShapingGlyph> glyphs, int index, CancellationToken token, out int progress)
@@ -235,5 +313,5 @@ internal static partial class OpenTypeFont
     }
 }
 
-/// <summary>Validated borrowed canonical-substitution offsets, without owned data or mutable shared state.</summary>
+/// <summary>Borrowed selected-feature offsets; strict feature validation and run execution have separate contracts. Owns no storage or shared mutation.</summary>
 internal readonly record struct OpenTypeGsubCompositionTable(OpenTypeTableRange Range, int Feature, int LookupList);

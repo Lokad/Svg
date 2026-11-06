@@ -58,7 +58,7 @@ public sealed partial class OpenTypeFontTests
         SvgPreparedFont plain = Assert.Single(ordinary.Fonts), marked = Assert.Single(canonical.Fonts);
         SvgTextResolvedFontSpan[] fonts = [new(0, 1, new(plain, 24)), new(1, 4, new(marked, 24))];
         RenderBudget budget = new(new HostMemoryBudget(1_000_000));
-        using (OwnedParserArray<SvgShapingGlyph> result = SvgTextShaping.Create(plain, 24, "Ai\u0307\u0301", 0, [], [], [], fonts, [], [], null, budget, CancellationToken.None))
+        using (OwnedParserArray<SvgShapingGlyph> result = SvgTextShaping.Create(plain, 24, "Ai\u0307\u0301", 0, [], [], [], fonts, [], null, budget, CancellationToken.None))
         {
             Assert.Equal(new ushort[] { 36, 1766, 2661, 2663 }, result.Items.Select(glyph => glyph.GlyphIndex));
             Assert.Equal(new[] { -1, -1, 1, 2 }, result.Items.Select(glyph => glyph.Attachment.Parent));
@@ -69,22 +69,25 @@ public sealed partial class OpenTypeFontTests
         static int Read16(ReadOnlySpan<byte> bytes, int offset) => BinaryPrimitives.ReadUInt16BigEndian(bytes[offset..]);
     }
 
-    [Fact]
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     [Trait("Layer", "Contract")]
-    public async Task Canonical_shaping_releases_partial_and_exact_storage_after_refusal_cancellation_and_retry()
+    public async Task Canonical_shaping_releases_partial_and_exact_storage_after_refusal_cancellation_and_retry(bool unmarkedFeature)
     {
-        byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-paint-bounds", "sans.ttf"));
+        byte[] bytes = unmarkedFeature ? FeatureProgram(TextFeatureProgram.Ccmp) : File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-paint-bounds", "sans.ttf"));
+        string text = unmarkedFeature ? "AVAVAV" : "i\u0307\u0301 j\u0307\u0323\u0301 \u012F\u0307\u0300";
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(fonts.Fonts);
         RenderBudget measured = new(new HostMemoryBudget(1_000_000));
-        using (OwnedParserArray<SvgShapingGlyph> result = Create(font, measured, CancellationToken.None)) Assert.NotEmpty(result.Items);
+        using (OwnedParserArray<SvgShapingGlyph> result = Create(font, measured, CancellationToken.None, text)) Assert.NotEmpty(result.Items);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         HostMemoryBudget host = new(measured.Snapshot().PeakBytes - 1);
         RenderBudget refused = new(host);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Create(font, refused, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Create(font, refused, CancellationToken.None, text)).ErrorCode);
         Assert.Equal(0, refused.Snapshot().CurrentBytes);
         host.Limit = measured.Snapshot().PeakBytes;
-        using (OwnedParserArray<SvgShapingGlyph> retry = Create(font, refused, CancellationToken.None)) Assert.NotEmpty(retry.Items);
+        using (OwnedParserArray<SvgShapingGlyph> retry = Create(font, refused, CancellationToken.None, text)) Assert.NotEmpty(retry.Items);
         Assert.Equal(0, refused.Snapshot().CurrentBytes);
 
         RenderBudget partial = new(new HostMemoryBudget(1_000_000));
@@ -97,16 +100,16 @@ public sealed partial class OpenTypeFontTests
             cancellation.Cancel();
         }))
         {
-            OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Create(font, partial, cancellation.Token));
+            OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Create(font, partial, cancellation.Token, text));
             Assert.Equal(cancellation.Token, error.CancellationToken);
         }
         Assert.True(observedPartial);
         Assert.Equal(0, partial.Snapshot().CurrentBytes);
-        using (OwnedParserArray<SvgShapingGlyph> retry = Create(font, partial, CancellationToken.None)) Assert.NotEmpty(retry.Items);
+        using (OwnedParserArray<SvgShapingGlyph> retry = Create(font, partial, CancellationToken.None, text)) Assert.NotEmpty(retry.Items);
         Assert.Equal(0, partial.Snapshot().CurrentBytes);
 
-        static OwnedParserArray<SvgShapingGlyph> Create(SvgPreparedFont font, RenderBudget budget, CancellationToken token)
-            => SvgTextShaping.Create(font, 24, "i\u0307\u0301 j\u0307\u0323\u0301 \u012F\u0307\u0300", 0, [], [], [], [], [], [], null, budget, token);
+        static OwnedParserArray<SvgShapingGlyph> Create(SvgPreparedFont font, RenderBudget budget, CancellationToken token, string text)
+            => SvgTextShaping.Create(font, 24, text, 0, [], [], [], [], [], null, budget, token);
     }
 
     [Theory]
@@ -127,7 +130,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new(new HostMemoryBudget(1_000_000));
         SvgException error = Assert.Throws<SvgException>(() => SvgTextShaping.Create(Assert.Single(fonts.Fonts), 24, "i\u0307\u0301", 0,
-            [], [], [], [], [], [], null, budget, CancellationToken.None));
+            [], [], [], [], [], null, budget, CancellationToken.None));
         Assert.Equal(expected, error.ErrorCode);
         Assert.True(budget.Snapshot().PeakBytes > 0);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

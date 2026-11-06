@@ -519,21 +519,25 @@ Character admission uses pinned Unicode direction, script, joining and syllabic
 properties; it conservatively excludes whole scripts requiring unsupported
 layout. [Independent ordering controls](../tests/Research/text-layout-admission/README.md)
 distinguish admission from cmap coverage. Dormant text creates no font demand.
+Selected font features run for ordinary glyphs as well as canonical sequences.
 The admitted substitutions are unfiltered single, ligature and bounded
 class-context substitutions calling single lookups. Shared source clusters retain
 original paint/position ownership. Selected GPOS `mark`/`mkmk` supports base,
 actual ligature-component and mark attachment with format-1 anchors and validated
 GDEF classes/filter sets. Contextual kerning admits bounded class contexts calling
 single X-advance adjustments. Marks and default-ignorables keep their context
-through positioning before their advances are zeroed. Unsupported selected lookup
-forms still reject; attached marks on text paths remain unsupported.
+through positioning before their advances are zeroed. Known input coverage may
+exclude an unsupported lookup from a run; unknown or covered unsupported forms
+reject. Attached marks on text paths remain unsupported.
 
 `SvgFontFaceRequest.FromCss` preserves family order, quoting, escapes and named/
 generic identity. `SvgFontSelectionPolicy` supplies host generic mappings and
 fallback restrictions. CSS requests use directional weight fallback, including
 400–500; literal constructor requests retain nearest-weight selection. SVG-based
 preparation acquires later families lazily for uncovered admitted scalars, one
-program per interval. Request-only creation has no coverage to inspect and selects
+program per interval. A scalar is covered by its direct glyph or its complete
+canonical decomposition in one physical face; acquisition and face selection
+share this rule. Request-only creation has no coverage to inspect and selects
 the first face; raw conversion uses only supplied prepared snapshot requests.
 Kerning/ligatures stay within selected faces.
 

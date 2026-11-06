@@ -51,10 +51,21 @@ public sealed partial class OpenTypeFontTests
         Mutate(bytes, defect);
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new(new HostMemoryBudget(1_000_000));
-        SvgException error = Assert.Throws<SvgException>(() => SvgTextShaping.Create(Assert.Single(fonts.Fonts), 24, "i\u0307\u0301", 0,
-            [], [], [], [], [], [], null, budget, CancellationToken.None));
+        SvgPreparedFont font = Assert.Single(fonts.Fonts);
+        SvgException error;
+        if (defect.StartsWith("gpos-", StringComparison.Ordinal))
+        {
+            using BudgetedParserList<SvgShapingGlyph> glyphs = new(budget, SvgMemoryCategory.Geometry, CancellationToken.None);
+            SvgCanonicalText.AppendGlyphs(font, "i\u0307\u0301", 0, 3, glyphs, CancellationToken.None);
+            error = Assert.Throws<SvgException>(() => OpenTypeFont.ApplyContextualAdvances(bytes, font.Metrics, glyphs.AsMutableSpan(), CancellationToken.None));
+            Assert.True(budget.Snapshot().PeakBytes > 0);
+        }
+        else
+        {
+            error = Assert.Throws<SvgException>(() => OpenTypeFont.GetCanonicalSubstitutions(bytes, font.Metrics, CancellationToken.None));
+            Assert.Equal(0, budget.Snapshot().PeakBytes);
+        }
         Assert.Equal(expected, error.ErrorCode);
-        Assert.True(budget.Snapshot().PeakBytes > 0);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
         static void Mutate(byte[] bytes, string defect)

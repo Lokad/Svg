@@ -65,7 +65,7 @@ public sealed partial class OpenTypeFontTests
             OpenTypeFont.ApplyContextualAdvances(bytes, font.Metrics, glyphs.AsMutableSpan(), CancellationToken.None);
             Assert.Equal(expected, glyphs.AsSpan().ToArray().Single(glyph => glyph.Scalar.Value == 0x303).ContextAdvance);
         }
-        using (OwnedParserArray<SvgShapingGlyph> final = SvgTextShaping.Create(font, 24, text, 0, [], [], [], [], [], [], null, budget, CancellationToken.None))
+        using (OwnedParserArray<SvgShapingGlyph> final = SvgTextShaping.Create(font, 24, text, 0, [], [], [], [], [], null, budget, CancellationToken.None))
             Assert.All(final.Items, glyph => Assert.Equal(0, glyph.ContextAdvance));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

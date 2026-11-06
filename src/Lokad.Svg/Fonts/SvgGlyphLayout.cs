@@ -137,7 +137,7 @@ internal static class SvgGlyphLayout
         }
         if (glyphCount == 0) return (new SvgPositionedGlyphStorage([], 0, null), deviceMetrics, new(false, 1));
         using OwnedParserArray<SvgShapingGlyph> shaping = SvgTextShaping.Create(font, fontSize, text, letterSpacing,
-            letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, nodeBoundaries, placementRanges, deviceMetrics, budget, cancellationToken);
+            letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, nodeBoundaries, deviceMetrics, budget, cancellationToken);
         bool shaped = shaping.Items.Length != 0;
         if (shaped) glyphCount = shaping.Items.Length;
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + glyphCount * 32L), SvgMemoryCategory.Geometry);

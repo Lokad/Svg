@@ -4,31 +4,42 @@ using System.Text;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
-/// <summary>Builds optional, run-local canonical glyph/cluster data before ordinary layout.</summary>
+/// <summary>Runs normalization and selected font features in shared, source-partitioned glyph storage.</summary>
 internal static class SvgTextShaping
 {
-    /// <summary>Returns empty borrowed storage for ordinary text, or owns the shaped sequence until layout finishes.</summary>
+    /// <summary>Lends empty storage when neither normalization nor selected run features require work; otherwise owns glyphs until layout finishes.</summary>
     /// <remarks>Font programs and source styles remain borrowed. Only source partitions selecting
-    /// the same physical face/size, paint, spacing and placement may share substitutions or attachment.
-    /// Absolute positions and native scaled-element boundaries also stop shaping. All material capacity
+    /// the same physical face/size, paint and spacing may share substitutions or attachment.
+    /// Absolute positions and native scaled-element boundaries also stop shaping. Placement follows retained source clusters;
+    /// text-path transitions do not add a shaping boundary. All material capacity
     /// is charged to the caller's budget and released on refusal, cancellation or failed validation.
     /// Callers serialize the operation and keep every borrowed font alive through layout.</remarks>
     internal static OwnedParserArray<SvgShapingGlyph> Create(SvgPreparedFont defaultFont, double defaultSize, string text,
         double defaultSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> spacingSpans,
         ReadOnlySpan<SvgTextPositionAdjustment> positions, ReadOnlySpan<SvgTextPaintSpan> paints,
         ReadOnlySpan<SvgTextResolvedFontSpan> fonts, ReadOnlySpan<SvgTextNodeBoundary> nodes,
-        ReadOnlySpan<SvgTextPlacementRange> placements, SvgGlyphDeviceMetrics? metrics,
+        SvgGlyphDeviceMetrics? metrics,
         RenderBudget budget, CancellationToken token)
     {
+        if (text.Length == 0) return new([], null);
         bool required = false;
         foreach (Rune scalar in text.EnumerateRunes())
         {
             token.ThrowIfCancellationRequested();
-            if (SvgCanonicalText.GetProperties(scalar).IsMark || SvgCanonicalText.IsDefaultIgnorable(scalar)) { required = true; break; }
+            if (SvgCanonicalText.RequiresNormalization(scalar)) { required = true; break; }
+        }
+        if (!required)
+        {
+            if (fonts.IsEmpty) required = HasRunFeatures(defaultFont, token);
+            else foreach (SvgTextResolvedFontSpan span in fonts)
+            {
+                token.ThrowIfCancellationRequested();
+                if (span.End > span.Start && HasRunFeatures(span.Style.Font, token)) { required = true; break; }
+            }
         }
         if (!required) return new([], null);
         using BudgetedParserList<SvgShapingGlyph> output = new(budget, SvgMemoryCategory.Geometry, token);
-        int fontIndex = 0, paintIndex = 0, spacingIndex = 0, positionIndex = 0, nodeIndex = 0, placementIndex = 0;
+        int fontIndex = 0, paintIndex = 0, spacingIndex = 0, positionIndex = 0, nodeIndex = 0;
         for (int source = 0; source < text.Length;)
         {
             token.ThrowIfCancellationRequested();
@@ -57,26 +68,18 @@ internal static class SvgTextShaping
             while (nodeIndex < nodes.Length && (nodes[nodeIndex].Offset <= source || !nodes[nodeIndex].ChangesElement)) nodeIndex++;
             if (metrics is {} native && (float)face.FontSize * (float)native.Scale != (float)face.FontSize && nodeIndex < nodes.Length)
                 end = Math.Min(end, nodes[nodeIndex].Offset);
-            if (!placements.IsEmpty)
-            {
-                while (placements[placementIndex].End <= source) placementIndex++;
-                end = Math.Min(end, placements[placementIndex].End);
-            }
             int first = output.Count;
-            bool canonicalRun = false;
+            bool normalizeRun = false;
             foreach (Rune scalar in text.AsSpan(source, end - source).EnumerateRunes())
             {
                 token.ThrowIfCancellationRequested();
-                if (SvgCanonicalText.GetProperties(scalar).IsMark || SvgCanonicalText.IsDefaultIgnorable(scalar)) { canonicalRun = true; break; }
+                if (SvgCanonicalText.RequiresNormalization(scalar)) { normalizeRun = true; break; }
             }
-            if (canonicalRun) SvgCanonicalText.AppendGlyphs(face.Font, text, source, end, output, token);
+            if (normalizeRun) SvgCanonicalText.AppendGlyphs(face.Font, text, source, end, output, token);
             else AppendCmap(face.Font, text, source, end, output, token);
             if (output.Count > SvgTextLimits.MaximumCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Canonical text expansion exceeds the admitted glyph limit.");
-            if (canonicalRun && OpenTypeFont.GetCanonicalSubstitutions(face.Font.Bytes, face.Font.Metrics, token) is {} canonical)
-            {
-                int count = OpenTypeFont.ApplyCanonicalSubstitutions(face.Font.Bytes, canonical, output.AsMutableSpan()[first..], token);
-                while (output.Count > first + count) { token.ThrowIfCancellationRequested(); output.RemoveLast(); }
-            }
+            int canonicalCount = OpenTypeFont.ApplyCanonicalSubstitutionsForRun(face.Font.Bytes, face.Font.Metrics, output.AsMutableSpan()[first..], token);
+            while (output.Count > first + canonicalCount) { token.ThrowIfCancellationRequested(); output.RemoveLast(); }
             if (spacing == 0 && OpenTypeFont.GetLatinLigatures(face.Font.Bytes, face.Font.Metrics, token) is {} ligatures)
             {
                 int count = OpenTypeFont.ApplyLatinLigatures(face.Font.Bytes, ligatures, output.AsMutableSpan()[first..], token);
@@ -90,7 +93,7 @@ internal static class SvgTextShaping
                 token.ThrowIfCancellationRequested();
                 attachesMarks |= !glyph.IsDefaultIgnorable && SvgCanonicalText.GetProperties(glyph.Scalar).IsMark;
             }
-            if (canonicalRun) OpenTypeFont.ApplyContextualAdvances(face.Font.Bytes, face.Font.Metrics, run, token);
+            OpenTypeFont.ApplyContextualAdvancesForRun(face.Font.Bytes, face.Font.Metrics, run, token);
             if (attachesMarks && OpenTypeFont.GetMarkPositioning(face.Font.Bytes, face.Font.Metrics, token) is {} marks)
                 OpenTypeFont.AttachMarks(face.Font.Bytes, marks, run, token);
             for (int index = 0; index < run.Length; index++)
@@ -99,8 +102,7 @@ internal static class SvgTextShaping
                 SvgShapingGlyph glyph = run[index];
                 if (glyph.GlyphIndex != 0)
                 {
-                    if (canonicalRun) OpenTypeFont.ValidateShapedGlyphPositioning(face.Font.Bytes, glyph, face.Font.Metrics, token);
-                    else OpenTypeFont.ValidateGlyphPositioning(face.Font.Bytes, glyph.GlyphIndex, face.Font.Metrics, token);
+                    OpenTypeFont.ValidateShapedGlyphPositioning(face.Font.Bytes, glyph, face.Font.Metrics, token);
                 }
                 if (glyph.IsDefaultIgnorable) { glyph = glyph with { ContextAdvance = 0 }; run[index] = glyph; }
                 if (glyph.Attachment.Parent >= 0)
@@ -111,6 +113,10 @@ internal static class SvgTextShaping
             source = end;
         }
         return output.Detach();
+
+        static bool HasRunFeatures(SvgPreparedFont font, CancellationToken token)
+            => OpenTypeFont.HasCanonicalSubstitutions(font.Bytes, font.Metrics, token)
+                || OpenTypeFont.HasContextualAdvances(font.Bytes, font.Metrics, token);
 
         static void AppendCmap(SvgPreparedFont font, string text, int start, int end, BudgetedParserList<SvgShapingGlyph> output, CancellationToken token)
         {

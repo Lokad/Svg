@@ -35,6 +35,34 @@ internal static partial class SvgCanonicalText
         return ((byte)(properties & 255), (properties & 256) != 0);
     }
 
+    /// <summary>Checks scalar work independently of a font's selected substitution/positioning features.</summary>
+    /// <remarks>Uses pinned canonical data, including singleton decompositions; owns no storage.</remarks>
+    internal static bool RequiresNormalization(Rune scalar)
+    {
+        if (scalar.IsAscii) return false;
+        if (GetProperties(scalar).IsMark || IsDefaultIgnorable(scalar)) return true;
+        Span<Rune> parts = stackalloc Rune[MaximumDecomposedScalars];
+        int count = Decompose(scalar, parts);
+        return count != 1 || parts[0] != scalar;
+    }
+
+    /// <summary>Checks direct or complete canonical-component coverage against one borrowed physical font.</summary>
+    /// <remarks>Acquisition and face selection share this predicate with normalization. No program or storage is acquired;
+    /// all component cmap traversals observe cancellation. Partial decomposition coverage never selects a face.</remarks>
+    internal static bool HasCoverage(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, Rune scalar, CancellationToken token)
+    {
+        if (OpenTypeFont.GetGlyphIndex(bytes, (uint)scalar.Value, metrics, token) != 0) return true;
+        Span<Rune> parts = stackalloc Rune[MaximumDecomposedScalars];
+        int count = Decompose(scalar, parts);
+        if (count == 1 && parts[0] == scalar) return false;
+        for (int index = 0; index < count; index++)
+        {
+            token.ThrowIfCancellationRequested();
+            if (OpenTypeFont.GetGlyphIndex(bytes, (uint)parts[index].Value, metrics, token) == 0) return false;
+        }
+        return true;
+    }
+
     /// <summary>Reads pinned layout requirements independently of font coverage and canonical mark properties.</summary>
     internal static SvgTextLayoutRequirement GetLayoutRequirements(Rune scalar)
         => (SvgTextLayoutRequirement)(GetPackedProperties(scalar) & 1536);

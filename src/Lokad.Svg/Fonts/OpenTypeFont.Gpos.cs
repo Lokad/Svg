@@ -9,10 +9,10 @@ internal static partial class OpenTypeFont
 
     /// <summary>
     /// Validates borrowed pair-list/class kerning without allocating lookup storage.
-    /// Chained-context format-2 coverage is an admission guard, never a shaping
-    /// implementation: covered glyphs remain unsupported even in a one-glyph run.
-    /// Pair lookup filters admit bounded GDEF data; actual mark-positioning runs
-    /// remain outside the supported text subset.
+    /// Direct scalar entry retains a conservative chained-context coverage guard.
+    /// Complete runs execute supported format-2 contexts before shaped-glyph validation;
+    /// canonical mark attachment uses its separate selected mark/mkmk graph.
+    /// Pair lookup filters admit bounded GDEF data.
     /// Every traversal observes cancellation.
     /// </summary>
     private static OpenTypeGposPairTable? ParseGposPairTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, OpenTypeTableRange? gdef, ushort glyphCount, CancellationToken cancellationToken)

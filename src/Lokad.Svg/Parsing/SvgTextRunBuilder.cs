@@ -162,7 +162,7 @@ internal static class SvgTextRunBuilder
             foreach (Rune scalar in text.AsSpan(start, end - start).EnumerateRunes())
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                SvgPreparedFont selected = snapshot.GetFontForScalar(request, primary, (uint)scalar.Value, cancellationToken);
+                SvgPreparedFont selected = snapshot.GetFontForScalar(request, primary, scalar, cancellationToken);
                 if (current is not null && !ReferenceEquals(current, selected))
                 {
                     AddResolvedFont(resolvedFonts, new(groupStart, offset, new(current, fontSize)), text);

@@ -1,5 +1,7 @@
 namespace Lokad.Svg.Fonts;
 
+using System.Text;
+
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
@@ -65,7 +67,7 @@ public sealed partial class SvgFontSnapshot
                     for (int index = 0; index < remaining.Length; index++)
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!remaining[index] || OpenTypeFont.GetGlyphIndex(program.Bytes, item.Scalars[index], program.Metrics, token) == 0) continue;
+                        if (!remaining[index] || !SvgCanonicalText.HasCoverage(program.Bytes, program.Metrics, new Rune((int)item.Scalars[index]), token)) continue;
                         remaining[index] = false; needed--; contributes = true;
                     }
                     if (contributes)
@@ -103,10 +105,10 @@ public sealed partial class SvgFontSnapshot
     }
 
     /// <summary>Selects the first prepared covering program while preserving primary ownership and unsupported shaping outcomes.</summary>
-    internal SvgPreparedFont GetFontForScalar(SvgFontFaceRequest request, SvgPreparedFont primary, uint scalar, CancellationToken token)
+    internal SvgPreparedFont GetFontForScalar(SvgFontFaceRequest request, SvgPreparedFont primary, Rune scalar, CancellationToken token)
     {
         ThrowIfDisposed();
-        if (!SvgFontCoverageDiscovery.AllowsScalarFallback(scalar) || OpenTypeFont.GetGlyphIndex(primary.Bytes, scalar, primary.Metrics, token) != 0) return primary;
+        if (!SvgFontCoverageDiscovery.AllowsScalarFallback((uint)scalar.Value) || SvgCanonicalText.HasCoverage(primary.Bytes, primary.Metrics, scalar, token)) return primary;
         for (int pass = 0; pass < 2; pass++)
         {
             foreach (SvgPreparedFont font in _fonts)
@@ -114,7 +116,7 @@ public sealed partial class SvgFontSnapshot
                 token.ThrowIfCancellationRequested();
                 SvgFontFaceRequest selected = font.Resolution.Resolution.Request;
                 if (ReferenceEquals(font, primary) || !selected.Matches(request) || (selected.IsCssRequest == request.IsCssRequest) != (pass == 0)) continue;
-                if (OpenTypeFont.GetGlyphIndex(font.Bytes, scalar, font.Metrics, token) != 0) return font;
+                if (SvgCanonicalText.HasCoverage(font.Bytes, font.Metrics, scalar, token)) return font;
             }
         }
         return primary;

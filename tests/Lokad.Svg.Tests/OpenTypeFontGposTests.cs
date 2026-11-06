@@ -50,7 +50,8 @@ public sealed partial class OpenTypeFontTests
     [Fact]
     public async Task Gpos_dormant_context_does_not_poison_uncovered_glyphs_but_guards_a_single_glyph()
     {
-        // Coverage alone is the conservative boundary; context bodies are never executed.
+        // Raw scalar entry keeps its conservative coverage guard. Complete runs
+        // ignore uncovered bodies and validate a covered context before execution.
         ushort[] context = [2, 12, 0, 0, 0, 0, 1, 1, 0];
         byte[] font = CreateKerningGraphFont([CreateKerningLookup(8, 0, context), CreateKerningLookup(2, 0, CreatePairList(1, -100))], [0, 1]);
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(font)], CancellationToken.None);
@@ -65,7 +66,9 @@ public sealed partial class OpenTypeFontTests
         WriteUInt16(covered, subtable + 16, 1);
         using SvgFontSnapshot coveredSnapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(covered)], CancellationToken.None);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_024));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(Assert.Single(coveredSnapshot.Fonts), "A", 100, 0, 3, SvgTextAnchor.Start, budget, CancellationToken.None)).ErrorCode);
+        SvgPreparedFont coveredFont = Assert.Single(coveredSnapshot.Fonts);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.ValidateGlyphPositioning(covered, 1, coveredFont.Metrics, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(coveredFont, "A", 100, 0, 3, SvgTextAnchor.Start, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Single(SvgGlyphLayout.Layout(prepared, "A", 100, 0, 3, CancellationToken.None));
     }

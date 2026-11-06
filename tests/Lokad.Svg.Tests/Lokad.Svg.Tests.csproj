@@ -189,6 +189,10 @@
     <None Include="../Research/kerning-precedence/fonts/PlainKern.ttf" Link="TestData/kerning-precedence/PlainKern.ttf" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-layout-admission/rtl/font.ttf" Link="TestData/text-layout-admission/rtl.ttf" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-layout-admission/syllabic/font.ttf" Link="TestData/text-layout-admission/syllabic.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-feature-dispatch/font.ttf" Link="TestData/text-feature-dispatch/ccmp.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-feature-dispatch/context/font.ttf" Link="TestData/text-feature-dispatch/context.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-feature-dispatch/normalization/font.ttf" Link="TestData/text-feature-dispatch/normalization.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-feature-dispatch/normalization-fallback/fallback.ttf" Link="TestData/text-feature-dispatch/fallback.ttf" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../Research/windows-font-unit-scaling/fonts/*.ttf" Link="TestData/windows-font-unit-scaling/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
