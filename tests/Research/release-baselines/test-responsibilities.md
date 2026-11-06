@@ -12,6 +12,10 @@ The [instance/replay](instance-replay-responsibilities.json) and
 PNG comparison. Every original case remains, including the 12,000-use graph,
 memory sweeps and explicitly mapped test names.
 The explicit `Category=Research` selection remains independent of the layer.
+The [weight-admission split](weight-admission-responsibilities.json) separates
+scalar grammar from context contracts. Every original context remains individually
+discoverable, with representative routine rows and the remainder in Research.
+Direct and prepared rejection/selection paths retain one small shared helper.
 The [comparison/decoder split](comparison-decoder-responsibilities.json) retains
 26 direct mechanism cases and moves 41 intact SVG pixel checks to their rendering
 class. Exact alpha/PNG boundaries and the native full-canvas rounding regression

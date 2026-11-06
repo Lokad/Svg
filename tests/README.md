@@ -37,6 +37,16 @@ Research is a separate category, independent of layer. Extended numerical-contex
 products remain individually selectable with `Category=Research` and run in full
 qualification; former failing interactions remain routine.
 
+[Font-weight admission](Lokad.Svg.Tests/OpenTypeFontTests.WeightAdmission.cs) keeps
+ten numerical boundaries in `Mechanism`. The 24 routine `Contract` rows exercise
+weights 1000/1001 through each declaration source and container; 96 individual
+`Contract, Category=Research` rows retain the other original combinations. Select
+`FullyQualifiedName~weight_contexts&Category!=Research` for routine contexts or
+omit the category filter for all contexts. Request/face selection and acquisition
+counts protect behavior independently of equal images. The
+[coverage/cost record](Research/release-baselines/weight-admission-responsibilities.json)
+maps the original matrix and its regression sensitivity.
+
 [Shadow source demand](Research/release-baselines/shadow-sampling-guard.json) and
 [foreground drawing](Research/release-baselines/shadow-foreground.json) keep eight
 direct demand/precision cases, two ownership paths sharing the existing failure/

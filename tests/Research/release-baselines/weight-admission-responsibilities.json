@@ -1,0 +1,1449 @@
+{
+  "status": "Weight-admission responsibilities separated. All 120 original context combinations and ten numeric boundaries retained; routine conversion work reduced without changing renderer code or native targets.",
+  "repositoryBaseCommit": "08ff4d689370baa2d5ae30b08db026a285f09809",
+  "qualifiedProductionSourceCommit": "c780283f423090a4363a7975f00db86a09064854",
+  "priorFullQualification": "css-at-rule-admission.json",
+  "hashPolicy": "Canonical LF for source/metadata; exact bytes for program/reference data.",
+  "sourceBindings": [
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.WeightAdmission.cs",
+      "sha256": "2a7067b13e847e432aed3d7f2d3c592a9e9a25a6c0a16aaa99fd770d54ca0f18"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/OpenTypeFontTests.cs",
+      "sha256": "c23264e6a84dc0fb30d52f8eeb44b32ab3d5f4d3a976edcbfd45a829b1438519"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgTextSyntax.cs",
+      "sha256": "39c97b2bd1ead67ff474c91c5b22d10cccf46a271038d6b772815f0e6cf249be"
+    },
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgInheritedTextStyle.cs",
+      "sha256": "607c8c18f7cc343e726e3ef623f30735bf336e0795458fd7b26bf789b9659904"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs",
+      "sha256": "82c9ce06b39db5de6fc6fec26af782a2a377bb6c8ee03264c791c4a6b246d622"
+    },
+    {
+      "path": "src/Lokad.Svg/Fonts/SvgFontSnapshot.cs",
+      "sha256": "b8fc1e6a4ab1bdb7caf304631fe2936dcb3c1bf6b7e5be678cfbdbd491516393"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgFontWeightMatchingTests.cs",
+      "sha256": "fdea522215b75a7b34313172c61a35c554cca21dbebdf6ccc03e7fe472d1bcea"
+    },
+    {
+      "path": "tests/README.md",
+      "sha256": "d8f8e5110a33187bc55c0029f494cf5d7336456702fb73336f6cda0ac8683d49"
+    },
+    {
+      "path": "tests/Research/release-baselines/test-responsibilities.md",
+      "sha256": "5400f11bb51d9ad4221f80f591a2396834459fffda022dee906eca4892ee1893"
+    },
+    {
+      "path": "tests/Research/release-baselines/support-claim-map.md",
+      "sha256": "9820646d559d301f5f0f13ae83be30cd6ee7be382e7cf92ec632b8b26119c566"
+    }
+  ],
+  "originalRegression": {
+    "commit": "5035ff4e41cbc9c6bbf879ab9e808100bd90dd7f",
+    "cause": "Shared SVG weight parser accepted every positive Int32, including values above 1000; literal public request objects deliberately have a different positive-weight contract.",
+    "originalTestSourceSha256": "da1b8ba74616281455f43de591c6bd9f36068fc963d3c17f8224c22e6815711b"
+  },
+  "coverage": {
+    "before": {
+      "discoveredTestRows": 11,
+      "hiddenContextCombinations": 120
+    },
+    "after": {
+      "scalarMechanisms": 10,
+      "routineContextContracts": 24,
+      "extendedResearchContextContracts": 96,
+      "literalPublicRequestContract": 1,
+      "routineTestRows": 35,
+      "fullTestRows": 131
+    },
+    "numericalCases": [
+      {
+        "weight": -1,
+        "admitted": false
+      },
+      {
+        "weight": 0,
+        "admitted": false
+      },
+      {
+        "weight": 1,
+        "admitted": true
+      },
+      {
+        "weight": 400,
+        "admitted": true
+      },
+      {
+        "weight": 500,
+        "admitted": true
+      },
+      {
+        "weight": 700,
+        "admitted": true
+      },
+      {
+        "weight": 1000,
+        "admitted": true
+      },
+      {
+        "weight": 1001,
+        "admitted": false
+      },
+      {
+        "weight": 2000,
+        "admitted": false
+      },
+      {
+        "weight": 2147483647,
+        "admitted": false
+      }
+    ],
+    "declarationSources": [
+      "Attribute",
+      "Inline",
+      "Rule"
+    ],
+    "containers": [
+      "Text",
+      "Group",
+      "Symbol",
+      "Pattern"
+    ],
+    "routineContexts": [
+      [
+        1000,
+        true,
+        "Attribute",
+        "Group"
+      ],
+      [
+        1000,
+        true,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        1000,
+        true,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        1000,
+        true,
+        "Attribute",
+        "Text"
+      ],
+      [
+        1000,
+        true,
+        "Inline",
+        "Group"
+      ],
+      [
+        1000,
+        true,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        1000,
+        true,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        1000,
+        true,
+        "Inline",
+        "Text"
+      ],
+      [
+        1000,
+        true,
+        "Rule",
+        "Group"
+      ],
+      [
+        1000,
+        true,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        1000,
+        true,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        1000,
+        true,
+        "Rule",
+        "Text"
+      ],
+      [
+        1001,
+        false,
+        "Attribute",
+        "Group"
+      ],
+      [
+        1001,
+        false,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        1001,
+        false,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        1001,
+        false,
+        "Attribute",
+        "Text"
+      ],
+      [
+        1001,
+        false,
+        "Inline",
+        "Group"
+      ],
+      [
+        1001,
+        false,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        1001,
+        false,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        1001,
+        false,
+        "Inline",
+        "Text"
+      ],
+      [
+        1001,
+        false,
+        "Rule",
+        "Group"
+      ],
+      [
+        1001,
+        false,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        1001,
+        false,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        1001,
+        false,
+        "Rule",
+        "Text"
+      ]
+    ],
+    "researchContexts": [
+      [
+        -1,
+        false,
+        "Attribute",
+        "Group"
+      ],
+      [
+        -1,
+        false,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        -1,
+        false,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        -1,
+        false,
+        "Attribute",
+        "Text"
+      ],
+      [
+        -1,
+        false,
+        "Inline",
+        "Group"
+      ],
+      [
+        -1,
+        false,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        -1,
+        false,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        -1,
+        false,
+        "Inline",
+        "Text"
+      ],
+      [
+        -1,
+        false,
+        "Rule",
+        "Group"
+      ],
+      [
+        -1,
+        false,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        -1,
+        false,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        -1,
+        false,
+        "Rule",
+        "Text"
+      ],
+      [
+        0,
+        false,
+        "Attribute",
+        "Group"
+      ],
+      [
+        0,
+        false,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        0,
+        false,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        0,
+        false,
+        "Attribute",
+        "Text"
+      ],
+      [
+        0,
+        false,
+        "Inline",
+        "Group"
+      ],
+      [
+        0,
+        false,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        0,
+        false,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        0,
+        false,
+        "Inline",
+        "Text"
+      ],
+      [
+        0,
+        false,
+        "Rule",
+        "Group"
+      ],
+      [
+        0,
+        false,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        0,
+        false,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        0,
+        false,
+        "Rule",
+        "Text"
+      ],
+      [
+        1,
+        true,
+        "Attribute",
+        "Group"
+      ],
+      [
+        1,
+        true,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        1,
+        true,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        1,
+        true,
+        "Attribute",
+        "Text"
+      ],
+      [
+        1,
+        true,
+        "Inline",
+        "Group"
+      ],
+      [
+        1,
+        true,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        1,
+        true,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        1,
+        true,
+        "Inline",
+        "Text"
+      ],
+      [
+        1,
+        true,
+        "Rule",
+        "Group"
+      ],
+      [
+        1,
+        true,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        1,
+        true,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        1,
+        true,
+        "Rule",
+        "Text"
+      ],
+      [
+        400,
+        true,
+        "Attribute",
+        "Group"
+      ],
+      [
+        400,
+        true,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        400,
+        true,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        400,
+        true,
+        "Attribute",
+        "Text"
+      ],
+      [
+        400,
+        true,
+        "Inline",
+        "Group"
+      ],
+      [
+        400,
+        true,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        400,
+        true,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        400,
+        true,
+        "Inline",
+        "Text"
+      ],
+      [
+        400,
+        true,
+        "Rule",
+        "Group"
+      ],
+      [
+        400,
+        true,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        400,
+        true,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        400,
+        true,
+        "Rule",
+        "Text"
+      ],
+      [
+        500,
+        true,
+        "Attribute",
+        "Group"
+      ],
+      [
+        500,
+        true,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        500,
+        true,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        500,
+        true,
+        "Attribute",
+        "Text"
+      ],
+      [
+        500,
+        true,
+        "Inline",
+        "Group"
+      ],
+      [
+        500,
+        true,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        500,
+        true,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        500,
+        true,
+        "Inline",
+        "Text"
+      ],
+      [
+        500,
+        true,
+        "Rule",
+        "Group"
+      ],
+      [
+        500,
+        true,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        500,
+        true,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        500,
+        true,
+        "Rule",
+        "Text"
+      ],
+      [
+        700,
+        true,
+        "Attribute",
+        "Group"
+      ],
+      [
+        700,
+        true,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        700,
+        true,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        700,
+        true,
+        "Attribute",
+        "Text"
+      ],
+      [
+        700,
+        true,
+        "Inline",
+        "Group"
+      ],
+      [
+        700,
+        true,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        700,
+        true,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        700,
+        true,
+        "Inline",
+        "Text"
+      ],
+      [
+        700,
+        true,
+        "Rule",
+        "Group"
+      ],
+      [
+        700,
+        true,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        700,
+        true,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        700,
+        true,
+        "Rule",
+        "Text"
+      ],
+      [
+        2000,
+        false,
+        "Attribute",
+        "Group"
+      ],
+      [
+        2000,
+        false,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        2000,
+        false,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        2000,
+        false,
+        "Attribute",
+        "Text"
+      ],
+      [
+        2000,
+        false,
+        "Inline",
+        "Group"
+      ],
+      [
+        2000,
+        false,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        2000,
+        false,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        2000,
+        false,
+        "Inline",
+        "Text"
+      ],
+      [
+        2000,
+        false,
+        "Rule",
+        "Group"
+      ],
+      [
+        2000,
+        false,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        2000,
+        false,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        2000,
+        false,
+        "Rule",
+        "Text"
+      ],
+      [
+        2147483647,
+        false,
+        "Attribute",
+        "Group"
+      ],
+      [
+        2147483647,
+        false,
+        "Attribute",
+        "Pattern"
+      ],
+      [
+        2147483647,
+        false,
+        "Attribute",
+        "Symbol"
+      ],
+      [
+        2147483647,
+        false,
+        "Attribute",
+        "Text"
+      ],
+      [
+        2147483647,
+        false,
+        "Inline",
+        "Group"
+      ],
+      [
+        2147483647,
+        false,
+        "Inline",
+        "Pattern"
+      ],
+      [
+        2147483647,
+        false,
+        "Inline",
+        "Symbol"
+      ],
+      [
+        2147483647,
+        false,
+        "Inline",
+        "Text"
+      ],
+      [
+        2147483647,
+        false,
+        "Rule",
+        "Group"
+      ],
+      [
+        2147483647,
+        false,
+        "Rule",
+        "Pattern"
+      ],
+      [
+        2147483647,
+        false,
+        "Rule",
+        "Symbol"
+      ],
+      [
+        2147483647,
+        false,
+        "Rule",
+        "Text"
+      ]
+    ],
+    "originalContextInventorySha256": "5089606fd072bc66cdb30deece1f3c181b9118c5798dd21534567ada6f2fef8b",
+    "fullInventoriesAgreeAcrossBothHostsAndRuntimes": true,
+    "sourceConstruction": "The original XML templates and value formatting remain. Typed declaration/container enums replace string branching; each context is now an individually discoverable case with its own catalog/program owner.",
+    "retainedAssertions": "Every original raw/prepared rejection, discovered weight, visible output and exact raw/prepared byte-equivalence assertion remains for all 120 contexts. Invalid preparation additionally verifies zero provider/source access. Admitted cases additionally verify original request, actual face and exactly one program acquisition per independent snapshot/preparation.",
+    "whyRepresentative": "All declaration/container paths retain the admitted upper boundary and the first excluded value in routine contracts. All ten numeric values remain routine direct-parser checks. Other numeric/context combinations remain individual Research contracts for full qualification. This follows the shared parser and explicit source/resource routes, not image equality.",
+    "testRowDelta": 120
+  },
+  "routineWork": {
+    "countingScope": "Derived from validated case inventories and unchanged converter/preparation call sites: each admitted context performs three successful conversions (raw, empty control, prepared); each rejected context attempts one raw conversion and one preparation.",
+    "before": {
+      "contexts": 120,
+      "admitted": 60,
+      "rejected": 60,
+      "successfulPngConversions": 180,
+      "rawConversionFailures": 60,
+      "totalConversionAttempts": 240,
+      "preparations": 120,
+      "standaloneSnapshots": 60
+    },
+    "after": {
+      "contexts": 24,
+      "admitted": 12,
+      "rejected": 12,
+      "successfulPngConversions": 36,
+      "rawConversionFailures": 12,
+      "totalConversionAttempts": 48,
+      "preparations": 24,
+      "standaloneSnapshots": 12
+    },
+    "fullQualification": "All 120 contexts retain the original 240 conversion attempts and 120 preparations. Direct mechanisms add no rendering or font acquisition."
+  },
+  "measurements": {
+    "samples": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "beforeSeconds": [
+          10.04051429987885,
+          8.677754499949515,
+          8.165512700099498
+        ],
+        "afterSeconds": [
+          8.35049430001527,
+          8.823027700185776,
+          8.393102099886164
+        ],
+        "beforeMedianSeconds": 8.677754499949515,
+        "afterMedianSeconds": 8.393102099886164
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "beforeSeconds": [
+          77.65092899999581,
+          11.190304100047797,
+          10.116260099923238
+        ],
+        "afterSeconds": [
+          14.885877599939704,
+          10.431207400048152,
+          10.623245000140741
+        ],
+        "beforeMedianSeconds": 11.190304100047797,
+        "afterMedianSeconds": 10.623245000140741
+      }
+    ],
+    "scope": "Three fresh .NET 11 processes per host before/after; paired Windows/WSL jobs, maximum two concurrent. Startup, discovery, test execution and TRX included; build excluded. All observations retained, including the first 77.65-second Linux outlier.",
+    "limits": "Validation cost on the development host, not a quiet-machine renderer benchmark or established suite-wide speedup. Small median changes are dominated by startup/discovery."
+  },
+  "buildChecks": [
+    {
+      "framework": "net11.0",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+      "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52"
+    },
+    {
+      "framework": "net10.0",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+      "testAssemblySha256": "edc19e3991d3418ea5fce9228ba71cc0d68c24cb4082b70128540f91c0bdb0dd"
+    }
+  ],
+  "selections": {
+    "before-core": "FullyQualifiedName~OpenTypeFontTests.Svg_font_weights_validate_the_css_range_before_discovery_or_selection|FullyQualifiedName~OpenTypeFontTests.Literal_public_font_requests_keep_their_existing_positive_weight_contract",
+    "routine-after-core": "(FullyQualifiedName~OpenTypeFontTests.Svg_font_weight_scalar_boundaries_preserve_the_supported_range|FullyQualifiedName~OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection|FullyQualifiedName~OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations|FullyQualifiedName~OpenTypeFontTests.Literal_public_font_requests_keep_their_existing_positive_weight_contract)&Category!=Research",
+    "all-after-core": "FullyQualifiedName~OpenTypeFontTests.Svg_font_weight_scalar_boundaries_preserve_the_supported_range|FullyQualifiedName~OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection|FullyQualifiedName~OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations|FullyQualifiedName~OpenTypeFontTests.Literal_public_font_requests_keep_their_existing_positive_weight_contract",
+    "affected-core": "FullyQualifiedName~OpenTypeFontTests.Svg_font_weight_scalar_boundaries_preserve_the_supported_range|FullyQualifiedName~OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection|FullyQualifiedName~OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations|FullyQualifiedName~OpenTypeFontTests.Literal_public_font_requests_keep_their_existing_positive_weight_contract|FullyQualifiedName~SvgFontPackCatalogTests|FullyQualifiedName~SvgFontFamilyTests|FullyQualifiedName~SvgFontCoverageDiscoveryTests|FullyQualifiedName~SvgFontProgramSourceTests|FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~SvgInertTypographyTests",
+    "affected-visual": "FullyQualifiedName~SvgFontFamilyStackTests|FullyQualifiedName~SvgGlyphFallbackTests",
+    "mechanisms-core": "(FullyQualifiedName~OpenTypeFontTests.Svg_font_weight_scalar_boundaries_preserve_the_supported_range|FullyQualifiedName~OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection|FullyQualifiedName~OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations|FullyQualifiedName~OpenTypeFontTests.Literal_public_font_requests_keep_their_existing_positive_weight_contract)&Layer=Mechanism&Category!=Research",
+    "contracts-core": "(FullyQualifiedName~OpenTypeFontTests.Svg_font_weight_scalar_boundaries_preserve_the_supported_range|FullyQualifiedName~OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection|FullyQualifiedName~OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations|FullyQualifiedName~OpenTypeFontTests.Literal_public_font_requests_keep_their_existing_positive_weight_contract)&Layer=Contract&Category!=Research"
+  },
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 10.04051429987885,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 1,
+        "outcomeIdentitySha256": "720a804d41e03ae289c68a049eaec1b82717500e753b58f879e8b3b849c269b9"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 77.65092899999581,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 1,
+        "outcomeIdentitySha256": "720a804d41e03ae289c68a049eaec1b82717500e753b58f879e8b3b849c269b9"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 8.677754499949515,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 2,
+        "outcomeIdentitySha256": "720a804d41e03ae289c68a049eaec1b82717500e753b58f879e8b3b849c269b9"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 11.190304100047797,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 2,
+        "outcomeIdentitySha256": "720a804d41e03ae289c68a049eaec1b82717500e753b58f879e8b3b849c269b9"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 8.165512700099498,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 3,
+        "outcomeIdentitySha256": "720a804d41e03ae289c68a049eaec1b82717500e753b58f879e8b3b849c269b9"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "f94a9e7234547809bff0c97fdb32d578273536e7ff0f0d49fae33cc763803b25",
+        "exitCode": 0,
+        "seconds": 10.116260099923238,
+        "counters": {
+          "executed": "11",
+          "passed": "11",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 3,
+        "outcomeIdentitySha256": "720a804d41e03ae289c68a049eaec1b82717500e753b58f879e8b3b849c269b9"
+      }
+    ],
+    "routineAfter": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 8.35049430001527,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 1,
+        "outcomeIdentitySha256": "6f8426093ba2759ad4efd5b58df63600127b5e1efe007f01a408181925f7578b"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 14.885877599939704,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 1,
+        "outcomeIdentitySha256": "6f8426093ba2759ad4efd5b58df63600127b5e1efe007f01a408181925f7578b"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 8.823027700185776,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 2,
+        "outcomeIdentitySha256": "6f8426093ba2759ad4efd5b58df63600127b5e1efe007f01a408181925f7578b"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 10.431207400048152,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 2,
+        "outcomeIdentitySha256": "6f8426093ba2759ad4efd5b58df63600127b5e1efe007f01a408181925f7578b"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 8.393102099886164,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 3,
+        "outcomeIdentitySha256": "6f8426093ba2759ad4efd5b58df63600127b5e1efe007f01a408181925f7578b"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 10.623245000140741,
+        "counters": {
+          "executed": "35",
+          "passed": "35",
+          "failed": "0"
+        },
+        "failures": [],
+        "sample": 3,
+        "outcomeIdentitySha256": "6f8426093ba2759ad4efd5b58df63600127b5e1efe007f01a408181925f7578b"
+      }
+    ],
+    "fullWeightSelection": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 10.905995199922472,
+        "counters": {
+          "executed": "131",
+          "passed": "131",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "9dc7ac22670ff9353f0271a39c6f1f5b5ce2884b287def740b46102eabc1e750"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 16.544549300102517,
+        "counters": {
+          "executed": "131",
+          "passed": "131",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "9dc7ac22670ff9353f0271a39c6f1f5b5ce2884b287def740b46102eabc1e750"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "edc19e3991d3418ea5fce9228ba71cc0d68c24cb4082b70128540f91c0bdb0dd",
+        "exitCode": 0,
+        "seconds": 11.51774249994196,
+        "counters": {
+          "executed": "131",
+          "passed": "131",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "9dc7ac22670ff9353f0271a39c6f1f5b5ce2884b287def740b46102eabc1e750"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "edc19e3991d3418ea5fce9228ba71cc0d68c24cb4082b70128540f91c0bdb0dd",
+        "exitCode": 0,
+        "seconds": 11.994866100139916,
+        "counters": {
+          "executed": "131",
+          "passed": "131",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "9dc7ac22670ff9353f0271a39c6f1f5b5ce2884b287def740b46102eabc1e750"
+      }
+    ],
+    "affectedIntegration": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 8.527693000156432,
+        "counters": {
+          "executed": "333",
+          "passed": "333",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "9ba15e82e189853afb2d8149a99c33caa8d65dbec177a8fa05275f408180bef0"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 13.459937900071964,
+        "counters": {
+          "executed": "333",
+          "passed": "333",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "9ba15e82e189853afb2d8149a99c33caa8d65dbec177a8fa05275f408180bef0"
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "099d1a05763a6f57f9613e6af9731408a2392418d379cfb962bafe0b4a17a2e0",
+        "exitCode": 0,
+        "seconds": 12.008869900135323,
+        "counters": {
+          "executed": "13",
+          "passed": "13",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "27f534d713b3c9efcffbb8c57d45c5b00ea20790dbeddcbdf115aba27a1a8281"
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "099d1a05763a6f57f9613e6af9731408a2392418d379cfb962bafe0b4a17a2e0",
+        "exitCode": 0,
+        "seconds": 11.629342699889094,
+        "counters": {
+          "executed": "13",
+          "passed": "13",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "27f534d713b3c9efcffbb8c57d45c5b00ea20790dbeddcbdf115aba27a1a8281"
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "edc19e3991d3418ea5fce9228ba71cc0d68c24cb4082b70128540f91c0bdb0dd",
+        "exitCode": 0,
+        "seconds": 7.290913699893281,
+        "counters": {
+          "executed": "333",
+          "passed": "333",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "9ba15e82e189853afb2d8149a99c33caa8d65dbec177a8fa05275f408180bef0"
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "edc19e3991d3418ea5fce9228ba71cc0d68c24cb4082b70128540f91c0bdb0dd",
+        "exitCode": 0,
+        "seconds": 9.92264169990085,
+        "counters": {
+          "executed": "333",
+          "passed": "333",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "9ba15e82e189853afb2d8149a99c33caa8d65dbec177a8fa05275f408180bef0"
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "a06f88d23d900bf8599c110739a644c3b1c89bb6097e599a3999184644ca3557",
+        "exitCode": 0,
+        "seconds": 10.303783199982718,
+        "counters": {
+          "executed": "13",
+          "passed": "13",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "27f534d713b3c9efcffbb8c57d45c5b00ea20790dbeddcbdf115aba27a1a8281"
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d712b07844e9d5b76ee4ff5b089177a542749c6cab83b63f61bf7f8ebfcbca0f",
+        "testAssemblySha256": "a06f88d23d900bf8599c110739a644c3b1c89bb6097e599a3999184644ca3557",
+        "exitCode": 0,
+        "seconds": 11.41976029984653,
+        "counters": {
+          "executed": "13",
+          "passed": "13",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "27f534d713b3c9efcffbb8c57d45c5b00ea20790dbeddcbdf115aba27a1a8281"
+      }
+    ],
+    "layerMechanisms": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 6.61658290005289,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "d40a6286cdf2a1a627c3f56867270f279eb996fa4cf1d4a6eb1a3be546a8c907"
+      }
+    ],
+    "layerRoutineContracts": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+        "testAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+        "exitCode": 0,
+        "seconds": 7.100721800001338,
+        "counters": {
+          "executed": "25",
+          "passed": "25",
+          "failed": "0"
+        },
+        "failures": [],
+        "outcomeIdentitySha256": "7f866047f81fbcccdbe01a6689d21ccfbad8c52ae666e37403b302be33bd10c7"
+      }
+    ],
+    "fullWeightPasses": 524,
+    "affectedPasses": 1384
+  },
+  "regressionSensitivity": {
+    "scope": "Isolated sensitivity experiment, not a historical binary or new rendering reference. Only the original pre-5035ff4e4 positive-weight predicate is reinstated in a private library build. All other current production source and the final test assembly are unchanged.",
+    "originalFixCommit": "5035ff4e41cbc9c6bbf879ab9e808100bd90dd7f",
+    "qualifiedLibrarySha256": "490165c7774d288353a73e8eb67cc01e6060b36e341a40cc2da187d15ce48191",
+    "experimentalLibrarySha256": "b3b386a057be7a783754e38354dbfd289225e4b18da6512b2ac1d9fbc207fd2a",
+    "identicalFinalTestAssemblySha256": "d86ab749a634cafdbd1b4891309d340d512a87818a00380c8dbef376af174b52",
+    "currentSyntaxSha256": "39c97b2bd1ead67ff474c91c5b22d10cccf46a271038d6b772815f0e6cf249be",
+    "experimentalSyntaxSha256": "5fc76f60738d138d3e43a9ea9c32fc97900e0d6c7aa80aa1123391162a6d269c",
+    "counters": {
+      "executed": 131,
+      "passed": 92,
+      "failed": 39
+    },
+    "expectedFailures": [
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Attribute, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Inline, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Rule, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Inline, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Attribute, scope: Text)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Inline, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Attribute, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Rule, scope: Text)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Attribute, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Rule, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Inline, scope: Text)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Rule, scope: Text)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Svg_font_weight_scalar_boundaries_preserve_the_supported_range(weight: 1001, admitted: False)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Svg_font_weight_scalar_boundaries_preserve_the_supported_range(weight: 2147483647, admitted: False)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Attribute, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Attribute, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Inline, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Rule, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Inline, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Attribute, scope: Text)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Rule, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Rule, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Rule, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Attribute, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Attribute, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Attribute, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Rule, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Rule, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Inline, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Rule, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Inline, scope: Pattern)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Inline, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Rule, scope: Text)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Svg_font_weight_scalar_boundaries_preserve_the_supported_range(weight: 2000, admitted: False)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2000, admitted: False, declaration: Attribute, scope: Group)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Attribute, scope: Text)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Extended_font_weight_contexts_preserve_original_numeric_combinations(weight: 2147483647, admitted: False, declaration: Inline, scope: Text)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Inline, scope: Symbol)",
+      "Lokad.Svg.Tests.OpenTypeFontTests.Font_weight_contexts_validate_before_acquisition_and_preserve_prepared_selection(weight: 1001, admitted: False, declaration: Inline, scope: Text)"
+    ],
+    "interpretation": "Three direct scalar boundary failures plus all 36 positive out-of-range original declaration/container combinations. The other 92 controls pass. Production/test binary consumers and source files remain untouched."
+  },
+  "renderingAuthority": "Existing ordered-family and mixed-coverage native images and their contracts pass in affected integration. No new browser authority, source fixture, program, image, tolerance or text-layout implementation is introduced.",
+  "relatedEvidence": [
+    "text-placement-claim-trace.json",
+    "font-selection-program-claim-trace.json",
+    "test-responsibilities.md",
+    "support-claim-map.md",
+    "README.md"
+  ],
+  "remaining": "The support-claim map and this directory README index remaining shaping, text paint/resource demand, ownership/limits, W1 contexts, provenance, performance and release qualification. T18 frozen Windows DejaVu stays asserted and open. Unchanged production/package bytes retain their prior full/W1 qualification; the next full core selection gains 120 individually discoverable test rows."
+}

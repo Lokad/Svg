@@ -95,6 +95,10 @@ The [text placement trace](text-placement-claim-trace.json) reviews eight more g
 with 7,212 affected passing checks, all 855 canonical text-node references and
 distinct original capture receipts. Baseline metric checks lose a duplicate
 successful pseudo-retry; actual failure contracts and every native target remain.
+The [weight-admission split](weight-admission-responsibilities.json) keeps every
+original context, moves numeric repetition to direct mechanisms and optional
+Research, and proves sensitivity to the original range defect. Routine conversion
+attempts fall from 240 to 48; measured process costs and their limits stay explicit.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 
