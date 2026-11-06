@@ -71,6 +71,10 @@ The [embedded-image trace](embedded-image-claim-trace.json) completes E2/E3 acro
 intrinsic/live-viewport sizing, immutable source views, fitting/sampling and effect
 ownership. Its 143-control audit retains scaled native inputs, capture authority
 and the affine-filter admission boundary; implementation and targets are unchanged.
+The [selector-list repair](css-selector-lists.json) rejects missing comma-separated
+selectors through the shared reader. Eleven failing-before checks and three
+independent browser discrepancies retain valid-list and early/late cleanup controls;
+full source/package promotion is recorded separately from affected validation.
 The [viewport/root admission qualification](viewport-root-admission.json) pins seven
 root-effect cases and retains the 81-input native percentage bank on both runtimes/hosts.
 

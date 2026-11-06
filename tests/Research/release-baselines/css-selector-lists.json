@@ -1,0 +1,509 @@
+{
+  "status": "Shared selector-list repair passes focused and affected Windows/Linux .NET 11/.NET 10 checks. Full source/package/original-context milestone qualification follows the coherent commit.",
+  "sourceBaseCommit": "883c252fc38f35e9e2f5a5db5d4d8382812b3511",
+  "sourceBindings": [
+    {
+      "path": "src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
+      "sha256": "d587d7973421d258ffb691f580d7f7e8009ea5f841dee16dfc2860a62659ccbd"
+    },
+    {
+      "path": "tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs",
+      "sha256": "8b61b2686a1e6bc95fae446d4ff27a7a0c7bdc28b0e6d38a97144cc22d735132"
+    },
+    {
+      "path": "tests/Lokad.Svg.VisualTests/SvgCssSelectorIdentifierReferenceTests.cs",
+      "sha256": "6732407d850a96745b84ffc298347373250cf430fd9c8f30629cd6b94b0b2b6b"
+    }
+  ],
+  "supportContract": "../../../docs/SUPPORT_MATRIX.md",
+  "supportContractSha256": "c696d0b98bb082ecb3445a7d882d2d6ab283e5a92dfe16a4d0feba1f777ff938",
+  "problem": "The selector-list reader skipped empty entries, allowing leading/trailing/repeated commas to select paint. Empty selector lists could also be treated as inactive declaration blocks. General CSS error recovery is outside the documented contract.",
+  "change": "Consume exactly one selector-list entry per read; retain explicit finished state so a trailing comma requires another selector. Empty/blank entries reject as MalformedInput before declaration evaluation. No new parser owner, renderer branch, API, allocation or reference target.",
+  "beforeChecks": {
+    "host": "windows",
+    "kind": "core",
+    "framework": "net11.0",
+    "librarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+    "testAssemblySha256": "07b8ff49adb14616716a182ee5d105725c6ec61d226fed154129007f897fd3de",
+    "selection": "FullyQualifiedName~Selector_lists_require_a_selector_between_every_comma|FullyQualifiedName~Complete_selector_lists_keep_comments_attributes_and_inactive_members|FullyQualifiedName~Incomplete_selector_lists_reject_before_output_and_release_early_or_late_styles",
+    "exitCode": 1,
+    "seconds": 13.166078499983996,
+    "counters": {
+      "executed": "15",
+      "passed": "4",
+      "failed": "11"
+    },
+    "failures": [
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \" \\t\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \"\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \"rect,,path\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \"rect,\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Incomplete_selector_lists_reject_before_output_and_release_early_or_late_styles(late: True)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \",rect\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Incomplete_selector_lists_reject_before_output_and_release_early_or_late_styles(late: False)",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \"rect:hover,\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \"rect,/**/,path\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \",rect:hover\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgCssSelectorTests.Selector_lists_require_a_selector_between_every_comma(selector: \"rect, ,path\")",
+        "message": "Assert.Throws() Failure: No exception was thrown\r\nExpected: typeof(Lokad.Svg.SvgException)"
+      }
+    ]
+  },
+  "focusedChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "89df67c43656242fc7b48266a77cf5f94474901122a5f265ab96a4e12cac0fb6",
+      "testAssemblySha256": "07b8ff49adb14616716a182ee5d105725c6ec61d226fed154129007f897fd3de",
+      "selection": "FullyQualifiedName~Selector_lists_require_a_selector_between_every_comma|FullyQualifiedName~Complete_selector_lists_keep_comments_attributes_and_inactive_members|FullyQualifiedName~Incomplete_selector_lists_reject_before_output_and_release_early_or_late_styles",
+      "exitCode": 0,
+      "seconds": 10.621924699982628,
+      "counters": {
+        "executed": "15",
+        "passed": "15",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "89df67c43656242fc7b48266a77cf5f94474901122a5f265ab96a4e12cac0fb6",
+      "testAssemblySha256": "07b8ff49adb14616716a182ee5d105725c6ec61d226fed154129007f897fd3de",
+      "selection": "FullyQualifiedName~Selector_lists_require_a_selector_between_every_comma|FullyQualifiedName~Complete_selector_lists_keep_comments_attributes_and_inactive_members|FullyQualifiedName~Incomplete_selector_lists_reject_before_output_and_release_early_or_late_styles",
+      "exitCode": 0,
+      "seconds": 42.66576539981179,
+      "counters": {
+        "executed": "15",
+        "passed": "15",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affectedChecks": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "89df67c43656242fc7b48266a77cf5f94474901122a5f265ab96a4e12cac0fb6",
+      "testAssemblySha256": "07b8ff49adb14616716a182ee5d105725c6ec61d226fed154129007f897fd3de",
+      "selection": "(FullyQualifiedName~SvgCss|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgCurrentColor|FullyQualifiedName~SvgDisplay|FullyQualifiedName~SvgPaintOrder|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgLocalUrlTests|FullyQualifiedName~Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution|FullyQualifiedName~Path_length_is_an_xml_number_not_a_css_property|FullyQualifiedName~Length_numbers_and_units_remain_one_token_across_consumers|FullyQualifiedName~Local_url_function_case_preserves_identifier_quoting_and_dispatch|FullyQualifiedName~No_filter_keyword_is_case_insensitive|FullyQualifiedName~Local_url_function_normalization_preserves_identifier_case_and_unicode_contents|FullyQualifiedName~Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids|FullyQualifiedName~Encoded_targets_use_the_same_resource_selection_before_font_acquisition|FullyQualifiedName~Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout|FullyQualifiedName~Invalid_fragment_encodings_do_not_bind_literal_encoded_ids|FullyQualifiedName~Local_fragments_decode_once_before_selecting_a_resource|FullyQualifiedName~Legacy_rgb_channels_use_a_single_unit_grammar|FullyQualifiedName~Modern_color_function_aliases_have_optional_alpha|FullyQualifiedName~Display_inheritance_agrees_between_font_discovery_preparation_and_replay|FullyQualifiedName~A_local_replacement_pattern_keeps_its_font_requirement_when_its_template_is_hidden|FullyQualifiedName~Definition_display_suppresses_resource_fonts_before_preparation_and_marker_metrics)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 14.396670499816537,
+      "counters": {
+        "executed": "1342",
+        "passed": "1342",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "89df67c43656242fc7b48266a77cf5f94474901122a5f265ab96a4e12cac0fb6",
+      "testAssemblySha256": "07b8ff49adb14616716a182ee5d105725c6ec61d226fed154129007f897fd3de",
+      "selection": "(FullyQualifiedName~SvgCss|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgCurrentColor|FullyQualifiedName~SvgDisplay|FullyQualifiedName~SvgPaintOrder|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgLocalUrlTests|FullyQualifiedName~Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution|FullyQualifiedName~Path_length_is_an_xml_number_not_a_css_property|FullyQualifiedName~Length_numbers_and_units_remain_one_token_across_consumers|FullyQualifiedName~Local_url_function_case_preserves_identifier_quoting_and_dispatch|FullyQualifiedName~No_filter_keyword_is_case_insensitive|FullyQualifiedName~Local_url_function_normalization_preserves_identifier_case_and_unicode_contents|FullyQualifiedName~Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids|FullyQualifiedName~Encoded_targets_use_the_same_resource_selection_before_font_acquisition|FullyQualifiedName~Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout|FullyQualifiedName~Invalid_fragment_encodings_do_not_bind_literal_encoded_ids|FullyQualifiedName~Local_fragments_decode_once_before_selecting_a_resource|FullyQualifiedName~Legacy_rgb_channels_use_a_single_unit_grammar|FullyQualifiedName~Modern_color_function_aliases_have_optional_alpha|FullyQualifiedName~Display_inheritance_agrees_between_font_discovery_preparation_and_replay|FullyQualifiedName~A_local_replacement_pattern_keeps_its_font_requirement_when_its_template_is_hidden|FullyQualifiedName~Definition_display_suppresses_resource_fonts_before_preparation_and_marker_metrics)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 20.447891199961305,
+      "counters": {
+        "executed": "1342",
+        "passed": "1342",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "89df67c43656242fc7b48266a77cf5f94474901122a5f265ab96a4e12cac0fb6",
+      "testAssemblySha256": "79ad3e7bbf23b8d8d960b5e2425469b311210917b665a017948861c1b93229ac",
+      "selection": "(FullyQualifiedName~SvgCssSelectorIdentifierReferenceTests|FullyQualifiedName~SvgInstancePaintOrderReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 49.71669639996253,
+      "counters": {
+        "executed": "1639",
+        "passed": "1639",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "89df67c43656242fc7b48266a77cf5f94474901122a5f265ab96a4e12cac0fb6",
+      "testAssemblySha256": "79ad3e7bbf23b8d8d960b5e2425469b311210917b665a017948861c1b93229ac",
+      "selection": "(FullyQualifiedName~SvgCssSelectorIdentifierReferenceTests|FullyQualifiedName~SvgInstancePaintOrderReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 43.62851140019484,
+      "counters": {
+        "executed": "1639",
+        "passed": "1639",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "14652044ecd3c95eb3028aeb112625c51ea0a7b71dc82c25425e22632d239898",
+      "testAssemblySha256": "3901096e304890b790847bf5d68e897c700d117dfa15787d2afe322b2b1a5003",
+      "selection": "(FullyQualifiedName~SvgCss|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgCurrentColor|FullyQualifiedName~SvgDisplay|FullyQualifiedName~SvgPaintOrder|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgLocalUrlTests|FullyQualifiedName~Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution|FullyQualifiedName~Path_length_is_an_xml_number_not_a_css_property|FullyQualifiedName~Length_numbers_and_units_remain_one_token_across_consumers|FullyQualifiedName~Local_url_function_case_preserves_identifier_quoting_and_dispatch|FullyQualifiedName~No_filter_keyword_is_case_insensitive|FullyQualifiedName~Local_url_function_normalization_preserves_identifier_case_and_unicode_contents|FullyQualifiedName~Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids|FullyQualifiedName~Encoded_targets_use_the_same_resource_selection_before_font_acquisition|FullyQualifiedName~Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout|FullyQualifiedName~Invalid_fragment_encodings_do_not_bind_literal_encoded_ids|FullyQualifiedName~Local_fragments_decode_once_before_selecting_a_resource|FullyQualifiedName~Legacy_rgb_channels_use_a_single_unit_grammar|FullyQualifiedName~Modern_color_function_aliases_have_optional_alpha|FullyQualifiedName~Display_inheritance_agrees_between_font_discovery_preparation_and_replay|FullyQualifiedName~A_local_replacement_pattern_keeps_its_font_requirement_when_its_template_is_hidden|FullyQualifiedName~Definition_display_suppresses_resource_fonts_before_preparation_and_marker_metrics)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 15.533942600013688,
+      "counters": {
+        "executed": "1342",
+        "passed": "1342",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "14652044ecd3c95eb3028aeb112625c51ea0a7b71dc82c25425e22632d239898",
+      "testAssemblySha256": "3901096e304890b790847bf5d68e897c700d117dfa15787d2afe322b2b1a5003",
+      "selection": "(FullyQualifiedName~SvgCss|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~SvgCurrentColor|FullyQualifiedName~SvgDisplay|FullyQualifiedName~SvgPaintOrder|FullyQualifiedName~SvgTransformListTests|FullyQualifiedName~SvgLocalUrlTests|FullyQualifiedName~Presentation_keywords_accept_ascii_padding_before_live_and_retained_resolution|FullyQualifiedName~Path_length_is_an_xml_number_not_a_css_property|FullyQualifiedName~Length_numbers_and_units_remain_one_token_across_consumers|FullyQualifiedName~Local_url_function_case_preserves_identifier_quoting_and_dispatch|FullyQualifiedName~No_filter_keyword_is_case_insensitive|FullyQualifiedName~Local_url_function_normalization_preserves_identifier_case_and_unicode_contents|FullyQualifiedName~Utf8_fragments_select_literal_unicode_ids_without_selecting_encoded_collision_ids|FullyQualifiedName~Encoded_targets_use_the_same_resource_selection_before_font_acquisition|FullyQualifiedName~Encoded_text_paths_resolve_the_decoded_path_in_raw_and_prepared_layout|FullyQualifiedName~Invalid_fragment_encodings_do_not_bind_literal_encoded_ids|FullyQualifiedName~Local_fragments_decode_once_before_selecting_a_resource|FullyQualifiedName~Legacy_rgb_channels_use_a_single_unit_grammar|FullyQualifiedName~Modern_color_function_aliases_have_optional_alpha|FullyQualifiedName~Display_inheritance_agrees_between_font_discovery_preparation_and_replay|FullyQualifiedName~A_local_replacement_pattern_keeps_its_font_requirement_when_its_template_is_hidden|FullyQualifiedName~Definition_display_suppresses_resource_fonts_before_preparation_and_marker_metrics)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 15.650754700182006,
+      "counters": {
+        "executed": "1342",
+        "passed": "1342",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "14652044ecd3c95eb3028aeb112625c51ea0a7b71dc82c25425e22632d239898",
+      "testAssemblySha256": "0409024069af73421a5ee4263a96c530214c89ba1025438cca7432d29baf547b",
+      "selection": "(FullyQualifiedName~SvgCssSelectorIdentifierReferenceTests|FullyQualifiedName~SvgInstancePaintOrderReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 24.97241279995069,
+      "counters": {
+        "executed": "1639",
+        "passed": "1639",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "14652044ecd3c95eb3028aeb112625c51ea0a7b71dc82c25425e22632d239898",
+      "testAssemblySha256": "0409024069af73421a5ee4263a96c530214c89ba1025438cca7432d29baf547b",
+      "selection": "(FullyQualifiedName~SvgCssSelectorIdentifierReferenceTests|FullyQualifiedName~SvgInstancePaintOrderReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 28.911083200015128,
+      "counters": {
+        "executed": "1639",
+        "passed": "1639",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "proof": "The corrected final 15-case test assembly is byte-identical before/after. The before run substitutes only the exact unchanged 0b4410515 renderer DLL in an isolated test directory; all 11 failures report that no exception was thrown. Earlier test-setup diagnostics are excluded.",
+  "responsibilities": {
+    "mechanisms": "Nine separate grammar cases retain absent/blank/leading/trailing/repeated/comment-separated/inactive entries. Four direct controls retain complete lists, comments, attribute selectors and mixed inactive/active members.",
+    "contracts": "Two early/late stylesheet cases retain parser cleanup, empty stream output on rejection, unchanged input and retry with the same allowance. Existing prepared, font selection and API/ownership paths remain in affected integration.",
+    "rendering": "One canonical valid-comment fixture joins the three existing admitted selector controls. Three malformed-list browser witnesses remain admission evidence; rejection is not counted as native pixel equivalence."
+  },
+  "nativeWitnesses": {
+    "manifest": "../css-selector-identifiers/capture.json",
+    "metadataSha256": "a251ea3e498fa27602ff4a145799af588153f56adbfe4852828fe3c3a1720c8f",
+    "existingCasesPreserved": 8,
+    "newAuthoredSources": 4,
+    "freshHealthyCaptures": 24,
+    "beforeLibrarySha256": "e5eaff561287ce936e6690bb5293fd0655ecb9fbadbc4bacb0c69941c74c6df1",
+    "browserDriverSha256": "c1a4399dbf77648a8093e6ce443c34aec2a056132a61f7411e3923ca6b1f39c0",
+    "rows": [
+      {
+        "id": "list-leading-comma",
+        "host": "windows",
+        "sourceSha256": "0094ff41ea577716da2f83adda4c2ccbb59ec67c1b4a8954eef2e1b06f72efb4",
+        "referenceSha256": "3a1a2b7c92ac47ffbe27b3f07466e882a3e95ecfa8bb71a7f5a05dd6c76dbf38",
+        "beforeChangedPixels": 3136
+      },
+      {
+        "id": "list-trailing-comma",
+        "host": "windows",
+        "sourceSha256": "5f4c5beb6cf9ec75481b8fa88752ce94b8ad37b69d5df5e4875f3c6cfd6a3408",
+        "referenceSha256": "3a1a2b7c92ac47ffbe27b3f07466e882a3e95ecfa8bb71a7f5a05dd6c76dbf38",
+        "beforeChangedPixels": 3136
+      },
+      {
+        "id": "list-repeated-comma",
+        "host": "windows",
+        "sourceSha256": "786822dc4501109e62c739d31ac954a856f0c8ebd8d8eacac44209cb0425349b",
+        "referenceSha256": "3a1a2b7c92ac47ffbe27b3f07466e882a3e95ecfa8bb71a7f5a05dd6c76dbf38",
+        "beforeChangedPixels": 3136
+      },
+      {
+        "id": "list-valid-comment",
+        "host": "windows",
+        "sourceSha256": "3060b35a07ba31a90561d221347ea36d9c834bec2b63988cb2eb9682f13cedd1",
+        "referenceSha256": "0e4ae18e5105ff461d452936d36b55de62a5049a5808ebcfe7855c7bfd825e84",
+        "beforeChangedPixels": 0
+      },
+      {
+        "id": "list-leading-comma",
+        "host": "linux",
+        "sourceSha256": "0094ff41ea577716da2f83adda4c2ccbb59ec67c1b4a8954eef2e1b06f72efb4",
+        "referenceSha256": "3a1a2b7c92ac47ffbe27b3f07466e882a3e95ecfa8bb71a7f5a05dd6c76dbf38",
+        "beforeChangedPixels": 3136
+      },
+      {
+        "id": "list-trailing-comma",
+        "host": "linux",
+        "sourceSha256": "5f4c5beb6cf9ec75481b8fa88752ce94b8ad37b69d5df5e4875f3c6cfd6a3408",
+        "referenceSha256": "3a1a2b7c92ac47ffbe27b3f07466e882a3e95ecfa8bb71a7f5a05dd6c76dbf38",
+        "beforeChangedPixels": 3136
+      },
+      {
+        "id": "list-repeated-comma",
+        "host": "linux",
+        "sourceSha256": "786822dc4501109e62c739d31ac954a856f0c8ebd8d8eacac44209cb0425349b",
+        "referenceSha256": "3a1a2b7c92ac47ffbe27b3f07466e882a3e95ecfa8bb71a7f5a05dd6c76dbf38",
+        "beforeChangedPixels": 3136
+      },
+      {
+        "id": "list-valid-comment",
+        "host": "linux",
+        "sourceSha256": "3060b35a07ba31a90561d221347ea36d9c834bec2b63988cb2eb9682f13cedd1",
+        "referenceSha256": "0e4ae18e5105ff461d452936d36b55de62a5049a5808ebcfe7855c7bfd825e84",
+        "beforeChangedPixels": 0
+      }
+    ],
+    "authority": "Three independent healthy/clean pinned Chrome captures per new input and host. Each malformed list paints 3,136 differing pixels before correction; the valid commented list is exact. Existing native PNG bytes and all eight prior case declarations are unchanged."
+  },
+  "publicReproduction": {
+    "librarySha256": "89df67c43656242fc7b48266a77cf5f94474901122a5f265ab96a4e12cac0fb6",
+    "hosts": [
+      {
+        "host": "windows",
+        "rows": [
+          {
+            "id": "digit-class",
+            "sourceSha256": "0da9a06bace31e75ed4c033f31320a7e3573c50bbd73fe68be0f9e774de8eef7",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "hyphen-digit-class",
+            "sourceSha256": "e58604c8a554783ceb2b6c32e3997f4e4c169c00b7633e26f6b635e0fe0493a5",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "lone-hyphen-class",
+            "sourceSha256": "71ce4de9cb8253f90b54af19be6214bac2501e9910aa24af682c9acf6e8526db",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "digit-id",
+            "sourceSha256": "14e515c258a43265fc28c52f194c46cd528c9c9515396551fef5db218596a329",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "unquoted-digit-attribute",
+            "sourceSha256": "d0cf2cfb7f455176d1f45240ce85174fac3a936b0b15ef6890c363ac5af99a8f",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "quoted-digit-attribute",
+            "sourceSha256": "e22ef3491ae45c97c197cc700a9d0ae0842000ac806dbe5ce46a82ca3d9c8277",
+            "outcome": "rendered",
+            "exactNativePixels": true,
+            "pngSha256": "4ac8cb42b9525f5655c5fbc1eff4e347eeb368ca63859df40484cffbe9fa1efc"
+          },
+          {
+            "id": "double-hyphen-class",
+            "sourceSha256": "d81082de7efbb9f46080a6376174650b81c525935d651c3cbd5ae0d0c098be1d",
+            "outcome": "rendered",
+            "exactNativePixels": true,
+            "pngSha256": "4ac8cb42b9525f5655c5fbc1eff4e347eeb368ca63859df40484cffbe9fa1efc"
+          },
+          {
+            "id": "quoted-id-reference",
+            "sourceSha256": "0a9de220eb2b55992154280417f2cbefb10d9bc1618cffe2bdcfaed1c4fca3ec",
+            "outcome": "rendered",
+            "exactNativePixels": true,
+            "pngSha256": "4ac8cb42b9525f5655c5fbc1eff4e347eeb368ca63859df40484cffbe9fa1efc"
+          },
+          {
+            "id": "list-leading-comma",
+            "sourceSha256": "0094ff41ea577716da2f83adda4c2ccbb59ec67c1b4a8954eef2e1b06f72efb4",
+            "outcome": "MalformedInput",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "list-trailing-comma",
+            "sourceSha256": "5f4c5beb6cf9ec75481b8fa88752ce94b8ad37b69d5df5e4875f3c6cfd6a3408",
+            "outcome": "MalformedInput",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "list-repeated-comma",
+            "sourceSha256": "786822dc4501109e62c739d31ac954a856f0c8ebd8d8eacac44209cb0425349b",
+            "outcome": "MalformedInput",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "list-valid-comment",
+            "sourceSha256": "3060b35a07ba31a90561d221347ea36d9c834bec2b63988cb2eb9682f13cedd1",
+            "outcome": "rendered",
+            "exactNativePixels": true,
+            "pngSha256": "4ac8cb42b9525f5655c5fbc1eff4e347eeb368ca63859df40484cffbe9fa1efc"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "rows": [
+          {
+            "id": "digit-class",
+            "sourceSha256": "0da9a06bace31e75ed4c033f31320a7e3573c50bbd73fe68be0f9e774de8eef7",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "hyphen-digit-class",
+            "sourceSha256": "e58604c8a554783ceb2b6c32e3997f4e4c169c00b7633e26f6b635e0fe0493a5",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "lone-hyphen-class",
+            "sourceSha256": "71ce4de9cb8253f90b54af19be6214bac2501e9910aa24af682c9acf6e8526db",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "digit-id",
+            "sourceSha256": "14e515c258a43265fc28c52f194c46cd528c9c9515396551fef5db218596a329",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "unquoted-digit-attribute",
+            "sourceSha256": "d0cf2cfb7f455176d1f45240ce85174fac3a936b0b15ef6890c363ac5af99a8f",
+            "outcome": "UnsupportedFeature",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "quoted-digit-attribute",
+            "sourceSha256": "e22ef3491ae45c97c197cc700a9d0ae0842000ac806dbe5ce46a82ca3d9c8277",
+            "outcome": "rendered",
+            "exactNativePixels": true,
+            "pngSha256": "4ac8cb42b9525f5655c5fbc1eff4e347eeb368ca63859df40484cffbe9fa1efc"
+          },
+          {
+            "id": "double-hyphen-class",
+            "sourceSha256": "d81082de7efbb9f46080a6376174650b81c525935d651c3cbd5ae0d0c098be1d",
+            "outcome": "rendered",
+            "exactNativePixels": true,
+            "pngSha256": "4ac8cb42b9525f5655c5fbc1eff4e347eeb368ca63859df40484cffbe9fa1efc"
+          },
+          {
+            "id": "quoted-id-reference",
+            "sourceSha256": "0a9de220eb2b55992154280417f2cbefb10d9bc1618cffe2bdcfaed1c4fca3ec",
+            "outcome": "rendered",
+            "exactNativePixels": true,
+            "pngSha256": "4ac8cb42b9525f5655c5fbc1eff4e347eeb368ca63859df40484cffbe9fa1efc"
+          },
+          {
+            "id": "list-leading-comma",
+            "sourceSha256": "0094ff41ea577716da2f83adda4c2ccbb59ec67c1b4a8954eef2e1b06f72efb4",
+            "outcome": "MalformedInput",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "list-trailing-comma",
+            "sourceSha256": "5f4c5beb6cf9ec75481b8fa88752ce94b8ad37b69d5df5e4875f3c6cfd6a3408",
+            "outcome": "MalformedInput",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "list-repeated-comma",
+            "sourceSha256": "786822dc4501109e62c739d31ac954a856f0c8ebd8d8eacac44209cb0425349b",
+            "outcome": "MalformedInput",
+            "exactNativePixels": false,
+            "pngSha256": null
+          },
+          {
+            "id": "list-valid-comment",
+            "sourceSha256": "3060b35a07ba31a90561d221347ea36d9c834bec2b63988cb2eb9682f13cedd1",
+            "outcome": "rendered",
+            "exactNativePixels": true,
+            "pngSha256": "4ac8cb42b9525f5655c5fbc1eff4e347eeb368ca63859df40484cffbe9fa1efc"
+          }
+        ]
+      }
+    ]
+  },
+  "validationScope": {
+    "affectedPasses": 11924,
+    "measurements": "Elapsed test validation includes discovery/host/TRX and excludes build. Concurrent checks are not a controlled before/after timing experiment; no renderer-performance or test-speedup claim.",
+    "pending": "Complete primary CI, complete secondary host/runtime suites, deterministic packages/installed consumers and packaged SVGWeb original/context replay. The existing frozen Windows DejaVu assertion remains unchanged."
+  }
+}

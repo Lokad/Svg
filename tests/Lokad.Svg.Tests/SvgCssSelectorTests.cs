@@ -5,6 +5,76 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgCssSelectorTests
 {
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("")]
+    [InlineData(" \t")]
+    [InlineData(",rect")]
+    [InlineData("rect,")]
+    [InlineData("rect,,path")]
+    [InlineData("rect, ,path")]
+    [InlineData("rect,/**/,path")]
+    [InlineData("rect:hover,")]
+    [InlineData(",rect:hover")]
+    public void Selector_lists_require_a_selector_between_every_comma(string selector)
+    {
+        RenderBudget budget = new(new HostMemoryBudget(100_000));
+        using (BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser))
+        using (BudgetedParserStringStore strings = new(budget))
+            Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() =>
+                SvgStyleSheet.Parse(selector + "{fill:red}", 16, rules, strings, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("rect,path")]
+    [InlineData("rect, /* comment */ path")]
+    [InlineData("rect:hover,rect")]
+    [InlineData("[id='r'],[class=x]")]
+    public void Complete_selector_lists_keep_comments_attributes_and_inactive_members(string selector)
+    {
+        RenderBudget budget = new(new HostMemoryBudget(100_000));
+        using (BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser))
+        using (BudgetedParserStringStore strings = new(budget))
+        {
+            SvgStyleSheet.Parse(selector + "{fill:red}", 16, rules, strings, budget, CancellationToken.None);
+            Assert.Equal(2, rules.Count);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Incomplete_selector_lists_reject_before_output_and_release_early_or_late_styles(bool late)
+    {
+        byte[] input = Input("rect,,path", late), unchanged = input.ToArray();
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream destination = new();
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() =>
+            SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, destination.Length);
+        using (SvgRoot retry = SvgRootParser.Parse(Input("rect,path", late), SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.Single(retry.Geometries);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
+
+        static byte[] Input(string selector, bool late)
+        {
+            string sheet = "<style>" + selector + "{fill:red}</style>";
+            const string rectangle = "<rect width='8' height='8' fill='blue'/>";
+            return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>"
+                + (late ? rectangle + sheet : sheet + rectangle) + "</svg>");
+        }
+    }
+
     public static IEnumerable<object[]> ClassSeparators()
     {
         foreach (int character in new[] { 0x20, 0x9, 0xa, 0xd }) yield return [character, true];

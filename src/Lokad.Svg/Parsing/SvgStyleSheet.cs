@@ -333,25 +333,29 @@ internal static class SvgStyleSheet
         private readonly ReadOnlySpan<char> _value;
         private readonly CancellationToken _cancellationToken;
         private int _position;
+        private bool _finished;
 
         internal CssSelectorListReader(ReadOnlySpan<char> value, CancellationToken cancellationToken)
         {
             _value = value;
             _cancellationToken = cancellationToken;
+            _finished = false;
         }
 
         internal bool TryRead(out ReadOnlySpan<char> selector)
         {
-            while (_position < _value.Length)
+            if (_finished)
             {
-                int start = _position;
-                while (_position < _value.Length && _value[_position] != ',') { ConsumeCheckpoint(_position, _cancellationToken); _position++; }
-                selector = SvgCssWhitespace.Trim(_value[start.._position]);
-                if (_position < _value.Length) _position++;
-                if (!selector.IsEmpty) return true;
+                selector = default;
+                return false;
             }
-            selector = default;
-            return false;
+            int start = _position;
+            while (_position < _value.Length && _value[_position] != ',') { ConsumeCheckpoint(_position, _cancellationToken); _position++; }
+            selector = SvgCssWhitespace.Trim(_value[start.._position]);
+            if (selector.IsEmpty) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet selector lists require a selector before and after every comma.");
+            _finished = _position == _value.Length;
+            if (!_finished) _position++;
+            return true;
         }
     }
 }
