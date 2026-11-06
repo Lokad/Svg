@@ -51,3 +51,39 @@ Affected qualification passes on Windows/Linux under both supported runtimes:
 2,875 core checks and 274 native/provenance/capture checks per combination. All
 2,363 original core and 274 native case identities remain; the 512 source mechanisms
 are additions. Existing ownership assertions and independent references are unchanged.
+
+## Conditional selection
+
+The current [switch contract](../../../docs/SUPPORT_MATRIX.md#documents-and-instances)
+agrees with [document traversal](../../../src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs),
+[direct font discovery](../../../src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs),
+[retained instance discovery](../../../src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs)
+and the [paint index](../../../src/Lokad.Svg/Parsing/SvgPaintResourceSelection.cs).
+Each switch consumes its first child without `systemLanguage`; tagged children
+never consume that slot. Closing the switch restores surrounding selection.
+The walks retain their own depth, inherited presentation or retained graph state.
+Applicable `requiredFeatures`/`requiredExtensions` reach ordinary unsupported
+attribute admission. Unselected instances and effect consumers do not activate
+dormant font requirements; XML and structural admission retain their own duties.
+
+The bounded audit retains these complementary checks on Windows/Linux and both
+runtime targets, using the unchanged [qualified renderer assets](shadow-foreground.json):
+
+| Responsibility | Passing cases per host/runtime |
+| --- | ---: |
+| Existing direct pattern/resource-selection mechanisms | 512 |
+| Switch geometry, fallback, nested/following scopes and normal diagnostics | 35 |
+| Unselected instance, mask and template font-acquisition boundaries | 9 |
+| Independent source-selection images | 54 |
+| Representative prepared replay and font-recipe provenance | 2 |
+
+The 35 switch cases come from the existing root parser/rendering tests and
+[scope regressions](../../Lokad.Svg.Tests/SvgSwitchScopeTests.cs). The nine font
+cases remain in [instance discovery](../../Lokad.Svg.Tests/OpenTypeFontTests.InstanceDiscovery.cs),
+[mask discovery](../../Lokad.Svg.Tests/OpenTypeFontTests.MaskDiscovery.cs) and
+[template discovery](../../Lokad.Svg.Tests/OpenTypeFontTests.PatternTemplates.cs).
+Core selection uses those method names plus `SvgPatternSelectionMechanismTests`;
+native selection is `DisplayName~pattern-source-selection`. All 2,448 executions
+pass. Each selection takes 10.03–14.87 s including host discovery/startup; no
+before/after speed claim is established. No implementation, test, reference,
+tolerance, support claim or API matrix changes were needed.
