@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "qualifiedSourceCommit": "ca222b22b0390e9b4175cb4fcc8c4d4f73b7b6ff",
+  "qualification": "native-line-source.json",
+  "scope": "Three inspected claim groups; finite source/check/reference trace, not a claim of all possible combinations or of original R85/R86 provenance.",
+  "status": "Reviewed G2, G5 and I1. No production changes or new tests were necessary beyond the separately qualified native-line correction.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs": "a3a9672758b92e38a9d69d71561129237db1de919a0e33d342eac7a91e9eea68",
+    "src/Lokad.Svg/Parsing/SvgPaintableElementContext.cs": "2d436b174f9231e3cde971a913681749e094782a256f4ee19a2e553db40ae156",
+    "src/Lokad.Svg/Parsing/SvgPaintRecording.cs": "479fab685933102a5fa5d99cc918bc0b2c9310174c4818502f7944638322d3ce",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs": "1ecf25d06936796de8b9e7dfd2883c32a658c3ab66c60ffbd5b63dd843eb9ffa",
+    "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs": "084a03e0719aaf423eef1f0b7c6d1f3930aa71815582a8ecf7ea0f6bdc5da47e",
+    "tests/Lokad.Svg.Tests/SvgRectangleSourceTests.cs": "4929bd3af510e075fff18726699cf1dfaafe49f6c0c25f09a9f30f2423f71c60",
+    "tests/Lokad.Svg.Tests/SvgPointListSourceTests.cs": "f6a79cd1e4bfade5dee704549bdee8a2866922e4edd2c4fa7720bb40d0a07a1d",
+    "tests/Lokad.Svg.Tests/SvgSourceVisibilityTests.cs": "a4dc61785931714f8e540cd76e398860f887462ec8d7a18b6dc0afd2040a80c5",
+    "tests/Lokad.Svg.Tests/SvgSingularTransformTests.cs": "2c1fb56bd156537326c3ce9a40e1b22354947eea04a549458b4923601ca1bd4f",
+    "src/Lokad.Svg/Parsing/SvgCssLength.cs": "a6a6397c2f61b82ddb26b2137c8ded982c1003a0cc368bb279e800da0404b249",
+    "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs": "d81ce9e3b762fbe24a945ea0afccf8b2f9f857062978fbc8e75b33e9a6e6b669",
+    "src/Lokad.Svg/Parsing/SvgRectangleSyntax.cs": "12487fa2e3e6e6bc85287dcf7a39746abcc606ad7e9a1cfe5087009925d5b5af",
+    "src/Lokad.Svg/Parsing/SvgEllipseSyntax.cs": "a06e3b73359dd93ded86a6b5f82ba3803010854a721a072cae261089f46c1de6",
+    "src/Lokad.Svg/Parsing/SvgLineSyntax.cs": "8a3006db74cb6b60eb6d98eba17746ddddd443ff5f31555ceedb5bd898a0c751",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs": "a57eb2e40dae164661168a96aa3d42c6796ba41a982ceb5ea379551ae75c500f",
+    "src/Lokad.Svg/Parsing/SvgImageSyntax.cs": "cdf67b32ac64901cb976aa8d486206223ee8b24d666592efd6e09bbf35947871",
+    "src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs": "0fddb8202eb8cf5ea4e1216fe4850c824aef89d42b1094aee5c9edd926f5333a",
+    "src/Lokad.Svg/Parsing/SvgMaskSyntax.cs": "1e4cd6ee79c907416c53c8673bf7f905f4b98f88c9e4d7595f154f368797edf5",
+    "src/Lokad.Svg/Parsing/SvgPatternSyntax.cs": "c9a61c3525338fde35919eaeace37b5fb60ff88a0d21f4bf4b925d74e2e9f5aa",
+    "tests/Lokad.Svg.Tests/SvgGeometryLengthTests.cs": "7557b60520f27a600c5abff89e2c7abf0e50f4273fa0c9ff43c42facda35389e",
+    "tests/Lokad.Svg.Tests/SvgFixedStrokeLengthTests.cs": "7e8a0273b252dc52112df96d4db3598d9e7cdfc00e4adb063549866f4439f1e3",
+    "tests/Lokad.Svg.Tests/SvgOvalPercentageLengthTests.cs": "9393381a6982a8d0cc8c336ee814fd2aec711145014bf791adca4e806c411553",
+    "src/Lokad.Svg/Parsing/SvgRenderedGroupSourceParser.cs": "97f4c23ccd5802f70c8909f2b20930de82b3fe0cd325dfbbd9d35f4a13f89cb1",
+    "src/Lokad.Svg/Parsing/SvgLocalReferencePresentationResolver.cs": "c909b60a7edb016a1814b2b43eee6fa2a3fd5d17d385123555ac6524e7547a9e",
+    "tests/Lokad.Svg.Tests/SvgUseInstanceTests.cs": "7af2bfa1d60a42367495eaaade9def030ef0025f2c1bf2718999ed9958c2f537",
+    "tests/Lokad.Svg.Tests/SvgOpacityInheritanceTests.cs": "c7b1a19384c30d4f393de2e89f58d764241c6c6ddef66c49d6e458155e5e30c7",
+    "tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs": "e203a6596f32dbe78774958ddfad85a58b11c3b5efb75d52957a1a0eb88410fd",
+    "tests/Lokad.Svg.Tests/SvgRootParserTests.cs": "dc2d503c9383c5efc903795bb0e8e22d834f5f61d8854584829ef9c64aef2658"
+  },
+  "groups": {
+    "G2": {
+      "owner": "SvgDefinitionParser.ParseShapeDefinition and retained source replay; SvgPaintableElementContext.HasCollapsedPlacement; SvgPaintRecording.RetainCollapsedSource/RetainEmptySourceBounds; native point-list parsing.",
+      "finding": "Source commands and source/object bounds survive paint/visibility decisions. Finite singular placement has no painted geometry or visual bounds, retains an effect anchor for its enclosing group and does not acquire scope ownership. Invalid native point lists clear the entire retained list after validating all tokens.",
+      "sources": [
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+        "src/Lokad.Svg/Parsing/SvgPaintableElementContext.cs",
+        "src/Lokad.Svg/Parsing/SvgPaintRecording.cs",
+        "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs",
+        "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs"
+      ],
+      "tests": [
+        "tests/Lokad.Svg.Tests/SvgRectangleSourceTests.cs",
+        "tests/Lokad.Svg.Tests/SvgPointListSourceTests.cs",
+        "tests/Lokad.Svg.Tests/SvgSourceVisibilityTests.cs",
+        "tests/Lokad.Svg.Tests/SvgSingularTransformTests.cs"
+      ],
+      "distinctChecks": [
+        "Exact command counts, stroke roles and scene maps are asserted before rendering.",
+        "Copied commands remain usable after the original scene is disposed; copy/output budgets refund.",
+        "Collapsed object/visual bounds, effect/scope anchor distinction, command limits and font discovery are checked directly.",
+        "Painted and hidden sources, source/instance placement and singular child/ancestor effects retain independent captured references."
+      ],
+      "nativeManifests": {
+        "../rectangle-shader-frames/admission-review.json": {
+          "manifestLfSha256": "aa965e68b0868d731e3795eda5019a8e8d6078ab204a803be76b6dd4f1ebb715",
+          "cases": 30
+        },
+        "../affine-source-retention/capture.json": {
+          "manifestLfSha256": "6dc92d60fb2142657ba37e657ca6697917607685f600e613f6a894e1592d48e0",
+          "cases": 84
+        },
+        "../singular-source-maps/capture.json": {
+          "manifestLfSha256": "6c114599cce48eae97199c5451b555e964a409bd977132857137604c4dd8cac7",
+          "cases": 46
+        },
+        "../source-visibility/capture.json": {
+          "manifestLfSha256": "b2c9f75ac87fdbd4ea81543795a0d611c2df2aa0cd25ca65dbcda9df28b435f9",
+          "cases": 16
+        },
+        "../point-list-source-maps/capture.json": {
+          "manifestLfSha256": "256304191eb799932d9b227b342ef944a9bcc9e3a29e768eedb1d1b1f21a11f7",
+          "cases": 90
+        }
+      },
+      "passedSecondaryRuntimeCases": {
+        "windows-core": {
+          "SvgRectangleSourceTests.": 14,
+          "SvgPointListSourceTests.": 4,
+          "SvgSourceVisibilityTests.": 288,
+          "SvgSingularTransformTests.": 17
+        },
+        "windows-visual": {
+          "SvgRectangleSourceReferenceTests.": 30,
+          "SvgAffineSourceReferenceTests.": 84,
+          "SvgSingularSourceReferenceTests.": 46,
+          "SvgSourceVisibilityReferenceTests.": 8,
+          "folder: \"point-list-source-maps\"": 90
+        },
+        "linux-core": {
+          "SvgRectangleSourceTests.": 14,
+          "SvgPointListSourceTests.": 4,
+          "SvgSourceVisibilityTests.": 288,
+          "SvgSingularTransformTests.": 17
+        },
+        "linux-visual": {
+          "SvgRectangleSourceReferenceTests.": 30,
+          "SvgAffineSourceReferenceTests.": 84,
+          "SvgSingularSourceReferenceTests.": 46,
+          "SvgSourceVisibilityReferenceTests.": 8,
+          "folder: \"point-list-source-maps\"": 90
+        }
+      }
+    },
+    "G5": {
+      "owner": "SvgCssLength.TrySplitFixedUnit; SvgGeometrySyntax.ParseFixedCoordinate/ParseViewportDimension/ParseViewportCoordinate; typed rectangle, ellipse, line, local-use, image, nested viewport, mask and pattern consumers.",
+      "finding": "Shared unit splitting leaves numeric/sign/range admission to each consumer. Fixed conversion precedes the bounded coordinate check. Percentage coordinates retain native float narrowing and axis/normalized-diagonal bases; local use retains its separate native placement narrowing/fallback. Bare line endpoints reject percentages and font-relative units.",
+      "sources": [
+        "src/Lokad.Svg/Parsing/SvgCssLength.cs",
+        "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgRectangleSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgEllipseSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgLineSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgImageSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgMaskSyntax.cs",
+        "src/Lokad.Svg/Parsing/SvgPatternSyntax.cs"
+      ],
+      "tests": [
+        "tests/Lokad.Svg.Tests/SvgGeometryLengthTests.cs",
+        "tests/Lokad.Svg.Tests/SvgFixedStrokeLengthTests.cs",
+        "tests/Lokad.Svg.Tests/SvgOvalPercentageLengthTests.cs"
+      ],
+      "distinctChecks": [
+        "Direct factors, signed zero, contiguous tokens, converted int32 limits and finite/sign errors do not require a rendering context matrix.",
+        "Local-use syntax checks exact resolved dimensions, ordinary native placement and rescaled-mantissa fallback.",
+        "The mixed-units native input exercises geometry, use, nested viewport, mask and pattern grids. Percentage bases retain the separate viewport/root qualification."
+      ],
+      "nativeManifests": {
+        "../geometry-fixed-lengths/capture.json": {
+          "manifestLfSha256": "6017cccde4bbf2a22405b4c13b1f98c1e1249836124e0917613088af72c3e4a2",
+          "cases": 1
+        }
+      },
+      "passedSecondaryRuntimeCases": {
+        "windows-core": {
+          "SvgGeometryLengthTests.": 28,
+          "SvgFixedStrokeLengthTests.": 39,
+          "SvgOvalPercentageLengthTests.": 8
+        },
+        "windows-visual": {
+          "SvgGeometryLengthReferenceTests.": 1
+        },
+        "linux-core": {
+          "SvgGeometryLengthTests.": 28,
+          "SvgFixedStrokeLengthTests.": 39,
+          "SvgOvalPercentageLengthTests.": 8
+        },
+        "linux-visual": {
+          "SvgGeometryLengthReferenceTests.": 1
+        }
+      }
+    },
+    "I1": {
+      "owner": "SvgDefinitionParser.ParseShapeDefinition/BindSymbolFill; SvgRenderedGroupSourceParser.BeginGroup; SvgLocalReferencePresentationResolver.Resolve; SvgReferenceResolver source replay.",
+      "finding": "Leaf aliases reset ancestor placement and recording scope; fill/stroke bindings start from authored source properties. Retained rendered groups capture authored styles and local transforms. Instance inherited paint and explicit source paint remain distinct.",
+      "sources": [
+        "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs",
+        "src/Lokad.Svg/Parsing/SvgRenderedGroupSourceParser.cs",
+        "src/Lokad.Svg/Parsing/SvgLocalReferencePresentationResolver.cs",
+        "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs"
+      ],
+      "tests": [
+        "tests/Lokad.Svg.Tests/SvgUseInstanceTests.cs",
+        "tests/Lokad.Svg.Tests/SvgOpacityInheritanceTests.cs",
+        "tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs",
+        "tests/Lokad.Svg.Tests/SvgRootParserTests.cs",
+        "tests/Lokad.Svg.Tests/SvgSourceVisibilityTests.cs"
+      ],
+      "distinctChecks": [
+        "Direct geometry assertions and placed twins distinguish source-local transforms from translated/minified ancestors.",
+        "Forward/backward aliases bind opacity to each instance; CSS container and hidden-ancestor cases retain explicit expectations.",
+        "Independent source-visibility controls and rendered-group native inputs distinguish inherited fill/currentColor from authored source paint. These are Windows native references replayed on both hosts; no new Linux capture authority is claimed."
+      ],
+      "nativeManifests": {
+        "../source-visibility/capture.json": {
+          "manifestLfSha256": "b2c9f75ac87fdbd4ea81543795a0d611c2df2aa0cd25ca65dbcda9df28b435f9",
+          "cases": 16
+        },
+        "../rendered-group-styles/manifest.json": {
+          "manifestLfSha256": "67669e7ccd5099e4271a54b968b1065be2d65a121f7e40e6c96fde2cafaacebd",
+          "cases": 123
+        }
+      },
+      "passedSecondaryRuntimeCases": {
+        "windows-core": {
+          "Minified_source_ancestors_do_not_reduce_replayed_group_curves": 1,
+          "Translated_source_ancestors_do_not_enter_group_paint_servers": 1,
+          "Group_stroke_replay_preserves_local_transforms_without_source_ancestors": 1,
+          "Plain_definition_inheritance_binds_to_each_use_instead_of_lexical_ancestors": 2,
+          "Container_cascades_preserve_source_ancestor_exclusion": 2,
+          "Expands_transformed_group_nested_definitions_without_ancestor_transforms": 1,
+          "SvgSourceVisibilityTests.": 288
+        },
+        "windows-visual": {
+          "SvgSourceVisibilityReferenceTests.": 8,
+          "family: \"rendered-group-styles\"": 123
+        },
+        "linux-core": {
+          "Minified_source_ancestors_do_not_reduce_replayed_group_curves": 1,
+          "Translated_source_ancestors_do_not_enter_group_paint_servers": 1,
+          "Group_stroke_replay_preserves_local_transforms_without_source_ancestors": 1,
+          "Plain_definition_inheritance_binds_to_each_use_instead_of_lexical_ancestors": 2,
+          "Container_cascades_preserve_source_ancestor_exclusion": 2,
+          "Expands_transformed_group_nested_definitions_without_ancestor_transforms": 1,
+          "SvgSourceVisibilityTests.": 288
+        },
+        "linux-visual": {
+          "SvgSourceVisibilityReferenceTests.": 8,
+          "family: \"rendered-group-styles\"": 123
+        }
+      }
+    }
+  },
+  "boundaries": [
+    "Native manifests retain their original platform/health and source identity fields. A Windows capture replayed on Linux is not relabeled as a Linux browser capture.",
+    "All checks counted here are existing, individually discovered cases from the complete current .NET 10 suites. The linked milestone owns full .NET 11 CI and both-host qualification.",
+    "The previously qualified viewport/root record owns percentage-frame references. G1, G3, G4, G6 and the remaining instance/paint groups retain separate unfinished traces.",
+    "No assertion, image, tolerance, test identity or source input was changed during this trace."
+  ]
+}

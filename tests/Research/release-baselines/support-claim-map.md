@@ -4,8 +4,10 @@ Scope: every feature and limit section of the current [support contract][contrac
 The overview table is indexed by the detailed rows below; it adds no separate
 conformance promise. Labels summarize claims without duplicating the contract.
 
-Evidence base: `48f3df9f3`. The [native line source correction][line-source-record]
-records the current source/contract hashes and focused qualification. The earlier
+Evidence base: `ca222b22b`. The [native line source correction][line-source-record]
+records current source/contract hashes, full runtime/package qualification and
+original/context replays. The [geometry/instance trace][geometry-record] binds
+three additional inspected groups to this source and its existing checks. The earlier
 [diagnostic qualification][diag-record] records full .NET 11 CI and affected
 Windows/Linux .NET 10 checks; the [rendering milestone][render-record] owns its
 full cross-runtime rendering/package evidence. Source/runtime/platform boundaries
@@ -73,11 +75,11 @@ Scope: [geometry and strokes][contract-geometry].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| G1 | Shape/path families, winding, caps/joins/miter, dashes/pathLength, stroke paints/units and non-scaling restrictions | Pending: [native line retention][line-source-record] now has failing-before, ordinary affine and empty-paint/parent-bound controls. Finish its committed-source milestone and the remaining shape/stroke trace. |
-| G2 | Retained rectangle/path/point-list source geometry, visibility and finite singular maps | Pending. |
+| G1 | Shape/path families, winding, caps/joins/miter, dashes/pathLength, stroke paints/units and non-scaling restrictions | Pending: [native line retention][line-source-record] is fully qualified with failing-before, affine and empty-paint/parent-bound controls. Finish the remaining shape/stroke trace. |
+| G2 | Retained rectangle/path/point-list source geometry, visibility and finite singular maps | Reviewed: [retained source parsing][definition-parser] / [collapsed bounds][paint-recording] → [command/paint roles][rectangle-source-tests] / [source lifetime][point-source-tests] / [singular anchors][singular-tests] → [affine][affine-native], [visibility][visibility-native], [singular][singular-native] and [point-list controls][point-native]. [Current bindings and checked cases][geometry-record]. |
 | G3 | Nonuniform symbol viewBox source fills/outlines and lowered-polygon exclusion | Pending. |
 | G4 | Zero/degenerate dash/shape/path/point-list behavior and authored endpoint order | Pending. |
-| G5 | Fixed geometry units, numeric/sign admission, viewport percentage bases and excluded length domains | Pending. |
+| G5 | Fixed geometry units, numeric/sign admission, viewport percentage bases and excluded length domains | Reviewed: [unit splitting][css-length] / [consumer ranges][geometry-syntax] → [direct fixed-length cases][geometry-length-tests] / [stroke domains][stroke-length-tests] / [oval rejection and cleanup][oval-length-tests] → [mixed-unit native grid][geometry-length-native]. [Current trace][geometry-record]; [viewport frames][viewport-record] retain percentage reference authority. |
 | G6 | Bare point/transform numbers, whole-list native overflow, path recovery, comma/whitespace grammar and ancestor effects | Pending. |
 
 ## Documents and instances
@@ -86,7 +88,7 @@ Scope: [documents and instances][contract-instances].
 
 | ID | Claim group | Trace |
 | --- | --- | --- |
-| I1 | Local reference inheritance excludes source ancestors | Pending. |
+| I1 | Local reference inheritance excludes source ancestors | Reviewed: [authored source bindings][definition-parser] / [rendered group capture][group-source-parser] → [translated/minified ancestor checks][use-tests] / [instance opacity][opacity-tests] / [CSS container exclusion][selector-tests] → [visibility controls][visibility-native] and [group paint controls][group-style-native]. [Source and case bindings][geometry-record]. |
 | I2 | Local switch selection, empty locale set and required feature/extension rejection | Reviewed: [traversal][traversal], [direct][font-discovery] / [instance discovery][instance-discovery] and [paint selection][paint-index] → [switch scope checks][switch-tests] → [source-bound conditional acceptance][selection-record]. All four production walks remain byte-identical to that audit ([binding][viewport-record]). |
 | I3 | Missing/cyclic/empty references, href precedence, generated filters and zero use/symbol viewport behavior | Pending. |
 | I4 | Root/nested/symbol overflow, styles and retained-content restrictions; referenced group opacity/filter and named-use placement | Pending. |
@@ -271,6 +273,27 @@ Scope: [resource limits][contract-limits] and [qualification][contract-qualifica
 [diag-record]: diagnostic-unicode-prefix.json
 [render-record]: shadow-foreground.json
 [line-source-record]: native-line-source.json
+[geometry-record]: geometry-instance-trace.json
+[definition-parser]: ../../../src/Lokad.Svg/Parsing/SvgDefinitionParser.cs
+[paint-recording]: ../../../src/Lokad.Svg/Parsing/SvgPaintRecording.cs
+[group-source-parser]: ../../../src/Lokad.Svg/Parsing/SvgRenderedGroupSourceParser.cs
+[css-length]: ../../../src/Lokad.Svg/Parsing/SvgCssLength.cs
+[geometry-syntax]: ../../../src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs
+[rectangle-source-tests]: ../../Lokad.Svg.Tests/SvgRectangleSourceTests.cs
+[point-source-tests]: ../../Lokad.Svg.Tests/SvgPointListSourceTests.cs
+[singular-tests]: ../../Lokad.Svg.Tests/SvgSingularTransformTests.cs
+[geometry-length-tests]: ../../Lokad.Svg.Tests/SvgGeometryLengthTests.cs
+[stroke-length-tests]: ../../Lokad.Svg.Tests/SvgFixedStrokeLengthTests.cs
+[oval-length-tests]: ../../Lokad.Svg.Tests/SvgOvalPercentageLengthTests.cs
+[use-tests]: ../../Lokad.Svg.Tests/SvgUseInstanceTests.cs
+[opacity-tests]: ../../Lokad.Svg.Tests/SvgOpacityInheritanceTests.cs
+[selector-tests]: ../../Lokad.Svg.Tests/SvgCssSelectorTests.cs
+[affine-native]: ../affine-source-retention/capture.json
+[visibility-native]: ../source-visibility/capture.json
+[singular-native]: ../singular-source-maps/capture.json
+[point-native]: ../point-list-source-maps/capture.json
+[geometry-length-native]: ../geometry-fixed-lengths/capture.json
+[group-style-native]: ../rendered-group-styles/manifest.json
 [png-rows]: png-row-storage.json
 [png-color]: png-color-admission.json
 [w1-context]: ../svgweb/context-boundaries.json

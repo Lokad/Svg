@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/shadow-foreground.json",
+    "evidence": "../release-baselines/native-line-source.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "5e546b26e8792b05a141855604066b1cb4a6d392",
-    "sourceIdentity": "Clean-commit packaged shared shadow renderer. Fresh primary-runtime replay covers all 204 original hashes, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics; complete Windows/Linux suites on both runtime targets are bound in evidence. Earlier native references and admission boundaries remain frozen.",
-    "librarySha256": "e63c3a5bc6466673d64878cfd839fb8ed75c072f7cbd5222e6c6c913def13a6e",
+    "sourceBaseline": "ca222b22b0390e9b4175cb4fcc8c4d4f73b7b6ff",
+    "sourceIdentity": "Clean-commit packaged native line source retention. Fresh primary-runtime replay covers all 204 original hashes, 22 supplied contexts, 13 static diagnostics and three separately reviewed diagnostics; complete Windows/Linux suites on both runtime targets are bound in evidence. Earlier native references and admission boundaries remain frozen.",
+    "librarySha256": "5976a76be08bffc524e41ded0535be9813cc99e4aeafde9574c23ac725c0bd9e",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10401,7 +10401,7 @@
           "ny1-static-review.json",
           "svg2009-static-review.json"
         ],
-        "currentReplay": "../release-baselines/shadow-foreground.json"
+        "currentReplay": "../release-baselines/native-line-source.json"
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0
