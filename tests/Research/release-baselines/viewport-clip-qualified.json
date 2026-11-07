@@ -1,0 +1,421 @@
+{
+  "status": "Full source/runtime/package and all-original context replay qualified; only the unchanged frozen Windows DejaVu assertion fails. The separate allocation timing repeat is not release authority.",
+  "qualifiedSourceCommit": "8ddfeb1310a29f779da309ba96cbb27e71caec07",
+  "correction": "viewport-clip-storage.json",
+  "packages": {
+    "sourceCommit": "8ddfeb1310a29f779da309ba96cbb27e71caec07",
+    "deterministic": true,
+    "hashes": {
+      "Lokad.Svg.0.4.0-dev.1.nupkg": "40b829c6a393b244561d85c20b4d163e688ecaa62a55916a9e8ce9a8e4d8fd27",
+      "Lokad.Svg.0.4.0-dev.1.snupkg": "01d91ea6741d9c6ac40726e892b3029e3879aa750127b59c8a100932e159bf7d"
+    },
+    "assets": [
+      {
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 8.524973799940199,
+        "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f"
+      },
+      {
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 11.614069300238043,
+        "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d"
+      }
+    ]
+  },
+  "milestoneProcesses": [
+    {
+      "kind": "full-net10",
+      "exitCode": 0,
+      "seconds": 419.9429595996626
+    },
+    {
+      "kind": "full-net11",
+      "exitCode": 0,
+      "seconds": 420.3228517998941
+    },
+    {
+      "kind": "package-windows",
+      "exitCode": 0,
+      "seconds": 8.115564499981701
+    },
+    {
+      "kind": "package-linux",
+      "exitCode": 0,
+      "seconds": 126.944365600124
+    }
+  ],
+  "fullSuites": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "testAssemblySha256": "feb723fe1442b7e6c0495be31b2fd3311c327f1d36086903e2cc3f245a1739b6",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 80.5946782999672,
+      "counters": {
+        "executed": "48257",
+        "passed": "48257",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "testAssemblySha256": "feb723fe1442b7e6c0495be31b2fd3311c327f1d36086903e2cc3f245a1739b6",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 123.58647879958153,
+      "counters": {
+        "executed": "48257",
+        "passed": "48257",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "testAssemblySha256": "3ba95592a619f377f14583ed53f2e2e134ff938775f28da41859f61ad9ae282a",
+      "selection": "Unfiltered",
+      "exitCode": 1,
+      "seconds": 317.2711362000555,
+      "counters": {
+        "executed": "78890",
+        "passed": "78889",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "testAssemblySha256": "3ba95592a619f377f14583ed53f2e2e134ff938775f28da41859f61ad9ae282a",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 296.41515500005335,
+      "counters": {
+        "executed": "78890",
+        "passed": "78890",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "font",
+      "framework": "net11.0",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "testAssemblySha256": "c6827c9919668715cafe99eb35d09d2a025cd5be1657d8474ee74498cbe31e56",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 2.6712050000205636,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "font",
+      "framework": "net11.0",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "testAssemblySha256": "c6827c9919668715cafe99eb35d09d2a025cd5be1657d8474ee74498cbe31e56",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 1.4498065002262592,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "testAssemblySha256": "d7beafbd07aa2f66b7658f93b7bc2191f25bdfa4795e1b90b422c6eceaebf9e6",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 82.17035540007055,
+      "counters": {
+        "executed": "48257",
+        "passed": "48257",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "testAssemblySha256": "d7beafbd07aa2f66b7658f93b7bc2191f25bdfa4795e1b90b422c6eceaebf9e6",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 121.40017300006002,
+      "counters": {
+        "executed": "48257",
+        "passed": "48257",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "testAssemblySha256": "7145e2e1fffe4873ccca868933d6ac4f8f80df433117870e3ab8cc1691f80bf3",
+      "selection": "Unfiltered",
+      "exitCode": 1,
+      "seconds": 316.20599099993706,
+      "counters": {
+        "executed": "78890",
+        "passed": "78889",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "testAssemblySha256": "7145e2e1fffe4873ccca868933d6ac4f8f80df433117870e3ab8cc1691f80bf3",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 298.189079800155,
+      "counters": {
+        "executed": "78890",
+        "passed": "78890",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "font",
+      "framework": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "testAssemblySha256": "1947943308fc9e4e9408ddfd6a0d98d353fd126c0c18cb12e3b3a928d8d4d02e",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 1.9453075998462737,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "font",
+      "framework": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "testAssemblySha256": "1947943308fc9e4e9408ddfd6a0d98d353fd126c0c18cb12e3b3a928d8d4d02e",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 1.5638123000971973,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "ci": {
+    "conclusion": "failure",
+    "headSha": "8ddfeb1310a29f779da309ba96cbb27e71caec07",
+    "jobs": [
+      {
+        "completedAt": "2026-11-07T19:31:45Z",
+        "conclusion": "success",
+        "databaseId": 128504549008,
+        "name": "build-and-test (ubuntu-latest)",
+        "startedAt": "2026-11-07T19:27:13Z",
+        "status": "completed",
+        "url": "https://github.com/Lokad/Svg/actions/runs/42406275103/job/128504549008",
+        "logSha256": "077a930e18530c011cec3711710a014c3ede160f7c7c5d11a5770ab3487506b5",
+        "failedSteps": [],
+        "skippedSteps": [
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+          "Run actions/upload-artifact@v4"
+        ],
+        "testCounters": [
+          {
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "failed": 0,
+            "passed": 48257,
+            "skipped": 0,
+            "total": 48257
+          },
+          {
+            "failed": 0,
+            "passed": 78890,
+            "skipped": 0,
+            "total": 78890
+          },
+          {
+            "failed": 0,
+            "passed": 12367,
+            "skipped": 0,
+            "total": 12367
+          },
+          {
+            "failed": 0,
+            "passed": 2678,
+            "skipped": 0,
+            "total": 2678
+          },
+          {
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          }
+        ]
+      },
+      {
+        "completedAt": "2026-11-07T19:32:56Z",
+        "conclusion": "failure",
+        "databaseId": 128504549160,
+        "name": "build-and-test (windows-latest)",
+        "startedAt": "2026-11-07T19:27:13Z",
+        "status": "completed",
+        "url": "https://github.com/Lokad/Svg/actions/runs/42406275103/job/128504549160",
+        "logSha256": "016facadc9a066e72f432176a22e1358d9ae9563aaeec2afd6130287b00e10f2",
+        "failedSteps": [
+          "Run dotnet test Lokad.Svg.slnx -c Release --no-build"
+        ],
+        "skippedSteps": [
+          ".NET 10 API, ownership and numerical compatibility",
+          ".NET 10 representative native rendering compatibility",
+          ".NET 10 font host compatibility",
+          "Run tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe",
+          "Run tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests",
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke",
+          "Allow the pinned Chrome executable to create its sandbox",
+          "Run tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json",
+          "Run tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe",
+          "Run tools/validate-ci-artifacts.ps1 -Platform Windows -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe -RequireCurrentHost",
+          "Run tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/validator-selftest -Platform Windows",
+          "Run dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build",
+          "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+          "Post Run actions/setup-dotnet@v4",
+          "Post Run actions/setup-dotnet@v4"
+        ],
+        "testCounters": [
+          {
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "failed": 0,
+            "passed": 48257,
+            "skipped": 0,
+            "total": 48257
+          },
+          {
+            "failed": 1,
+            "passed": 78889,
+            "skipped": 0,
+            "total": 78890
+          }
+        ]
+      }
+    ],
+    "status": "CLOSED",
+    "url": "https://github.com/Lokad/Svg/actions/runs/42406275103"
+  },
+  "ciScope": "Ubuntu passes all gates. Windows stops at the single frozen DejaVu assertion, leaving downstream steps skipped; local full secondary suites and four-context installed consumers are separate evidence. Both terminal logs were saved once; never repoll/refetch.",
+  "svgweb": {
+    "runtime": "net11.0",
+    "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+    "defaultOriginals": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 177.97121350001544,
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        }
+      }
+    },
+    "suppliedContexts": 22,
+    "staticDiagnostics": 13,
+    "separateSourceReviews": 3,
+    "partition": {
+      "defaultExact": 168,
+      "suppliedPrograms": 22,
+      "otherStaticDiagnostics": 11,
+      "separateSourceReviews": 3
+    },
+    "hostedSourceBodiesRetained": 0,
+    "referenceOrAdmissionBoundaryChanges": 0,
+    "legacyLinuxProfile": {
+      "profile": "linux-glibc-2.39",
+      "sourceSha256": "f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "libraryPngSha256": "6270d140b852258201361b48813bfde0aaa5185afb7e6ce1d7234703ebbc89c0",
+      "unchangedQualifiedLegacyPng": true,
+      "sourceBodiesRetained": 0
+    },
+    "scope": "All identities/outcomes/diagnostics and supplied/static projections are preserved; projections do not qualify unchanged original admission. External-image provenance, dynamic/media/CSS/duplicate-ID boundaries and both existing Linux native math profiles remain explicit."
+  },
+  "releaseGateGreen": false,
+  "remaining": [
+    "Frozen Windows DejaVu authority remains Open T18; its assertion/target remain intact.",
+    "W1 external-resource and R85/R86 source authority remain open.",
+    "Quiet allocation repeat and broader native/profile/memory performance work remain separately owned."
+  ]
+}

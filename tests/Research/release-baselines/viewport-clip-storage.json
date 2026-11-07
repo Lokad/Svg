@@ -1,5 +1,5 @@
 {
-  "status": "Shared viewport clip output storage implemented. Focused mechanisms, preserved original lifecycle tests, affected four-context core/native coverage and current chart pixel/allocation controls pass. Full final-commit/package/SVGWeb qualification and a quiet timing repeat remain pending.",
+  "status": "Shared viewport storage correction passes full four-context source/package and all-original/context qualification, preserving only the unchanged frozen Windows DejaVu failure. Controlled quiet timing remains in progress.",
   "parentCommit": "d55ab1f9ba0f90d66e4cfca665a2c55bbca46e84",
   "cause": "chart-clip-storage-profile.json",
   "sourceFilesLfSha256": {
@@ -349,8 +349,10 @@
     "pixels": "All four after outputs match the unchanged frozen Windows/Linux chart references exactly. Symbol and group cases remain distinct; no coverage removed."
   },
   "nextActions": [
-    "Complete full four-context suites, deterministic packages/installed consumers and all-original/context replay for the committed source.",
+    "Full final-commit/runtime/package and all-original/context qualification is complete. Preserve the separate frozen Windows DejaVu gate.",
     "Prepare sealed before/after packages, then coordinate an exclusive quiet jq VM slot with sttropez; retain all launches, negative controls, exact pixels and explicit GC/tiering/order.",
     "Keep chart glyph/filter/gradient costs, icon-sheet runtime attribution, native comparators, cold startup and process/native memory scopes open."
-  ]
+  ],
+  "qualification": "viewport-clip-qualified.json",
+  "qualifiedSourceCommit": "8ddfeb1310a29f779da309ba96cbb27e71caec07"
 }
