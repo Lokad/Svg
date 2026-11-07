@@ -63,7 +63,10 @@ Both tools require a new output directory. Compare every PNG with its manifest's
 platform reference using the [pixel comparison procedure](#pixel-comparison).
 Chrome remains the oracle; retain native differences. To collect optional serial
 resvg timings, append `--timing <warmup-count> <sample-count>` to its arguments.
-Both counts must be positive. The report retains each warmup and sample for full
+Both counts must be positive. An optional final `<minimum-warmup-ms>` adds a
+positive elapsed-time floor for each stage. The fixed warmups remain individual
+observations; any extension records its total operations and duration as one batch.
+The report retains each fixed warmup and measured sample for full
 parse/raster/PNG conversion, parsing, rasterization of the prepared tree into a
 fresh bitmap, and PNG encoding of the verified pixels. Inputs/fonts and report
 I/O stay outside timing; temporary allocation and destruction stay inside.

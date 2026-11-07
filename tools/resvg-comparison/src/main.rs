@@ -1,21 +1,38 @@
 use resvg::{tiny_skia, usvg};
 use serde_json::{Value, json};
-use std::{error::Error, fs, hint::black_box, path::Path, sync::Arc, time::Instant};
+use std::{
+    error::Error,
+    fs,
+    hint::black_box,
+    path::Path,
+    sync::Arc,
+    time::{Duration, Instant},
+};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = std::env::args().collect();
     let timing = match args.as_slice() {
         [_, _, _] => None,
-        [_, _, _, flag, warmup, samples] if flag == "--timing" => {
+        [_, _, _, flag, warmup, samples, ..] if flag == "--timing" && args.len() <= 7 => {
             let counts = (warmup.parse::<usize>()?, samples.parse::<usize>()?);
             if counts.0 == 0 || counts.1 == 0 {
                 return Err("warmup and sample counts must be positive".into());
             }
-            Some(counts)
+            let minimum = match args.get(6) {
+                Some(value) => {
+                    let milliseconds = value.parse::<u64>()?;
+                    if milliseconds == 0 {
+                        return Err("minimum warmup milliseconds must be positive".into());
+                    }
+                    Duration::from_millis(milliseconds)
+                }
+                None => Duration::ZERO,
+            };
+            Some((counts.0, counts.1, minimum))
         }
         _ => {
             return Err(
-                "expected manifest, new output directory and optional --timing warmups samples"
+                "expected manifest, new output directory and optional --timing warmups samples [minimum-warmup-ms]"
                     .into(),
             );
         }
@@ -42,6 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .collect::<Result<_, Box<dyn Error>>>()?;
     let mut rows = Vec::new();
     let mut timings = Vec::new();
+    let mut timed_executions = 0_u64;
     for (item, bytes) in inputs {
         let id = text(item, "id")?;
         if Path::new(id).file_name().and_then(|x| x.to_str()) != Some(id) {
@@ -85,7 +103,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         fs::write(output.join(format!("{id}.png")), png)?;
         rows.push(json!({"id":id,"outcome":"rendered","width":width,"height":height,
             "reportedTreeWidth":tree.size().width(),"reportedTreeHeight":tree.size().height(),"repeatedRasterCalls":2}));
-        if let Some((warmups, samples)) = timing {
+        if let Some((warmups, samples, minimum_warmup)) = timing {
             // Each operation owns its temporary tree/bitmap/PNG. Font and input
             // acquisition, reference checks and report I/O remain outside timing.
             for mode in ["parse-raster-png", "parse", "prepared-raster", "png"] {
@@ -124,24 +142,41 @@ fn main() -> Result<(), Box<dyn Error>> {
                 };
                 let mut warmup_ns = Vec::with_capacity(warmups);
                 let mut sample_ns = Vec::with_capacity(samples);
+                let warmup_start = Instant::now();
                 for _ in 0..warmups {
                     let start = Instant::now();
                     operation()?;
                     warmup_ns.push(u64::try_from(start.elapsed().as_nanos())?);
                 }
+                // Retain a single aggregate observation for any extension. Tiny
+                // operations need elapsed warmup without millions of records.
+                let extension_start = Instant::now();
+                let mut extension_operations = 0_u64;
+                while warmup_start.elapsed() < minimum_warmup {
+                    operation()?;
+                    extension_operations += 1;
+                }
+                let extension_ns = if extension_operations == 0 {
+                    0
+                } else {
+                    u64::try_from(extension_start.elapsed().as_nanos())?
+                };
+                let warmup_elapsed_ns = u64::try_from(warmup_start.elapsed().as_nanos())?;
                 for _ in 0..samples {
                     let start = Instant::now();
                     operation()?;
                     sample_ns.push(u64::try_from(start.elapsed().as_nanos())?);
                 }
-                timings.push(json!({"id":id,"mode":mode,"warmupNanoseconds":warmup_ns,"sampleNanoseconds":sample_ns}));
+                timings.push(json!({"id":id,"mode":mode,"warmupNanoseconds":warmup_ns,"sampleNanoseconds":sample_ns,
+                    "minimumWarmupMilliseconds":minimum_warmup.as_millis(),"warmupElapsedNanoseconds":warmup_elapsed_ns,
+                    "warmupExtension":{"operations":extension_operations,"nanoseconds":extension_ns}}));
+                timed_executions +=
+                    u64::try_from(warmups)? + u64::try_from(samples)? + extension_operations;
             }
         }
     }
-    let timed_executions =
-        timing.map_or(0, |(warmups, samples)| (warmups + samples) * timings.len());
     let report = json!({"renderer":"resvg 0.49.0","rows":rows,"timedExecutions":timed_executions,"timings":timings,
-        "scope":"One optimized process, inputs and explicit font database retained in memory; two untimed raster calls verify repeatability before optional serial timing. Timed operations include temporary allocation/destruction. Prepared raster allocates a fresh transparent bitmap; PNG reuses the verified pixels. Font/input acquisition, output I/O, startup and IPC are excluded. All warmups/samples retained; no allocation/native-memory metric or general performance claim."});
+        "scope":"One optimized process, inputs and explicit font database retained in memory; two untimed raster calls verify repeatability before optional serial timing. Timed operations include temporary allocation/destruction. Prepared raster allocates a fresh transparent bitmap; PNG reuses the verified pixels. Font/input acquisition, output I/O, startup and IPC are excluded. Fixed warmups/samples retained individually; optional minimum-time warmup extension retained as an aggregate operations/duration observation. No allocation/native-memory metric or general performance claim."});
     fs::write(
         output.join("report.json"),
         serde_json::to_vec_pretty(&report)?,

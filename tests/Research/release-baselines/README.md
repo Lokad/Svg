@@ -79,6 +79,8 @@ The [native timing routes](native-timing-routes.json) qualify opt-in parse,
 prepared-raster, PNG and full-conversion observations on both hosts; default
 preflight and all prior native outputs remain unchanged. Quiet comparison remains
 separate from those local tool checks.
+An [optional elapsed warmup floor](native-warmup-floor.json) preserves those routes
+and images while recording any additional warmup as an explicit operations/duration batch.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

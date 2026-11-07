@@ -1,0 +1,51 @@
+{
+  "status": "Optional elapsed warmup floor qualified; all prior native images and untimed/fixed routes preserved.",
+  "sourceBaseline": "3dbc7ad876012f00857998e0631c6c370f6d3db9",
+  "priorQualification": "native-timing-routes.json",
+  "sourceSha256Lf": "2c215064a7187106c2e6e914fbb8e7788529659b5923c1dc5fb9739fb068225f",
+  "binarySha256": {
+    "windows": "72f90d7fd9defe574c3c10db018f145e9e85950b5329e904b86368f8fd0598bc",
+    "linux": "7a885cf790811c015050f518ddcefaaccc9dc20968d03cb2a93909baf0a38d7c"
+  },
+  "hosts": [
+    {
+      "host": "windows",
+      "documents": 29,
+      "fixedStageRows": 116,
+      "floorStageRows": 116,
+      "preservedNativePngsPerRoute": 29,
+      "warmupExtensionOperations": 5602
+    },
+    {
+      "host": "linux",
+      "documents": 29,
+      "fixedStageRows": 116,
+      "floorStageRows": 116,
+      "preservedNativePngsPerRoute": 29,
+      "warmupExtensionOperations": 8172
+    }
+  ],
+  "admission": [
+    {
+      "floor": "0",
+      "exitCode": 1,
+      "createdOutput": false
+    },
+    {
+      "floor": "-1",
+      "exitCode": 1,
+      "createdOutput": false
+    },
+    {
+      "floor": "bad",
+      "exitCode": 1,
+      "createdOutput": false
+    }
+  ],
+  "checks": [
+    "Optimized locked/offline builds on Windows/Linux",
+    "Rust formatting and warning checks on both hosts",
+    "29-input default/fixed/floor image identity on each host"
+  ],
+  "method": "Each stage performs its fixed individual warmup observations, then extends to the requested elapsed floor if necessary. Extra operations and total duration form one explicit aggregate observation; every fixed warmup and measured sample remains individual. No millions of extra scalar records, output/reference change or renderer performance claim."
+}
