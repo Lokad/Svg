@@ -99,6 +99,9 @@ areas to their owners, checks and retained samples; hot frames alone establish n
 additional removable work or safe cache.
 The [current package sizes](current-package-size.json) record sealed archive/member
 bytes and dependency-free payloads separately from runtime/process memory.
+The [thin consumer and native observer](thin-consumer-observation.json) qualify
+separate ready/pipe/first-call/I/O stages and attributed compression requests;
+default batch output and all independent references remain unchanged.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

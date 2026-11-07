@@ -1,0 +1,199 @@
+{
+  "status": "Thin process/pipe observation route and Linux native-compression attribution qualified locally; no local performance claim.",
+  "rendererQualification": "shader-context-qualified.json",
+  "processCases": [
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "document": "geometry-rect",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "document": "chart",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "document": "icon-sheet",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "document": "geometry-rect",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "document": "chart",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "document": "icon-sheet",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "document": "geometry-rect",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "document": "chart",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "document": "icon-sheet",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "document": "geometry-rect",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "document": "chart",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "document": "icon-sheet",
+      "pngsExact": 1,
+      "repeatedConversions": 2
+    }
+  ],
+  "defaultBatch": {
+    "hosts": [
+      "windows",
+      "linux"
+    ],
+    "framework": "net11.0",
+    "documentsPerHost": 26,
+    "timedExecutions": 0,
+    "referenceChanges": 0
+  },
+  "nativeSmoke": [
+    {
+      "framework": "net10.0",
+      "document": "geometry-rect",
+      "allocations": 4,
+      "releases": 4,
+      "totalRequestedBytes": 700896,
+      "peakLiveRequestedBytes": 350448,
+      "liveRequestedBytesAtExit": 0,
+      "overflow": 0
+    },
+    {
+      "framework": "net10.0",
+      "document": "chart",
+      "allocations": 8,
+      "releases": 8,
+      "totalRequestedBytes": 785472,
+      "peakLiveRequestedBytes": 350448,
+      "liveRequestedBytesAtExit": 0,
+      "overflow": 0
+    },
+    {
+      "framework": "net10.0",
+      "document": "icon-sheet",
+      "allocations": 4,
+      "releases": 4,
+      "totalRequestedBytes": 700896,
+      "peakLiveRequestedBytes": 350448,
+      "liveRequestedBytesAtExit": 0,
+      "overflow": 0
+    },
+    {
+      "framework": "net11.0",
+      "document": "geometry-rect",
+      "allocations": 4,
+      "releases": 4,
+      "totalRequestedBytes": 700896,
+      "peakLiveRequestedBytes": 350448,
+      "liveRequestedBytesAtExit": 0,
+      "overflow": 0
+    },
+    {
+      "framework": "net11.0",
+      "document": "chart",
+      "allocations": 8,
+      "releases": 8,
+      "totalRequestedBytes": 785472,
+      "peakLiveRequestedBytes": 350448,
+      "liveRequestedBytesAtExit": 0,
+      "overflow": 0
+    },
+    {
+      "framework": "net11.0",
+      "document": "icon-sheet",
+      "allocations": 4,
+      "releases": 4,
+      "totalRequestedBytes": 700896,
+      "peakLiveRequestedBytes": 350448,
+      "liveRequestedBytesAtExit": 0,
+      "overflow": 0
+    }
+  ],
+  "nativeControls": {
+    "positive": {
+      "allocationApis": [
+        "calloc",
+        "aligned_alloc",
+        "malloc"
+      ],
+      "allocations": 3,
+      "releases": 3,
+      "totalAndPeakRequestedBytes": 448,
+      "liveAtExit": 0
+    },
+    "unrelatedProcess": {
+      "allocations": 0
+    }
+  },
+  "sourceFilesLfSha256": {
+    "tools/Lokad.Svg.PackageComparison/Program.cs": "6a744854c159eb36ad5e65fd4b82ed1e91cf91262930dabc80a9ad73a21dc815",
+    "tools/native-compression-allocations.c": "4a8808cf0f2c165f131f8d197b80f07fe1437cf5f15d7712f3471411d7db0081"
+  },
+  "observerScope": "Linux/glibc LD_PRELOAD research pass only. Counts requested bytes for calloc/malloc/aligned_alloc whose immediate caller resolves to the runtime compression module; tracks matching frees by pointer and fails qualification on overflow. Fixed static event/owner tables and initial-exec TLS avoid observer recursion/allocation. This excludes allocator overhead, managed heaps and other native modules. Instrumented timings are not used. Initial dynamic-TLS observer crashed; corrected observer and retained logs are separate from renderer correctness.",
+  "upstream": [
+    "https://raw.githubusercontent.com/dotnet/runtime/v10.0.14/src/native/libs/System.IO.Compression.Native/pal_zlib.c",
+    "https://raw.githubusercontent.com/dotnet/runtime/v10.0.14/src/native/external/zlib-ng/zutil_p.h"
+  ],
+  "next": "Separate uninstrumented startup/pipe/I/O observations from instrumented native request/lifetime counts on a coordinated quiet host.",
+  "admission": [
+    "Multi-document process mode rejects before rendering",
+    "Unknown pipe command rejects before rendering",
+    "Native result file uses O_EXCL; existing file retained and child fails with exit97"
+  ],
+  "checks": [
+    "Both target builds with warnings as errors and variant-specific locked restore",
+    "12 exact single-document process cases",
+    "52 exact untimed batch outputs",
+    "Three-allocation positive/exclusion/native file ownership controls"
+  ]
+}

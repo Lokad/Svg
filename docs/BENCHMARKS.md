@@ -57,6 +57,12 @@ diagnostics; managed heap estimates and allocation traffic remain distinct. Exte
 launch-to-marker/exit timings include bootstrap and communication, with warm OS
 file caches. They measure neither IPC alone nor a minimal consumer's startup.
 
+The [thin installed consumer](../tools/README.md#installed-and-native-comparison-preflight)
+has a single-document process mode for setup, ping/pong and first-call/write
+observations. Its separate Linux compression observer measures attributed native
+requests and lifetime; instrumented runs provide no latency result. Keep these
+metrics separate from the managed heap, process RSS and governed reservations.
+
 The [persistent resvg runner](../tools/README.md#installed-and-native-comparison-preflight)
 can retain serial samples for full conversion, parsing, prepared-tree rasterization
 and PNG encoding. Its input/font setup and output I/O are excluded; temporary

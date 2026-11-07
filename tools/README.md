@@ -24,9 +24,34 @@ The [common consumer](Lokad.Svg.PackageComparison/Program.cs) runs the active
 26-document corpus through an explicitly selected installed package asset on
 .NET 11. It uses public conversion APIs, unchanged input/font bytes and one process
 for the whole batch. It records identities, outcomes and repeated PNG stability;
-it collects no timings. Keep the consumer source and runtime fixed between runs.
+the default batch collects no timings. Keep the consumer source and runtime fixed between runs.
 The [qualification](../tests/Research/release-baselines/installed-version-comparison.json)
 records the package/asset matrix and exact Chrome comparisons.
+
+Append `--observe-process` with a single-document manifest to observe the thin
+consumer separately from the benchmark host. It emits `SVG_CONSUMER_READY` after
+setup, replies to stdin `ping` with `SVG_CONSUMER_PONG`, and waits for `render`.
+The first conversion and buffered PNG write have separate markers/timers; a second
+conversion checks exactness. Only requested font bytes are loaded. Ready includes
+manifest/input/font I/O, validation and acquisition; pipe round trips include
+scheduling, protocol handling and flushing. Writes use `File.WriteAllBytes` without
+fsync; buffered read-call time is distinct from the broader validation/setup phase.
+OS caches are not flushed. These are process-stage observations, not warmed throughput.
+
+For a separate Linux/glibc native-allocation research pass, build
+[the compression observer](native-compression-allocations.c) into ignored storage:
+
+```bash
+gcc -std=c11 -O2 -fPIC -shared -Wall -Wextra -Werror -fno-optimize-sibling-calls tools/native-compression-allocations.c -ldl -pthread -o artifacts/native-compression-allocations.so
+```
+
+Set `LD_PRELOAD` to that absolute library path and `SVG_NATIVE_ALLOCATIONS` to a
+new JSON filename for the child process only. The observer requires startup loading
+and records requests whose immediate caller is `libSystem.IO.Compression.Native.so`,
+matching frees and peak/live requested bytes. Its fixed owner/event tables report
+overflow; reject incomplete observations. This excludes allocator overhead, managed
+heaps and other native modules. Use separate uninstrumented runs for latency;
+the observer is optional research tooling and never a renderer dependency.
 
 Put verified, unchanged packages in a local feed. Give each package/asset pair a
 fresh root so NuGet, generated files and outputs cannot be reused across variants:
