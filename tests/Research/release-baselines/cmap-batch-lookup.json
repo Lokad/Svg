@@ -576,8 +576,8 @@
   ],
   "harnessCorrection": "Preliminary Windows child FontProbe launches used the system dotnet path and failed startup. All eight public qualification cases pass with the pinned SDK PATH; standard four-context results above use the explicit SDK environment. No startup failure is counted as renderer qualification.",
   "nextActions": [
-    "Commit the coherent correction and qualify full Windows/Linux/runtime/package suites plus every SVGWeb original/context at this shared text milestone.",
-    "Prepare sealed before/after assets and an adequately warmed, coordinated quiet-host comparison; retain all samples, drift and independent native pixels.",
+    "Complete the predeclared quiet before/after comparison, retain every warmup/measurement and inspect within-launch drift.",
     "Keep full native-comparator/startup/process-memory scopes and unresolved source authority separate."
-  ]
+  ],
+  "fullQualification": "cmap-batch-qualified.json"
 }

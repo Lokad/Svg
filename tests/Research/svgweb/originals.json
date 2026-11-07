@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/viewport-clip-qualified.json",
+    "evidence": "../release-baselines/cmap-batch-qualified.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "8ddfeb1310a29f779da309ba96cbb27e71caec07",
-    "sourceIdentity": "Packaged shared viewport clip storage correction. Fresh primary-runtime replay preserves all 204 original hashes/outcomes/diagnostics and 22 supplied, 13 static and three separate diagnostic contexts on both hosts. Full core/native/font suites and installed consumers are separately qualified on both runtimes; frozen targets and admission boundaries are unchanged.",
-    "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+    "sourceBaseline": "def8a865ccbd415cba6f41d95f485aca00aa9128",
+    "sourceIdentity": "Packaged batch-local cmap lookup correction. Fresh primary-runtime replay preserves all 204 original hashes/outcomes/diagnostics and 22 supplied, 13 static and three separate diagnostic contexts on both hosts. Full core/native/font suites and installed consumers are separately qualified on both runtimes; frozen targets and admission boundaries are unchanged.",
+    "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {

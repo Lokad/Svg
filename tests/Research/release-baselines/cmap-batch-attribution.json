@@ -1,0 +1,1419 @@
+{
+  "status": "Local post-correction attribution; no timing or runtime-regression claim.",
+  "qualifiedSourceCommit": "def8a865ccbd415cba6f41d95f485aca00aa9128",
+  "qualification": "cmap-batch-qualified.json",
+  "correction": "cmap-batch-lookup.json",
+  "beforeIconProfile": "icon-runtime-attribution.json",
+  "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2",
+  "driverSha256": "b2938202084d11191239e83503f3704edc156136a31c081e0d1b258e19249b29",
+  "method": "Unchanged net10 public conversion driver, sealed net10 asset on runtime 11 RC3, eight warmups then 100 conversions inside EventSource markers. Local WSL CPU0, workstation/concurrent GC, tiering/PGO, 1ms sampling. Other local qualification work overlaps; traced duration is not throughput evidence. Innermost/inclusive frames are sample occurrences and may include inlining; omitted frames are not proof of absence.",
+  "profiles": [
+    {
+      "document": "icon-sheet",
+      "inputSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+      "runtimeModules": [
+        "/mnt/d/code/svg/artifacts/tools/dotnet/linux-x64/shared/microsoft.netcore.app/11.0.0-rc.3.26522.148/system.private.corelib.dll",
+        "/mnt/d/code/svg/artifacts/tools/dotnet/linux-x64/shared/Microsoft.NETCore.App/11.0.0-rc.3.26522.148/System.Private.CoreLib.dll"
+      ],
+      "traceSha256": "c40198696a8650a4494944ce03ae9a1eae9f4b43e3374d2dcbd28962baf0c278",
+      "reportedEventsLost": 0,
+      "measurementWindowMillisecondsUnderTracing": 8266.367976000001,
+      "sampleProfilerEvents": 6445,
+      "medianAllocatedBytesPerConversion": 25928424.0,
+      "allocatedBytesPerConversion": [
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928504,
+        25929176,
+        25928504,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929176,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928504,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928504,
+        25928424,
+        25929176,
+        25928424,
+        25928424,
+        25928424,
+        25929176,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928504
+      ],
+      "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+      "changedPixelsFromFrozenLinuxReference": 0,
+      "innermostSvgFrames": [
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 440
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgAuthoredPath..ctor(value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Parsing.SvgAuthoredPathCommand>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgAuthoredStrokeStyle>,class Lokad.Svg.Parsing.SvgAuthoredPath,class Lokad.Svg.Parsing.SvgAuthoredDashSource,value class Lokad.Svg.Parsing.SvgAuthoredFillShape,class BudgetReservation)",
+          "Value": 318
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+          "Value": 247
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePreparedRectangle|11_83(value class Lokad.Svg.Rendering.SvgRectangleRaster,value class Lokad.Svg.Rendering.SvgAnalyticPaint,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 237
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 208
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgCpuClipCoverage.IntersectCanvas(value class Lokad.Svg.Rendering.SvgRasterClipMask,int32,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class System.Threading.CancellationToken,bool&)",
+          "Value": 180
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgRectangleCoverage.GetAlpha(int32,int32)",
+          "Value": 174
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.WalkEdgesRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 145
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgPolygonFill..ctor(value class Lokad.Svg.Parsing.SvgPolygonContours,value class Lokad.Svg.SvgColor,bool,bool,value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>)",
+          "Value": 139
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont+CmapLookup.GetGlyphIndex(unsigned int32,value class System.Threading.CancellationToken)",
+          "Value": 137
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.WriteSegmentedChunk(value class System.Span`1<unsigned int8>,class PngSegmentedBuffer,int32&,int32&,int32,value class System.Threading.CancellationToken)",
+          "Value": 110
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PrepareRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 101
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgComputedStyle.Resolve(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.InlineStyle,value class Lokad.Svg.Parsing.InlineStyle)",
+          "Value": 97
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.LatinLightHinting.FindAlignment(value class System.ReadOnlySpan`1<value class Lokad.Svg.Fonts.OpenTypeGlyphPoint>,value class System.ReadOnlySpan`1<unsigned int16>,bool,int32,value class System.Threading.CancellationToken,int32&,bool&,int32&,int32&)",
+          "Value": 94
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.Prepare(value class Lokad.Svg.Rendering.SvgAnalyticContourPreparation&,int32,int32,int32,int32,value class Lokad.Svg.Rendering.SvgAnalyticScanWindow,value class Lokad.Svg.Rendering.SvgCpuBitmapOrigin,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgAnalyticClipContext>,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,class Lokad.Svg.Rendering.RenderBudget,bool&,value class System.Threading.CancellationToken)",
+          "Value": 87
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__MapPolygon|11_41(value class Lokad.Svg.Rendering.SvgDevicePoint[],int32[],int32[],bool,value class Lokad.Svg.Rendering.SvgQuadSpan[],value class Lokad.Svg.Rendering.SvgCubicSpan[],value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>,class Lokad.Svg.Parsing.SvgAuthoredPath,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 78
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgContourStructure.ClassifyContour(value class System.ReadOnlySpan`1<value class Lokad.Svg.Rendering.SvgDevicePoint>,int32,int32,value class System.Threading.CancellationToken)",
+          "Value": 75
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.LatinLightHinting.Hint(value class System.Span`1<value class Lokad.Svg.Fonts.OpenTypeGlyphPoint>,value class System.ReadOnlySpan`1<unsigned int16>,value class System.ReadOnlySpan`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,int32,float64,value class Lokad.Svg.Fonts.LatinStemWidths,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 75
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgGroupScope].get_Item(value class System.Index)",
+          "Value": 73
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgPolygonFill.Create(value class Lokad.Svg.Rendering.SvgDevicePoint[],int32[],int32[],value class Lokad.Svg.Rendering.SvgQuadSpan[],value class Lokad.Svg.Rendering.SvgCubicSpan[],value class Lokad.Svg.SvgColor,bool,bool,value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>,class BudgetReservation,class Lokad.Svg.Rendering.RenderBudget)",
+          "Value": 71
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextRun.GetGlyphPaint(int32,value class Lokad.Svg.SvgColor)",
+          "Value": 65
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.AdvanceQuadLive(class AnalyticEdge)",
+          "Value": 60
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeMaskContent|11_28(value class Lokad.Svg.Parsing.SvgMaskContent,unsigned int8[],bool,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,unsigned int8[],bool&,value class <>c__DisplayClass11_0&)",
+          "Value": 58
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgPreparedPathContours..ctor(value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Rendering.SvgDevicePoint>,value class Lokad.Svg.Parsing.OwnedParserArray`1<int32>,value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Rendering.SvgQuadSpan>,value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Rendering.SvgCubicSpan>,value class Lokad.Svg.Parsing.OwnedParserArray`1<int32>,value class Lokad.Svg.Parsing.SvgAuthoredPathCommand[],int64,bool,class BudgetReservation)",
+          "Value": 58
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 57
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PaintPixel(int32,value class System.Span`1<unsigned int8>,value class Lokad.Svg.Rendering.SvgAnalyticPaint,value class Lokad.Svg.Rendering.SvgAnalyticClipCoverage)",
+          "Value": 53
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgShaderSampler.SampleGradient(int32,int32)",
+          "Value": 53
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextRunBuilder.CreateCore(value class Lokad.Svg.Parsing.SvgTextStyle,class System.String,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgTextLetterSpacingSpan>,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgTextPositionAdjustment>,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgTextPaintSpan>,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgTextFontSpan>,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgTextNodeBoundary>,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgTextPlacementRange>,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgTextGlyphPaint>,value class System.Nullable`1<value class Lokad.Svg.Fonts.SvgGlyphDeviceMetrics>,class Lokad.Svg.Fonts.SvgFontSnapshot,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 52
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgAuthoredPath.Replay(value class Lokad.Svg.Rendering.SvgAffineTransform,bool,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 50
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGradientRamp.SampleAbsolute(float64,float32,int32)",
+          "Value": 48
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometry|11_35(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 47
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.QuadraticEdgeBound(value class Lokad.Svg.Rendering.SvgAnalyticConstructionPoints,value class Lokad.Svg.Rendering.SvgQuadSpan[],value class System.Threading.CancellationToken)",
+          "Value": 46
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 45
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)",
+          "Value": 43
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDefinitionParser.TryParse(class System.Xml.XmlReader,bool,bool,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 43
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.InlineStyle.set_TextFont(value class Lokad.Svg.Parsing.SvgTextInlineFontProperties)",
+          "Value": 40
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_54(value class MappedPolygon&,bool,class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgShaderSampler&,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 39
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDocumentTraversal.TraverseRoot(class System.Xml.XmlReader,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Parsing.SvgRootAttributes,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.SvgViewport>,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.CssRule>,class Lokad.Svg.Parsing.BudgetedParserStringStore,float64,class Lokad.Svg.Parsing.SvgPaintResourceSelection)",
+          "Value": 39
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 37
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeMappedBitmap|11_149(class Lokad.Svg.Parsing.SvgAuthoredPath,value class System.ReadOnlySpan`1<unsigned int8>,value class <>c__DisplayClass11_0&,value class <>c__DisplayClass11_9&)",
+          "Value": 36
+        }
+      ],
+      "inclusiveSvgFrames": [
+        {
+          "Key": "Lokad.Svg.SvgConverter.ConvertToPng(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,value class System.Threading.CancellationToken)",
+          "Value": 6420
+        },
+        {
+          "Key": "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.Render()",
+          "Value": 6420
+        },
+        {
+          "Key": "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng()",
+          "Value": 6420
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.PrepareRasterizationCore(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,value class System.Threading.CancellationToken)",
+          "Value": 6036
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)",
+          "Value": 3784
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Threading.CancellationToken)",
+          "Value": 3784
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 3784
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)",
+          "Value": 3765
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometry|11_35(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 3440
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)",
+          "Value": 3406
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.LowerPreparedScene(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgDocumentPreparation,value class System.Threading.CancellationToken)",
+          "Value": 2248
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRootParser.ParsePrepared(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.SvgViewport>,float64,class Lokad.Svg.Parsing.SvgDocumentPreparation)",
+          "Value": 2242
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDocumentTraversal.Parse(class System.Xml.XmlReader,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.SvgViewport>,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.CssRule>,class Lokad.Svg.Parsing.BudgetedParserStringStore,float64,class Lokad.Svg.Parsing.SvgPaintResourceSelection)",
+          "Value": 2156
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDocumentTraversal.TraverseRoot(class System.Xml.XmlReader,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Parsing.SvgRootAttributes,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.SvgViewport>,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.CssRule>,class Lokad.Svg.Parsing.BudgetedParserStringStore,float64,class Lokad.Svg.Parsing.SvgPaintResourceSelection)",
+          "Value": 2150
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 1753
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 1284
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 1192
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.TryParse(class System.Xml.XmlReader,bool,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 1116
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolved(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 1010
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolvedCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 1009
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 1003
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 873
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeMappedBitmap|11_149(class Lokad.Svg.Parsing.SvgAuthoredPath,value class System.ReadOnlySpan`1<unsigned int8>,value class <>c__DisplayClass11_0&,value class <>c__DisplayClass11_9&)",
+          "Value": 744
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgReferenceResolver.ResolvePendingUses(class Lokad.Svg.Parsing.BudgetedParserDictionary`2<class System.String,value class Lokad.Svg.Parsing.SvgDefinition>,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.PendingUse>,class Lokad.Svg.Parsing.SvgSceneBuilder,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Threading.CancellationToken)",
+          "Value": 522
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgReferenceResolver.ApplyInstanceMask(value class Lokad.Svg.Parsing.SvgDefinition,value class Lokad.Svg.Parsing.SvgUseReference,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,value class System.Nullable`1<unsigned int8>,class System.String,class System.String,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Threading.CancellationToken)",
+          "Value": 514
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgReferenceResolver.ResolveUseGeometries(value class Lokad.Svg.Parsing.SvgDefinition,value class Lokad.Svg.Parsing.PendingUse,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Threading.CancellationToken)",
+          "Value": 514
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgReferenceResolver.ApplyFilterSource(value class Lokad.Svg.Parsing.SvgDefinition,value class Lokad.Svg.Parsing.SvgUseReference,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Threading.CancellationToken)",
+          "Value": 513
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgReferenceResolver.Apply(value class Lokad.Svg.Parsing.SvgDefinition,value class Lokad.Svg.Parsing.SvgUseReference,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Threading.CancellationToken)",
+          "Value": 512
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgSymbolContentRenderer.Apply(value class Lokad.Svg.Parsing.SvgDefinition,value class Lokad.Svg.Parsing.SvgUseReference,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Threading.CancellationToken)",
+          "Value": 510
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientPolygon|11_51(class Lokad.Svg.Parsing.SvgGradientPolygon,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 499
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.Emit(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,class Lokad.Svg.Parsing.SvgDocumentState,int32,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgRectangle>,value class System.Threading.CancellationToken)",
+          "Value": 472
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.EmitDirect(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,class Lokad.Svg.Parsing.SvgDocumentState,int32,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgRectangle>,value class System.Threading.CancellationToken)",
+          "Value": 472
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.EmitDirect(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,class Lokad.Svg.Parsing.SvgDocumentState,int32,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class System.Threading.CancellationToken)",
+          "Value": 472
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.Emit(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,class Lokad.Svg.Parsing.SvgDocumentState,int32,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class Lokad.Svg.Parsing.SvgTextPaintPreparation&,value class System.Threading.CancellationToken)",
+          "Value": 466
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.<Emit>g__Fill|4_0(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,int32,int32,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class Lokad.Svg.Parsing.SvgTextPaintPreparation&,value class System.Threading.CancellationToken)",
+          "Value": 464
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_54(value class MappedPolygon&,bool,class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgShaderSampler&,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 454
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgSymbolContentRenderer.<Apply>g__AddMapped|2_2(value class Lokad.Svg.Parsing.SvgDefinition,value class Lokad.Svg.Parsing.SvgUseReference,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>,value class <>c__DisplayClass2_0&)",
+          "Value": 447
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDefinitionParser.ParseShapeDefinition(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewBox>,bool)",
+          "Value": 446
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgOrthogonalShapeParser.ParsePath(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,int32,class Lokad.Svg.Rendering.RenderBudget,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState)",
+          "Value": 434
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePreparedRectangle|11_83(value class Lokad.Svg.Rendering.SvgRectangleRaster,value class Lokad.Svg.Rendering.SvgAnalyticPaint,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 411
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeSolidRectangle|11_82(value class Lokad.Svg.Parsing.SvgRectangle,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 411
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeRectangle|11_78(value class Lokad.Svg.Parsing.SvgRectangle,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)",
+          "Value": 411
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 380
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.Encode(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.IMemoryScope,int32,value class System.Threading.CancellationToken)",
+          "Value": 373
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.Encode(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,int32,value class System.Threading.CancellationToken)",
+          "Value": 373
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDefinitionParser.TryParse(class System.Xml.XmlReader,bool,bool,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 370
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PrepareRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 367
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDefinitionLeafSource.Lower(value class Lokad.Svg.Parsing.SvgInheritedStrokeStyle,value class Lokad.Svg.Parsing.SvgPaint,class System.String,class System.String,value class Lokad.Svg.Parsing.SvgPaintOrder,value class Lokad.Svg.Parsing.SvgMarkerStyle,value class Lokad.Svg.Parsing.SvgPaintOpacity,value class Lokad.Svg.Parsing.SvgDisplay,value class Lokad.Svg.Parsing.SvgTextMetricScope,bool,value class Lokad.Svg.Rendering.SvgAffineTransform,value class Lokad.Svg.Parsing.SvgViewportLengthBases,value class Lokad.Svg.Parsing.SvgSourceContourRetention,bool,class Lokad.Svg.Parsing.SvgDocumentState)",
+          "Value": 366
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDefinitionParser.LowerInstanceSource(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,class Lokad.Svg.Parsing.SvgDocumentState,bool)",
+          "Value": 361
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgOrthogonalShapeParser.ParsePathCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,int32,class Lokad.Svg.Rendering.RenderBudget,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState)",
+          "Value": 359
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgAuthoredPath.Create(value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Parsing.SvgAuthoredPathCommand>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgAuthoredStrokeStyle>,class Lokad.Svg.Parsing.SvgAuthoredPath,class Lokad.Svg.Parsing.SvgAuthoredDashSource,value class Lokad.Svg.Parsing.SvgAuthoredFillShape,class Lokad.Svg.Rendering.RenderBudget)",
+          "Value": 323
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgAuthoredPath..ctor(value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Parsing.SvgAuthoredPathCommand>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgAuthoredStrokeStyle>,class Lokad.Svg.Parsing.SvgAuthoredPath,class Lokad.Svg.Parsing.SvgAuthoredDashSource,value class Lokad.Svg.Parsing.SvgAuthoredFillShape,class BudgetReservation)",
+          "Value": 318
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgAuthoredPath.Create(value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Parsing.SvgAuthoredPathCommand>,value class Lokad.Svg.Rendering.SvgAffineTransform,class Lokad.Svg.Rendering.RenderBudget)",
+          "Value": 314
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.<Emit>g__Record|4_4(class Lokad.Svg.Parsing.SvgGlyphGeometry,class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgRecordedTransform,class Lokad.Svg.Parsing.SvgDocumentState,value class Lokad.Svg.SvgColor,value class Lokad.Svg.Parsing.SvgSolidPaint,value class Lokad.Svg.Parsing.SvgTextPaintPreparation&,value class System.Threading.CancellationToken)",
+          "Value": 310
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextPaintPreparation.RecordDrawing(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgDocumentState,value class Lokad.Svg.SvgColor,float32,class Lokad.Svg.Parsing.SvgRecordedTransform,value class System.Threading.CancellationToken)",
+          "Value": 307
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextLayoutBounds+MetricCache.MeasureCore(class Lokad.Svg.Parsing.SvgTextRun,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class BoundsKind,value class System.Threading.CancellationToken)",
+          "Value": 298
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextLayoutBounds+MetricCache.Measure(class Lokad.Svg.Parsing.SvgTextRun,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Threading.CancellationToken)",
+          "Value": 298
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextLayoutBounds.Measure(class Lokad.Svg.Parsing.SvgTextRun,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,value class Lokad.Svg.Rendering.SvgAffineTransform,class MetricCache,value class System.Threading.CancellationToken)",
+          "Value": 298
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextLayoutBounds+MetricCache.<MeasureCore>g__Fragment|8_1(int32,int32,float32,value class Lokad.Svg.Rendering.SvgDevicePoint,value class <>c__DisplayClass8_0&)",
+          "Value": 297
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter+PolygonRaster..ctor(value class Lokad.Svg.Rendering.SvgAnalyticContourPreparation&,value class MappedPolygon&,value class Lokad.Svg.Rendering.SvgCpuRasterContext,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgAnalyticClipBounds>,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 283
+        }
+      ],
+      "sampledAllocationOwners": [
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "bytes": 629664000,
+          "ticks": 2400,
+          "frames": "Lokad.Svg.Rendering.SvgContourBuilder..ctor(int32,int32)\nLokad.Svg.Parsing.SvgOrthogonalGeometryLowering.LowerRoundedRectFill(float64,float64,float64,float64,float64,float64,value class Lokad.Svg.Parsing.SvgResolvedPaintableElement,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Rendering.RenderBudget)\nLokad.Svg.Parsing.SvgLeafParser.LowerRoundedRect(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRectangleSyntax,float64,float64,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState)\nLokad.Svg.Parsing.SvgLeafParser.ParseRectangleCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphPoint[]",
+          "bytes": 199787320,
+          "ticks": 1874,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 194113656,
+          "ticks": 1528,
+          "frames": "Lokad.Svg.Rendering.SvgBinaryViewportCoverage.<Rasterize>g__Fill|2_1(int32,int32,value class <>c__DisplayClass2_0&,value class <>c__DisplayClass2_1&,value class <>c__DisplayClass2_2&,value class <>c__DisplayClass2_3&)\nLokad.Svg.Rendering.SvgBinaryViewportCoverage.Rasterize(class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgAffineTransform,value class Lokad.Svg.Rendering.SvgCpuRasterGrid,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,unsigned int8[],int32,class Lokad.Svg.Rendering.SvgCpuClipCoverage,bool,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeMaskContent|11_28(value class Lokad.Svg.Parsing.SvgMaskContent,unsigned int8[],bool,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,unsigned int8[],bool&,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 78645600,
+          "ticks": 100,
+          "frames": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.PrepareRasterizationCore(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphPoint[]",
+          "bytes": 63874464,
+          "ticks": 599,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphPointOutline",
+          "bytes": 54153536,
+          "ticks": 508,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Parsing.SvgAuthoredPathCommand[]",
+          "bytes": 47876680,
+          "ticks": 449,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].EnsureAdditionalCapacity(int32)\nLokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].Add(!0)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeMappedBitmap|11_149(class Lokad.Svg.Parsing.SvgAuthoredPath,value class System.ReadOnlySpan`1<unsigned int8>,value class <>c__DisplayClass11_0&,value class <>c__DisplayClass11_9&)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "BudgetReservation",
+          "bytes": 47199256,
+          "ticks": 443,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.UInt16[]",
+          "bytes": 44212616,
+          "ticks": 415,
+          "frames": "Lokad.Svg.Fonts.OpenTypeGlyphRecursionTracker..ctor(int32,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 38914560,
+          "ticks": 365,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 31390088,
+          "ticks": 247,
+          "frames": "Lokad.Svg.Rendering.SvgCpuClipCoverage.SetCanvasAlpha(int32,int32,unsigned int8)\nLokad.Svg.Rendering.SvgBinaryViewportCoverage.<Rasterize>g__Fill|2_1(int32,int32,value class <>c__DisplayClass2_0&,value class <>c__DisplayClass2_1&,value class <>c__DisplayClass2_2&,value class <>c__DisplayClass2_3&)\nLokad.Svg.Rendering.SvgBinaryViewportCoverage.Rasterize(class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgAffineTransform,value class Lokad.Svg.Rendering.SvgCpuRasterGrid,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,unsigned int8[],int32,class Lokad.Svg.Rendering.SvgCpuClipCoverage,bool,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeMaskContent|11_28(value class Lokad.Svg.Parsing.SvgMaskContent,unsigned int8[],bool,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,unsigned int8[],bool&,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeQuadraticSegment[]",
+          "bytes": 30700816,
+          "ticks": 288,
+          "frames": "Lokad.Svg.Fonts.OpenTypeSegmentAccumulator.Grow()\nLokad.Svg.Fonts.OpenTypeSegmentAccumulator.Add(value class Lokad.Svg.Fonts.OpenTypeQuadraticSegment)\nLokad.Svg.Fonts.OpenTypeFont.BuildQuadraticContours(value class System.ReadOnlySpan`1<value class Lokad.Svg.Fonts.OpenTypeGlyphPoint>,value class System.ReadOnlySpan`1<unsigned int16>,class Lokad.Svg.Fonts.OpenTypeSegmentAccumulator,bool,value class Lokad.Svg.Fonts.TrueTypeImpliedPointRounding,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "HintPoint[]",
+          "bytes": 26759648,
+          "ticks": 251,
+          "frames": "Lokad.Svg.Fonts.LatinLightHinting.Hint(value class System.Span`1<value class Lokad.Svg.Fonts.OpenTypeGlyphPoint>,value class System.ReadOnlySpan`1<unsigned int16>,value class System.ReadOnlySpan`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,int32,float64,value class Lokad.Svg.Fonts.LatinStemWidths,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "Lokad.Svg.Parsing.SvgAuthoredPathCommand[]",
+          "bytes": 26693192,
+          "ticks": 249,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].EnsureAdditionalCapacity(int32)\nLokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].Add(!0)\nLokad.Svg.Parsing.SvgAuthoredPath.Copy(value class Lokad.Svg.Rendering.SvgAffineTransform,value class Lokad.Svg.Parsing.SvgAuthoredFillShape,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgAuthoredPath.Copy(value class Lokad.Svg.Rendering.SvgAffineTransform,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructureStorage",
+          "bytes": 26635568,
+          "ticks": 250,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphStructure(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken,bool)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Char[]",
+          "bytes": 26484192,
+          "ticks": 250,
+          "frames": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ReadDirectTextContent(class System.Xml.XmlReader,class Lokad.Svg.Parsing.SvgDocumentState,value class Lokad.Svg.Parsing.SvgTextWhitespaceMode,float64,value class Lokad.Svg.Parsing.SvgTextPaintStyle,class Lokad.Svg.Parsing.SvgInheritedTextStyle,int32,int32,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.SvgExtractedTextRun>,int32&,int32&)\nLokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolvedCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolved(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeQuadraticSegment[]",
+          "bytes": 24095664,
+          "ticks": 226,
+          "frames": "Lokad.Svg.Fonts.OpenTypeSegmentAccumulator.Grow()\nLokad.Svg.Fonts.OpenTypeSegmentAccumulator.Add(value class Lokad.Svg.Fonts.OpenTypeQuadraticSegment)\nLokad.Svg.Fonts.OpenTypeFont.<ExpandGlyph>g__AppendDecodedSegments|91_0(value class System.ReadOnlySpan`1<value class Lokad.Svg.Fonts.OpenTypeQuadraticSegment>,value class Lokad.Svg.Fonts.OpenTypeOutlineTransform,class Lokad.Svg.Fonts.OpenTypeSegmentAccumulator,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<ExpandGlyph>g__AppendDecodedContours|91_1(class Lokad.Svg.Fonts.OpenTypeGlyphContourStorage,value class Lokad.Svg.Fonts.OpenTypeOutlineTransform,class Lokad.Svg.Fonts.OpenTypeSegmentAccumulator,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Parsing.SvgRecordedPaintValue[]",
+          "bytes": 23960936,
+          "ticks": 198,
+          "frames": "Lokad.Svg.Parsing.BudgetedSceneList`1[Lokad.Svg.Parsing.SvgRecordedPaintValue].EnsureAdditionalCapacity(int32)\nLokad.Svg.Parsing.BudgetedSceneList`1[Lokad.Svg.Parsing.SvgRecordedPaintValue].Add(!0)\nLokad.Svg.Parsing.SvgSceneBuilder.RegisterRecordedPaint(value class Lokad.Svg.Parsing.SvgRecordedPaintValue)\nLokad.Svg.Parsing.SvgReferenceResolver.MapRecordedPaint(value class Lokad.Svg.Parsing.SvgRecordedPaint,value class Lokad.Svg.Parsing.SvgUseReference,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.Parsing.BudgetedParserDictionary`2<value class Lokad.Svg.Parsing.SvgRecordedPaint,value class Lokad.Svg.Parsing.SvgRecordedPaint>,class Lokad.Svg.Parsing.SvgRecordingMapper,value class System.Threading.CancellationToken,bool,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgPaintOpacity>,value class Lokad.Svg.Rendering.SvgAffineTransform)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeQuadraticSegment[]",
+          "bytes": 22705376,
+          "ticks": 213,
+          "frames": "Lokad.Svg.Fonts.OpenTypeSegmentAccumulator.Grow()\nLokad.Svg.Fonts.OpenTypeSegmentAccumulator.Add(value class Lokad.Svg.Fonts.OpenTypeQuadraticSegment)\nLokad.Svg.Fonts.OpenTypeFont.BuildQuadraticContours(value class System.ReadOnlySpan`1<value class Lokad.Svg.Fonts.OpenTypeGlyphPoint>,value class System.ReadOnlySpan`1<unsigned int16>,class Lokad.Svg.Fonts.OpenTypeSegmentAccumulator,bool,value class Lokad.Svg.Fonts.TrueTypeImpliedPointRounding,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetBudgetedSimpleGlyphContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "bytes": 21633840,
+          "ticks": 203,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Rendering.SvgDevicePoint].EnsureAdditionalCapacity(int32)\nLokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Rendering.SvgDevicePoint].Add(!0)\nLokad.Svg.Parsing.SvgAuthoredPath.Replay(value class Lokad.Svg.Rendering.SvgAffineTransform,bool,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgAuthoredPath.PrepareSource(value class Lokad.Svg.Rendering.SvgAffineTransform,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphRecursionTracker",
+          "bytes": 20254000,
+          "ticks": 190,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeQuadraticSegment[]",
+          "bytes": 18658152,
+          "ticks": 175,
+          "frames": "Lokad.Svg.Fonts.OpenTypeSegmentAccumulator.Detach()\nLokad.Svg.Fonts.OpenTypeFont.GetGlyphContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgTextGlyphPainter.<Emit>g__Fill|4_0(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,int32,int32,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class Lokad.Svg.Parsing.SvgTextPaintPreparation&,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgTextGlyphPainter.Emit(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,class Lokad.Svg.Parsing.SvgDocumentState,int32,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class Lokad.Svg.Parsing.SvgTextPaintPreparation&,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphPointStorage",
+          "bytes": 18597104,
+          "ticks": 175,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "BudgetReservation",
+          "bytes": 17579160,
+          "ticks": 165,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "BudgetReservation",
+          "bytes": 16466016,
+          "ticks": 155,
+          "frames": "Lokad.Svg.Fonts.OpenTypeGlyphRecursionTracker..ctor(int32,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinAlignmentZones(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class CmapLookup&,value class System.Span`1<value class Lokad.Svg.Fonts.LatinAlignmentZone>,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Parsing.SvgAuthoredPathCommand[]",
+          "bytes": 16309800,
+          "ticks": 153,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].EnsureAdditionalCapacity(int32)\nLokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].Add(!0)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "Lokad.Svg.Parsing.SvgAuthoredPathCommand[]",
+          "bytes": 15883400,
+          "ticks": 149,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].Detach()\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeMappedBitmap|11_149(class Lokad.Svg.Parsing.SvgAuthoredPath,value class System.ReadOnlySpan`1<unsigned int8>,value class <>c__DisplayClass11_0&,value class <>c__DisplayClass11_9&)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "AnalyticEdge",
+          "bytes": 15883400,
+          "ticks": 149,
+          "frames": "Lokad.Svg.Rendering.SvgAnalyticCoverage.AppendQuadLiveEdges(class System.Collections.Generic.List`1<class AnalyticEdge>,float64,float64,float64,float64,float64,float64,int32&,value class System.Threading.CancellationToken)\nLokad.Svg.Rendering.SvgAnalyticCoverage.AppendRetainedQuadEdges(class System.Collections.Generic.List`1<class AnalyticEdge>,value class Lokad.Svg.Rendering.SvgAnalyticConstructionPoints,value class Lokad.Svg.Rendering.SvgQuadSpan,int32&,value class System.Threading.CancellationToken)\nLokad.Svg.Rendering.SvgAnalyticCoverage.Prepare(value class Lokad.Svg.Rendering.SvgAnalyticContourPreparation&,int32,int32,int32,int32,value class Lokad.Svg.Rendering.SvgAnalyticScanWindow,value class Lokad.Svg.Rendering.SvgCpuBitmapOrigin,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgAnalyticClipContext>,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,class Lokad.Svg.Rendering.RenderBudget,bool&,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter+PolygonRaster..ctor(value class Lokad.Svg.Rendering.SvgAnalyticContourPreparation&,value class MappedPolygon&,value class Lokad.Svg.Rendering.SvgCpuRasterContext,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgAnalyticClipBounds>,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeQuadraticSegment[]",
+          "bytes": 15669344,
+          "ticks": 147,
+          "frames": "Lokad.Svg.Fonts.OpenTypeSegmentAccumulator.Detach()\nLokad.Svg.Fonts.OpenTypeFont.GetBudgetedSimpleGlyphContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.ExpandGlyph(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Fonts.OpenTypeGlyphRecursionTracker,int32,value class Lokad.Svg.Fonts.OpenTypeOutlineTransform,class Lokad.Svg.Fonts.OpenTypeSegmentAccumulator,value class System.Nullable`1<value class Lokad.Svg.Fonts.OpenTypeGlyphHeader>,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetGlyphContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Parsing.PendingUse[]",
+          "bytes": 14189072,
+          "ticks": 125,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.PendingUse].EnsureAdditionalCapacity(int32)\nLokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.PendingUse].Add(!0)\nLokad.Svg.Parsing.SvgReferenceResolver.ResolveOrDefer(value class Lokad.Svg.Parsing.SvgUseReference,class Lokad.Svg.Parsing.BudgetedParserDictionary`2<class System.String,value class Lokad.Svg.Parsing.SvgDefinition>,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.PendingUse>,class Lokad.Svg.Parsing.SvgSceneBuilder,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,value class System.Nullable`1<unsigned int8>,class System.String,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgDeferredClip>,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgDefinitionParser.TryParse(class System.Xml.XmlReader,bool,bool,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)"
+        }
+      ]
+    },
+    {
+      "document": "chart",
+      "inputSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+      "runtimeModules": [
+        "/mnt/d/code/svg/artifacts/tools/dotnet/linux-x64/shared/microsoft.netcore.app/11.0.0-rc.3.26522.148/system.private.corelib.dll",
+        "/mnt/d/code/svg/artifacts/tools/dotnet/linux-x64/shared/Microsoft.NETCore.App/11.0.0-rc.3.26522.148/System.Private.CoreLib.dll"
+      ],
+      "traceSha256": "07f8cef8f5d66de8b0e4c80bc0f91673107feb4e6e78ed0466b5ebe8a119548c",
+      "reportedEventsLost": 0,
+      "measurementWindowMillisecondsUnderTracing": 27464.777001,
+      "sampleProfilerEvents": 20160,
+      "medianAllocatedBytesPerConversion": 46691824.0,
+      "allocatedBytesPerConversion": [
+        46687544,
+        46706616,
+        46687544,
+        46706904,
+        46687544,
+        46698856,
+        46687544,
+        46696464,
+        46687544,
+        46698776,
+        46687544,
+        46698776,
+        46687624,
+        46706776,
+        46687544,
+        46698856,
+        46687624,
+        46697600,
+        46687544,
+        46698776,
+        46687544,
+        46706720,
+        46687544,
+        46698856,
+        46687464,
+        46706696,
+        46687544,
+        46698776,
+        46687544,
+        46698776,
+        46687624,
+        46695944,
+        46687544,
+        46706696,
+        46687544,
+        46698776,
+        46687624,
+        46706696,
+        46687544,
+        46706776,
+        46687648,
+        46698856,
+        46687544,
+        46697024,
+        46687624,
+        46697456,
+        46687624,
+        46698856,
+        46687624,
+        46706776,
+        46687704,
+        46698936,
+        46687544,
+        46698936,
+        46687544,
+        46698776,
+        46687544,
+        46698856,
+        46687704,
+        46695944,
+        46687480,
+        46698632,
+        46687400,
+        46706552,
+        46687400,
+        46698712,
+        46687400,
+        46706632,
+        46687400,
+        46698632,
+        46687400,
+        46706552,
+        46687480,
+        46703312,
+        46687056,
+        46698288,
+        46687056,
+        46706208,
+        46687056,
+        46698448,
+        46687056,
+        46698288,
+        46687056,
+        46698288,
+        46687136,
+        46698288,
+        46687136,
+        46697568,
+        46687136,
+        46698368,
+        46687136,
+        46706288,
+        46687136,
+        46699560,
+        46687216,
+        46698368,
+        46687136,
+        46698368,
+        46687136,
+        46706288
+      ],
+      "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+      "changedPixelsFromFrozenLinuxReference": 0,
+      "innermostSvgFrames": [
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71(value class Lokad.Svg.Parsing.SvgLinearGradient,value class Lokad.Svg.Parsing.SvgRectangle,value class Lokad.Svg.Parsing.SvgRectangle,unsigned int8,bool,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 2421
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 1995
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_65(class Lokad.Svg.Parsing.SvgPatternGeometry,unsigned int8[],unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 1344
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)",
+          "Value": 1290
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 1113
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_54(value class MappedPolygon&,bool,class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgShaderSampler&,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 1081
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 1013
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.<Apply>g__Axis|2_0(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,value class BoxKernel,bool,value class <>c__DisplayClass2_0&)",
+          "Value": 991
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgShaderSampler.SampleGradient(int32,int32)",
+          "Value": 825
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+          "Value": 641
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__ShaderSamplingContext|11_14(value class <>c__DisplayClass11_0&)",
+          "Value": 569
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGradientRamp.SampleAbsolute(float64,float32,int32)",
+          "Value": 458
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgPatternSample.Prepare(class Lokad.Svg.Parsing.SvgPatternGeometry,int32,int32,value class Lokad.Svg.Rendering.SvgCpuBitmapOrigin,value class Lokad.Svg.Rendering.SvgShaderCoordinates&)",
+          "Value": 402
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticPaint.Blend(value class System.Span`1<unsigned int8>,unsigned int8,value class Lokad.Svg.Rendering.SvgAnalyticPaintKind)",
+          "Value": 319
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)",
+          "Value": 318
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Offset|25_24(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,float64,float64,value class OffsetImageSource,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgConstantShaderPaint>,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgShaderMatrix>,value class OffsetImagePaint,value class ImageColorTransfer,value class Lokad.Svg.Parsing.SvgPaintBounds,value class <>c__DisplayClass25_0&)",
+          "Value": 310
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PaintPixel(int32,value class System.Span`1<unsigned int8>,value class Lokad.Svg.Rendering.SvgAnalyticPaint,value class Lokad.Svg.Rendering.SvgAnalyticClipCoverage)",
+          "Value": 309
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.WriteSegmentedChunk(value class System.Span`1<unsigned int8>,class PngSegmentedBuffer,int32&,int32&,int32,value class System.Threading.CancellationToken)",
+          "Value": 278
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgShaderCoordinates.TryMap(int32,int32,value class Lokad.Svg.Rendering.SvgCpuBitmapOrigin,value class System.ValueTuple`2<float32,float32>&)",
+          "Value": 222
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgPolygonFill.Create(value class Lokad.Svg.Rendering.SvgDevicePoint[],int32[],int32[],value class Lokad.Svg.Rendering.SvgQuadSpan[],value class Lokad.Svg.Rendering.SvgCubicSpan[],value class Lokad.Svg.SvgColor,bool,bool,value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>,class BudgetReservation,class Lokad.Svg.Rendering.RenderBudget)",
+          "Value": 218
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Composite|25_14(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,value class Lokad.Svg.Parsing.SvgFilterInput,bool,value class Lokad.Svg.Parsing.SvgFilterColorSpace,value class System.ReadOnlySpan`1<unsigned int8>,value class <>c__DisplayClass25_0&)",
+          "Value": 212
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.WalkEdgesRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 206
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePreparedRectangle|11_83(value class Lokad.Svg.Rendering.SvgRectangleRaster,value class Lokad.Svg.Rendering.SvgAnalyticPaint,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 197
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGradientRamp.<SampleAbsolute>g__Sample|10_0(value class SvgGradientRampSegment,float32,float32,int32)",
+          "Value": 169
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 153
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__MapPolygon|11_41(value class Lokad.Svg.Rendering.SvgDevicePoint[],int32[],int32[],bool,value class Lokad.Svg.Rendering.SvgQuadSpan[],value class Lokad.Svg.Rendering.SvgCubicSpan[],value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>,class Lokad.Svg.Parsing.SvgAuthoredPath,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 127
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont+CmapLookup.GetGlyphIndex(unsigned int32,value class System.Threading.CancellationToken)",
+          "Value": 118
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgShaderPaint.Blend(value class System.Span`1<unsigned int8>,unsigned int8,bool,value class Lokad.Svg.Rendering.SvgAnalyticPaintKind)",
+          "Value": 100
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.WriteSegmentedIdatChunks(value class System.Span`1<unsigned int8>,class PngSegmentedBuffer,value class System.Threading.CancellationToken)",
+          "Value": 93
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgConstantShaderPaint.BlendBitmap(value class System.Span`1<unsigned int8>,unsigned int8)",
+          "Value": 88
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PrepareRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 87
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeMaskContent|11_28(value class Lokad.Svg.Parsing.SvgMaskContent,unsigned int8[],bool,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,unsigned int8[],bool&,value class <>c__DisplayClass11_0&)",
+          "Value": 87
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RestoreOpacityLayerPixel|11_26(value class System.Span`1<unsigned int8>,value class System.ReadOnlySpan`1<unsigned int8>,unsigned int8)",
+          "Value": 85
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgCpuClipCoverage.IntersectCanvas(value class Lokad.Svg.Rendering.SvgRasterClipMask,int32,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class System.Threading.CancellationToken,bool&)",
+          "Value": 83
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgPatternSample.Sample(value class System.ReadOnlySpan`1<unsigned int8>,float32)",
+          "Value": 81
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 73
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.LatinLightHinting.FindAlignment(value class System.ReadOnlySpan`1<value class Lokad.Svg.Fonts.OpenTypeGlyphPoint>,value class System.ReadOnlySpan`1<unsigned int16>,bool,int32,value class System.Threading.CancellationToken,int32&,bool&,int32&,int32&)",
+          "Value": 72
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__BlendLayerPixel|11_130(value class System.Span`1<unsigned int8>,value class System.ReadOnlySpan`1<unsigned int8>,unsigned int8,unsigned int8)",
+          "Value": 68
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticPaint.Shader(value class Lokad.Svg.Rendering.SvgShaderPaint,bool)",
+          "Value": 67
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.RecordDirectSpan(int32,int32)",
+          "Value": 61
+        }
+      ],
+      "inclusiveSvgFrames": [
+        {
+          "Key": "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng()",
+          "Value": 20160
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.PrepareRasterizationCore(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,value class System.Threading.CancellationToken)",
+          "Value": 19106
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)",
+          "Value": 18294
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)",
+          "Value": 18237
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.ConvertToPng(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,value class System.Threading.CancellationToken)",
+          "Value": 16098
+        },
+        {
+          "Key": "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.Render()",
+          "Value": 16098
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Threading.CancellationToken)",
+          "Value": 14596
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 14596
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometry|11_35(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 12465
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)",
+          "Value": 12456
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)",
+          "Value": 7038
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 3673
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientPolygon|11_51(class Lokad.Svg.Parsing.SvgGradientPolygon,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 3516
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_54(value class MappedPolygon&,bool,class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgShaderSampler&,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 3487
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeMaskContent|11_28(value class Lokad.Svg.Parsing.SvgMaskContent,unsigned int8[],bool,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,unsigned int8[],bool&,value class <>c__DisplayClass11_0&)",
+          "Value": 2891
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 2846
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientFill|11_69(class Lokad.Svg.Parsing.SvgGradientGeometry,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)",
+          "Value": 2789
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71(value class Lokad.Svg.Parsing.SvgLinearGradient,value class Lokad.Svg.Parsing.SvgRectangle,value class Lokad.Svg.Parsing.SvgRectangle,unsigned int8,bool,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 2788
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePatternFill|11_58(class Lokad.Svg.Parsing.SvgPatternGeometry,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)",
+          "Value": 2358
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_65(class Lokad.Svg.Parsing.SvgPatternGeometry,unsigned int8[],unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 2354
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 2009
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgShaderSampler.SampleGradient(int32,int32)",
+          "Value": 1768
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 1000
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken,class System.Action`1<int32>)",
+          "Value": 996
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.<Apply>g__Axis|2_0(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,value class BoxKernel,bool,value class <>c__DisplayClass2_0&)",
+          "Value": 991
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.Encode(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,int32,value class System.Threading.CancellationToken)",
+          "Value": 817
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.Encode(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.IMemoryScope,int32,value class System.Threading.CancellationToken)",
+          "Value": 800
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PaintPixel(int32,value class System.Span`1<unsigned int8>,value class Lokad.Svg.Rendering.SvgAnalyticPaint,value class Lokad.Svg.Rendering.SvgAnalyticClipCoverage)",
+          "Value": 757
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgPatternSample.Prepare(class Lokad.Svg.Parsing.SvgPatternGeometry,int32,int32,value class Lokad.Svg.Rendering.SvgCpuBitmapOrigin,value class Lokad.Svg.Rendering.SvgShaderCoordinates&)",
+          "Value": 684
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.LowerPreparedScene(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgDocumentPreparation,value class System.Threading.CancellationToken)",
+          "Value": 678
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRootParser.ParsePrepared(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.SvgViewport>,float64,class Lokad.Svg.Parsing.SvgDocumentPreparation)",
+          "Value": 673
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+          "Value": 673
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.Compress(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,int32,value class System.Threading.CancellationToken)",
+          "Value": 673
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGradientRamp.SampleAbsolute(float64,float32,int32)",
+          "Value": 669
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDocumentTraversal.TraverseRoot(class System.Xml.XmlReader,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Parsing.SvgRootAttributes,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.SvgViewport>,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.CssRule>,class Lokad.Svg.Parsing.BudgetedParserStringStore,float64,class Lokad.Svg.Parsing.SvgPaintResourceSelection)",
+          "Value": 653
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 652
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 608
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__ShaderSamplingContext|11_14(value class <>c__DisplayClass11_0&)",
+          "Value": 569
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.TryParse(class System.Xml.XmlReader,bool,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 553
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDocumentTraversal.Parse(class System.Xml.XmlReader,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.SvgViewport>,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.CssRule>,class Lokad.Svg.Parsing.BudgetedParserStringStore,float64,class Lokad.Svg.Parsing.SvgPaintResourceSelection)",
+          "Value": 546
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolvedCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 521
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolved(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 521
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 518
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeMappedBitmap|11_149(class Lokad.Svg.Parsing.SvgAuthoredPath,value class System.ReadOnlySpan`1<unsigned int8>,value class <>c__DisplayClass11_0&,value class <>c__DisplayClass11_9&)",
+          "Value": 509
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticPaint.Blend(value class System.Span`1<unsigned int8>,unsigned int8,value class Lokad.Svg.Rendering.SvgAnalyticPaintKind)",
+          "Value": 448
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PrepareRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 420
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.WriteSegmentedIdatChunks(value class System.Span`1<unsigned int8>,class PngSegmentedBuffer,value class System.Threading.CancellationToken)",
+          "Value": 375
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.EmitDirect(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,class Lokad.Svg.Parsing.SvgDocumentState,int32,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class System.Threading.CancellationToken)",
+          "Value": 330
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.Emit(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,class Lokad.Svg.Parsing.SvgDocumentState,int32,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class Lokad.Svg.Parsing.SvgTextPaintPreparation&,value class System.Threading.CancellationToken)",
+          "Value": 328
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.<Emit>g__Fill|4_0(class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgLeafMaskBinding,value class Lokad.Svg.SvgColor,int32,int32,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Parsing.SvgRecordedTransform,value class Lokad.Svg.Parsing.SvgTextPaintPreparation&,value class System.Threading.CancellationToken)",
+          "Value": 326
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Offset|25_24(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,float64,float64,value class OffsetImageSource,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgConstantShaderPaint>,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgShaderMatrix>,value class OffsetImagePaint,value class ImageColorTransfer,value class Lokad.Svg.Parsing.SvgPaintBounds,value class <>c__DisplayClass25_0&)",
+          "Value": 325
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgShaderCoordinates.TryMap(int32,int32,value class Lokad.Svg.Rendering.SvgCpuBitmapOrigin,value class System.ValueTuple`2<float32,float32>&)",
+          "Value": 286
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.WritePng(int32,int32,class PngSegmentedBuffer,value class System.Span`1<unsigned int8>,value class System.Threading.CancellationToken)",
+          "Value": 284
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.WriteSegmentedChunk(value class System.Span`1<unsigned int8>,class PngSegmentedBuffer,int32&,int32&,int32,value class System.Threading.CancellationToken)",
+          "Value": 282
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextGlyphPainter.<Emit>g__Record|4_4(class Lokad.Svg.Parsing.SvgGlyphGeometry,class Lokad.Svg.Parsing.SvgTextRun,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,class Lokad.Svg.Parsing.SvgRecordedTransform,class Lokad.Svg.Parsing.SvgDocumentState,value class Lokad.Svg.SvgColor,value class Lokad.Svg.Parsing.SvgSolidPaint,value class Lokad.Svg.Parsing.SvgTextPaintPreparation&,value class System.Threading.CancellationToken)",
+          "Value": 250
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.WalkEdgesRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 239
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextLayoutBounds+MetricCache.<MeasureCore>g__Fragment|8_1(int32,int32,float32,value class Lokad.Svg.Rendering.SvgDevicePoint,value class <>c__DisplayClass8_0&)",
+          "Value": 222
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgTextLayoutBounds+MetricCache.MeasureCore(class Lokad.Svg.Parsing.SvgTextRun,value class System.ReadOnlySpan`1<value class Lokad.Svg.Parsing.SvgPlacedTextGlyph>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class BoundsKind,value class System.Threading.CancellationToken)",
+          "Value": 222
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgPolygonFill.Create(value class Lokad.Svg.Rendering.SvgDevicePoint[],int32[],int32[],value class Lokad.Svg.Rendering.SvgQuadSpan[],value class Lokad.Svg.Rendering.SvgCubicSpan[],value class Lokad.Svg.SvgColor,bool,bool,value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>,class BudgetReservation,class Lokad.Svg.Rendering.RenderBudget)",
+          "Value": 220
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Composite|25_14(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,value class Lokad.Svg.Parsing.SvgFilterInput,bool,value class Lokad.Svg.Parsing.SvgFilterColorSpace,value class System.ReadOnlySpan`1<unsigned int8>,value class <>c__DisplayClass25_0&)",
+          "Value": 213
+        }
+      ],
+      "sampledAllocationOwners": [
+        {
+          "type": "System.Byte[]",
+          "bytes": 617378944,
+          "ticks": 2468,
+          "frames": "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Allocate|25_11(value class <>c__DisplayClass25_0&)\nLokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 387975784,
+          "ticks": 148,
+          "frames": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphPoint[]",
+          "bytes": 306614552,
+          "ticks": 2879,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 306193224,
+          "ticks": 1266,
+          "frames": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 222491232,
+          "ticks": 986,
+          "frames": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 193987592,
+          "ticks": 74,
+          "frames": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.PrepareRasterizationCore(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "bytes": 184176720,
+          "ticks": 702,
+          "frames": "Lokad.Svg.Rendering.SvgContourBuilder..ctor(int32,int32)\nLokad.Svg.Parsing.SvgOrthogonalGeometryLowering.LowerRoundedRectFill(float64,float64,float64,float64,float64,float64,value class Lokad.Svg.Parsing.SvgResolvedPaintableElement,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Rendering.RenderBudget)\nLokad.Svg.Parsing.SvgLeafParser.LowerRoundedRect(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRectangleSyntax,float64,float64,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState)\nLokad.Svg.Parsing.SvgLeafParser.ParseRectangleCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 177415568,
+          "ticks": 714,
+          "frames": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "bytes": 156891280,
+          "ticks": 598,
+          "frames": "Lokad.Svg.Parsing.SvgOrthogonalGeometryLowering.LowerRoundedRectFill(float64,float64,float64,float64,float64,float64,value class Lokad.Svg.Parsing.SvgResolvedPaintableElement,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Rendering.RenderBudget)\nLokad.Svg.Parsing.SvgLeafParser.LowerRoundedRect(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRectangleSyntax,float64,float64,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState)\nLokad.Svg.Parsing.SvgLeafParser.ParseRectangleCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Parsing.SvgDocumentState)\nLokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 136315816,
+          "ticks": 52,
+          "frames": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.PrepareRasterizationCore(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,value class System.Threading.CancellationToken)\nLokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng()"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 133030872,
+          "ticks": 534,
+          "frames": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken,class System.Action`1<int32>)\nLokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "BudgetReservation",
+          "bytes": 95168768,
+          "ticks": 894,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 92789984,
+          "ticks": 738,
+          "frames": "Lokad.Svg.Rendering.SvgBinaryViewportCoverage.<Rasterize>g__Fill|2_1(int32,int32,value class <>c__DisplayClass2_0&,value class <>c__DisplayClass2_1&,value class <>c__DisplayClass2_2&,value class <>c__DisplayClass2_3&)\nLokad.Svg.Rendering.SvgBinaryViewportCoverage.Rasterize(class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgAffineTransform,value class Lokad.Svg.Rendering.SvgCpuRasterGrid,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,unsigned int8[],int32,class Lokad.Svg.Rendering.SvgCpuClipCoverage,bool,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeMaskContent|11_28(value class Lokad.Svg.Parsing.SvgMaskContent,unsigned int8[],bool,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,unsigned int8[],bool&,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 68157776,
+          "ticks": 26,
+          "frames": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.PrepareRasterizationCore(value class System.ReadOnlyMemory`1<unsigned int8>,class Lokad.Svg.SvgRenderOptions,value class System.Threading.CancellationToken)\nLokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng()"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeQuadraticSegment[]",
+          "bytes": 61796912,
+          "ticks": 580,
+          "frames": "Lokad.Svg.Fonts.OpenTypeSegmentAccumulator.Grow()\nLokad.Svg.Fonts.OpenTypeFont.BuildQuadraticContours(value class System.ReadOnlySpan`1<value class Lokad.Svg.Fonts.OpenTypeGlyphPoint>,value class System.ReadOnlySpan`1<unsigned int16>,class Lokad.Svg.Fonts.OpenTypeSegmentAccumulator,bool,value class Lokad.Svg.Fonts.TrueTypeImpliedPointRounding,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructureStorage",
+          "bytes": 58597408,
+          "ticks": 550,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphStructure(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken,bool)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 54665432,
+          "ticks": 513,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphPointOutline",
+          "bytes": 46510584,
+          "ticks": 437,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "Lokad.Svg.Parsing.SvgAuthoredPathCommand[]",
+          "bytes": 43382280,
+          "ticks": 407,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].EnsureAdditionalCapacity(int32)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "Lokad.Svg.Parsing.SvgAuthoredPathCommand[]",
+          "bytes": 40575888,
+          "ticks": 381,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Parsing.SvgAuthoredPathCommand].EnsureAdditionalCapacity(int32)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeMappedBitmap|11_149(class Lokad.Svg.Parsing.SvgAuthoredPath,value class System.ReadOnlySpan`1<unsigned int8>,value class <>c__DisplayClass11_0&,value class <>c__DisplayClass11_9&)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "BudgetReservation",
+          "bytes": 40475464,
+          "ticks": 380,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphStructure(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken,bool)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "AnalyticEdge",
+          "bytes": 35974344,
+          "ticks": 338,
+          "frames": "Lokad.Svg.Rendering.SvgAnalyticCoverage.AppendQuadLiveEdges(class System.Collections.Generic.List`1<class AnalyticEdge>,float64,float64,float64,float64,float64,float64,int32&,value class System.Threading.CancellationToken)\nLokad.Svg.Rendering.SvgAnalyticCoverage.AppendRetainedQuadEdges(class System.Collections.Generic.List`1<class AnalyticEdge>,value class Lokad.Svg.Rendering.SvgAnalyticConstructionPoints,value class Lokad.Svg.Rendering.SvgQuadSpan,int32&,value class System.Threading.CancellationToken)\nLokad.Svg.Rendering.SvgAnalyticCoverage.Prepare(value class Lokad.Svg.Rendering.SvgAnalyticContourPreparation&,int32,int32,int32,int32,value class Lokad.Svg.Rendering.SvgAnalyticScanWindow,value class Lokad.Svg.Rendering.SvgCpuBitmapOrigin,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgAnalyticClipContext>,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,class Lokad.Svg.Rendering.RenderBudget,bool&,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter+PolygonRaster..ctor(value class Lokad.Svg.Rendering.SvgAnalyticContourPreparation&,value class MappedPolygon&,value class Lokad.Svg.Rendering.SvgCpuRasterContext,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgAnalyticClipBounds>,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphRecursionTracker",
+          "bytes": 35073088,
+          "ticks": 329,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class Lokad.Svg.Parsing.SvgPaintPass,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "System.UInt16[]",
+          "bytes": 33444088,
+          "ticks": 314,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphStructure(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken,bool)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "BudgetReservation",
+          "bytes": 31851336,
+          "ticks": 299,
+          "frames": "Lokad.Svg.Fonts.OpenTypeGlyphRecursionTracker..ctor(int32,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "System.UInt16[]",
+          "bytes": 30245456,
+          "ticks": 284,
+          "frames": "Lokad.Svg.Fonts.OpenTypeGlyphRecursionTracker..ctor(int32,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77(class Lokad.Svg.Parsing.SvgGlyphGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphPointStorage",
+          "bytes": 30047856,
+          "ticks": 282,
+          "frames": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|6_0(unsigned int16,int32,class CompositeTrueTypeHinting,value class <>c__DisplayClass6_0&)\nLokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath(float64,float64,float64,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "bytes": 29443392,
+          "ticks": 277,
+          "frames": "Lokad.Svg.Parsing.BudgetedParserList`1[Lokad.Svg.Rendering.SvgDevicePoint].EnsureAdditionalCapacity(int32)\nLokad.Svg.Parsing.SvgAuthoredPath.Replay(value class Lokad.Svg.Rendering.SvgAffineTransform,bool,bool,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)\nLokad.Svg.SvgConverter.<Rasterize>g__MapPolygon|11_41(value class Lokad.Svg.Rendering.SvgDevicePoint[],int32[],int32[],bool,value class Lokad.Svg.Rendering.SvgQuadSpan[],value class Lokad.Svg.Rendering.SvgCubicSpan[],value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>,class Lokad.Svg.Parsing.SvgAuthoredPath,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)"
+        },
+        {
+          "type": "System.Byte[]",
+          "bytes": 28864096,
+          "ticks": 270,
+          "frames": "Lokad.Svg.Rendering.SvgCpuClipCoverage..ctor(value class Lokad.Svg.Rendering.SvgCpuRasterGrid,class Lokad.Svg.Rendering.RenderBudget,bool)\nLokad.Svg.SvgConverter.<Rasterize>g__RasterizeMaskContent|11_28(value class Lokad.Svg.Parsing.SvgMaskContent,unsigned int8[],bool,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,unsigned int8[],bool&,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25(int32,unsigned int8[],bool,value class <>c__DisplayClass11_0&)\nLokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Nullable`1<value class RasterFrame>,value class System.Threading.CancellationToken)"
+        },
+        {
+          "type": "System.Char[]",
+          "bytes": 25730256,
+          "ticks": 241,
+          "frames": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ReadDirectTextContent(class System.Xml.XmlReader,class Lokad.Svg.Parsing.SvgDocumentState,value class Lokad.Svg.Parsing.SvgTextWhitespaceMode,float64,value class Lokad.Svg.Parsing.SvgTextPaintStyle,class Lokad.Svg.Parsing.SvgInheritedTextStyle,int32,int32,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken,class Lokad.Svg.Parsing.BudgetedParserList`1<value class Lokad.Svg.Parsing.SvgExtractedTextRun>,int32&,int32&)\nLokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolvedCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)\nLokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolved(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)"
+        }
+      ]
+    }
+  ],
+  "finding": "Repeated cmap selection/validation no longer appears among retained leading frames. Remaining icon work includes polygon/path construction, PNG, rectangles, glyph points and clip coverage. Chart work includes gradients, polygons, patterns and filters/blur. These are investigation leads, not demonstrated defects or acceptance criteria."
+}
