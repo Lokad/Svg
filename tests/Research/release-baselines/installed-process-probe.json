@@ -1,0 +1,139 @@
+{
+  "status": "Fresh-process CLI qualified across both hosts/runtimes; measurements remain separate from warmed throughput and governed memory.",
+  "rendererQualification": "cmap-batch-qualified.json",
+  "sourceSha256Lf": {
+    "benchmarks/Lokad.Svg.InstalledBenchmarks/Program.cs": "dcb21cc02748f8af1d2cc37ea4a0e96711686bf5941851fa184d2b15f49af678"
+  },
+  "cases": [
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "document": "geometry-rect",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "document": "chart",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "document": "icon-sheet",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "document": "geometry-rect",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "document": "chart",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "document": "icon-sheet",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "document": "geometry-rect",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "document": "chart",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "document": "icon-sheet",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "document": "geometry-rect",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "document": "chart",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
+      "changedReferencePixels": 0
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "document": "icon-sheet",
+      "conversions": 3,
+      "snapshots": 6,
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
+      "changedReferencePixels": 0
+    }
+  ],
+  "affectedCanonicalVerification": {
+    "hosts": [
+      "windows",
+      "linux"
+    ],
+    "framework": "net11.0",
+    "documentsPerHost": 29,
+    "repeatedRenderingsPerDocument": 2,
+    "referenceChanges": 0
+  },
+  "admissionChecks": [
+    "Zero, negative and invalid conversion counts reject before creating output."
+  ],
+  "scope": "A new CLI route reuses the unchanged installed fixture and conversion method. Six snapshots distinguish setup, first conversion, repeated conversions, explicit font cleanup and forced GC while the probe frame remains live. RSS/HWM include observer/benchmark-host/runtime/input/output; managed allocation and heap estimates are different quantities. External launch-to-marker/exit includes bootstrap/communication; OS file caches are not flushed. This is neither a minimal-host startup result nor an IPC-only/native-memory metric.",
+  "quietMeasurements": "Pending separate coordinated collection; local checks establish behavior only.",
+  "unchangedInstalledFixtureSourceTail": true,
+  "checks": [
+    "Both targets build with warnings as errors and locked restore",
+    "12 exact process-probe image/snapshot cases",
+    "58 primary-host exact canonical outputs",
+    "Existing installed fixture and benchmark method text unchanged"
+  ]
+}

@@ -50,6 +50,13 @@ makes the number of warmup calls explicit; retain the drifting samples and
 predeclare a longer-warmup comparison before claiming warmed performance. Keep
 cold-start and tier-transition observations separate.
 
+The [installed host's process probe](../tools/README.md#installed-package-benchmarks)
+separates input/font setup and the first conversion from later calls. Its process
+resident/peak observations include the host, runtime, retained input/output and
+diagnostics; managed heap estimates and allocation traffic remain distinct. External
+launch-to-marker/exit timings include bootstrap and communication, with warm OS
+file caches. They measure neither IPC alone nor a minimal consumer's startup.
+
 The [persistent resvg runner](../tools/README.md#installed-and-native-comparison-preflight)
 can retain serial samples for full conversion, parsing, prepared-tree rasterization
 and PNG encoding. Its input/font setup and output I/O are excluded; temporary

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Globalization;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Characteristics;
 using BenchmarkDotNet.Configs;
@@ -20,6 +22,11 @@ internal static class Program
 {
     private static async Task Main(string[] arguments)
     {
+        if (arguments is ["--process-probe", string probeDocument, string conversions, string destination])
+        {
+            await RunProcessProbeAsync(probeDocument, conversions, destination);
+            return;
+        }
         if (arguments is ["--verify", string output])
         {
             output = Path.GetFullPath(output);
@@ -69,6 +76,79 @@ internal static class Program
         InstalledToolchain toolchain = new(original, new InstalledBuilder(builder.Settings, project));
         ManualConfig config = ManualConfig.Create(DefaultConfig.Instance).AddJob(Job.Default.WithToolchain(toolchain).AsMutator());
         BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(arguments, config);
+
+        static async Task RunProcessProbeAsync(string document, string conversions, string destination)
+        {
+            if (!int.TryParse(conversions, NumberStyles.None, CultureInfo.InvariantCulture, out int count) || count <= 0)
+                throw new ArgumentException("Pass a positive conversion count.", nameof(conversions));
+            destination = Path.GetFullPath(destination);
+            if (Directory.Exists(destination)) throw new IOException("Use a new process-probe directory.");
+            Directory.CreateDirectory(destination);
+            long start = Stopwatch.GetTimestamp();
+            using Process process = Process.GetCurrentProcess();
+            List<ProcessSnapshot> snapshots = [Capture("beforeSetup", start, process)];
+            InstalledDocumentBenchmarks fixture = new() { Document = document };
+            double[] milliseconds = new double[count];
+            long[] allocations = new long[count];
+            string sourceSha256, pngSha256;
+            int bytes;
+            double setupMilliseconds;
+            try
+            {
+                long setup = Stopwatch.GetTimestamp();
+                await fixture.SetUp();
+                setupMilliseconds = Stopwatch.GetElapsedTime(setup).TotalMilliseconds;
+                sourceSha256 = fixture.SourceSha256;
+                snapshots.Add(Capture("afterSetup", start, process));
+                ReadOnlyMemory<byte> first = ReadOnlyMemory<byte>.Empty;
+                for (int index = 0; index < count; index++)
+                {
+                    long allocated = GC.GetTotalAllocatedBytes(true);
+                    long conversion = Stopwatch.GetTimestamp();
+                    ReadOnlyMemory<byte> png = fixture.Render();
+                    milliseconds[index] = Stopwatch.GetElapsedTime(conversion).TotalMilliseconds;
+                    allocations[index] = GC.GetTotalAllocatedBytes(true) - allocated;
+                    if (index == 0)
+                    {
+                        first = png;
+                        snapshots.Add(Capture("afterFirstConversion", start, process));
+                        Console.WriteLine("SVG_PROCESS_FIRST_CONVERSION " + JsonSerializer.Serialize(new
+                        {
+                            document, probeElapsedMilliseconds = Stopwatch.GetElapsedTime(start).TotalMilliseconds,
+                            conversionMilliseconds = milliseconds[0],
+                        }));
+                    }
+                    else if (!png.Span.SequenceEqual(first.Span)) throw new InvalidDataException("Repeated PNGs differ.");
+                }
+                snapshots.Add(Capture("afterConversions", start, process));
+                bytes = first.Length;
+                pngSha256 = Convert.ToHexStringLower(SHA256.HashData(first.Span));
+                File.WriteAllBytes(Path.Combine(destination, document + ".png"), first.Span);
+            }
+            finally { fixture.CleanUp(); }
+            snapshots.Add(Capture("afterFixtureCleanup", start, process));
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
+            GC.WaitForPendingFinalizers();
+            snapshots.Add(Capture("afterForcedCollection", start, process));
+            using FileStream library = File.OpenRead(typeof(SvgConverter).Assembly.Location);
+            File.WriteAllText(Path.Combine(destination, "report.json"), JsonSerializer.Serialize(new
+            {
+                document, conversions = count, sourceSha256, pngSha256, bytes,
+                librarySha256 = Convert.ToHexStringLower(SHA256.HashData(library)),
+                runtime = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
+                setupMilliseconds, conversionMilliseconds = milliseconds, allocatedBytesPerConversion = allocations,
+                snapshots,
+                scope = "Fresh process probe, no warmup. Setup includes input/font I/O and acquisition; each conversion includes parse/raster/PNG. Exactness comparison, snapshots and output I/O are outside individual conversion timers. First PNG remains retained for repeat checks. Process resident/peak bytes include runtime, fonts, input, output and observer overhead; managed heap estimates and cumulative allocation are different metrics. Explicit cleanup/full-GC snapshots observe the live probe frame and establish neither minimal retained heap nor native release. No warmed throughput, IPC-only or governed-budget claim.",
+            }, new JsonSerializerOptions { WriteIndented = true }));
+
+            static ProcessSnapshot Capture(string phase, long start, Process process)
+            {
+                process.Refresh();
+                return new(phase, Stopwatch.GetElapsedTime(start).TotalMilliseconds,
+                    process.WorkingSet64, process.PeakWorkingSet64, GC.GetTotalMemory(false),
+                    GC.GetTotalAllocatedBytes(true), GC.CollectionCount(0), GC.CollectionCount(1), GC.CollectionCount(2));
+            }
+        }
     }
 
     /// <summary>Substitutes only builder locations; retains the selected runtime, original executor
@@ -79,7 +159,13 @@ internal static class Program
         /// <summary>Forwards every original validation diagnostic without filtering or lifecycle changes.</summary>
         public override IAsyncEnumerable<ValidationError> ValidateAsync(BenchmarkCase benchmarkCase, IResolver resolver)
             => original.ValidateAsync(benchmarkCase, resolver);
+
+
     }
+
+    private readonly record struct ProcessSnapshot(string Phase, double ProbeElapsedMilliseconds,
+        long ResidentBytes, long PeakResidentBytes, long ManagedHeapEstimateBytes,
+        long TotalManagedAllocatedBytes, int Gen0Collections, int Gen1Collections, int Gen2Collections);
 
     /// <summary>Bounds project discovery/output to this fixture's project. Generation, cancellation,
     /// compilation, execution and cleanup retain BenchmarkDotNet's original behavior. It owns no

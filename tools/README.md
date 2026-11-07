@@ -101,6 +101,14 @@ dotnet run -c Release --no-restore --project $installedProject -- --job Short --
 ```
 
 Compare verification PNGs with their original platform references before timing.
+For a separate fresh-process observation, use
+`--process-probe chart 32 <new-output-directory>` instead of the benchmark arguments.
+It reports setup and individual conversion times, cumulative managed allocation,
+managed heap estimates and process resident/peak bytes at six stages. An external
+launcher can time the `SVG_PROCESS_FIRST_CONVERSION` marker and process exit;
+those include benchmark-host bootstrap and communication. Filesystem caches are
+not flushed. Snapshot/full-GC diagnostics and the retained first PNG affect memory;
+these observations are separate from warmed throughput and governed reservations.
 Keep every fidelity difference with the timing results. Setup validates immutable
 input/font hashes and retains supplied fonts outside the measured public call.
 The builder pins the project and ignored generated-output locations explicitly;
