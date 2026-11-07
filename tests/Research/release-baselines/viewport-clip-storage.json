@@ -1,5 +1,5 @@
 {
-  "status": "Shared viewport storage correction passes full four-context source/package and all-original/context qualification, preserving only the unchanged frozen Windows DejaVu failure. Controlled quiet timing remains in progress.",
+  "status": "Shared viewport over-allocation finding CLOSED: failing-before regression, preserved lifecycle/native coverage, full four-context/package/original qualification and the predeclared stable long-warmup repeat pass. The unrelated frozen Windows DejaVu assertion remains unchanged.",
   "parentCommit": "d55ab1f9ba0f90d66e4cfca665a2c55bbca46e84",
   "cause": "chart-clip-storage-profile.json",
   "sourceFilesLfSha256": {
@@ -349,10 +349,11 @@
     "pixels": "All four after outputs match the unchanged frozen Windows/Linux chart references exactly. Symbol and group cases remain distinct; no coverage removed."
   },
   "nextActions": [
-    "Full final-commit/runtime/package and all-original/context qualification is complete. Preserve the separate frozen Windows DejaVu gate.",
-    "Prepare sealed before/after packages, then coordinate an exclusive quiet jq VM slot with sttropez; retain all launches, negative controls, exact pixels and explicit GC/tiering/order.",
-    "Keep chart glyph/filter/gradient costs, icon-sheet runtime attribution, native comparators, cold startup and process/native memory scopes open."
+    "Continue the shared cmap-lookup boundary review before implementation; preserve borrowed-byte, cancellation and deferred font-admission contracts.",
+    "Keep broader native-comparator, cold startup, process/native memory and unresolved source-authority scopes separate."
   ],
   "qualification": "viewport-clip-qualified.json",
-  "qualifiedSourceCommit": "8ddfeb1310a29f779da309ba96cbb27e71caec07"
+  "qualifiedSourceCommit": "8ddfeb1310a29f779da309ba96cbb27e71caec07",
+  "controlledRepeat": "viewport-clip-quiet.json",
+  "longWarmupAcceptance": "chart-warm-quiet.json"
 }

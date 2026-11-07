@@ -1,5 +1,5 @@
 {
-  "status": "All controlled timing/allocation data and exact pixels retained. Allocation improves; chart timing contains strong within-launch warm-up drift and does not yet qualify warmed throughput.",
+  "status": "Complete first controlled campaign retained, including chart warm-up drift and apparent slowdowns. The separately predeclared longer-warmup follow-up establishes stable warmed chart improvement.",
   "date": "2026-11-07",
   "qualifiedSourceCommit": "8ddfeb1310a29f779da309ba96cbb27e71caec07",
   "precedingMeasurement": "quiet-vm-20261107.json",
@@ -1413,7 +1413,7 @@
   "conclusion": "Chart allocation drops about 30.5 MB/op and icon-sheet allocation about 17.5 MB/op; 174 native comparisons are exact. Icon-sheet medians improve in each context. The pooled chart median regresses on net11, but each chart launch shows substantial early-to-late warm-up drift, so a predeclared longer-warmup comparison is required before a warmed-speed claim. The earlier 2x icon-sheet runtime observation is not reproduced for the identical asset under these controls.",
   "lease": "Exclusive canonical shared lock retained through cleanup/retrieval; all owned workers gone and lock holder exited 0 before notifying sttropez. No global/service changes.",
   "remaining": [
-    "Resolve chart warm-up/stationarity with a focused, predeclared longer-warmup comparison; retain this complete campaign and its apparent slowdowns.",
+    "Chart stationarity is resolved by chart-warm-quiet.json; retain this entire shorter-warmup campaign as separate transition evidence.",
     "Additional glyph/filter/gradient profiling, runtime cause attribution, native comparator scopes, cold startup and process/native memory remain open.",
     "Frozen Windows DejaVu authority and W1/R85/R86 provenance remain separate correctness gates."
   ],
@@ -1903,5 +1903,6 @@
         "changedPixelsFromFrozenLinuxReference": 0
       }
     ]
-  }
+  },
+  "longWarmupFollowup": "chart-warm-quiet.json"
 }

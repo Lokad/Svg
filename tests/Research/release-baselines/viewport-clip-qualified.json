@@ -416,6 +416,8 @@
   "remaining": [
     "Frozen Windows DejaVu authority remains Open T18; its assertion/target remain intact.",
     "W1 external-resource and R85/R86 source authority remain open.",
-    "Quiet allocation repeat and broader native/profile/memory performance work remain separately owned."
-  ]
+    "The shared viewport allocation and warmed chart acceptance are closed; broader glyph/native/startup/process-memory scopes remain separately owned."
+  ],
+  "controlledAllocationRepeat": "viewport-clip-quiet.json",
+  "warmedTimingAcceptance": "chart-warm-quiet.json"
 }

@@ -45,6 +45,11 @@ conversion timing. Report the inputs/options, CPU/OS, .NET/runtime/GC, warmups,
 sample count and variability with each measurement. Run hosts serially without
 concurrent builds or captures. Short runs do not establish general SVG throughput.
 
+Check measurements within each launch for warm-up drift. A fixed invocation count
+makes the number of warmup calls explicit; retain the drifting samples and
+predeclare a longer-warmup comparison before claiming warmed performance. Keep
+cold-start and tier-transition observations separate.
+
 BenchmarkDotNet allocation counts measure cumulative managed traffic per operation,
 not peak live memory. Returning a byte count from a timed method does not turn it
 into a reported memory metric. Print tracked encoder storage separately:

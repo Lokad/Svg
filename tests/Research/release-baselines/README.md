@@ -59,7 +59,8 @@ the [shared viewport storage correction](viewport-clip-storage.json) retains geo
 border coverage and lifecycle contracts while removing about 30.5 MB per chart
 conversion. [Full milestone qualification](viewport-clip-qualified.json) preserves all originals
 and contexts. The [controlled repeat](viewport-clip-quiet.json) retains all allocations,
-exact pixels and chart warm-up drift; longer-warmup timing remains open.
+exact pixels and chart warm-up drift. The [predeclared longer-warmup follow-up](chart-warm-quiet.json)
+retains every warmup/measurement and closes warmed acceptance on both targets.
 The [same-asset glyph profile](icon-runtime-attribution.json) retains independent
 runtime traces of an identical driver/package and exact native pixels. Repeated
 cmap selection/validation is a shared-cost lead; borrowed-byte and deferred font
