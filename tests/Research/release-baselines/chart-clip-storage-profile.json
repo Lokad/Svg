@@ -1,0 +1,1000 @@
+{
+  "status": "Shared viewport clip storage cost is attributed; correction and performance qualification remain open. Production, tests and frozen references unchanged.",
+  "date": "2026-11-07",
+  "qualifiedProductionCommit": "247fd6da7c4c09313663a9aa7a378f7df074f5d3",
+  "qualification": "sharp-rectangle-qualified.json",
+  "initialTimingObservation": "quiet-vm-20261107.json",
+  "librarySha256": "30002b9799dbfd42d001b023588021f29a3543bdf47e48ac9e4f2a030d96fab7",
+  "packageSha256": "ea0981e21b1e00733fbb1813f8d4ff03aac86aef3acef7f14bb1193e55fbe498",
+  "input": {
+    "file": "tests/Research/benchmark-workloads/chart.svg",
+    "sha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+    "width": 1024,
+    "height": 640,
+    "pointSymbolInstances": 12,
+    "canvasRgbaPayloadBytes": 2621440
+  },
+  "sourceFilesLfSha256": {
+    "src/Lokad.Svg/SvgConverter.cs": "c8a74b7e4adfc0209bcad57f457d7799b1fe3a9d40f9d4dc6706ffb41e4a4a06",
+    "src/Lokad.Svg/Rendering/SvgRasterClipMask.cs": "951887a31eaeaeaf30f1d6d282f1052b12e20bcb8386c977fa6aacd6b4404fb1",
+    "src/Lokad.Svg/Rendering/SvgCpuClipCoverage.cs": "1c028d78abab19f916d50a882483e78a07dc46618b46c386da107e22df2407c5",
+    "src/Lokad.Svg/Rendering/SvgCpuRasterGrid.cs": "d1ace98922843dd1a35cf435d05ab94e139838355fa0c7bac22ee79ad34f831f",
+    "src/Lokad.Svg/Parsing/SvgAffineViewportClip.cs": "1db78b0e56c692f70572329260fdc55ccfa5dd3c52f9a258af43b9f27bc5f028",
+    "src/Lokad.Svg/Parsing/SvgMaskContent.cs": "9e461a21dc463cf6dfbca1be8a50e3f63b826733d574a848ec63dd3278b710a5"
+  },
+  "scope": {
+    "hosts": "Local Windows and WSL Linux; runtime .NET 11 RC3, installed net11 asset. These are attribution runs, not quiet timing measurements or cross-runtime comparisons.",
+    "route": "Copied installed benchmark setup and canonical public ConvertToPng, using committed input/font manifests; exact loaded library SHA checked before launch and emitted by setup.",
+    "controls": "Eight warmups, then 32 individual process-cumulative GC.GetTotalAllocatedBytes(true) deltas per case. No disposal/source/font acquisition inside these deltas except ordinary conversion ownership.",
+    "cpu": "100 conversions inside explicit EventSource markers. Leaf/inclusive frame counts are sample occurrences, not elapsed CPU percentages. Windows takes cumulative allocation at window boundaries; Linux additionally reads cumulative allocation around each conversion. Do not compare host sample totals as throughput.",
+    "allocationSampling": "EventPipe allocation ticks are sampled attribution, not an exact partition of cumulative managed bytes, live/peak memory or budget reservations. Large RenderCommands byte-array event counts are retained separately.",
+    "native": "Each unchanged chart and every equal-image diagnostic is compared to its existing platform target. Point-free is intentionally different. No target/tolerance or admission change.",
+    "traceEvent": "Microsoft.Diagnostics.Tracing.TraceEvent 3.2.5; TraceLog ETLX conversion, CallStack(), GCAllocationTick and SampleProfiler callbacks filtered by Measurement/Start and Measurement/Stop.",
+    "eventPipeConfig": "Microsoft-Windows-DotNETRuntime:4c14fccbd:5,Microsoft-DotNETCore-SampleProfiler:0:5,SvgProfile:ffffffffffffffff:5",
+    "traceEnvironment": {
+      "DOTNET_gcServer": "0",
+      "DOTNET_gcConcurrent": "1",
+      "DOTNET_TieredCompilation": "1",
+      "DOTNET_TieredPGO": "1",
+      "DOTNET_EventPipeCircularMB": "40"
+    },
+    "providerDocumentation": "https://learn.microsoft.com/dotnet/core/diagnostics/eventpipe"
+  },
+  "controlRecipes": {
+    "point-free": "Remove exactly the twelve <use href=\"#point\" x=\"...\" y=\"...\" width=\"12\" height=\"12\"/> elements; retain the definition and all other bytes.",
+    "direct-points": "Replace those twelve uses with circles at (x+6,y+6), r=4, white fill, #157c77 stroke and stroke-width=2; retain all other bytes. This changes construction paths and is a diagnostic only.",
+    "symbol-as-group": "Replace exactly <symbol id=\"point\" viewBox=\"0 0 12 12\"> with <g id=\"point\"> and its closing </symbol> with </g>. Keep all twelve uses and their coordinates/dimensions unchanged. The point fits inside its original viewport; the group has no viewport clip.",
+    "rejectedControl": "XML overflow=visible on symbol is outside the current contract and correctly rejects. It is excluded from allocation/pixel results; no feature expansion is proposed."
+  },
+  "profiles": [
+    {
+      "host": "windows",
+      "iterations": 100,
+      "traceSha256": "9348e56399eed38ea9708b2a02081134d3568205b6242ca444db0c0d7b563e25",
+      "window": "SvgProfile Measurement/Start through Measurement/Stop; eight warmup conversions, setup and final PNG outside the window.",
+      "allSampleProfilerEvents": 11538,
+      "innermostSvgFrames": [
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.Gather",
+          "samples": 1371
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48",
+          "samples": 1039
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71",
+          "samples": 1000
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_54",
+          "samples": 970
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply",
+          "samples": 842
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.<GetCoverageCore>g__Classify|18_3",
+          "samples": 754
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.GetCoverageCore",
+          "samples": 624
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+          "samples": 538
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_65",
+          "samples": 524
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+          "samples": 479
+        },
+        {
+          "method": "Lokad.Svg.Fonts.TrueTypeHinting.Execute",
+          "samples": 440
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.<Gather>g__Adjust|20_4",
+          "samples": 430
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.<Gather>g__FixedProfile|20_3",
+          "samples": 341
+        },
+        {
+          "method": "Lokad.Svg.Encoding.PngEncoder.CompressInto",
+          "samples": 304
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__CoverageBounds|11_44",
+          "samples": 282
+        }
+      ],
+      "innermostFrames": [
+        {
+          "method": "System.Threading.Thread.<PollGC>g__PollGCWorker|75_0",
+          "samples": 2312
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.Gather",
+          "samples": 1371
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71",
+          "samples": 1000
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply",
+          "samples": 839
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.<GetCoverageCore>g__Classify|18_3",
+          "samples": 754
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.GetCoverageCore",
+          "samples": 624
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_65",
+          "samples": 524
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+          "samples": 513
+        },
+        {
+          "method": "Lokad.Svg.Fonts.TrueTypeHinting.Execute",
+          "samples": 440
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.<Gather>g__Adjust|20_4",
+          "samples": 430
+        }
+      ],
+      "inclusiveSvgFrames": [
+        {
+          "method": "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng",
+          "samples": 11535
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.PrepareRasterizationCore",
+          "samples": 11061
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.Rasterize",
+          "samples": 10583
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+          "samples": 10560
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometry|11_35",
+          "samples": 7949
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36",
+          "samples": 7946
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.ConvertToPng",
+          "samples": 6052
+        },
+        {
+          "method": "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.Render",
+          "samples": 6052
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.Rasterize",
+          "samples": 5556
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.Rasterize",
+          "samples": 5556
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77",
+          "samples": 3958
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.GetCoverageCore",
+          "samples": 3483
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.GetCoverage",
+          "samples": 3366
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+          "samples": 2903
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGlyphLcdCoverage.Gather",
+          "samples": 2108
+        }
+      ],
+      "largeRenderCommandsByteArrayObjectSizeCounts": {
+        "2621496": 118,
+        "2621464": 112,
+        "2621472": 1170
+      },
+      "sampledAllocationOwners": [
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 1945125016,
+          "ticks": 742,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.Rasterize"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 1724921896,
+          "ticks": 658,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.PrepareRasterizationCore",
+            "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 615969344,
+          "ticks": 2452,
+          "svgFrames": [
+            "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Allocate|25_11",
+            "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6"
+          ]
+        },
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "sampledBytes": 334244264,
+          "ticks": 1274,
+          "svgFrames": [
+            "Lokad.Svg.Parsing.SvgOrthogonalGeometryLowering.LowerRoundedRectFill",
+            "Lokad.Svg.Parsing.SvgLeafParser.LowerRoundedRect",
+            "Lokad.Svg.Parsing.SvgLeafParser.ParseRectangleCore",
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 304224672,
+          "ticks": 1222,
+          "svgFrames": [
+            "Lokad.Svg.Rendering.SvgGaussianBlur.Apply",
+            "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 304128192,
+          "ticks": 1250,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 219336672,
+          "ticks": 953,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+            "Lokad.Svg.SvgConverter.Rasterize"
+          ]
+        },
+        {
+          "type": "Crossing[]",
+          "sampledBytes": 144975136,
+          "ticks": 1339,
+          "svgFrames": [
+            "Lokad.Svg.Rendering.SvgGlyphLcdCoverage+ScanStorage.TryCreate",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGlyphContours|11_77",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometry|11_35"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 138937592,
+          "ticks": 53,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.PrepareRasterizationCore"
+          ]
+        },
+        {
+          "type": "Lokad.Svg.Fonts.TrueTypeHintPoint[]",
+          "sampledBytes": 127207520,
+          "ticks": 1190,
+          "svgFrames": [
+            "Lokad.Svg.Fonts.TrueTypeHinting.Create",
+            "Lokad.Svg.Fonts.OpenTypeFont.GetTrueTypeContours",
+            "Lokad.Svg.Fonts.SvgGlyphRasterSource.CreateWindowsFittedContours",
+            "Lokad.Svg.Fonts.SvgGlyphRasterSource.CreateWindowsScanContours"
+          ]
+        }
+      ],
+      "unchangedChartPngSha256": "35867ab4bd245c0e67274792b026f8fa3558716af8ff7c0e28d503b6b1c85aeb",
+      "frozenReference": "tests/Research/benchmark-workloads/references/windows/chart.png",
+      "frozenReferenceSha256": "704643ea71c7faca0cc2672d22a14dcc67bcc7e5d1d34bec97c3c49b15160674",
+      "reportedEventsLost": 0
+    },
+    {
+      "host": "linux",
+      "iterations": 100,
+      "traceSha256": "844bd6209fdb675acf1b446fa5cfef55d69c45f3a121b01c6fb80fc9db5825df",
+      "window": "SvgProfile Measurement/Start through Measurement/Stop; eight warmup conversions, setup and final PNG outside the window.",
+      "allSampleProfilerEvents": 15058,
+      "innermostSvgFrames": [
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48",
+          "samples": 1944
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_54",
+          "samples": 1697
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71",
+          "samples": 1653
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply",
+          "samples": 1412
+        },
+        {
+          "method": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours",
+          "samples": 1231
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_65",
+          "samples": 967
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+          "samples": 934
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+          "samples": 700
+        },
+        {
+          "method": "Lokad.Svg.Encoding.PngEncoder.CompressInto",
+          "samples": 529
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__ShaderSamplingContext|11_14",
+          "samples": 497
+        },
+        {
+          "method": "Lokad.Svg.Parsing.SvgPolygonFill.Create",
+          "samples": 488
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__CoverageBounds|11_44",
+          "samples": 400
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Offset|25_24",
+          "samples": 257
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+          "samples": 240
+        },
+        {
+          "method": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphIndex",
+          "samples": 208
+        }
+      ],
+      "innermostFrames": [
+        {
+          "method": "System.Threading.Thread.<PollGC>g__PollGCWorker|71_0",
+          "samples": 4756
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71",
+          "samples": 1653
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply",
+          "samples": 1412
+        },
+        {
+          "method": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours",
+          "samples": 1228
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_65",
+          "samples": 967
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+          "samples": 874
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+          "samples": 613
+        },
+        {
+          "method": "Interop+ZLib.Deflate",
+          "samples": 513
+        },
+        {
+          "method": "System.SpanHelpers.Memmove",
+          "samples": 494
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__CoverageBounds|11_44",
+          "samples": 400
+        }
+      ],
+      "inclusiveSvgFrames": [
+        {
+          "method": "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng",
+          "samples": 15054
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.PrepareRasterizationCore",
+          "samples": 14258
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.Rasterize",
+          "samples": 13325
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+          "samples": 13295
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometryCore|11_36",
+          "samples": 8835
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometry|11_35",
+          "samples": 8835
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.ConvertToPng",
+          "samples": 8175
+        },
+        {
+          "method": "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.Render",
+          "samples": 8175
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.Rasterize",
+          "samples": 7235
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.Rasterize",
+          "samples": 7235
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+          "samples": 5059
+        },
+        {
+          "method": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+          "samples": 2964
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48",
+          "samples": 2150
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeMaskContent|11_28",
+          "samples": 2109
+        },
+        {
+          "method": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71",
+          "samples": 2011
+        }
+      ],
+      "largeRenderCommandsByteArrayObjectSizeCounts": {
+        "2621496": 100,
+        "2621464": 100,
+        "2621472": 1200
+      },
+      "sampledAllocationOwners": [
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 1981825488,
+          "ticks": 756,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.Rasterize"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 1688221712,
+          "ticks": 644,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.PrepareRasterizationCore",
+            "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 619456360,
+          "ticks": 2481,
+          "svgFrames": [
+            "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Allocate|25_11",
+            "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6"
+          ]
+        },
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "sampledBytes": 317191008,
+          "ticks": 1209,
+          "svgFrames": [
+            "Lokad.Svg.Parsing.SvgOrthogonalGeometryLowering.LowerRoundedRectFill",
+            "Lokad.Svg.Parsing.SvgLeafParser.LowerRoundedRect",
+            "Lokad.Svg.Parsing.SvgLeafParser.ParseRectangleCore",
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 301147152,
+          "ticks": 1222,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25"
+          ]
+        },
+        {
+          "type": "Lokad.Svg.Fonts.OpenTypeGlyphPoint[]",
+          "sampledBytes": 298580128,
+          "ticks": 2801,
+          "svgFrames": [
+            "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints",
+            "Lokad.Svg.Fonts.OpenTypeFont.<GetGlyphPointOutline>g__Expand|3_0",
+            "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours",
+            "Lokad.Svg.Fonts.SvgGlyphRasterSource.CreateLatinLightPath"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 290333592,
+          "ticks": 1174,
+          "svgFrames": [
+            "Lokad.Svg.Rendering.SvgGaussianBlur.Apply",
+            "Lokad.Svg.Rendering.SvgFilterPlayback.Apply",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 215216384,
+          "ticks": 919,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6",
+            "Lokad.Svg.SvgConverter.<Rasterize>g__RenderCommands|11_25",
+            "Lokad.Svg.SvgConverter.Rasterize"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 141559056,
+          "ticks": 54,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.PrepareRasterizationCore"
+          ]
+        },
+        {
+          "type": "System.Byte[]",
+          "sampledBytes": 120587344,
+          "ticks": 46,
+          "svgFrames": [
+            "Lokad.Svg.SvgConverter.Rasterize",
+            "Lokad.Svg.SvgConverter.PrepareRasterizationCore",
+            "Lokad.Svg.Benchmarks.InstalledDocumentBenchmarks.ConvertToPng"
+          ]
+        }
+      ],
+      "unchangedChartPngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+      "frozenReference": "tests/Research/benchmark-workloads/references/linux/chart.png",
+      "frozenReferenceSha256": "62d97dfb4faae3edd7c7ff6f9ce4bb6b4a2001c0b09da2823bf0f09b070996d8",
+      "reportedEventsLost": 0
+    }
+  ],
+  "controls": [
+    {
+      "host": "windows",
+      "control": "original",
+      "inputSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+      "allocationBytesPerConversion": [
+        69983520,
+        69990456,
+        69982648,
+        69989464,
+        69989624,
+        69990352,
+        69989440,
+        69982712,
+        69989408,
+        69991408,
+        69990232,
+        69985056,
+        69986064,
+        69985976,
+        69986664,
+        69990320,
+        69985704,
+        69986528,
+        69989600,
+        69985632,
+        69981192,
+        69984848,
+        69978048,
+        69985704,
+        69989352,
+        69983824,
+        69986264,
+        69982936,
+        69985600,
+        69985440,
+        69984584,
+        69988856
+      ],
+      "medianAllocatedBytes": 69986020.0,
+      "pngSha256": "35867ab4bd245c0e67274792b026f8fa3558716af8ff7c0e28d503b6b1c85aeb",
+      "changedPixelsFromUnchangedChart": 0
+    },
+    {
+      "host": "windows",
+      "control": "point-free",
+      "inputSha256": "943000056c0b3b75bfd16c765aaea6dfc4c406712b505f504093f4ea374a7a4a",
+      "allocationBytesPerConversion": [
+        37687096,
+        37650328,
+        37678016,
+        37650408,
+        37681016,
+        37650408,
+        37675360,
+        37650264,
+        37671008,
+        37650264,
+        37682224,
+        37650184,
+        37674112,
+        37650344,
+        37677408,
+        37650064,
+        37678952,
+        37650064,
+        37658016,
+        37650064,
+        37682424,
+        37650064,
+        37681512,
+        37649720,
+        37680752,
+        37649720,
+        37673776,
+        37649720,
+        37672800,
+        37649720,
+        37669960,
+        37656000
+      ],
+      "medianAllocatedBytes": 37657008.0,
+      "pngSha256": "855545dffaa15af2e1529aee50ea1f147473c826762d6e8886bbb90113061f4a",
+      "changedPixelsFromUnchangedChart": 869
+    },
+    {
+      "host": "windows",
+      "control": "direct-points",
+      "inputSha256": "99e51272d4c300805ed14904b1337f04969760244398649336b7c487f98acacd",
+      "allocationBytesPerConversion": [
+        39061400,
+        39093440,
+        39061480,
+        39077360,
+        39061480,
+        39092152,
+        39061336,
+        39077216,
+        39061336,
+        39093344,
+        39061336,
+        39084712,
+        39061336,
+        39093424,
+        39061416,
+        39084792,
+        39061416,
+        39090152,
+        39061416,
+        39084792,
+        39061416,
+        39090072,
+        39061544,
+        39073736,
+        39061416,
+        39084488,
+        39070112,
+        39061416,
+        39090152,
+        39061416,
+        39084792,
+        39061416
+      ],
+      "medianAllocatedBytes": 39065828.0,
+      "pngSha256": "35867ab4bd245c0e67274792b026f8fa3558716af8ff7c0e28d503b6b1c85aeb",
+      "changedPixelsFromUnchangedChart": 0
+    },
+    {
+      "host": "windows",
+      "control": "symbol-as-group",
+      "inputSha256": "d245155b8a750972a9d73da0d3a9ff8c1dc24b5cb738f0c54de0bdd082c62f1e",
+      "allocationBytesPerConversion": [
+        38308568,
+        38340416,
+        38330728,
+        38308648,
+        38339160,
+        38308648,
+        38318728,
+        38308648,
+        38335656,
+        38308648,
+        38335664,
+        38308504,
+        38335976,
+        38308584,
+        38345896,
+        38308304,
+        38333880,
+        38309600,
+        38327704,
+        38308304,
+        38338504,
+        38308304,
+        38318488,
+        38308304,
+        38338184,
+        38307960,
+        38335328,
+        38307960,
+        38330552,
+        38323536,
+        38307960,
+        38329608
+      ],
+      "medianAllocatedBytes": 38318608.0,
+      "pngSha256": "35867ab4bd245c0e67274792b026f8fa3558716af8ff7c0e28d503b6b1c85aeb",
+      "changedPixelsFromUnchangedChart": 0
+    },
+    {
+      "host": "linux",
+      "control": "original",
+      "inputSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+      "allocationBytesPerConversion": [
+        77168464,
+        77165784,
+        77169256,
+        77165504,
+        77178752,
+        77165536,
+        77165704,
+        77168488,
+        77165856,
+        77166048,
+        77166704,
+        77170240,
+        77169480,
+        77169560,
+        77165824,
+        77169768,
+        77177240,
+        77174824,
+        77168944,
+        77168944,
+        77169856,
+        77165104,
+        77170560,
+        77164488,
+        77177088,
+        77170560,
+        77169568,
+        77170680,
+        77178032,
+        77173288,
+        77176960,
+        77168704
+      ],
+      "medianAllocatedBytes": 77169368.0,
+      "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+      "changedPixelsFromUnchangedChart": 0
+    },
+    {
+      "host": "linux",
+      "control": "point-free",
+      "inputSha256": "943000056c0b3b75bfd16c765aaea6dfc4c406712b505f504093f4ea374a7a4a",
+      "allocationBytesPerConversion": [
+        44838328,
+        44858368,
+        44838248,
+        44860320,
+        44838248,
+        44870744,
+        44838328,
+        44862280,
+        44838328,
+        44846160,
+        44838248,
+        44852888,
+        44846096,
+        44838184,
+        44863840,
+        44838264,
+        44862296,
+        44838264,
+        44862536,
+        44838264,
+        44862368,
+        44838264,
+        44846112,
+        44838264,
+        44866952,
+        44837840,
+        44865448,
+        44837840,
+        44874408,
+        44837840,
+        44857592,
+        44837920
+      ],
+      "medianAllocatedBytes": 44842212.0,
+      "pngSha256": "eecfd3e8e07e714b5e391e465ed72b182f794b2f420990360f8ac9ada8d87a7e",
+      "changedPixelsFromUnchangedChart": 869
+    },
+    {
+      "host": "linux",
+      "control": "direct-points",
+      "inputSha256": "99e51272d4c300805ed14904b1337f04969760244398649336b7c487f98acacd",
+      "allocationBytesPerConversion": [
+        46260088,
+        46248992,
+        46274328,
+        46252040,
+        46258544,
+        46248992,
+        46266400,
+        46248992,
+        46273024,
+        46249072,
+        46256880,
+        46249072,
+        46276968,
+        46248992,
+        46268608,
+        46248928,
+        46256736,
+        46248928,
+        46268752,
+        46264528,
+        46249008,
+        46271672,
+        46249008,
+        46273088,
+        46249008,
+        46261448,
+        46248664,
+        46271328,
+        46248664,
+        46272616,
+        46248584,
+        46264800
+      ],
+      "medianAllocatedBytes": 46256808.0,
+      "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+      "changedPixelsFromUnchangedChart": 0
+    },
+    {
+      "host": "linux",
+      "control": "symbol-as-group",
+      "inputSha256": "d245155b8a750972a9d73da0d3a9ff8c1dc24b5cb738f0c54de0bdd082c62f1e",
+      "allocationBytesPerConversion": [
+        45510296,
+        45496160,
+        45523424,
+        45508464,
+        45509480,
+        45496160,
+        45518840,
+        45496160,
+        45518592,
+        45496240,
+        45525584,
+        45496160,
+        45509248,
+        45496240,
+        45531104,
+        45496240,
+        45517656,
+        45496096,
+        45509352,
+        45495896,
+        45522904,
+        45495896,
+        45513896,
+        45495944,
+        45520776,
+        45495896,
+        45510488,
+        45495552,
+        45526032,
+        45495472,
+        45509904,
+        45495472
+      ],
+      "medianAllocatedBytes": 45508856.0,
+      "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+      "changedPixelsFromUnchangedChart": 0
+    }
+  ],
+  "finding": {
+    "observation": "RenderCommands allocates fourteen approximately 2.62 MB byte arrays per unchanged chart conversion: 1,400 large-array ticks in each 100-conversion trace. Twelve small symbol viewports each enter the full-canvas coverage path before any equivalence check.",
+    "allocationControl": "Symbol-to-group conversion retains point instances and exact frozen pixels while reducing median cumulative allocation from 69,986,020 to 38,318,608 bytes on Windows and 77,169,368 to 45,508,856 on Linux: about 31.7 MB per conversion. Geometry/preparation differences are included in that delta; do not present the entire delta as only mask payload.",
+    "otherControls": "Direct circles also preserve pixels and remove about 30.9 MB; removing points changes 869 pixels and retains the expected different-content control. Neither equality proves the execution paths redundant.",
+    "cpu": "Raster polygons/gradient construction, glyph coverage/hinting, Gaussian blur and filter composition remain distinct costs. The trace does not justify a symbol-specific raster bypass or a new cache."
+  },
+  "sharedModelReview": {
+    "current": "ViewportClipState and SvgRasterClipMask borrow RGBA tapes indexed with the complete destination stride; SvgCpuClipCoverage separately owns per-bitmap border coverage and construction bounds. Analytic root rectangles already avoid tapes but preserve parent AA multiplication.",
+    "sources": [
+      "src/Lokad.Svg/SvgConverter.cs: RenderCommands, RasterizeMaskContent, NarrowClipForBitmap",
+      "src/Lokad.Svg/Rendering/SvgRasterClipMask.cs: GetAlpha, GetAlphaAtOffset, IsOpaqueRectangle",
+      "src/Lokad.Svg/Rendering/SvgCpuClipCoverage.cs: bitmap border ownership/intersection",
+      "src/Lokad.Svg/Rendering/SvgCpuRasterGrid.cs: storage bounds versus logical native origin",
+      "src/Lokad.Svg/Parsing/SvgAffineViewportClip.cs: retained source rectangle/map/draw-map"
+    ],
+    "reviewBeforeChange": "A compact mask must distinguish addressable coverage storage from logical canvas stride, native construction origin and per-tile border samples. Audit raw tape consumers, binary-region geometry, coincident AA intersections and map rounding together. Reuse existing clip/scene/frame owners; no point/symbol special case, cross-conversion cache or unaccounted pool."
+  },
+  "closureCriteria": [
+    "Implement a shared coverage representation or equivalent existing-owner correction; demonstrate the cause and allocation reduction on a small authored mechanism and the unchanged chart.",
+    "Preserve source/map rounding, native bitmap border coverage, independent parent/child AA multiplication, binary clipping, translated/cropped masks, nested/sibling lifetimes, cancellation/refusal cleanup and retry.",
+    "Retain independent native references and failing-before allocation regression; equal group/direct-point images do not authorize removal of symbol-path coverage.",
+    "Use focused mechanisms and affected native/contracts during iteration, then full four-context/package/original replay at the coherent renderer milestone. Arrange a fresh canonical quiet-host lease only for a prepared before/after repeat.",
+    "Keep icon-sheet runtime attribution, persistent native comparators, cold startup and process/native memory scopes open."
+  ]
+}

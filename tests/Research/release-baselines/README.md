@@ -52,6 +52,10 @@ per input/runtime retain 384 raw samples and 116 exact native comparisons. Each
 affected conversion removes about 262 KB managed allocation; bounded timing medians
 improve 2.8–10.5%, with an unchanged-allocation control. Full suites preserve solely
 the frozen Windows DejaVu conflict; all 204 source identities and contexts remain accounted for.
+The [chart clip-storage profile](chart-clip-storage-profile.json) attributes the next
+shared cost: twelve small symbol viewports materialize canvas-sized clip tapes.
+Two platform profiles and eight allocation controls retain exact unchanged targets;
+shared clip/storage refactoring remains open, with geometry and ownership criteria.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)
