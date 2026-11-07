@@ -1,0 +1,230 @@
+{
+  "status": "Finite review of the named chart/icon cost areas complete; counted draw-context waste has one coherent correction. Other samples remain expected work or unproven optimization leads.",
+  "sourceCommit": "16466c3f6ee8716063ab879d655a0bead5c44444",
+  "qualification": "shader-context-qualified.json",
+  "profileEvidence": "shader-context-preparation.json",
+  "scope": "Two committed workloads, same-driver local CPU/allocation attribution with exact native images and zero lost events. Retained top frames are a bounded sample, not exhaustive library performance, an exact CPU partition or proof of zero omitted work. No new timing, cache, fixture removal or correctness claim.",
+  "areas": [
+    {
+      "area": "gradient-pattern",
+      "production": [
+        "src/Lokad.Svg/SvgConverter.cs",
+        "src/Lokad.Svg/Rendering/SvgShaderSampler.cs",
+        "src/Lokad.Svg/Rendering/SvgShaderSamplingContext.cs",
+        "src/Lokad.Svg/Rendering/SvgGradientRamp.cs"
+      ],
+      "mechanismsAndOwnership": [
+        "tests/Lokad.Svg.Tests/SvgGradientCoordinateTests.cs",
+        "tests/Lokad.Svg.Tests/SvgGradientRampTests.cs",
+        "tests/Lokad.Svg.Tests/SvgShaderSamplingContextLifetimeTests.cs"
+      ],
+      "sampleAttribution": [
+        {
+          "document": "chart",
+          "sampleProfilerEvents": 16542,
+          "frames": [
+            {
+              "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_68(value class Lokad.Svg.Parsing.SvgLinearGradient,value class Lokad.Svg.Parsing.SvgRectangle,value class Lokad.Svg.Parsing.SvgRectangle,unsigned int8,bool,unsigned int8[],value class <>c__DisplayClass11_0&)",
+              "Value": 934
+            },
+            {
+              "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_52(value class MappedPolygon&,bool,class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgShaderSampler&,unsigned int8[],value class <>c__DisplayClass11_0&)",
+              "Value": 849
+            },
+            {
+              "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_63(class Lokad.Svg.Parsing.SvgPatternGeometry,unsigned int8[],unsigned int8[],value class <>c__DisplayClass11_0&)",
+              "Value": 692
+            }
+          ]
+        },
+        {
+          "document": "icon-sheet",
+          "sampleProfilerEvents": 5803,
+          "frames": []
+        }
+      ],
+      "responsibility": "Sampling descriptors borrow the current draw/clip/tile; ramps and textures retain their existing scoped owners. Coordinates, spread, alpha/dither and blending have different numerical responsibilities.",
+      "finding": "Counted repeated descriptor preparation is corrected by 16466c3f6. Other sampling arithmetic remains intentional; no additional defect follows from sampled cost."
+    },
+    {
+      "area": "polygon-coverage",
+      "production": [
+        "src/Lokad.Svg/SvgConverter.cs",
+        "src/Lokad.Svg/Rendering/SvgContourBuilder.cs"
+      ],
+      "mechanismsAndOwnership": [
+        "tests/Lokad.Svg.Tests/SvgContourTopologyTests.cs",
+        "tests/Lokad.Svg.Tests/SvgContourBuilderTests.cs",
+        "tests/Lokad.Svg.Tests/SvgAnalyticPaintTests.cs"
+      ],
+      "sampleAttribution": [
+        {
+          "document": "chart",
+          "sampleProfilerEvents": 16542,
+          "frames": [
+            {
+              "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_46(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+              "Value": 1821
+            }
+          ]
+        },
+        {
+          "document": "icon-sheet",
+          "sampleProfilerEvents": 5803,
+          "frames": [
+            {
+              "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_46(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+              "Value": 437
+            },
+            {
+              "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePreparedRectangle|11_80(value class Lokad.Svg.Rendering.SvgRectangleRaster,value class Lokad.Svg.Rendering.SvgAnalyticPaint,unsigned int8[],value class <>c__DisplayClass11_0&)",
+              "Value": 206
+            }
+          ]
+        }
+      ],
+      "responsibility": "Mapped/flattened contour construction, edge coverage and blending remain separate. Builders retain device points, with their caller reserving point/contour/span storage; replay owners release with the conversion.",
+      "finding": "Known sharp-rectangle/viewport storage waste is already closed. Flattening/coverage samples alone justify neither skipping boundaries nor merging independent native paths."
+    },
+    {
+      "area": "authored-path",
+      "production": [
+        "src/Lokad.Svg/Parsing/SvgAuthoredPath.cs"
+      ],
+      "mechanismsAndOwnership": [
+        "tests/Lokad.Svg.Tests/SvgContourStructureTests.cs",
+        "tests/Lokad.Svg.Tests/SvgInheritedContourOwnershipTests.cs"
+      ],
+      "sampleAttribution": [
+        {
+          "document": "chart",
+          "sampleProfilerEvents": 16542,
+          "frames": []
+        },
+        {
+          "document": "icon-sheet",
+          "sampleProfilerEvents": 5803,
+          "frames": [
+            {
+              "Key": "Lokad.Svg.Parsing.SvgAuthoredPath..ctor(value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Parsing.SvgAuthoredPathCommand>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgAuthoredStrokeStyle>,class Lokad.Svg.Parsing.SvgAuthoredPath,class Lokad.Svg.Parsing.SvgAuthoredDashSource,value class Lokad.Svg.Parsing.SvgAuthoredFillShape,class BudgetReservation)",
+              "Value": 344
+            },
+            {
+              "Key": "Lokad.Svg.Parsing.SvgPolygonFill..ctor(value class Lokad.Svg.Parsing.SvgPolygonContours,value class Lokad.Svg.SvgColor,bool,bool,value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>)",
+              "Value": 162
+            }
+          ]
+        }
+      ],
+      "responsibility": "Authored verbs, source/stroke semantics, scene maps and owned arrays survive geometry replay. Constructor frame attribution includes inlining/associated work and is not proof that its field assignments dominate.",
+      "finding": "No unused owner/copy is demonstrated by the retained frame samples. Any retirement requires a concrete consumer/lifetime analysis."
+    },
+    {
+      "area": "filter-blur",
+      "production": [
+        "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+        "src/Lokad.Svg/Rendering/SvgGaussianBlur.cs"
+      ],
+      "mechanismsAndOwnership": [
+        "tests/Lokad.Svg.Tests/SvgFilterPlaybackTests.cs",
+        "tests/Lokad.Svg.Tests/SvgGaussianBlurTests.cs",
+        "tests/Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs"
+      ],
+      "sampleAttribution": [
+        {
+          "document": "chart",
+          "sampleProfilerEvents": 16542,
+          "frames": [
+            {
+              "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.<Apply>g__Axis|2_0(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,value class BoxKernel,bool,value class <>c__DisplayClass2_0&)",
+              "Value": 1431
+            },
+            {
+              "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)",
+              "Value": 1205
+            },
+            {
+              "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+              "Value": 1075
+            },
+            {
+              "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+              "Value": 498
+            }
+          ]
+        },
+        {
+          "document": "icon-sheet",
+          "sampleProfilerEvents": 5803,
+          "frames": []
+        }
+      ],
+      "responsibility": "The graph allocates/reserves output/conversion/sample frames before use; color-space, bounds propagation and sampling stay distinct. Blur borrows premultiplied frames, owns temporary scratch and preserves the pinned kernel/division arithmetic.",
+      "finding": "Large sampled arrays and blur passes are expected work for this chart. Existing crop/flood/offset/shadow and shared-bounds acceptance stays closed; no new image-bounds or kernel defect is established."
+    },
+    {
+      "area": "glyph-calibration",
+      "production": [
+        "src/Lokad.Svg/Fonts/OpenTypeFont.LatinLight.cs",
+        "src/Lokad.Svg/Fonts/OpenTypeFont.cs"
+      ],
+      "mechanismsAndOwnership": [
+        "tests/Lokad.Svg.Tests/LatinLightHintingTests.cs",
+        "tests/Lokad.Svg.Tests/OpenTypeFontTests.ShaderSamplingContext.cs"
+      ],
+      "sampleAttribution": [
+        {
+          "document": "chart",
+          "sampleProfilerEvents": 16542,
+          "frames": []
+        },
+        {
+          "document": "icon-sheet",
+          "sampleProfilerEvents": 5803,
+          "frames": [
+            {
+              "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+              "Value": 236
+            }
+          ]
+        }
+      ],
+      "responsibility": "Decoding, Latin alignment/stem calibration and contour construction own charged temporary arrays; font bytes and scalar maps have separate lifetimes. Reuse must preserve deferred font admission, cancellation, budgets and exact outlines.",
+      "finding": "Repeated cmap validation is already corrected. Point/alignment work remains attributable; these samples do not establish a safe calibration cache or justify a global font-byte cache."
+    },
+    {
+      "area": "png",
+      "production": [
+        "src/Lokad.Svg/Encoding/PngEncoder.cs"
+      ],
+      "mechanismsAndOwnership": [
+        "tests/Lokad.Svg.Tests/PngEncoderTests.cs"
+      ],
+      "sampleAttribution": [
+        {
+          "document": "chart",
+          "sampleProfilerEvents": 16542,
+          "frames": [
+            {
+              "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+              "Value": 579
+            }
+          ]
+        },
+        {
+          "document": "icon-sheet",
+          "sampleProfilerEvents": 5803,
+          "frames": [
+            {
+              "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+              "Value": 222
+            }
+          ]
+        }
+      ],
+      "responsibility": "Filtering/compression, encoded-result ownership and I/O are separate. Owned result and stream destinations preserve their reservation/lifetime contracts; temporary compression owners release independently.",
+      "finding": "Compression samples do not establish redundant encoding or a removable buffer. Current row/output storage acceptance remains separate from a future encoding optimization."
+    }
+  ],
+  "closure": "Each named cost area is joined to its current production owner, direct/ownership checks and the retained samples. Preserve every independent numerical/native/platform boundary. Further optimization requires a distinct demonstrated mechanism and benefit; source-authority and startup/native-memory scopes remain separately open."
+}
