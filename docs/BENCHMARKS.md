@@ -62,6 +62,10 @@ has a single-document process mode for setup, ping/pong and first-call/write
 observations. Its separate Linux compression observer measures attributed native
 requests and lifetime; instrumented runs provide no latency result. Keep these
 metrics separate from the managed heap, process RSS and governed reservations.
+The [quiet-host record](../tests/Research/release-baselines/thin-consumer-quiet.json)
+retains three launches per document/runtime in each arm, exact output checks and
+all samples. These fresh processes use warm file caches; they do not measure
+cold-disk startup or isolated IPC latency.
 
 The [persistent resvg runner](../tools/README.md#installed-and-native-comparison-preflight)
 can retain serial samples for full conversion, parsing, prepared-tree rasterization

@@ -184,7 +184,6 @@
     "https://raw.githubusercontent.com/dotnet/runtime/v10.0.14/src/native/libs/System.IO.Compression.Native/pal_zlib.c",
     "https://raw.githubusercontent.com/dotnet/runtime/v10.0.14/src/native/external/zlib-ng/zutil_p.h"
   ],
-  "next": "Separate uninstrumented startup/pipe/I/O observations from instrumented native request/lifetime counts on a coordinated quiet host.",
   "admission": [
     "Multi-document process mode rejects before rendering",
     "Unknown pipe command rejects before rendering",
@@ -195,5 +194,6 @@
     "12 exact single-document process cases",
     "52 exact untimed batch outputs",
     "Three-allocation positive/exclusion/native file ownership controls"
-  ]
+  ],
+  "quietObservations": "thin-consumer-quiet.json"
 }

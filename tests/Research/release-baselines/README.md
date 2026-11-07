@@ -102,6 +102,9 @@ bytes and dependency-free payloads separately from runtime/process memory.
 The [thin consumer and native observer](thin-consumer-observation.json) qualify
 separate ready/pipe/first-call/I/O stages and attributed compression requests;
 default batch output and all independent references remain unchanged.
+The [quiet-host observations](thin-consumer-quiet.json) retain all 36 processes,
+720 pipe round trips and matched native allocation/free events. First-call timing,
+buffered I/O, requested native storage and whole-process RSS remain separate.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

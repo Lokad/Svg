@@ -1,0 +1,318 @@
+{
+  "status": "Thin public-consumer startup/pipe/buffered-I/O and separate compression-native request/lifetime observations retained; exact outputs preserved.",
+  "qualification": "thin-consumer-observation.json",
+  "rendererQualification": "shader-context-qualified.json",
+  "protocol": {
+    "toolSourceCommit": "cd1651197771e93175cf118485383ae0e654f38e",
+    "rendererSource": "16466c3f6ee8716063ab879d655a0bead5c44444",
+    "qualification": "thin-consumer-observation.json",
+    "arms": [
+      "timing",
+      "native"
+    ],
+    "launchesPerArm": 3,
+    "frameworks": [
+      "net10.0",
+      "net11.0"
+    ],
+    "documents": [
+      "geometry-rect",
+      "chart",
+      "icon-sheet"
+    ],
+    "pingsPerProcess": 20,
+    "conversionsPerProcess": 2,
+    "environment": {
+      "DOTNET_gcServer": "0",
+      "DOTNET_gcConcurrent": "1",
+      "DOTNET_TieredCompilation": "1",
+      "DOTNET_TieredPGO": "1"
+    },
+    "affinity": "CPU0",
+    "osCaches": "Not flushed; fresh processes do not imply cold filesystem caches.",
+    "stageScope": "Ready includes runtime/bootstrap and selected input/font setup. Buffered read/write calls are timed separately; setup also includes validation/hash/acquisition. Ping round trips include scheduling/protocol/flush; first-render request roundtrip includes conversion and communication. No fsync or disk throughput claim.",
+    "nativeScope": "Separate instrumented arm, never used for latency. Immediate-caller attribution to actual runtime compression module for malloc/calloc/aligned_alloc and matched frees. Requested live/peak excludes allocator overhead, managed heaps and other native modules. Chart includes decoding its embedded PNG as well as encoding output.",
+    "hosts": {
+      "net10.0": {
+        "driverSha256": "5ae46fbd80f59021de2aafcb3b3291767786de5c96942b056ea81a0b52e1f1cc",
+        "librarySha256": "d5503d2f8354a23320dba7a55d2974198755f26fe402402c5f2cb2c7d23c1052"
+      },
+      "net11.0": {
+        "driverSha256": "a69e407dc2572ba1f3dbb4e21f5e64884c06c911e4d52e61a351b842957d77c4",
+        "librarySha256": "59c1f3dbefeefb0bc084c6bd85096a14d264478e1d664b3daf32c4e23ee11dcb"
+      }
+    },
+    "sourceInputs": [
+      {
+        "file": "tests/Research/upstream-static-documents/fonts/NotoSans-Regular.ttf",
+        "sha256": "6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9"
+      },
+      {
+        "file": "tests/Research/upstream-static-documents/fonts/NotoSans-Italic.ttf",
+        "sha256": "35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b"
+      },
+      {
+        "file": "tests/Research/upstream-static-documents/inputs/geometry-rect.svg",
+        "sha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed"
+      },
+      {
+        "file": "tests/Research/benchmark-workloads/chart.svg",
+        "sha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802"
+      },
+      {
+        "file": "tests/Research/benchmark-workloads/icon-sheet.svg",
+        "sha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76"
+      }
+    ],
+    "payloadSha256": "08332a45ee6190d9789f8d8e472051374b39b60d641a3f855dfcc79d4cdfdc98",
+    "observerSha256": "9d81958ebb595fbe3951914145b7bc1b2c03c519d80b9c539acf0778954b6546",
+    "generatedInputs": [
+      {
+        "document": "geometry-rect",
+        "name": "manifest.json",
+        "sha256": "7638770e2c541ac30f61dcee88bcfebefef35f3073975f4fc8bbc7d27b65a0d7",
+        "utf8": "{\r\n  \"fontPrograms\": [\r\n    {\r\n      \"file\": \"../../../../../tests/Research/upstream-static-documents/fonts/NotoSans-Regular.ttf\",\r\n      \"sourceUrl\": \"https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Regular.ttf\",\r\n      \"sha256\": \"6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9\",\r\n      \"license\": \"OFL-1.1\",\r\n      \"family\": \"Noto Sans\",\r\n      \"weight\": 400,\r\n      \"italic\": false\r\n    },\r\n    {\r\n      \"file\": \"../../../../../tests/Research/upstream-static-documents/fonts/NotoSans-Italic.ttf\",\r\n      \"sourceUrl\": \"https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Italic.ttf\",\r\n      \"sha256\": \"35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b\",\r\n      \"license\": \"OFL-1.1\",\r\n      \"family\": \"Noto Sans\",\r\n      \"weight\": 400,\r\n      \"italic\": true\r\n    }\r\n  ],\r\n  \"cases\": [\r\n    {\r\n      \"id\": \"geometry-rect\",\r\n      \"suite\": \"resvg\",\r\n      \"upstreamRevision\": \"d8e064337faf01bc5a9579187a56dbdbe3eacc72\",\r\n      \"upstreamTest\": \"tests/shapes/rect/simple-case.svg\",\r\n      \"sourceUrl\": \"https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/tests/shapes/rect/simple-case.svg\",\r\n      \"sourceSha256\": \"1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed\",\r\n      \"input\": \"../../../../../tests/Research/upstream-static-documents/inputs/geometry-rect.svg\",\r\n      \"coveredGroups\": [\r\n        \"G3\"\r\n      ],\r\n      \"selection\": \"Rectangles, closed path coverage and source ordering.\",\r\n      \"role\": \"document-output\",\r\n      \"license\": \"MIT\",\r\n      \"width\": 200,\r\n      \"height\": 200,\r\n      \"scale\": 1,\r\n      \"background\": \"transparent\",\r\n      \"viewport\": {\r\n        \"width\": 200,\r\n        \"height\": 200\r\n      },\r\n      \"fonts\": [],\r\n      \"captureInput\": \"capture-inputs/geometry-rect.svg\",\r\n      \"captureInputSha256\": \"fbfa89844fa4466a0978f7ac967c2c2bbecad928be71d28eb58ada391f106367\",\r\n      \"materialization\": \"Root dimensions only, plus appended data-URI @font-face for the unchanged requested family/style when supplied; original SVG/resource bytes retained separately.\",\r\n      \"licenseEvidence\": \"notices/resvg-MIT.txt\",\r\n      \"reference\": \"references/geometry-rect.png\",\r\n      \"referenceSha256\": \"0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b\",\r\n      \"captures\": [\r\n        {\r\n          \"pngSha256\": \"0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b\",\r\n          \"startupHealth\": \"healthy\",\r\n          \"profileCleaned\": true\r\n        },\r\n        {\r\n          \"pngSha256\": \"0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b\",\r\n          \"startupHealth\": \"healthy\",\r\n          \"profileCleaned\": true\r\n        },\r\n        {\r\n          \"pngSha256\": \"0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b\",\r\n          \"startupHealth\": \"healthy\",\r\n          \"profileCleaned\": true\r\n        }\r\n      ],\r\n      \"linuxReference\": \"references/linux64/geometry-rect.png\",\r\n      \"linuxReferenceSha256\": \"0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b\",\r\n      \"linuxCaptures\": [\r\n        {\r\n          \"pngSha256\": \"0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b\",\r\n          \"startupHealth\": \"healthy\",\r\n          \"profileCleaned\": true\r\n        },\r\n        {\r\n          \"pngSha256\": \"0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b\",\r\n          \"startupHealth\": \"healthy\",\r\n          \"profileCleaned\": true\r\n        },\r\n        {\r\n          \"pngSha256\": \"0c706d048e4a3a0985031329840d6432d48a0595d48b4ec33e5bf46b48df5f8b\",\r\n          \"startupHealth\": \"healthy\",\r\n          \"profileCleaned\": true\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n"
+      },
+      {
+        "document": "geometry-rect",
+        "name": "font-pack.json",
+        "sha256": "3ba4fb9c2c7b40df7b9f3c060ba1e5c98e461894e102684585da9effb80ce990",
+        "utf8": "{\r\n  \"packId\": \"upstream-noto-sans\",\r\n  \"files\": [\r\n    {\r\n      \"relativePath\": \"fonts/NotoSans-Regular.ttf\",\r\n      \"byteSize\": 455188,\r\n      \"sha256\": \"6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9\"\r\n    },\r\n    {\r\n      \"relativePath\": \"fonts/NotoSans-Italic.ttf\",\r\n      \"byteSize\": 470472,\r\n      \"sha256\": \"35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b\"\r\n    }\r\n  ],\r\n  \"families\": [\r\n    {\r\n      \"requestedFamily\": \"Noto Sans\",\r\n      \"resolvedFamily\": \"Noto Sans\",\r\n      \"relativeFontFile\": \"fonts/NotoSans-Regular.ttf\",\r\n      \"weight\": 400,\r\n      \"italic\": false,\r\n      \"faceIndex\": 0,\r\n      \"hasMathTable\": false\r\n    },\r\n    {\r\n      \"requestedFamily\": \"Noto Sans\",\r\n      \"resolvedFamily\": \"Noto Sans\",\r\n      \"relativeFontFile\": \"fonts/NotoSans-Italic.ttf\",\r\n      \"weight\": 400,\r\n      \"italic\": true,\r\n      \"faceIndex\": 0,\r\n      \"hasMathTable\": false\r\n    }\r\n  ],\r\n  \"fallbacks\": [\r\n    {\r\n      \"family\": \"Noto Sans\"\r\n    }\r\n  ]\r\n}\r\n"
+      },
+      {
+        "document": "chart",
+        "name": "manifest.json",
+        "sha256": "b219fe3c054cbb85c637f746e3b8634cc9266b5f42f8516d1f86128f109ca04a",
+        "utf8": "{\r\n  \"fontPrograms\": [\r\n    {\r\n      \"file\": \"../../../../../tests/Research/upstream-static-documents/fonts/NotoSans-Regular.ttf\",\r\n      \"sourceUrl\": \"https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Regular.ttf\",\r\n      \"sha256\": \"6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9\",\r\n      \"license\": \"OFL-1.1\",\r\n      \"family\": \"Noto Sans\",\r\n      \"weight\": 400,\r\n      \"italic\": false\r\n    },\r\n    {\r\n      \"file\": \"../../../../../tests/Research/upstream-static-documents/fonts/NotoSans-Italic.ttf\",\r\n      \"sourceUrl\": \"https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Italic.ttf\",\r\n      \"sha256\": \"35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b\",\r\n      \"license\": \"OFL-1.1\",\r\n      \"family\": \"Noto Sans\",\r\n      \"weight\": 400,\r\n      \"italic\": true\r\n    }\r\n  ],\r\n  \"cases\": [\r\n    {\r\n      \"id\": \"chart\",\r\n      \"input\": \"../../../../../tests/Research/benchmark-workloads/chart.svg\",\r\n      \"sourceSha256\": \"4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802\",\r\n      \"width\": 1024,\r\n      \"height\": 640,\r\n      \"viewport\": {\r\n        \"width\": 1024,\r\n        \"height\": 640\r\n      },\r\n      \"scale\": 1,\r\n      \"background\": \"transparent\",\r\n      \"license\": \"CC0-1.0\",\r\n      \"licenseEvidence\": \"Original work dedicated by its SPDX declaration.\",\r\n      \"fonts\": [\r\n        \"NotoSans-Regular.ttf\"\r\n      ],\r\n      \"features\": [\r\n        \"paths\",\r\n        \"local-use\",\r\n        \"patterns\",\r\n        \"alpha-mask\",\r\n        \"clip\",\r\n        \"drop-shadow\",\r\n        \"embedded-png\",\r\n        \"supplied-labels\"\r\n      ]\r\n    }\r\n  ]\r\n}\r\n"
+      },
+      {
+        "document": "chart",
+        "name": "font-pack.json",
+        "sha256": "3ba4fb9c2c7b40df7b9f3c060ba1e5c98e461894e102684585da9effb80ce990",
+        "utf8": "{\r\n  \"packId\": \"upstream-noto-sans\",\r\n  \"files\": [\r\n    {\r\n      \"relativePath\": \"fonts/NotoSans-Regular.ttf\",\r\n      \"byteSize\": 455188,\r\n      \"sha256\": \"6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9\"\r\n    },\r\n    {\r\n      \"relativePath\": \"fonts/NotoSans-Italic.ttf\",\r\n      \"byteSize\": 470472,\r\n      \"sha256\": \"35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b\"\r\n    }\r\n  ],\r\n  \"families\": [\r\n    {\r\n      \"requestedFamily\": \"Noto Sans\",\r\n      \"resolvedFamily\": \"Noto Sans\",\r\n      \"relativeFontFile\": \"fonts/NotoSans-Regular.ttf\",\r\n      \"weight\": 400,\r\n      \"italic\": false,\r\n      \"faceIndex\": 0,\r\n      \"hasMathTable\": false\r\n    },\r\n    {\r\n      \"requestedFamily\": \"Noto Sans\",\r\n      \"resolvedFamily\": \"Noto Sans\",\r\n      \"relativeFontFile\": \"fonts/NotoSans-Italic.ttf\",\r\n      \"weight\": 400,\r\n      \"italic\": true,\r\n      \"faceIndex\": 0,\r\n      \"hasMathTable\": false\r\n    }\r\n  ],\r\n  \"fallbacks\": [\r\n    {\r\n      \"family\": \"Noto Sans\"\r\n    }\r\n  ]\r\n}\r\n"
+      },
+      {
+        "document": "icon-sheet",
+        "name": "manifest.json",
+        "sha256": "837e26017e499bae1fb9c9b3336b0a49fe01e370f479a5460fdce6ccb99afa02",
+        "utf8": "{\r\n  \"fontPrograms\": [\r\n    {\r\n      \"file\": \"../../../../../tests/Research/upstream-static-documents/fonts/NotoSans-Regular.ttf\",\r\n      \"sourceUrl\": \"https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Regular.ttf\",\r\n      \"sha256\": \"6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9\",\r\n      \"license\": \"OFL-1.1\",\r\n      \"family\": \"Noto Sans\",\r\n      \"weight\": 400,\r\n      \"italic\": false\r\n    },\r\n    {\r\n      \"file\": \"../../../../../tests/Research/upstream-static-documents/fonts/NotoSans-Italic.ttf\",\r\n      \"sourceUrl\": \"https://github.com/linebender/resvg-test-suite/blob/d8e064337faf01bc5a9579187a56dbdbe3eacc72/fonts/NotoSans-Italic.ttf\",\r\n      \"sha256\": \"35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b\",\r\n      \"license\": \"OFL-1.1\",\r\n      \"family\": \"Noto Sans\",\r\n      \"weight\": 400,\r\n      \"italic\": true\r\n    }\r\n  ],\r\n  \"cases\": [\r\n    {\r\n      \"id\": \"icon-sheet\",\r\n      \"input\": \"../../../../../tests/Research/benchmark-workloads/icon-sheet.svg\",\r\n      \"sourceSha256\": \"b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76\",\r\n      \"width\": 512,\r\n      \"height\": 384,\r\n      \"viewport\": {\r\n        \"width\": 512,\r\n        \"height\": 384\r\n      },\r\n      \"scale\": 1,\r\n      \"background\": \"transparent\",\r\n      \"license\": \"CC0-1.0\",\r\n      \"licenseEvidence\": \"Original work dedicated by its SPDX declaration.\",\r\n      \"fonts\": [\r\n        \"NotoSans-Regular.ttf\"\r\n      ],\r\n      \"features\": [\r\n        \"paths\",\r\n        \"local-use\",\r\n        \"symbol-viewbox\",\r\n        \"gradient-stroke\",\r\n        \"supplied-labels\"\r\n      ]\r\n    }\r\n  ]\r\n}\r\n"
+      },
+      {
+        "document": "icon-sheet",
+        "name": "font-pack.json",
+        "sha256": "3ba4fb9c2c7b40df7b9f3c060ba1e5c98e461894e102684585da9effb80ce990",
+        "utf8": "{\r\n  \"packId\": \"upstream-noto-sans\",\r\n  \"files\": [\r\n    {\r\n      \"relativePath\": \"fonts/NotoSans-Regular.ttf\",\r\n      \"byteSize\": 455188,\r\n      \"sha256\": \"6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9\"\r\n    },\r\n    {\r\n      \"relativePath\": \"fonts/NotoSans-Italic.ttf\",\r\n      \"byteSize\": 470472,\r\n      \"sha256\": \"35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b\"\r\n    }\r\n  ],\r\n  \"families\": [\r\n    {\r\n      \"requestedFamily\": \"Noto Sans\",\r\n      \"resolvedFamily\": \"Noto Sans\",\r\n      \"relativeFontFile\": \"fonts/NotoSans-Regular.ttf\",\r\n      \"weight\": 400,\r\n      \"italic\": false,\r\n      \"faceIndex\": 0,\r\n      \"hasMathTable\": false\r\n    },\r\n    {\r\n      \"requestedFamily\": \"Noto Sans\",\r\n      \"resolvedFamily\": \"Noto Sans\",\r\n      \"relativeFontFile\": \"fonts/NotoSans-Italic.ttf\",\r\n      \"weight\": 400,\r\n      \"italic\": true,\r\n      \"faceIndex\": 0,\r\n      \"hasMathTable\": false\r\n    }\r\n  ],\r\n  \"fallbacks\": [\r\n    {\r\n      \"family\": \"Noto Sans\"\r\n    }\r\n  ]\r\n}\r\n"
+      }
+    ],
+    "inputRecipe": "Generated manifests retain one selected case and the same fontPrograms from the committed workload manifests; manifest and catalog bytes are embedded verbatim, with their hashes. Their relative paths resolve when materialized five directory levels below repository root. Process mode loads only fonts listed by the selected case; geometry uses none."
+  },
+  "retrieval": {
+    "workersRemaining": 0,
+    "bytes": 1769544,
+    "sha256": "ba91e645a330a1be3482661e847c5d298e22550a6ba76adb659f5424c6ed0191"
+  },
+  "sampleFile": "thin-consumer-quiet-samples.json",
+  "sampleFileSha256": "ac08374c6537ddb90031086af79c993b7a6a06f684ebcd06fd1b421396834b8c",
+  "processes": 36,
+  "renderedConversions": 72,
+  "rawPingRoundtrips": 720,
+  "summary": [
+    {
+      "framework": "net10.0",
+      "document": "geometry-rect",
+      "launchToReadyMedianMs": 51.240144995972514,
+      "bufferedReadMedianMs": 0.8531000000000001,
+      "pingRoundtripMedianUs": 13.850978575646877,
+      "firstConversionMedianMs": 199.7472,
+      "renderRequestRoundtripMedianMs": 201.48571394383907,
+      "bufferedWriteMedianMs": 0.2199,
+      "nativeRequestedBytesPerTwoConversions": [
+        700896,
+        700896,
+        700896
+      ],
+      "nativePeakLiveRequestedBytes": [
+        350448,
+        350448,
+        350448
+      ],
+      "nativeLiveRequestedBytesAtExit": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "framework": "net10.0",
+      "document": "chart",
+      "launchToReadyMedianMs": 74.41023492719978,
+      "bufferedReadMedianMs": 1.0727,
+      "pingRoundtripMedianUs": 13.35999695584178,
+      "firstConversionMedianMs": 974.9502,
+      "renderRequestRoundtripMedianMs": 977.0696338964626,
+      "bufferedWriteMedianMs": 0.3615,
+      "nativeRequestedBytesPerTwoConversions": [
+        785472,
+        785472,
+        785472
+      ],
+      "nativePeakLiveRequestedBytes": [
+        350448,
+        350448,
+        350448
+      ],
+      "nativeLiveRequestedBytesAtExit": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "framework": "net10.0",
+      "document": "icon-sheet",
+      "launchToReadyMedianMs": 75.18847798928618,
+      "bufferedReadMedianMs": 1.0465,
+      "pingRoundtripMedianUs": 13.770535588264465,
+      "firstConversionMedianMs": 509.4245,
+      "renderRequestRoundtripMedianMs": 511.21961302123964,
+      "bufferedWriteMedianMs": 0.2752,
+      "nativeRequestedBytesPerTwoConversions": [
+        700896,
+        700896,
+        700896
+      ],
+      "nativePeakLiveRequestedBytes": [
+        350448,
+        350448,
+        350448
+      ],
+      "nativeLiveRequestedBytesAtExit": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "framework": "net11.0",
+      "document": "geometry-rect",
+      "launchToReadyMedianMs": 43.50205301307142,
+      "bufferedReadMedianMs": 0.5497,
+      "pingRoundtripMedianUs": 13.910525012761354,
+      "firstConversionMedianMs": 197.8536,
+      "renderRequestRoundtripMedianMs": 199.22842492815107,
+      "bufferedWriteMedianMs": 0.2204,
+      "nativeRequestedBytesPerTwoConversions": [
+        700896,
+        700896,
+        700896
+      ],
+      "nativePeakLiveRequestedBytes": [
+        350448,
+        350448,
+        350448
+      ],
+      "nativeLiveRequestedBytesAtExit": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "framework": "net11.0",
+      "document": "chart",
+      "launchToReadyMedianMs": 66.20435591321439,
+      "bufferedReadMedianMs": 0.7173,
+      "pingRoundtripMedianUs": 13.840966857969761,
+      "firstConversionMedianMs": 970.2031,
+      "renderRequestRoundtripMedianMs": 971.7148540075868,
+      "bufferedWriteMedianMs": 0.3618,
+      "nativeRequestedBytesPerTwoConversions": [
+        785472,
+        785472,
+        785472
+      ],
+      "nativePeakLiveRequestedBytes": [
+        350448,
+        350448,
+        350448
+      ],
+      "nativeLiveRequestedBytesAtExit": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "framework": "net11.0",
+      "document": "icon-sheet",
+      "launchToReadyMedianMs": 67.02379893977195,
+      "bufferedReadMedianMs": 0.7565000000000001,
+      "pingRoundtripMedianUs": 13.509998098015785,
+      "firstConversionMedianMs": 515.5621,
+      "renderRequestRoundtripMedianMs": 517.0170670608059,
+      "bufferedWriteMedianMs": 0.3026,
+      "nativeRequestedBytesPerTwoConversions": [
+        700896,
+        700896,
+        700896
+      ],
+      "nativePeakLiveRequestedBytes": [
+        350448,
+        350448,
+        350448
+      ],
+      "nativeLiveRequestedBytesAtExit": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "idleRecords": {
+    "idle-before.txt": [
+      "procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------",
+      " r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu",
+      " 1  0      0 592956 498452 14786496    0    0     0    78  304    0  1  0 99  0  0  0",
+      " 0  0      0 592780 498452 14786680    0    0     0     0  217  120  0  0 100  0  0  0",
+      " 0  0      0 592780 498452 14786680    0    0     0     4  215  107  0  0 100  0  0  0",
+      " 0  0      0 592780 498452 14786680    0    0     0     0  212  109  0  0 100  0  0  0",
+      " 0  0      0 592780 498452 14786680    0    0     0   712  325  175  0  0 99  1  0  0"
+    ],
+    "idle-after.txt": [
+      "procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------",
+      " r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu",
+      " 0  0      0 539288 498520 14790028    0    0     0    78  304    0  1  0 99  0  0  0",
+      " 0  0      0 547380 498520 14789984    0    0     0     0  224  106  0  0 100  0  0  0",
+      " 0  0      0 548556 498520 14789984    0    0     0    48  204   83  0  0 100  0  0  0",
+      " 0  0      0 548556 498520 14789984    0    0     0     0  139   61  0  0 100  0  0  0",
+      " 0  0      0 555668 498520 14789984    0    0     0     0  191  104  0  0 100  0  0  0"
+    ]
+  },
+  "scope": "No BenchmarkDotNet dependency or warmed-throughput claim. Fresh processes with warm OS caches; ready includes bootstrap, selected input/font I/O, validation and acquisition. Ping round trips include scheduling/protocol/flush; read/write call timers are buffered and contain no fsync. Instrumented arm has no latency result. Native counts attribute immediate-caller requests to the actual runtime compression module and track frees; they exclude allocator overhead, managed heaps and all other native modules. OS maxRSS is whole-process and is never subtracted from GC/heap estimates. Native charts include embedded-PNG decoding before output encoding.",
+  "sourceAuthorityRemaining": [
+    "W1 three external image bindings",
+    "T18 frozen Windows DejaVu",
+    "R85/R86 original provenance"
+  ],
+  "lease": {
+    "host": "jq quiet VM",
+    "canonicalLock": "/home/lokad/.shared-benchmark.lock",
+    "holderPid": 1345390,
+    "leaseHandle": 47453,
+    "campaignHandle": 74460,
+    "campaignExitCode": 0,
+    "workersRemaining": 0,
+    "retrievalVerified": true,
+    "imageAndIdleChecksRetained": true,
+    "holderExitCode": 0,
+    "terminalMarker": "THIN_NATIVE_LOCK_RELEASED",
+    "releaseObservedBeforeUtc": "2026-11-07T23:14:32Z",
+    "peerNotified": true
+  },
+  "interpretation": [
+    "The six uninstrumented document/runtime cells each retain three launches, with 20 pipe round trips per launch. These are descriptive observations on one VM, not a before/after speed comparison or broad confidence interval.",
+    "Launch-to-ready medians range from 43.502 to 75.188 ms, buffered-read medians from 0.550 to 1.073 ms, pipe roundtrip medians from 13.360 to 13.911 us, and buffered-write medians from 0.220 to 0.362 ms. First conversion includes fresh-process JIT and renderer initialization, unlike warmed throughput.",
+    "Each of two PNG encodes requests 112 bytes of compression PAL state and 350336 bytes of aligned workspace, released before the next conversion. Font-free geometry and icon-sheet total 700896 requested bytes per two conversions; the chart also decodes its embedded PNG twice, adding 84576 requested bytes. All observed peaks are 350448 bytes with zero live tracked requests at process exit.",
+    "This closes the bounded minimal-consumer stage and positively attributed compression-request observations in P6. It does not account for every native module or allocator overhead, equate RSS with native storage, or establish a general performance improvement."
+  ]
+}
