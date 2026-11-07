@@ -1,0 +1,1907 @@
+{
+  "status": "All controlled timing/allocation data and exact pixels retained. Allocation improves; chart timing contains strong within-launch warm-up drift and does not yet qualify warmed throughput.",
+  "date": "2026-11-07",
+  "qualifiedSourceCommit": "8ddfeb1310a29f779da309ba96cbb27e71caec07",
+  "precedingMeasurement": "quiet-vm-20261107.json",
+  "correction": "viewport-clip-storage.json",
+  "qualification": "viewport-clip-qualified.json",
+  "beforeSourceCommit": "247fd6da7c4c09313663a9aa7a378f7df074f5d3",
+  "installedHarnessCommit": "b0d9a22f17cb8b282bd950c329d51c2cecd74061",
+  "installedHarnessSourceSha256Lf": {
+    "benchmarks/Lokad.Svg.InstalledBenchmarks/Program.cs": "feed0c13de10e19d3fa9fb7bd7678ed8d6deeadac8e4d372d8cfda48d8028de2",
+    "benchmarks/Lokad.Svg.InstalledBenchmarks/Lokad.Svg.InstalledBenchmarks.csproj": "2adf3721092b6aad9415aaee434be23de8c90dc21dfee63567a53116ae93c6a6",
+    "benchmarks/Lokad.Svg.Benchmarks/BenchmarkCorpus.cs": "57abdbd63a7a23f96246b7873aa548742246a517f42c8c3f4628fffc71cd4045"
+  },
+  "packages": [
+    {
+      "phase": "before",
+      "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+      "sha256": "ea0981e21b1e00733fbb1813f8d4ff03aac86aef3acef7f14bb1193e55fbe498"
+    },
+    {
+      "phase": "after",
+      "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+      "sha256": "40b829c6a393b244561d85c20b4d163e688ecaa62a55916a9e8ce9a8e4d8fd27"
+    }
+  ],
+  "variants": [
+    {
+      "phase": "before",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f"
+    },
+    {
+      "phase": "after",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d"
+    },
+    {
+      "phase": "after",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f"
+    },
+    {
+      "phase": "before",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "librarySha256": "30002b9799dbfd42d001b023588021f29a3543bdf47e48ac9e4f2a030d96fab7"
+    },
+    {
+      "phase": "before",
+      "asset": "net10.0",
+      "host": "net11.0",
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f"
+    },
+    {
+      "phase": "after",
+      "asset": "net10.0",
+      "host": "net11.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d"
+    }
+  ],
+  "dataFilesSha256": {
+    "viewport-clip-quiet.csv": "dda9a08832f0ba58008d8aecbee02edbf1797b599c35e4259dccb563cd6372a0",
+    "viewport-clip-quiet-samples.json": "1c6b7ece7b1cab38b772513e097e57dd1883d76dc2d82820bc9d9a98ec5ef5b3"
+  },
+  "retrieval": {
+    "workersRemaining": 0,
+    "sha256": "2122dbc44699a80186e2ce89ac9137241a6d2e98e7b89e2790503f52ba6ac07f",
+    "bytes": 1582932
+  },
+  "environment": {
+    "host": "Ubuntu 24.04.5 LTS; Linux 7.0.0-1017-azure; x86_64",
+    "cpu": "4 AMD EPYC 9V45 virtual CPUs; Microsoft Hyper-V",
+    "sdkAndRuntimeIdentities": [
+      {
+        "sdk": "10.0.403",
+        "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz",
+        "sha512": "b7b3d8461cf98b07d2552ce9199702fa3ad010ac2671a5f8cd5136f7534e50f6855ba7bbb02b11494563f1d04156276a31cda1103b900e5eecd0d9473dc7b9c5",
+        "bytes": 240199984,
+        "metadataUrl": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json",
+        "metadataSha256": "8fa7ae2d46b1f94416d5458c7ed68b0c3cafc5efb8e34d89dea3a98bf0a38b33"
+      },
+      {
+        "sdk": "11.0.100-rc.3.26522.148",
+        "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/11.0.100-rc.3.26522.148/dotnet-sdk-11.0.100-rc.3.26522.148-linux-x64.tar.gz",
+        "sha512": "77ef603622f0632ce59fc631871c9d0ec0c7402399837c659ead5b6fc7ea898f7f64a2632ecdc8d3330e608307416a36bff90a4d10179210489676167b9b80da",
+        "bytes": 210871952,
+        "metadataUrl": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/11.0/releases.json",
+        "metadataSha256": "145bf2e9b4710079f1e3f92b48224eed27184aed5f1492f9d3d9e5770ee4ea99"
+      }
+    ],
+    "affinity": "taskset CPU 0, inherited by benchmark child processes",
+    "explicitDotnetEnvironment": {
+      "DOTNET_gcServer": "0",
+      "DOTNET_gcConcurrent": "1",
+      "DOTNET_TieredCompilation": "1",
+      "DOTNET_TieredPGO": "1"
+    },
+    "powerControl": "Guest scaling governors were not exposed; physical-host frequency/power and neighboring physical workload were not controlled.",
+    "idle": {
+      "idle-before.txt": {
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 98,
+            "waitPercent": 2,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      },
+      "idle-after.txt": {
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 95,
+            "waitPercent": 5,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      },
+      "final-idle.txt": {
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      }
+    }
+  },
+  "method": {
+    "route": "Public installed-package ConvertToPng; parse, raster and PNG included. Setup/input I/O/font acquisition excluded.",
+    "order": [
+      "before-net10.0-on-net10.0",
+      "after-net10.0-on-net10.0",
+      "after-net11.0-on-net11.0",
+      "before-net11.0-on-net11.0",
+      "before-net10.0-on-net11.0",
+      "after-net10.0-on-net11.0"
+    ],
+    "orderLimit": "Reversed before/after order for native target/host pairs; the identical net10 asset is additionally repeated on net11. Within-runtime order is not randomized; no instruction-level runtime cause is established.",
+    "launches": 3,
+    "warmupIterationsPerLaunch": 3,
+    "measurementIterationsPerLaunch": 8,
+    "targetIterationMilliseconds": 500,
+    "outliers": "DontRemove",
+    "jobs": 24,
+    "actualSamples": 576,
+    "libraryMarkersVerified": 72,
+    "memory": "BenchmarkDotNet cumulative managed allocation per operation; not peak/native memory or budget reservation.",
+    "idleScope": "Pre/post one-second samples include isolated 2% and 5% I/O-wait observations; user/system/steal stay zero in those rows. Final samples are 100% idle. All samples are retained; no claim of continuous physical-host isolation."
+  },
+  "comparisons": [
+    {
+      "asset": "net10.0",
+      "host": "net10.0",
+      "document": "chart",
+      "beforeMedianNs": 257085689.5,
+      "afterMedianNs": 247662729.5,
+      "medianReductionPercent": 3.6652993086960572,
+      "beforeAllocatedBytes": 77179072,
+      "afterAllocatedBytes": 46708336
+    },
+    {
+      "asset": "net10.0",
+      "host": "net10.0",
+      "document": "icon-sheet",
+      "beforeMedianNs": 44014063.22727273,
+      "afterMedianNs": 33819043.09761904,
+      "medianReductionPercent": 23.16309693338304,
+      "beforeAllocatedBytes": 43440588,
+      "afterAllocatedBytes": 25930115
+    },
+    {
+      "asset": "net10.0",
+      "host": "net10.0",
+      "document": "geometry-rect",
+      "beforeMedianNs": 1104387.2780172415,
+      "afterMedianNs": 1118856.551339286,
+      "medianReductionPercent": -1.3101629844941565,
+      "beforeAllocatedBytes": 234341,
+      "afterAllocatedBytes": 234341
+    },
+    {
+      "asset": "net10.0",
+      "host": "net10.0",
+      "document": "wpt-nested-viewport",
+      "beforeMedianNs": 246298.67700195312,
+      "afterMedianNs": 246439.63210122415,
+      "medianReductionPercent": -0.05722933674949804,
+      "beforeAllocatedBytes": 295046,
+      "afterAllocatedBytes": 295046
+    },
+    {
+      "asset": "net11.0",
+      "host": "net11.0",
+      "document": "chart",
+      "beforeMedianNs": 273878881,
+      "afterMedianNs": 332825735.5,
+      "medianReductionPercent": -21.522964561842215,
+      "beforeAllocatedBytes": 77179200,
+      "afterAllocatedBytes": 46708464
+    },
+    {
+      "asset": "net11.0",
+      "host": "net11.0",
+      "document": "icon-sheet",
+      "beforeMedianNs": 42218842.54166667,
+      "afterMedianNs": 32082773.8,
+      "medianReductionPercent": 24.008400352669945,
+      "beforeAllocatedBytes": 43438281,
+      "afterAllocatedBytes": 25930097
+    },
+    {
+      "asset": "net11.0",
+      "host": "net11.0",
+      "document": "geometry-rect",
+      "beforeMedianNs": 909892.8805147059,
+      "afterMedianNs": 909450.2665441176,
+      "medianReductionPercent": 0.048644624006499715,
+      "beforeAllocatedBytes": 234341,
+      "afterAllocatedBytes": 234342
+    },
+    {
+      "asset": "net11.0",
+      "host": "net11.0",
+      "document": "wpt-nested-viewport",
+      "beforeMedianNs": 235804.60784774437,
+      "afterMedianNs": 250334.56947222224,
+      "medianReductionPercent": -6.161865010653078,
+      "beforeAllocatedBytes": 295047,
+      "afterAllocatedBytes": 295047
+    },
+    {
+      "asset": "net10.0",
+      "host": "net11.0",
+      "document": "chart",
+      "beforeMedianNs": 266345805.5,
+      "afterMedianNs": 282229264,
+      "medianReductionPercent": -5.963472362623712,
+      "beforeAllocatedBytes": 77174224,
+      "afterAllocatedBytes": 46703488
+    },
+    {
+      "asset": "net10.0",
+      "host": "net11.0",
+      "document": "icon-sheet",
+      "beforeMedianNs": 43210584.38636364,
+      "afterMedianNs": 31929028.733333334,
+      "medianReductionPercent": 26.108315389019666,
+      "beforeAllocatedBytes": 43434912,
+      "afterAllocatedBytes": 25930097
+    },
+    {
+      "asset": "net10.0",
+      "host": "net11.0",
+      "document": "geometry-rect",
+      "beforeMedianNs": 891937.4160714286,
+      "afterMedianNs": 905253.4356617647,
+      "medianReductionPercent": -1.4929320544693647,
+      "beforeAllocatedBytes": 234340,
+      "afterAllocatedBytes": 234341
+    },
+    {
+      "asset": "net10.0",
+      "host": "net11.0",
+      "document": "wpt-nested-viewport",
+      "beforeMedianNs": 238349.63328598486,
+      "afterMedianNs": 235635.57060185185,
+      "medianReductionPercent": 1.1386896831834137,
+      "beforeAllocatedBytes": 295047,
+      "afterAllocatedBytes": 295046
+    }
+  ],
+  "untimedPixels": [
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "librarySha256": "30002b9799dbfd42d001b023588021f29a3543bdf47e48ac9e4f2a030d96fab7",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    },
+    {
+      "variant": "before-net10.0-on-net11.0",
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    },
+    {
+      "variant": "after-net10.0-on-net11.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    }
+  ],
+  "conclusion": "Chart allocation drops about 30.5 MB/op and icon-sheet allocation about 17.5 MB/op; 174 native comparisons are exact. Icon-sheet medians improve in each context. The pooled chart median regresses on net11, but each chart launch shows substantial early-to-late warm-up drift, so a predeclared longer-warmup comparison is required before a warmed-speed claim. The earlier 2x icon-sheet runtime observation is not reproduced for the identical asset under these controls.",
+  "lease": "Exclusive canonical shared lock retained through cleanup/retrieval; all owned workers gone and lock holder exited 0 before notifying sttropez. No global/service changes.",
+  "remaining": [
+    "Resolve chart warm-up/stationarity with a focused, predeclared longer-warmup comparison; retain this complete campaign and its apparent slowdowns.",
+    "Additional glyph/filter/gradient profiling, runtime cause attribution, native comparator scopes, cold startup and process/native memory remain open.",
+    "Frozen Windows DejaVu authority and W1/R85/R86 provenance remain separate correctness gates."
+  ],
+  "sameAssetRuntimeControls": [
+    {
+      "phase": "before",
+      "document": "chart",
+      "asset": "net10.0",
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f",
+      "net10MedianNs": 257085689.5,
+      "net11MedianNs": 266345805.5,
+      "net11OverNet10": 1.036019570043007
+    },
+    {
+      "phase": "before",
+      "document": "icon-sheet",
+      "asset": "net10.0",
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f",
+      "net10MedianNs": 44014063.22727273,
+      "net11MedianNs": 43210584.38636364,
+      "net11OverNet10": 0.9817449519086613
+    },
+    {
+      "phase": "before",
+      "document": "geometry-rect",
+      "asset": "net10.0",
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f",
+      "net10MedianNs": 1104387.2780172415,
+      "net11MedianNs": 891937.4160714286,
+      "net11OverNet10": 0.8076310129837477
+    },
+    {
+      "phase": "before",
+      "document": "wpt-nested-viewport",
+      "asset": "net10.0",
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f",
+      "net10MedianNs": 246298.67700195312,
+      "net11MedianNs": 238349.63328598486,
+      "net11OverNet10": 0.9677259991294829
+    },
+    {
+      "phase": "after",
+      "document": "chart",
+      "asset": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "net10MedianNs": 247662729.5,
+      "net11MedianNs": 282229264,
+      "net11OverNet10": 1.1395709987117784
+    },
+    {
+      "phase": "after",
+      "document": "icon-sheet",
+      "asset": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "net10MedianNs": 33819043.09761904,
+      "net11MedianNs": 31929028.733333334,
+      "net11OverNet10": 0.9441139017792384
+    },
+    {
+      "phase": "after",
+      "document": "geometry-rect",
+      "asset": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "net10MedianNs": 1118856.551339286,
+      "net11MedianNs": 905253.4356617647,
+      "net11OverNet10": 0.8090880234630298
+    },
+    {
+      "phase": "after",
+      "document": "wpt-nested-viewport",
+      "asset": "net10.0",
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+      "net10MedianNs": 246439.63210122415,
+      "net11MedianNs": 235635.57060185185,
+      "net11OverNet10": 0.9561593993334052
+    }
+  ],
+  "campaignProcesses": [
+    {
+      "phase": "before",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "jobs": 4,
+      "launches": 3,
+      "seconds": 128.84920736192726,
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f"
+    },
+    {
+      "phase": "after",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "jobs": 4,
+      "launches": 3,
+      "seconds": 127.1197803170653,
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d"
+    },
+    {
+      "phase": "after",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "jobs": 4,
+      "launches": 3,
+      "seconds": 129.10927647305652,
+      "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f"
+    },
+    {
+      "phase": "before",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "jobs": 4,
+      "launches": 3,
+      "seconds": 132.08891957101878,
+      "librarySha256": "30002b9799dbfd42d001b023588021f29a3543bdf47e48ac9e4f2a030d96fab7"
+    },
+    {
+      "phase": "before",
+      "asset": "net10.0",
+      "host": "net11.0",
+      "jobs": 4,
+      "launches": 3,
+      "seconds": 122.18036530900281,
+      "librarySha256": "d4acc895c82b8927d2450f421a974ee066d91e9201fa0464e27627469afaae5f"
+    },
+    {
+      "phase": "after",
+      "asset": "net10.0",
+      "host": "net11.0",
+      "jobs": 4,
+      "launches": 3,
+      "seconds": 119.61160837905481,
+      "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d"
+    }
+  ],
+  "localChartAttribution": {
+    "scope": "Local WSL, same net10 driver on explicit runtime11, two sealed library assets. Eight warmups then 100 conversions under tracing; attribution only, not throughput. Both native outputs exact and no lost events. Inlined work can appear under caller frames, so this does not isolate the cost of every coverage read.",
+    "profiles": [
+      {
+        "asset": "net11.0",
+        "runtime": "11.0.0-rc.3.26522.148",
+        "librarySha256": "57cf6af57aa09d5a8fdacbee16a4fa7f2d8abff0c8635a34f42bd5d8247ac48f",
+        "traceSha256": "951426d7611677bd25ae98764d5059f2de8e9a62760b94e1d823273ca3b66dae",
+        "reportedEventsLost": 0,
+        "sampleProfilerEvents": 20246,
+        "measurementWindowMillisecondsUnderTracing": 25243.898713000002,
+        "medianAllocatedBytes": 46689272.0,
+        "allocatedBytesPerConversion": [
+          46687544,
+          46706616,
+          46687464,
+          46698696,
+          46687464,
+          46698776,
+          46687544,
+          46697416,
+          46687464,
+          46698696,
+          46687464,
+          46706616,
+          46687544,
+          46698776,
+          46687464,
+          46698800,
+          46687624,
+          46697600,
+          46687624,
+          46706776,
+          46687544,
+          46698856,
+          46687704,
+          46698856,
+          46687624,
+          46698936,
+          46687544,
+          46698776,
+          46687544,
+          46706800,
+          46687624,
+          46698064,
+          46687624,
+          46698856,
+          46687624,
+          46706856,
+          46687704,
+          46698856,
+          46687480,
+          46698792,
+          46687480,
+          46690496,
+          46687480,
+          46698712,
+          46687560,
+          46706632,
+          46687480,
+          46698792,
+          46687480,
+          46698712,
+          46687480,
+          46706632,
+          46687480,
+          46698712,
+          46687560,
+          46690896,
+          46687200,
+          46698432,
+          46687200,
+          46706352,
+          46687200,
+          46698168,
+          46686856,
+          46706008,
+          46686776,
+          46698008,
+          46686776,
+          46706008,
+          46686856,
+          46697576,
+          46686776,
+          46698008,
+          46686776,
+          46698168,
+          46686856,
+          46698088,
+          46686856,
+          46706008,
+          46686856,
+          46698088,
+          46686856,
+          46698088,
+          46686856,
+          46697104,
+          46686856,
+          46698088,
+          46688048,
+          46698088,
+          46686856,
+          46698088,
+          46686856,
+          46706008,
+          46686856,
+          46698088,
+          46686936,
+          46698088,
+          46686856,
+          46695856,
+          46686856,
+          46698088
+        ],
+        "innermostSvgFrames": [
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71(value class Lokad.Svg.Parsing.SvgLinearGradient,value class Lokad.Svg.Parsing.SvgRectangle,value class Lokad.Svg.Parsing.SvgRectangle,unsigned int8,bool,unsigned int8[],value class <>c__DisplayClass11_0&)",
+            "Value": 2047
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+            "Value": 1806
+          },
+          {
+            "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+            "Value": 1764
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_65(class Lokad.Svg.Parsing.SvgPatternGeometry,unsigned int8[],unsigned int8[],value class <>c__DisplayClass11_0&)",
+            "Value": 1212
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)",
+            "Value": 1204
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+            "Value": 1107
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+            "Value": 1057
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_54(value class MappedPolygon&,bool,class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgShaderSampler&,unsigned int8[],value class <>c__DisplayClass11_0&)",
+            "Value": 966
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.<Apply>g__Axis|2_0(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,value class BoxKernel,bool,value class <>c__DisplayClass2_0&)",
+            "Value": 745
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgShaderSampler.SampleGradient(int32,int32)",
+            "Value": 736
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__ShaderSamplingContext|11_14(value class <>c__DisplayClass11_0&)",
+            "Value": 704
+          },
+          {
+            "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+            "Value": 596
+          },
+          {
+            "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphIndex(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int32,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class System.Threading.CancellationToken)",
+            "Value": 365
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgGradientRamp.SampleAbsolute(float64,float32,int32)",
+            "Value": 363
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PaintPixel(int32,value class System.Span`1<unsigned int8>,value class Lokad.Svg.Rendering.SvgAnalyticPaint,value class Lokad.Svg.Rendering.SvgAnalyticClipCoverage)",
+            "Value": 343
+          }
+        ],
+        "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+        "changedPixelsFromFrozenLinuxReference": 0
+      },
+      {
+        "asset": "net10.0",
+        "runtime": "11.0.0-rc.3.26522.148",
+        "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+        "traceSha256": "af91d4121d34caa7895f5ef7da68075e3c3be28d8cde5f9e6003e7b935d4a051",
+        "reportedEventsLost": 0,
+        "sampleProfilerEvents": 18669,
+        "measurementWindowMillisecondsUnderTracing": 23109.191939,
+        "medianAllocatedBytes": 46690216.0,
+        "allocatedBytesPerConversion": [
+          46687624,
+          46698696,
+          46687464,
+          46706696,
+          46687544,
+          46706616,
+          46687464,
+          46697792,
+          46687464,
+          46698696,
+          46687464,
+          46706616,
+          46687544,
+          46698776,
+          46687464,
+          46706696,
+          46687544,
+          46697520,
+          46687464,
+          46698696,
+          46687512,
+          46706856,
+          46687624,
+          46698856,
+          46687624,
+          46698776,
+          46687464,
+          46698776,
+          46687544,
+          46706696,
+          46687544,
+          46698120,
+          46687544,
+          46698776,
+          46687624,
+          46698856,
+          46687704,
+          46698936,
+          46687544,
+          46698936,
+          46687624,
+          46697680,
+          46687624,
+          46698856,
+          46687624,
+          46706776,
+          46687400,
+          46698712,
+          46687400,
+          46698632,
+          46687400,
+          46698632,
+          46687400,
+          46706552,
+          46687480,
+          46695584,
+          46687400,
+          46698632,
+          46687480,
+          46706712,
+          46687480,
+          46698792,
+          46687480,
+          46698792,
+          46687480,
+          46698712,
+          46687480,
+          46698712,
+          46687480,
+          46693384,
+          46687480,
+          46698712,
+          46687480,
+          46706632,
+          46687480,
+          46698712,
+          46687480,
+          46699984,
+          46687480,
+          46698712,
+          46687480,
+          46706632,
+          46687480,
+          46695344,
+          46687480,
+          46698712,
+          46687480,
+          46706632,
+          46687480,
+          46706632,
+          46687480,
+          46706632,
+          46687480,
+          46698712,
+          46687480,
+          46698712,
+          46687480,
+          46692728,
+          46687480,
+          46698712
+        ],
+        "innermostSvgFrames": [
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_71(value class Lokad.Svg.Parsing.SvgLinearGradient,value class Lokad.Svg.Parsing.SvgRectangle,value class Lokad.Svg.Parsing.SvgRectangle,unsigned int8,bool,unsigned int8[],value class <>c__DisplayClass11_0&)",
+            "Value": 2003
+          },
+          {
+            "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+            "Value": 1722
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+            "Value": 1665
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_65(class Lokad.Svg.Parsing.SvgPatternGeometry,unsigned int8[],unsigned int8[],value class <>c__DisplayClass11_0&)",
+            "Value": 1133
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)",
+            "Value": 1113
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+            "Value": 1085
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+            "Value": 1001
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_54(value class MappedPolygon&,bool,class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgShaderSampler&,unsigned int8[],value class <>c__DisplayClass11_0&)",
+            "Value": 826
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgShaderSampler.SampleGradient(int32,int32)",
+            "Value": 766
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.<Apply>g__Axis|2_0(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,value class BoxKernel,bool,value class <>c__DisplayClass2_0&)",
+            "Value": 682
+          },
+          {
+            "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+            "Value": 582
+          },
+          {
+            "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__ShaderSamplingContext|11_14(value class <>c__DisplayClass11_0&)",
+            "Value": 576
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgGradientRamp.SampleAbsolute(float64,float32,int32)",
+            "Value": 338
+          },
+          {
+            "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphIndex(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int32,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class System.Threading.CancellationToken)",
+            "Value": 319
+          },
+          {
+            "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Offset|25_24(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,float64,float64,value class OffsetImageSource,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgConstantShaderPaint>,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgShaderMatrix>,value class OffsetImagePaint,value class ImageColorTransfer,value class Lokad.Svg.Parsing.SvgPaintBounds,value class <>c__DisplayClass25_0&)",
+            "Value": 292
+          }
+        ],
+        "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+        "changedPixelsFromFrozenLinuxReference": 0
+      }
+    ]
+  }
+}

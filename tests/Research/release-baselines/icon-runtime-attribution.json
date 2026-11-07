@@ -1,0 +1,386 @@
+{
+  "status": "Same-driver, same-asset runtime attribution retained; character-map selection/validation is a candidate shared cost. No production or reference change and no local throughput claim.",
+  "qualifiedSourceCommit": "8ddfeb1310a29f779da309ba96cbb27e71caec07",
+  "qualification": "viewport-clip-qualified.json",
+  "asset": "net10.0",
+  "librarySha256": "bb5b6c5109620c91af9b6f98e39b55decf6fb18593bc4eb314ccd6746989958d",
+  "driverSha256": "b2938202084d11191239e83503f3704edc156136a31c081e0d1b258e19249b29",
+  "input": "tests/Research/benchmark-workloads/icon-sheet.svg",
+  "inputSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+  "frozenReference": "tests/Research/benchmark-workloads/references/linux/icon-sheet.png",
+  "referenceSha256": "95c9e40bbf77880f6c679bdbcb824a2ece6c13f2bc870a93e698135a3edf135b",
+  "method": {
+    "route": "The identical net10-compiled public conversion driver and sealed net10 package asset, launched with --fx-version for each runtime. Setup/font acquisition outside, eight warmups then 100 conversion/allocation deltas inside EventSource markers.",
+    "scope": "Local WSL attribution under EventPipe; CPU0, workstation/concurrent GC, tiered compilation and PGO enabled, requested 1 ms sampling. Tracing/GC queries and a nonquiet host prevent a throughput or runtime-regression claim.",
+    "identity": "CoreLib module paths in the traces confirm each selected runtime. Both outputs match the same frozen reference; traces report zero lost events.",
+    "reader": "Microsoft.Diagnostics.Tracing.TraceEvent 3.2.5; retained innermost SVG frame counts are sample occurrences, not an exact CPU-time partition."
+  },
+  "profiles": [
+    {
+      "runtime": "10.0.14",
+      "runtimeModuleIdentity": "Microsoft.NETCore.App/10.0.14/System.Private.CoreLib.dll",
+      "traceSha256": "8ba510581e586fe9bb0eff6b3a6f7d4442f36a12a46b9b16cfe7daf923458c6d",
+      "reportedEventsLost": 0,
+      "sampleProfilerEvents": 6026,
+      "measurementWindowMillisecondsUnderTracing": 7627.656126,
+      "medianAllocatedBytesPerConversion": 25928504.0,
+      "allocatedBytesPerConversion": [
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929120,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928584,
+        25928504,
+        25928584,
+        25929256,
+        25928504,
+        25928504,
+        25928584,
+        25929176,
+        25928504,
+        25928424,
+        25928584,
+        25929256,
+        25928584,
+        25928584,
+        25928584,
+        25929176,
+        25928504,
+        25928584,
+        25928584,
+        25929176,
+        25928504,
+        25928584,
+        25928584,
+        25929256,
+        25928504,
+        25928584,
+        25928584,
+        25929256,
+        25928504,
+        25928504,
+        25928584,
+        25929256,
+        25928584,
+        25928584,
+        25928584
+      ],
+      "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+      "changedPixelsFromFrozenLinuxReference": 0,
+      "innermostSvgFrames": [
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphIndex(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int32,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class System.Threading.CancellationToken)",
+          "Value": 933
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetLatinLightContours(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int16,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,float64,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 842
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 428
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.ValidateFormat4Segments(value class System.ReadOnlySpan`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeTableRange,int32,int32,int32,int32,int32,value class System.Threading.CancellationToken)",
+          "Value": 255
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgRectangleCoverage.GetAlpha(int32,int32)",
+          "Value": 180
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+          "Value": 175
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 174
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePreparedRectangle|11_83(value class Lokad.Svg.Rendering.SvgRectangleRaster,value class Lokad.Svg.Rendering.SvgAnalyticPaint,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 164
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgCpuClipCoverage.IntersectCanvas(value class Lokad.Svg.Rendering.SvgRasterClipMask,int32,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class System.Threading.CancellationToken,bool&)",
+          "Value": 135
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.Rasterize(value class Lokad.Svg.Parsing.SvgRoot,class Lokad.Svg.SvgRenderOptions,class Lokad.Svg.Rendering.RenderBudget,value class RasterSurfaceMode,value class System.Threading.CancellationToken)",
+          "Value": 124
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 109
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.WalkEdgesRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 99
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgPolygonFill.Create(value class Lokad.Svg.Rendering.SvgDevicePoint[],int32[],int32[],value class Lokad.Svg.Rendering.SvgQuadSpan[],value class Lokad.Svg.Rendering.SvgCubicSpan[],value class Lokad.Svg.SvgColor,bool,bool,value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>,class BudgetReservation,class Lokad.Svg.Rendering.RenderBudget)",
+          "Value": 99
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgOrthogonalGeometryLowering.LowerRoundedRectFill(float64,float64,float64,float64,float64,float64,value class Lokad.Svg.Parsing.SvgResolvedPaintableElement,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgViewportFrame>,class Lokad.Svg.Rendering.RenderBudget)",
+          "Value": 96
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgDefinitionParser.TryParse(class System.Xml.XmlReader,bool,bool,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class System.Collections.Generic.IReadOnlyDictionary`2<class System.String,value class Lokad.Svg.SvgColor>,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+          "Value": 79
+        }
+      ]
+    },
+    {
+      "runtime": "11.0.0-rc.3.26522.148",
+      "runtimeModuleIdentity": "Microsoft.NETCore.App/11.0.0-rc.3.26522.148/System.Private.CoreLib.dll",
+      "traceSha256": "6b4ccccb5cf03f1a477df83d5346763b7f60228b7ff943dc9b4f2fe0c1b5cd4b",
+      "reportedEventsLost": 0,
+      "sampleProfilerEvents": 6150,
+      "measurementWindowMillisecondsUnderTracing": 7991.030777,
+      "medianAllocatedBytesPerConversion": 25928424.0,
+      "allocatedBytesPerConversion": [
+        25929176,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928504,
+        25929176,
+        25928424,
+        25928424,
+        25928504,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928504,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928528,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929176,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928504,
+        25929096,
+        25928424,
+        25928424,
+        25928504,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929176,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928448,
+        25929176,
+        25928504,
+        25928584,
+        25928504,
+        25929256,
+        25928584,
+        25928584,
+        25928504
+      ],
+      "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+      "changedPixelsFromFrozenLinuxReference": 0,
+      "innermostSvgFrames": [
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetGlyphIndex(value class System.ReadOnlyMemory`1<unsigned int8>,unsigned int32,value class Lokad.Svg.Fonts.OpenTypeFontMetrics,value class System.Threading.CancellationToken)",
+          "Value": 1452
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_48(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 489
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgPolygonFill..ctor(value class Lokad.Svg.Parsing.SvgPolygonContours,value class Lokad.Svg.SvgColor,bool,bool,value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>)",
+          "Value": 260
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgRectangleCoverage.GetAlpha(int32,int32)",
+          "Value": 206
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+          "Value": 183
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePreparedRectangle|11_83(value class Lokad.Svg.Rendering.SvgRectangleRaster,value class Lokad.Svg.Rendering.SvgAnalyticPaint,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 180
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 136
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.WalkEdgesRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 132
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgAuthoredPath..ctor(value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Parsing.SvgAuthoredPathCommand>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgAuthoredStrokeStyle>,class Lokad.Svg.Parsing.SvgAuthoredPath,class Lokad.Svg.Parsing.SvgAuthoredDashSource,value class Lokad.Svg.Parsing.SvgAuthoredFillShape,class BudgetReservation)",
+          "Value": 118
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgCpuClipCoverage.IntersectCanvas(value class Lokad.Svg.Rendering.SvgRasterClipMask,int32,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class System.Threading.CancellationToken,bool&)",
+          "Value": 95
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgContourStructure.ClassifyContour(value class System.ReadOnlySpan`1<value class Lokad.Svg.Rendering.SvgDevicePoint>,int32,int32,value class System.Threading.CancellationToken)",
+          "Value": 83
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.PrepareRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 79
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.Prepare(value class Lokad.Svg.Rendering.SvgAnalyticContourPreparation&,int32,int32,int32,int32,value class Lokad.Svg.Rendering.SvgAnalyticScanWindow,value class Lokad.Svg.Rendering.SvgCpuBitmapOrigin,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgAnalyticClipContext>,value class Lokad.Svg.Rendering.SvgAnalyticPaintClip,class Lokad.Svg.Rendering.RenderBudget,bool&,value class System.Threading.CancellationToken)",
+          "Value": 77
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.RecordDirectSpan(int32,int32)",
+          "Value": 69
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGeometry|11_35(value class Lokad.Svg.Parsing.SvgGeometry,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 69
+        }
+      ]
+    }
+  ],
+  "sourceReview": {
+    "files": [
+      "src/Lokad.Svg/Fonts/OpenTypeFont.cs",
+      "src/Lokad.Svg/Fonts/SvgCanonicalText.cs",
+      "src/Lokad.Svg/Fonts/SvgCanonicalText.Shaping.cs",
+      "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs",
+      "src/Lokad.Svg/Fonts/SvgTextShaping.cs"
+    ],
+    "observation": "The already-validated-metrics GetGlyphIndex overload rescans cmap encoding records and validates the selected format-4 segment array on each scalar lookup. Canonical coverage, decomposition/composition and final shaping call the same reader repeatedly. GetGlyphIndex and format-4 validation are visible in the retained profiles.",
+    "boundary": "OpenTypeFont is a static borrowed-byte reader that explicitly retains/caches no font bytes. Its unchanged-byte contract, malformed/unused table admission and cancellation must be inspected before moving validation. Sampled GetGlyphIndex frames can include inlined work; counts alone do not prove a particular loop causes a runtime difference."
+  },
+  "nextActions": [
+    "Finish the sealed quiet before/after viewport repeat, including identical-asset runtime controls; retain negative and neutral outcomes.",
+    "Review a shared validated cmap lookup scoped to unchanged font bytes/lease, preserving isolated-reader validation and deferred malformed/unsupported admission. Avoid global caches and new private caps.",
+    "Use direct cmap format-4/12 boundaries and canonical/shaping mechanisms, representative ownership/cancellation cases and unchanged native text references; qualify a coherent shared correction only after failing-before evidence."
+  ]
+}

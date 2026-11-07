@@ -58,7 +58,12 @@ Two platform profiles and eight allocation controls retain exact unchanged targe
 the [shared viewport storage correction](viewport-clip-storage.json) retains geometry,
 border coverage and lifecycle contracts while removing about 30.5 MB per chart
 conversion. [Full milestone qualification](viewport-clip-qualified.json) preserves all originals
-and contexts; controlled quiet timing remains separate and open.
+and contexts. The [controlled repeat](viewport-clip-quiet.json) retains all allocations,
+exact pixels and chart warm-up drift; longer-warmup timing remains open.
+The [same-asset glyph profile](icon-runtime-attribution.json) retains independent
+runtime traces of an identical driver/package and exact native pixels. Repeated
+cmap selection/validation is a shared-cost lead; borrowed-byte and deferred font
+admission contracts require review before any change.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)
