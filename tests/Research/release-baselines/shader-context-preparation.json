@@ -1,5 +1,5 @@
 {
-  "status": "Draw-local sampling-context preparation implemented and affected integration qualified; full source/package/original replay and coordinated throughput remain pending.",
+  "status": "Draw-local sampling-context preparation is fully qualified across source/runtime/package/original contexts except unchanged frozen Windows DejaVu. Coordinated throughput remains separate and pending.",
   "parentCommit": "7b1a829f437cd84f625bf40096b3657d30040ff6",
   "lead": "cmap-batch-attribution.json",
   "sourceFilesLfSha256": {
@@ -474,7 +474,8 @@
   ],
   "profileScope": "Same net10 public driver on runtime 11 RC3, eight warmups and 100 calls under EventPipe. Local work overlaps, so durations/sample totals establish no throughput claim. Zero lost events, exact reference pixels and no meaningful allocation increase; context preparation is absent from the retained leading frames, which is not proof of zero execution.",
   "nextActions": [
-    "Qualify the final source on full four-context suites, deterministic packages/installed consumers and every SVGWeb original/context.",
-    "Run the coordinated sealed comparison with separately configured long-enough warmup for tiny controls; preserve every observation and native/platform boundary."
-  ]
+    "Execute the sealed coordinated comparison with separately configured elapsed warmup for the small control; retain all data and inspect measured-half drift.",
+    "Keep native allocation/live/peak, minimal-consumer startup/IPC/I/O and source-authority scopes separate."
+  ],
+  "fullQualification": "shader-context-qualified.json"
 }

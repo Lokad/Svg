@@ -90,7 +90,9 @@ retain every call and snapshot; benchmark-host startup, resident memory and warm
 throughput keep separate scopes.
 The [draw sampling preparation](shader-context-preparation.json) records the
 2,706→1 context regression, immutable draw scopes, shared per-pixel origins and
-affected shader/image/text coverage; full promotion and quiet timing are separate.
+affected shader/image/text coverage. The [full milestone](shader-context-qualified.json)
+preserves all runtime/package/original contexts with only frozen Windows DejaVu;
+coordinated quiet timing remains separate.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

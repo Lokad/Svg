@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/cmap-batch-qualified.json",
+    "evidence": "../release-baselines/shader-context-qualified.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "def8a865ccbd415cba6f41d95f485aca00aa9128",
-    "sourceIdentity": "Packaged batch-local cmap lookup correction. Fresh primary-runtime replay preserves all 204 original hashes/outcomes/diagnostics and 22 supplied, 13 static and three separate diagnostic contexts on both hosts. Full core/native/font suites and installed consumers are separately qualified on both runtimes; frozen targets and admission boundaries are unchanged.",
-    "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
+    "sourceBaseline": "16466c3f6ee8716063ab879d655a0bead5c44444",
+    "sourceIdentity": "Packaged draw-local shader sampling correction. Fresh primary-runtime replay preserves all 204 original hashes/outcomes/diagnostics and 22 supplied, 13 static and three separate diagnostic contexts on both hosts. Full core/native/font suites and installed consumers are separately qualified on both runtimes; frozen targets and admission boundaries are unchanged.",
+    "librarySha256": "59c1f3dbefeefb0bc084c6bd85096a14d264478e1d664b3daf32c4e23ee11dcb",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
