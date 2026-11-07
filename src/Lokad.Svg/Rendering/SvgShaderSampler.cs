@@ -66,11 +66,12 @@ internal struct SvgShaderSampler
     private SvgAnalyticPaint SampleGradient(int x, int y)
     {
         if (_kind == Kind.Constant) return SvgAnalyticPaint.Constant(_constant.AsConstant(_alpha));
+        SvgCpuBitmapOrigin origin = _context.Origin(x, y);
         if (_kind == Kind.Linear)
         {
             SvgLinearGradient definition = _linear;
             double position;
-            if (!_coordinates.TryLinear(x, y, _context.Origin(x, y), out position))
+            if (!_coordinates.TryLinear(x, y, origin, out position))
             {
                 SvgDevicePoint point = _context.SourcePoint(x, y);
                 if (definition.SourcePaint is { Data.IsMapped: true } source) position = source.Position(point.X, point.Y);
@@ -84,12 +85,12 @@ internal struct SvgShaderSampler
                 else position = (((point.X - _box.X) / _box.Width - definition.X1) * _directionX
                     + ((point.Y - _box.Y) / _box.Height - definition.Y1) * _directionY) / _denominator;
             }
-            return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(position, definition.Spread), _alpha, _context.Dither(x, y)), _opaque);
+            return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(position, definition.Spread), _alpha, SvgShaderSamplingContext.Dither(x, y, origin)), _opaque);
         }
         SvgRadialGradient circle = _radial;
         double radialPosition;
         if (circle.Stops.Length == 1 && !_coordinates.MasksRadialSamples) radialPosition = 0;
-        else if (!_coordinates.TryRadial(x, y, _context.Origin(x, y), out SvgRadialShaderSample sample))
+        else if (!_coordinates.TryRadial(x, y, origin, out SvgRadialShaderSample sample))
         {
             SvgDevicePoint point = _context.SourcePoint(x, y);
             double px = circle.IsUserSpace ? point.X : (point.X - _box.X) / _box.Width;
@@ -111,7 +112,7 @@ internal struct SvgShaderSampler
             if (!sample.IsVisible) return SvgAnalyticPaint.Shader(default);
             radialPosition = sample.Position;
         }
-        return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(radialPosition, circle.Spread), _alpha, _context.Dither(x, y)), _opaque);
+        return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(radialPosition, circle.Spread), _alpha, SvgShaderSamplingContext.Dither(x, y, origin)), _opaque);
     }
 
 }

@@ -4,7 +4,9 @@ namespace Lokad.Svg.Rendering;
 
 /// <summary>Borrows one draw's native bitmap origins and source placement for shader sampling.</summary>
 /// <remarks>Immutable and allocation-free. Clip metadata belongs to the caller's raster scope;
-/// the context must not outlive it. Callers observe cancellation.</remarks>
+/// the context must not outlive it. Prepare once after entering each draw scope; bitmap origins
+/// remain per-pixel queries because clipping and grid cells can change across the draw.
+/// Callers observe cancellation.</remarks>
 internal readonly record struct SvgShaderSamplingContext(SvgCpuRasterGrid Grid, SvgAnalyticClipBounds Layer,
     SvgCpuClipCoverage? LayerClip, SvgPaintBounds? NativeSourceBounds, SvgCpuBitmapOrigin? SourceImageOrigin,
     SvgAffineTransform SourceInverse, double ScaleX, double ScaleY, double OffsetX, double OffsetY)
@@ -32,8 +34,11 @@ internal readonly record struct SvgShaderSamplingContext(SvgCpuRasterGrid Grid, 
     }
 
     internal int Dither(int x, int y)
+        => Dither(x, y, Origin(x, y));
+
+    /// <summary>Uses the same native bitmap origin already selected for this pixel's coordinate stages.</summary>
+    internal static int Dither(int x, int y, SvgCpuBitmapOrigin origin)
     {
-        SvgCpuBitmapOrigin origin = Origin(x, y);
         int localX = x - origin.X, localY = y - origin.Y, mixedY = localY ^ localX;
         return ((mixedY & 1) << 5) | ((localX & 1) << 4)
             | ((mixedY & 2) << 2) | ((localX & 2) << 1)

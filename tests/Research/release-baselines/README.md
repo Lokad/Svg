@@ -88,6 +88,9 @@ The [quiet native stages](native-warm.json) retain all fixed samples and aggrega
 warmup extensions, alongside their browser differences. The [fresh-process observations](installed-process-quiet.json)
 retain every call and snapshot; benchmark-host startup, resident memory and warmed
 throughput keep separate scopes.
+The [draw sampling preparation](shader-context-preparation.json) records the
+2,706→1 context regression, immutable draw scopes, shared per-pixel origins and
+affected shader/image/text coverage; full promotion and quiet timing are separate.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

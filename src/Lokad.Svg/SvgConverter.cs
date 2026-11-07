@@ -2369,6 +2369,7 @@ public static partial class SvgConverter
 
         SvgShaderSamplingContext ShaderSamplingContext()
         {
+            SvgShaderSamplingProbe.Prepared();
             // An isolated child owns its shader bitmap. The enclosing filter's
             // padded image bounds seed only draws directly into that source.
             SvgCpuBitmapOrigin? source = isolatedBitmapScope?.NativeOrigin ?? (isolatedBitmapScope is null && surfaceMode == RasterSurfaceMode.PremultipliedFilter
@@ -2403,14 +2404,8 @@ public static partial class SvgConverter
             => sourceFrame is { ContentClip: {} content, RasterClip: {} raster } && content == bounds
                 ? raster : bounds;
 
-        SvgCpuBitmapOrigin ShaderBitmapOrigin(int x, int y)
-            => ShaderSamplingContext().Origin(x, y);
-
         SvgDevicePoint SceneShaderPoint(double x, double y)
             => sourcePlacement == SvgAffineTransform.Identity ? new(x, y) : sourceInverse.Apply(x, y);
-
-        int GradientDither(int x, int y)
-            => ShaderSamplingContext().Dither(x, y);
 
         // Painted output and stored image bounds share graph propagation, with distinct rounding domains.
         SvgPaintBounds FilterResultBounds(SvgFilterBinding binding, SvgFilterResource filter, SvgFilterBoundsKind kind)
@@ -3630,6 +3625,7 @@ public static partial class SvgConverter
                 sourceHeight = sampleHeight = level.Height;
                 sampleBounds = new(0, 0, level.Width, level.Height);
             }
+            SvgShaderSamplingContext imageSampling = capturedImageOrigin is null ? ShaderSamplingContext() : default;
             for (int y = raster.Top; y < raster.Bottom; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -3644,7 +3640,7 @@ public static partial class SvgConverter
                         ? coverageMask.Pixels[((y - raster.Top) * coverageMask.Width + x - raster.Left) * 4 + 3]
                         : raster.GetAlpha(x, y), x, y);
                     if (coverage == 0) { seeded = false; continue; }
-                    SvgCpuBitmapOrigin origin = capturedImageOrigin ?? ShaderBitmapOrigin(x, y);
+                    SvgCpuBitmapOrigin origin = capturedImageOrigin ?? imageSampling.Origin(x, y);
                     if (authoredPath is not null || surfaceMode == RasterSurfaceMode.PremultipliedPattern)
                     {
                         if (!coordinates.TryGetMatrix(origin, out SvgShaderMatrix affineInverse))
@@ -4671,6 +4667,8 @@ public static partial class SvgConverter
         void StampPatternFill(SvgPatternGeometry pattern, byte[] tile, byte[] destination)
         {
             SvgShaderCoordinates imageCoordinates = pattern.NativeImageMap is {} imageMap ? SvgShaderCoordinates.CreateImage(imageMap, pattern.NativeImageLocal ?? throw new InvalidOperationException("Image sampling requires its local matrix.")) : default;
+            SvgShaderSamplingContext sampling = pattern.NativeImageMap is null ? default : ShaderSamplingContext();
+            float alpha = ShaderAlpha(MultiplyAlpha(pattern.Opacity, 255));
             SvgRectangleRaster raster = PrepareRectangle(pattern.Fill);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             for (int y = startY; y < endY; y++)
@@ -4680,7 +4678,7 @@ public static partial class SvgConverter
             {
                 int offset = (y * outputWidth + x) * 4;
                 if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                SamplePattern(pattern, tile, x, y, ref imageCoordinates).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
+                SamplePattern(pattern, tile, x, y, ref imageCoordinates, in sampling, alpha).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
             }
             }
         }
@@ -4691,14 +4689,12 @@ public static partial class SvgConverter
         // the existing single-tap route; fractional phase uses four bounded native
         // bilinear contributions before the independent shader alpha is applied.
         // Contributions keep the native row order (NX/NY, PX/NY, NX/PY, PX/PY).
-        SvgShaderPaint SamplePattern(SvgPatternGeometry pattern, byte[] tile, int x, int y, ref SvgShaderCoordinates imageCoordinates)
-            => SamplePatternWithOpacity(pattern, tile, x, y, ref imageCoordinates, 255);
-
-        SvgShaderPaint SamplePatternWithOpacity(SvgPatternGeometry pattern, byte[] tile, int x, int y, ref SvgShaderCoordinates imageCoordinates, byte opacity)
+        static SvgShaderPaint SamplePattern(SvgPatternGeometry pattern, byte[] tile, int x, int y, ref SvgShaderCoordinates imageCoordinates,
+            in SvgShaderSamplingContext sampling, float alpha)
         {
             SvgPatternSample sample = SvgPatternSample.Prepare(pattern, x, y,
-                pattern.NativeImageMap is null ? default : ShaderBitmapOrigin(x, y), ref imageCoordinates);
-            return sample.Sample(tile, ShaderAlpha(MultiplyAlpha(pattern.Opacity, opacity)));
+                pattern.NativeImageMap is null ? default : sampling.Origin(x, y), ref imageCoordinates);
+            return sample.Sample(tile, alpha);
         }
 
         void RasterizePatternStroke(SvgPatternGeometry pattern, SvgStroke stroke, byte[] destination)
@@ -4749,7 +4745,9 @@ public static partial class SvgConverter
             if (!paint || endX <= startX || endY <= startY || (denominator == 0 && definition.Stops.Length != 1)) return;
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
 
-            bool opaque = ramp.IsOpaque && ShaderAlpha(opacity) == 1;
+            SvgShaderSamplingContext sampling = ShaderSamplingContext();
+            float alpha = ShaderAlpha(opacity);
+            bool opaque = ramp.IsOpaque && alpha == 1;
             if (paint && (denominator != 0 || definition.Stops.Length == 1))
             for (int y = startY; y < endY; y++)
             {
@@ -4762,7 +4760,8 @@ public static partial class SvgConverter
                 deviceX = sourcePoint.X;
                 double sourceY = sourcePoint.Y;
                 double position;
-                if (!nativeCoordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
+                SvgCpuBitmapOrigin origin = sampling.Origin(x, y);
+                if (!nativeCoordinates.TryLinear(x, y, origin, out position))
                 {
                     if (definition.SourcePaint is { Data.IsMapped: true } sourcePaint) position = sourcePaint.Position(deviceX, sourceY);
                     else if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -4783,7 +4782,7 @@ public static partial class SvgConverter
                 }
                 position = SvgGradientRamp.Spread(position, definition.Spread);
                 int offset = (y * outputWidth + x) * 4;
-                ramp.SampleAbsolute(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y), opaque);
+                ramp.SampleAbsolute(position, alpha, SvgShaderSamplingContext.Dither(x, y, origin)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y), opaque);
             }
             }
 
@@ -4819,7 +4818,9 @@ public static partial class SvgConverter
             if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
             if (!paint || endX <= startX || endY <= startY) return;
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
-            bool opaque = ramp.IsOpaque && ShaderAlpha(opacity) == 1 && SvgShaderCoordinates.UsesRadialFactory(definition);
+            SvgShaderSamplingContext sampling = ShaderSamplingContext();
+            float alpha = ShaderAlpha(opacity);
+            bool opaque = ramp.IsOpaque && alpha == 1 && SvgShaderCoordinates.UsesRadialFactory(definition);
 
             if (paint)
             for (int y = startY; y < endY; y++)
@@ -4876,9 +4877,10 @@ public static partial class SvgConverter
                 double rayX = sampleX - focalX;
                 double rayY = sampleY - focalY;
                 double position;
+                SvgCpuBitmapOrigin origin = sampling.Origin(x, y);
                 if (definition.Stops.Length == 1 && !nativeCoordinates.MasksRadialSamples) position = 0;
                 else
-                if (!nativeCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out SvgRadialShaderSample sample))
+                if (!nativeCoordinates.TryRadial(x, y, origin, out SvgRadialShaderSample sample))
                     position = SvgShaderCoordinates.EvaluateRadial(new(rayX, rayY), new(offsetX, offsetY), radius, focalRadius);
                 else
                 {
@@ -4887,7 +4889,7 @@ public static partial class SvgConverter
                 }
                 position = SvgGradientRamp.Spread(position, definition.Spread);
                 int offset = (y * outputWidth + x) * 4;
-                ramp.SampleAbsolute(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y), opaque);
+                ramp.SampleAbsolute(position, alpha, SvgShaderSamplingContext.Dither(x, y, origin)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y), opaque);
             }
             }
         }
@@ -4975,7 +4977,11 @@ public static partial class SvgConverter
             using SvgGradientRamp glyphRamp = constantGlyphFactory ? default : glyphLinear is {} linearRamp
                 ? PrepareGradientRamp(linearRamp.Stops, linearRamp.Spread)
                 : glyphRadial is {} radialRamp ? PrepareGradientRamp(radialRamp.Stops, radialRamp.Spread) : default;
-            bool glyphOpaque = glyphRamp.IsOpaque && ShaderAlpha(glyph.Color.Alpha) == 1
+            SvgShaderSamplingContext glyphSampling = !constantGlyphFactory && (glyphLinear is not null || glyphRadial is not null || glyphPattern?.NativeImageMap is not null)
+                ? ShaderSamplingContext() : default;
+            float glyphAlpha = glyph.Shader is null ? 0 : ShaderAlpha(glyph.Color.Alpha);
+            float glyphPatternAlpha = glyphPattern is null ? 0 : ShaderAlpha(MultiplyAlpha(glyphPattern.Opacity, glyph.Color.Alpha));
+            bool glyphOpaque = glyphRamp.IsOpaque && glyphAlpha == 1
                 && (glyphLinear is not null || glyphRadial is {} radialFactory && SvgShaderCoordinates.UsesRadialFactory(radialFactory));
             if (glyphSource is SvgGlyphRasterSource source && (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()))
             {
@@ -5273,21 +5279,23 @@ public static partial class SvgConverter
 
             SvgAnalyticPaint GlyphPaintAt(int x, int y)
             {
-                if (constantGlyphFactory) return SvgAnalyticPaint.Constant(glyphFactoryColor.AsConstant(ShaderAlpha(glyph.Color.Alpha)));
+                if (constantGlyphFactory) return SvgAnalyticPaint.Constant(glyphFactoryColor.AsConstant(glyphAlpha));
                 if (glyphLinear is {} ink)
                 {
+                    SvgCpuBitmapOrigin origin = glyphSampling.Origin(x, y);
                     double position;
                     if (ink.X1 == ink.X2 && ink.Y1 == ink.Y2) position = 1;
-                    else if (!glyphCoordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
+                    else if (!glyphCoordinates.TryLinear(x, y, origin, out position))
                         position = ink.SourcePaint?.Position((x + .5 - device.E) / device.A, (y + .5 - device.F) / device.D) ?? 1;
-                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, ink.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)), glyphOpaque);
+                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, ink.Spread), glyphAlpha, SvgShaderSamplingContext.Dither(x, y, origin)), glyphOpaque);
                 }
                 if (glyphRadial is {} radial)
                 {
+                    SvgCpuBitmapOrigin origin = glyphSampling.Origin(x, y);
                     double position;
                     if (radial.Stops.Length == 1 && !glyphCoordinates.MasksRadialSamples) position = 0;
                     else if (radial.Radius == 0) position = 1;
-                    else if (!glyphCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out SvgRadialShaderSample sample))
+                    else if (!glyphCoordinates.TryRadial(x, y, origin, out SvgRadialShaderSample sample))
                     {
                         double sampleX = (x + .5 - device.E) / device.A;
                         double sampleY = (y + .5 - device.F) / device.D;
@@ -5308,10 +5316,10 @@ public static partial class SvgConverter
                         if (!sample.IsVisible) return SvgAnalyticPaint.Shader(default);
                         position = sample.Position;
                     }
-                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, radial.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)), glyphOpaque);
+                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, radial.Spread), glyphAlpha, SvgShaderSamplingContext.Dither(x, y, origin)), glyphOpaque);
                 }
                 return glyphPattern is null ? ResolveSolidPaint(glyph.Color)
-                    : SvgAnalyticPaint.Shader(SamplePatternWithOpacity(glyphPattern, glyphTile.Surface.Pixels, x, y, ref glyphCoordinates, glyph.Color.Alpha));
+                    : SvgAnalyticPaint.Shader(SamplePattern(glyphPattern, glyphTile.Surface.Pixels, x, y, ref glyphCoordinates, in glyphSampling, glyphPatternAlpha));
 
             }
 

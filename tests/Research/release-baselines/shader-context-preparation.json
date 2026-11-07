@@ -1,0 +1,480 @@
+{
+  "status": "Draw-local sampling-context preparation implemented and affected integration qualified; full source/package/original replay and coordinated throughput remain pending.",
+  "parentCommit": "7b1a829f437cd84f625bf40096b3657d30040ff6",
+  "lead": "cmap-batch-attribution.json",
+  "sourceFilesLfSha256": {
+    "src/Lokad.Svg/SvgConverter.cs": "c255de9ac0ed631db5782a5ad51cf9fa6aec248f4dce510a096d1c7f82824ec4",
+    "src/Lokad.Svg/Rendering/SvgShaderSampler.cs": "3aed4e943dea3e30eef2f1e128fc7e076b1823ffbf2626727097f92e4db9e101",
+    "src/Lokad.Svg/Rendering/SvgShaderSamplingContext.cs": "a489f3e700961e31a8bcbb4984069f76ef9e4db4c249d28bea3dd25f8fab11bf",
+    "src/Lokad.Svg/Rendering/SvgShaderSamplingProbe.cs": "339e79d41d880e9a5b688f34b37ecaa7ad450fea341b28ed50b19cad044ceda2",
+    "tests/Lokad.Svg.Tests/SvgShaderSamplingContextLifetimeTests.cs": "7acc04433c7b2f952e32702266755ab0973cb9dea03bf3e8d6f8ae9c9795868b",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.ShaderSamplingContext.cs": "85dd5a13f8414b4252b04c517b0eb2edde1c15fc693538857df00fe86e3c0f34"
+  },
+  "correction": "Prepare immutable shader scope/alpha once within image, texture rectangle, linear/radial rectangle and glyph draws. Existing polygon samplers already capture their draw context. Gradient coordinates and dithering share one per-pixel origin; all sampling equations, float operations, clip/source/grid-origin rules and cancellation checkpoints remain unchanged. No global cache or new storage owner.",
+  "callerReview": [
+    "Embedded image: use captured source origin directly when present; otherwise borrow current draw context. Mipmap preparation and coverage admission are unchanged.",
+    "Texture rectangle: freeze current alpha and context before traversal. Static pattern helper receives explicit immutable context/alpha; original pixel sampling order remains.",
+    "Linear/radial rectangle: freeze after stop/ramp preparation and early admission checks; each pixel queries its own grid/clip origin and keeps all coordinate fallback arithmetic.",
+    "Glyph: borrow current context only for nonconstant shaders needing coordinates; solid and constant factories keep no sampling context. Pixel callbacks do not change frame/layer/map/paint scope. Alpha keeps the original pattern/color multiplication.",
+    "Polygon/hairline samplers: retain existing per-draw descriptor; only share each sample origin between coordinate and dither stages. Clip-bound lookup is read-only."
+  ],
+  "regressions": [
+    {
+      "case": "Lokad.Svg.Tests.SvgShaderSamplingContextLifetimeTests.Rectangle_shader_prepares_one_context_for_its_pixel_traversal(gradient: \"radialGradient\")",
+      "expected": 1,
+      "beforeActual": 2706,
+      "afterActual": 1
+    },
+    {
+      "case": "Lokad.Svg.Tests.SvgShaderSamplingContextLifetimeTests.Rectangle_shader_prepares_one_context_for_its_pixel_traversal(gradient: \"linearGradient\")",
+      "expected": 1,
+      "beforeActual": 2706,
+      "afterActual": 1
+    }
+  ],
+  "focused": {
+    "shaderCases": 2430,
+    "earlierFontCases": 13573,
+    "newLifetimeCases": 7
+  },
+  "fixtureCorrection": "The new glyph counter fixture uses a 1000-unit font size and user-space gradients to expose its tiny synthetic outline. Earlier empty-fixture attempts remain private diagnostic logs; no frozen image or expected rendering value changed.",
+  "affectedIntegration": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "0d3b16c62cb3c24f48ca25afb409faf15edb0056e4901c3a21cc36ba7b7b7a8b",
+      "testAssemblySha256": "2b167f04fa460d8edd9e541572619ea317a1b89b02cae66e3e12a01275e916cd",
+      "selection": "FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgFont|FullyQualifiedName~Text|FullyQualifiedName~Gradient|FullyQualifiedName~Shader|FullyQualifiedName~Pattern|FullyQualifiedName~Image|FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~Mask|FullyQualifiedName~Ownership|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 40.479929300025105,
+      "counters": {
+        "executed": "33097",
+        "passed": "33097",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "0d3b16c62cb3c24f48ca25afb409faf15edb0056e4901c3a21cc36ba7b7b7a8b",
+      "testAssemblySha256": "2b167f04fa460d8edd9e541572619ea317a1b89b02cae66e3e12a01275e916cd",
+      "selection": "FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgFont|FullyQualifiedName~Text|FullyQualifiedName~Gradient|FullyQualifiedName~Shader|FullyQualifiedName~Pattern|FullyQualifiedName~Image|FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~Mask|FullyQualifiedName~Ownership|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 46.661601500120014,
+      "counters": {
+        "executed": "33097",
+        "passed": "33097",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "6b23195ade787a531ec53ca6e0cc6b028de3b67da09c8e061da6833bd5a50a77",
+      "testAssemblySha256": "cf203621c7a659dbb84996cf44f57b59ee0f6a9531c3959bbf22f7def9a16024",
+      "selection": "FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgFont|FullyQualifiedName~Text|FullyQualifiedName~Gradient|FullyQualifiedName~Shader|FullyQualifiedName~Pattern|FullyQualifiedName~Image|FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~Mask|FullyQualifiedName~Ownership|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 43.06119769997895,
+      "counters": {
+        "executed": "33097",
+        "passed": "33097",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "6b23195ade787a531ec53ca6e0cc6b028de3b67da09c8e061da6833bd5a50a77",
+      "testAssemblySha256": "cf203621c7a659dbb84996cf44f57b59ee0f6a9531c3959bbf22f7def9a16024",
+      "selection": "FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgFont|FullyQualifiedName~Text|FullyQualifiedName~Gradient|FullyQualifiedName~Shader|FullyQualifiedName~Pattern|FullyQualifiedName~Image|FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~Mask|FullyQualifiedName~Ownership|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 43.678867999929935,
+      "counters": {
+        "executed": "33097",
+        "passed": "33097",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "0d3b16c62cb3c24f48ca25afb409faf15edb0056e4901c3a21cc36ba7b7b7a8b",
+      "testAssemblySha256": "adbe153a894f5f62ee503b1322c16f98822c749b2a323356d083d5894c56f263",
+      "selection": "FullyQualifiedName~SvgUpstreamDocumentTests|FullyQualifiedName~Gradient|FullyQualifiedName~Shader|FullyQualifiedName~Pattern|FullyQualifiedName~Image|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgSuppliedFont|FullyQualifiedName~SvgWindowsGlyph|FullyQualifiedName~Viewport",
+      "exitCode": 0,
+      "seconds": 230.87323739985004,
+      "counters": {
+        "executed": "64943",
+        "passed": "64943",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "0d3b16c62cb3c24f48ca25afb409faf15edb0056e4901c3a21cc36ba7b7b7a8b",
+      "testAssemblySha256": "adbe153a894f5f62ee503b1322c16f98822c749b2a323356d083d5894c56f263",
+      "selection": "FullyQualifiedName~SvgUpstreamDocumentTests|FullyQualifiedName~Gradient|FullyQualifiedName~Shader|FullyQualifiedName~Pattern|FullyQualifiedName~Image|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgSuppliedFont|FullyQualifiedName~SvgWindowsGlyph|FullyQualifiedName~Viewport",
+      "exitCode": 0,
+      "seconds": 226.36964200017974,
+      "counters": {
+        "executed": "64943",
+        "passed": "64943",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "localProfiles": [
+    {
+      "document": "chart",
+      "traceSha256": "9223ab4aa7080cf29397f0f3efb07932357620d499964b3126b6dc65cff54025",
+      "reportedEventsLost": 0,
+      "runtimeModules": [
+        "/mnt/d/code/svg/artifacts/tools/dotnet/linux-x64/shared/microsoft.netcore.app/11.0.0-rc.3.26522.148/system.private.corelib.dll",
+        "/mnt/d/code/svg/artifacts/tools/dotnet/linux-x64/shared/Microsoft.NETCore.App/11.0.0-rc.3.26522.148/System.Private.CoreLib.dll"
+      ],
+      "sampleProfilerEvents": 16542,
+      "driverSha256": "b2938202084d11191239e83503f3704edc156136a31c081e0d1b258e19249b29",
+      "librarySha256": "6b23195ade787a531ec53ca6e0cc6b028de3b67da09c8e061da6833bd5a50a77",
+      "beforeMedianAllocationBytes": 46691824.0,
+      "afterMedianAllocationBytes": 46688988.0,
+      "allocatedBytesPerConversion": [
+        46687544,
+        46706616,
+        46687464,
+        46698696,
+        46687464,
+        46698696,
+        46687544,
+        46690272,
+        46687464,
+        46698696,
+        46687464,
+        46698696,
+        46687544,
+        46706616,
+        46687464,
+        46698696,
+        46687544,
+        46697520,
+        46687464,
+        46698696,
+        46687464,
+        46698696,
+        46687464,
+        46698776,
+        46687544,
+        46698776,
+        46687488,
+        46698856,
+        46687624,
+        46706776,
+        46687624,
+        46695808,
+        46687464,
+        46698856,
+        46687624,
+        46706856,
+        46687704,
+        46698856,
+        46687624,
+        46706856,
+        46687704,
+        46697680,
+        46687624,
+        46698856,
+        46687624,
+        46706776,
+        46687624,
+        46706856,
+        46687624,
+        46706776,
+        46687568,
+        46698856,
+        46687544,
+        46706696,
+        46687544,
+        46697496,
+        46687544,
+        46698776,
+        46687544,
+        46698776,
+        46687544,
+        46698856,
+        46687544,
+        46706696,
+        46687544,
+        46698856,
+        46687544,
+        46706616,
+        46687544,
+        46695192,
+        46687544,
+        46698776,
+        46687544,
+        46698776,
+        46687544,
+        46698712,
+        46687400,
+        46706632,
+        46687400,
+        46698632,
+        46687480,
+        46706552,
+        46687400,
+        46695584,
+        46687400,
+        46698632,
+        46687400,
+        46698632,
+        46687400,
+        46698712,
+        46687480,
+        46698448,
+        46687136,
+        46698368,
+        46687136,
+        46698368,
+        46687136,
+        46697568,
+        46687136,
+        46698368
+      ],
+      "changedPixelsFromFrozenLinuxReference": 0,
+      "innermostSvgFrames": [
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_46(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 1821
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.<Apply>g__Axis|2_0(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,value class BoxKernel,bool,value class <>c__DisplayClass2_0&)",
+          "Value": 1431
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RenderFilter|11_6(int32,value class Lokad.Svg.Parsing.SvgDrawCommand,unsigned int8[],value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgCpuRasterContext>,value class <>c__DisplayClass11_0&)",
+          "Value": 1205
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.Apply(value class System.ReadOnlySpan`1<unsigned int8>,int32,int32,value class Lokad.Svg.Parsing.SvgFilterResource,value class Lokad.Svg.Rendering.SvgFilterDeviceMap,value class Lokad.Svg.Parsing.SvgPaintBounds,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 1075
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeGradientArea|11_68(value class Lokad.Svg.Parsing.SvgLinearGradient,value class Lokad.Svg.Parsing.SvgRectangle,value class Lokad.Svg.Parsing.SvgRectangle,unsigned int8,bool,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 934
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizeShaderPolygon|11_52(value class MappedPolygon&,bool,class Lokad.Svg.Parsing.SvgAuthoredPath,value class Lokad.Svg.Rendering.SvgShaderSampler&,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 849
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__StampPatternFill|11_63(class Lokad.Svg.Parsing.SvgPatternGeometry,unsigned int8[],unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 692
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgShaderSampler.SampleGradient(int32,int32)",
+          "Value": 654
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+          "Value": 579
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGradientRamp.SampleAbsolute(float64,float32,int32)",
+          "Value": 501
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgGaussianBlur.Apply(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,int32,int32,value class Lokad.Svg.Rendering.SvgGaussianDeviation,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 498
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgFilterPlayback.<Apply>g__Offset|25_24(value class System.ReadOnlySpan`1<unsigned int8>,value class System.Span`1<unsigned int8>,float64,float64,value class OffsetImageSource,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgConstantShaderPaint>,value class System.Nullable`1<value class Lokad.Svg.Rendering.SvgShaderMatrix>,value class OffsetImagePaint,value class ImageColorTransfer,value class Lokad.Svg.Parsing.SvgPaintBounds,value class <>c__DisplayClass25_0&)",
+          "Value": 357
+        }
+      ]
+    },
+    {
+      "document": "icon-sheet",
+      "traceSha256": "e91b679d6445b4afeb06d2e8cd7a814d397e5844dcfe3dab278f01deebb03bdd",
+      "reportedEventsLost": 0,
+      "runtimeModules": [
+        "/mnt/d/code/svg/artifacts/tools/dotnet/linux-x64/shared/microsoft.netcore.app/11.0.0-rc.3.26522.148/system.private.corelib.dll",
+        "/mnt/d/code/svg/artifacts/tools/dotnet/linux-x64/shared/Microsoft.NETCore.App/11.0.0-rc.3.26522.148/System.Private.CoreLib.dll"
+      ],
+      "sampleProfilerEvents": 5803,
+      "driverSha256": "b2938202084d11191239e83503f3704edc156136a31c081e0d1b258e19249b29",
+      "librarySha256": "6b23195ade787a531ec53ca6e0cc6b028de3b67da09c8e061da6833bd5a50a77",
+      "beforeMedianAllocationBytes": 25928424.0,
+      "afterMedianAllocationBytes": 25928424.0,
+      "allocatedBytesPerConversion": [
+        25929176,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928504,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928504,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929176,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928504,
+        25929096,
+        25928424,
+        25928424,
+        25928424,
+        25929096,
+        25928504,
+        25928424,
+        25928424,
+        25929096,
+        25928424,
+        25928424,
+        25928424
+      ],
+      "changedPixelsFromFrozenLinuxReference": 0,
+      "innermostSvgFrames": [
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePolygonFill|11_46(class Lokad.Svg.Parsing.SvgPolygonFill,class Lokad.Svg.Parsing.SvgAuthoredPath,unsigned int8[],value class System.ReadOnlySpan`1<unsigned int8>,value class PathCoordinateSpace,value class <>c__DisplayClass11_0&)",
+          "Value": 437
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgAuthoredPath..ctor(value class Lokad.Svg.Parsing.OwnedParserArray`1<value class Lokad.Svg.Parsing.SvgAuthoredPathCommand>,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgAuthoredStrokeStyle>,class Lokad.Svg.Parsing.SvgAuthoredPath,class Lokad.Svg.Parsing.SvgAuthoredDashSource,value class Lokad.Svg.Parsing.SvgAuthoredFillShape,class BudgetReservation)",
+          "Value": 344
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont.GetSimpleGlyphPoints(value class System.ReadOnlyMemory`1<unsigned int8>,value class Lokad.Svg.Fonts.OpenTypeSimpleGlyphStructure,class Lokad.Svg.Rendering.RenderBudget,value class System.Threading.CancellationToken)",
+          "Value": 236
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.CompressInto(int32,int32,value class System.ReadOnlySpan`1<unsigned int8>,class Lokad.Svg.Rendering.RenderBudget,class PngCompressionOutput,value class System.Threading.CancellationToken)",
+          "Value": 222
+        },
+        {
+          "Key": "Lokad.Svg.SvgConverter.<Rasterize>g__RasterizePreparedRectangle|11_80(value class Lokad.Svg.Rendering.SvgRectangleRaster,value class Lokad.Svg.Rendering.SvgAnalyticPaint,unsigned int8[],value class <>c__DisplayClass11_0&)",
+          "Value": 206
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgCpuClipCoverage.IntersectCanvas(value class Lokad.Svg.Rendering.SvgRasterClipMask,int32,value class Lokad.Svg.Rendering.SvgAnalyticClipBounds,value class System.Threading.CancellationToken,bool&)",
+          "Value": 167
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgPolygonFill..ctor(value class Lokad.Svg.Parsing.SvgPolygonContours,value class Lokad.Svg.SvgColor,bool,bool,value class Lokad.Svg.Parsing.SvgPolygonMapping,value class System.Nullable`1<value class Lokad.Svg.Parsing.SvgClipBox>)",
+          "Value": 162
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgRectangleCoverage.GetAlpha(int32,int32)",
+          "Value": 161
+        },
+        {
+          "Key": "Lokad.Svg.Fonts.OpenTypeFont+CmapLookup.GetGlyphIndex(unsigned int32,value class System.Threading.CancellationToken)",
+          "Value": 127
+        },
+        {
+          "Key": "Lokad.Svg.Rendering.SvgAnalyticCoverage.WalkEdgesRow(int32,value class System.Threading.CancellationToken)",
+          "Value": 125
+        },
+        {
+          "Key": "Lokad.Svg.Parsing.SvgComputedStyle.Resolve(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.InlineStyle,value class Lokad.Svg.Parsing.InlineStyle)",
+          "Value": 99
+        },
+        {
+          "Key": "Lokad.Svg.Encoding.PngEncoder.WriteSegmentedChunk(value class System.Span`1<unsigned int8>,class PngSegmentedBuffer,int32&,int32&,int32,value class System.Threading.CancellationToken)",
+          "Value": 89
+        }
+      ]
+    }
+  ],
+  "profileScope": "Same net10 public driver on runtime 11 RC3, eight warmups and 100 calls under EventPipe. Local work overlaps, so durations/sample totals establish no throughput claim. Zero lost events, exact reference pixels and no meaningful allocation increase; context preparation is absent from the retained leading frames, which is not proof of zero execution.",
+  "nextActions": [
+    "Qualify the final source on full four-context suites, deterministic packages/installed consumers and every SVGWeb original/context.",
+    "Run the coordinated sealed comparison with separately configured long-enough warmup for tiny controls; preserve every observation and native/platform boundary."
+  ]
+}
