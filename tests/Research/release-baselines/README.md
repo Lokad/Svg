@@ -69,6 +69,9 @@ reuses validated descriptors within decoding/coverage/shaping operations, retain
 independent queries, deferred errors and cancellation. The [full milestone](cmap-batch-qualified.json)
 preserves four-context suites, installed packages and every original/context;
 only frozen Windows DejaVu remains open. Warmed timing is separate evidence.
+The [quiet cmap comparison](cmap-batch-quiet.json) retains every warmup/measurement:
+chart and icon-sheet medians improve on both targets, with exact outputs and
+essentially unchanged allocation. The unstable font-free control carries no speed claim.
 The [post-correction profile](cmap-batch-attribution.json) retains unchanged-driver,
 zero-loss chart/icon captures and exact native pixels; sampled stacks guide further
 work without making a local throughput claim.

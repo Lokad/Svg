@@ -4,8 +4,8 @@ Scope: every feature and limit section of the current [support contract][contrac
 The overview table is indexed by the detailed rows below; it adds no separate
 conformance promise. Labels summarize claims without duplicating the contract.
 
-Current full production qualification: `8ddfeb131`, bound by the
-[shared viewport milestone](viewport-clip-qualified.json). Each trace below
+Current full production qualification: `def8a865c`, bound by the
+[batch-local character-map milestone](cmap-batch-qualified.json). Each trace below
 owns its inspected source/check/native identities and qualification scope.
 The [native line source correction][line-source-record] records its source/contract
 hashes, runtime/package qualification and original/context replays.
@@ -253,7 +253,7 @@ Scope: [text and fonts][contract-text].
 | T15 | Path geometry/transforms/tangents/spacing, continuation cursor, anchors and textLength degeneracies | Reviewed: [measured path](../../../src/Lokad.Svg/Parsing/SvgMeasuredTextPath.cs) / [placement](../../../src/Lokad.Svg/Parsing/SvgTextPathLayout.cs) → [geometry and calibration mechanisms](../../Lokad.Svg.Tests/SvgTextPathTests.cs) / [mixed/empty cursor contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.MixedText.cs) → [unchanged native path and source-box controls][text-placement-record]. |
 | T16 | Latin/DFLT GPOS/kern precedence, extension lookup order, supported flags and invalid metadata | Reviewed: [pair/extension execution](../../../src/Lokad.Svg/Fonts/OpenTypeFont.Gpos.cs) / [shared lookup order](../../../src/Lokad.Svg/Fonts/OpenTypeFont.Layout.cs) / [legacy parsing](../../../src/Lokad.Svg/Fonts/OpenTypeFont.cs) → zero/fallthrough/order, full-width extension offsets, per-lookup filtering and malformed metadata → [precedence](../kerning-precedence/README.md), [filter](../kerning-flags/README.md) and extension native documents with independent metrics. [Current trace](text-shaping-kerning-claim-trace.json). |
 | T17 | Live resource-context font demand, inactive-source exceptions, fitting/filter/baseline stages and Courier policy | Reviewed: [direct discovery](../../../src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs) / [resource context](../../../src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs) / [paint versus metric demand](../../../src/Lokad.Svg/Parsing/SvgTextPaintStyle.cs) / [device metrics](../../../src/Lokad.Svg/Fonts/SvgGlyphDeviceMetrics.cs) → live/dormant resource, bounds/advance exceptions, small-strike and embedded-family/alias checks → independent mask text, filter-source, font-span and instance references. [Current trace](text-paint-resource-claim-trace.json) retains platform fitting/baseline stages and the separate T18 conflict. |
-| T18 | Windows/Linux native font pixel authority | Open: the frozen Windows DejaVu target still fails full CI; its assertion remains intact and reference authority is unresolved ([current CI/source evidence](viewport-clip-qualified.json)). Other font/platform scopes remain bound to their individual T-row traces. |
+| T18 | Windows/Linux native font pixel authority | Open: the frozen Windows DejaVu target still fails full CI; its assertion remains intact and reference authority is unresolved ([current CI/source evidence](cmap-batch-qualified.json)). Other font/platform scopes remain bound to their individual T-row traces. |
 | T19 | Alphabetic/middle/hanging baselines and their explicit-line/anchor interactions | Reviewed: [layout/recorded baseline metrics](../../../src/Lokad.Svg/Parsing/SvgTextBaselineMetrics.cs) → [platform ascent, x-height and rounding boundaries](../../Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs) → [source-bound original baseline contexts and platform pixels][text-placement-record]. Intermediate layout and final paint remain distinct; T18 stays open. |
 
 ## Limits, ownership and qualification

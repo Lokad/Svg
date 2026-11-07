@@ -1,5 +1,5 @@
 {
-  "status": "Shared synchronous cmap lookup batches implemented and affected coverage qualified. Full final-commit/package/original replay and controlled warmed timing remain pending. Frozen Windows DejaVu stays asserted.",
+  "status": "Shared repeated cmap validation is closed: batch-local descriptors preserve deferred admission, borrowed lifetime and scalar cancellation/retry. Full four-context/package/original qualification passes except unchanged frozen Windows DejaVu. Quiet chart/icon improvements are bounded observations; unstable font-free control supports no speed claim.",
   "parentCommit": "97e3e95f6a069b249cacd4b43aefc4dee9eb6bc2",
   "lead": "icon-runtime-attribution.json",
   "sourceFilesLfSha256": {
@@ -576,8 +576,10 @@
   ],
   "harnessCorrection": "Preliminary Windows child FontProbe launches used the system dotnet path and failed startup. All eight public qualification cases pass with the pinned SDK PATH; standard four-context results above use the explicit SDK environment. No startup failure is counted as renderer qualification.",
   "nextActions": [
-    "Complete the predeclared quiet before/after comparison, retain every warmup/measurement and inspect within-launch drift.",
-    "Keep full native-comparator/startup/process-memory scopes and unresolved source authority separate."
+    "Keep deeper chart/icon attribution, persistent native comparison, startup/IPC/I/O and process/native-memory scopes separate.",
+    "Preserve frozen DejaVu and W1/R85/R86 source-authority boundaries."
   ],
-  "fullQualification": "cmap-batch-qualified.json"
+  "fullQualification": "cmap-batch-qualified.json",
+  "quietMeasurement": "cmap-batch-quiet.json",
+  "postCorrectionAttribution": "cmap-batch-attribution.json"
 }

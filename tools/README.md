@@ -73,6 +73,10 @@ dedicated quiet host described in
 [benchmarks](../docs/BENCHMARKS.md). Neither isolated project joins the ordinary
 solution build or adds a shipping renderer dependency.
 
+For resvg runner edits, use `cargo fmt --check` and `cargo clippy --release --locked -- -D warnings`
+with its manifest path. Check default and short timing runs on both hosts; their
+PNGs must agree and existing native/browser differences must remain explicit.
+
 ## Installed package benchmarks
 
 Use a separate source copy and package cache for each package/asset/host variant.

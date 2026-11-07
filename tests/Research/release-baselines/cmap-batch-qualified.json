@@ -416,6 +416,7 @@
   "remaining": [
     "Frozen Windows DejaVu authority remains Open T18; its assertion/target remain intact.",
     "W1 external-resource and R85/R86 source authority remain open.",
-    "Quiet allocation repeat and broader native/profile/memory performance work remain separately owned."
-  ]
+    "Broader native/profile/memory performance work remains separately owned; font-free control timing is unstable and carries no improvement claim."
+  ],
+  "performanceEvidence": "cmap-batch-quiet.json"
 }
