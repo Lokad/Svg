@@ -64,10 +64,11 @@ public sealed partial class SvgFontSnapshot
                         totalBytes += program.Bytes.Length;
                     }
                     bool contributes = first;
+                    OpenTypeFont.CmapLookup lookup = new(program.Bytes, program.Metrics);
                     for (int index = 0; index < remaining.Length; index++)
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!remaining[index] || !SvgCanonicalText.HasCoverage(program.Bytes, program.Metrics, new Rune((int)item.Scalars[index]), token)) continue;
+                        if (!remaining[index] || !SvgCanonicalText.HasCoverage(ref lookup, new Rune((int)item.Scalars[index]), token)) continue;
                         remaining[index] = false; needed--; contributes = true;
                     }
                     if (contributes)

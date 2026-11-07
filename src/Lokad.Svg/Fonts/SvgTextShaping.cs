@@ -120,12 +120,19 @@ internal static class SvgTextShaping
 
         static void AppendCmap(SvgPreparedFont font, string text, int start, int end, BudgetedParserList<SvgShapingGlyph> output, CancellationToken token)
         {
+            OpenTypeFont.CmapLookup lookup = default;
+            bool mappingStarted = false;
             for (int source = start; source < end;)
             {
                 token.ThrowIfCancellationRequested();
                 Rune scalar = Rune.GetRuneAt(text, source);
                 int next = source + scalar.Utf16SequenceLength;
-                ushort glyph = OpenTypeFont.GetGlyphIndex(font.Bytes, (uint)scalar.Value, font.Metrics, token);
+                if (!mappingStarted)
+                {
+                    lookup = new(font.Bytes, font.Metrics);
+                    mappingStarted = true;
+                }
+                ushort glyph = lookup.GetGlyphIndex((uint)scalar.Value, token);
                 output.Add(new(scalar, glyph, source, source, next, output.Count, 0, false, 0, 0, SvgGlyphAttachment.None));
                 source = next;
             }

@@ -176,6 +176,8 @@ internal static class SvgGlyphLayout
             OpenTypeGsubLigatureTable? ligatures = shaped ? null : OpenTypeFont.GetLatinLigatures(font.Bytes, font.Metrics, cancellationToken);
             Span<GlyphLookup> cachedLookups = stackalloc GlyphLookup[GlyphLookupCacheCapacity];
             int cachedLookupCount = 0;
+            OpenTypeFont.CmapLookup cmapLookup = default;
+            SvgPreparedFont? cmapFont = null;
             int glyphPosition = 0;
             int fragmentStart = 0, fragmentSourceStart = 0;
             int mappedNodeIndex = 0, shapingNodeIndex = 0;
@@ -251,7 +253,12 @@ internal static class SvgGlyphLayout
                     }
                     if (lookupIndex == cachedLookupCount)
                     {
-                        glyphIndex = OpenTypeFont.GetGlyphIndex(font.Bytes, scalarValue, font.Metrics, cancellationToken);
+                        if (!ReferenceEquals(cmapFont, font))
+                        {
+                            cmapLookup = new(font.Bytes, font.Metrics);
+                            cmapFont = font;
+                        }
+                        glyphIndex = cmapLookup.GetGlyphIndex(scalarValue, cancellationToken);
                         if (glyphIndex == 0) throw new SvgException(SvgErrorCode.UnresolvedResource, $"The selected font has no glyph for U+{scalar.Value:X4} at scalar index {scalarIndex} in the normalized text run.", new SvgFontDiagnostic(SvgFontFailureStage.Glyph, font.Resolution.Resolution.Request.Family, font.Resolution.Resolution.Face.ResolvedFamily, font.Resolution.Resolution.Face.File.RelativePath + ":" + font.Resolution.Resolution.Face.FaceIndex, sourceElementId,
                             font.Resolution.Resolution.Request.Weight, font.Resolution.Resolution.Request.Italic, font.Resolution.Resolution.IsFallback, scalar.Value, scalarIndex));
                         OpenTypeFont.ValidateGlyphPositioning(font.Bytes, glyphIndex, font.Metrics, cancellationToken);
@@ -701,7 +708,12 @@ internal static class SvgGlyphLayout
                     cancellationToken.ThrowIfCancellationRequested();
                     if (!shaping.Items[index].IsDefaultIgnorable) continue;
                     SvgPreparedFont face = glyphFonts.Length == 0 ? font : glyphFonts[index].Font;
-                    ushort invisible = OpenTypeFont.GetGlyphIndex(face.Bytes, 0x20, face.Metrics, cancellationToken);
+                    if (!ReferenceEquals(cmapFont, face))
+                    {
+                        cmapLookup = new(face.Bytes, face.Metrics);
+                        cmapFont = face;
+                    }
+                    ushort invisible = cmapLookup.GetGlyphIndex(0x20, cancellationToken);
                     if (invisible == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Default-ignorable text requires a supplied space glyph.");
                     glyphs[index] = glyphs[index] with { GlyphIndex = invisible };
                 }

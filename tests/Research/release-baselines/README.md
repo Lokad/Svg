@@ -64,7 +64,10 @@ retains every warmup/measurement and closes warmed acceptance on both targets.
 The [same-asset glyph profile](icon-runtime-attribution.json) retains independent
 runtime traces of an identical driver/package and exact native pixels. Repeated
 cmap selection/validation is a shared-cost lead; borrowed-byte and deferred font
-admission contracts require review before any change.
+admission contracts require review before any change. The [batch-local cmap correction](cmap-batch-lookup.json)
+reuses validated descriptors within decoding/coverage/shaping operations, retaining
+independent queries, deferred errors and cancellation. Affected native/contracts
+pass; full milestone and warmed timing remain separate.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

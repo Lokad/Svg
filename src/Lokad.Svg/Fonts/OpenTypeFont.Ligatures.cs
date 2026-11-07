@@ -94,6 +94,7 @@ internal static partial class OpenTypeFont
         sourceLength = 0;
         if (!IsBasicLatinLetter(text[start])) return false;
         ReadOnlySpan<byte> data = bytes.Span;
+        CmapLookup lookup = new(bytes, metrics);
         Span<ushort> followingGlyphs = stackalloc ushort[MaximumLigatureComponents - 1];
         int mappedCount = 0;
         int subtableCount = ReadUInt16(data, graph.LookupOffset + 4);
@@ -120,7 +121,7 @@ internal static partial class OpenTypeFont
                     if (!IsBasicLatinLetter(next)) break;
                     while (mappedCount < component)
                     {
-                        followingGlyphs[mappedCount] = GetGlyphIndex(bytes, text[start + mappedCount + 1], metrics, token);
+                        followingGlyphs[mappedCount] = lookup.GetGlyphIndex(text[start + mappedCount + 1], token);
                         mappedCount++;
                     }
                     if (followingGlyphs[component - 1] != ReadUInt16(data, ligature + 2 + component * 2)) break;

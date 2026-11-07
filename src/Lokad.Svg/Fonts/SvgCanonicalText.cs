@@ -51,14 +51,21 @@ internal static partial class SvgCanonicalText
     /// all component cmap traversals observe cancellation. Partial decomposition coverage never selects a face.</remarks>
     internal static bool HasCoverage(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, Rune scalar, CancellationToken token)
     {
-        if (OpenTypeFont.GetGlyphIndex(bytes, (uint)scalar.Value, metrics, token) != 0) return true;
+        OpenTypeFont.CmapLookup lookup = new(bytes, metrics);
+        return HasCoverage(ref lookup, scalar, token);
+    }
+
+    /// <summary>Tests canonical coverage within the caller's unchanged-font mapping batch.</summary>
+    internal static bool HasCoverage(ref OpenTypeFont.CmapLookup lookup, Rune scalar, CancellationToken token)
+    {
+        if (lookup.GetGlyphIndex((uint)scalar.Value, token) != 0) return true;
         Span<Rune> parts = stackalloc Rune[MaximumDecomposedScalars];
         int count = Decompose(scalar, parts);
         if (count == 1 && parts[0] == scalar) return false;
         for (int index = 0; index < count; index++)
         {
             token.ThrowIfCancellationRequested();
-            if (OpenTypeFont.GetGlyphIndex(bytes, (uint)parts[index].Value, metrics, token) == 0) return false;
+            if (lookup.GetGlyphIndex((uint)parts[index].Value, token) == 0) return false;
         }
         return true;
     }

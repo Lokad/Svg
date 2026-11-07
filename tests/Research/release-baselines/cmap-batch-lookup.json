@@ -1,0 +1,583 @@
+{
+  "status": "Shared synchronous cmap lookup batches implemented and affected coverage qualified. Full final-commit/package/original replay and controlled warmed timing remain pending. Frozen Windows DejaVu stays asserted.",
+  "parentCommit": "97e3e95f6a069b249cacd4b43aefc4dee9eb6bc2",
+  "lead": "icon-runtime-attribution.json",
+  "sourceFilesLfSha256": {
+    "src/Lokad.Svg/Fonts/CmapLookupProbe.cs": "c3ca6615e49750b6855d3aae38f8b4dd96252036aae78a812a96b8c949d76713",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.LatinLight.cs": "7ef789ecf6d99f14758944f49f037cd340685710b4a3b47a26c56e8e03670e13",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Ligatures.cs": "bcdb9f061ce554dd9df5318ec1c20fadd61f0e8163a37462361d037e7a910501",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.cs": "8dc7db679c12ca3b74f6604762ebbbcd50d5a732775e56f221a75bb62dcaeb4a",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.Shaping.cs": "10257aacc1bb5ac60c983c4ac2fb6646879b61fb320369759906b96b944f9b9a",
+    "src/Lokad.Svg/Fonts/SvgCanonicalText.cs": "902a1abb61e3f38847db0c8f3723bd134f9ef63f5b4ea7318da50c07457ed1d9",
+    "src/Lokad.Svg/Fonts/SvgFontSnapshot.Coverage.cs": "5274b0b1d8f48af857230e212c14daa8154bb2738c9216d92c388873ae41d48b",
+    "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs": "d48eafa0d7cf9d685ca59e7bfb40a7fe9e792ba3fbf76d2ad13879d3a7983e7c",
+    "src/Lokad.Svg/Fonts/SvgTextShaping.cs": "2632f9a1b6b455c55c4ca6969bc649930c7f60c4959b385c48dea259c2bd1422",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.cs": "44ed813e7ef65b9bc77f2157a249444ca96c72da42bceff73be0b027cc726d22",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.Cmap.cs": "a2156879cf85420eb389d5940bf06221ab2ba96eacc92f350fae82d004da025e",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.CmapBatch.cs": "b9b92acb6ec8d12fc68122be46f65eed475fabf726f52a6f8fa3faa27fb820e4"
+  },
+  "correction": {
+    "reader": "A stack-only CmapLookup borrows unchanged caller-owned bytes and validates its selected cmap on first actual scalar demand. Its validated descriptor is local to a synchronous batch; no copied bytes, shared cache, lock or retained snapshot metadata is added.",
+    "query": "Validate the entire selected format-4/12 structure, then lower-bound search the ordered end codes/groups. Format-4 gaps, range/delta zero behavior, preferred encoding record selection and query-specific glyph-count checks are preserved. Format-12 group/glyph ranges remain globally validated before lookup.",
+    "cancellation": "Every scalar retains CmapLookupProbe.Started and its cancellation check. Preparation checks cancellation during selection/validation. Failure/cancellation leaves the descriptor unprepared; completed metadata can be reused by later queries in the same batch.",
+    "boundaries": "Independent static GetGlyphIndex calls create independent batches and revalidate each call. Font properties/bytes are accessed only at the original point of first mapping demand. Snapshot unchanged-byte and no-concurrent-disposal contracts remain unchanged.",
+    "ownership": "All added state is fixed-size stack metadata. Existing geometry/decoder/coverage owners and reservations are unchanged; batches never cross await or escape into shared state."
+  },
+  "consumerReview": [
+    {
+      "scope": "Latin light glyph decoding",
+      "owner": "OpenTypeFont.LatinLight.cs",
+      "reuse": "One batch across non-base alias classification, alignment samples and stem sample mappings; standalone alignment sampling owns a separate batch."
+    },
+    {
+      "scope": "Canonical normalization and shaping",
+      "owner": "SvgCanonicalText.Shaping.cs / SvgTextShaping.cs",
+      "reuse": "One batch per physical-font run, retaining decomposition/composition and scalar lookup checkpoints."
+    },
+    {
+      "scope": "Acquisition and fallback coverage",
+      "owner": "SvgFontSnapshot.Coverage.cs / SvgCanonicalText.cs",
+      "reuse": "One batch across requested scalars for one candidate program; standalone per-candidate coverage reuses its batch for canonical components."
+    },
+    {
+      "scope": "Glyph layout and hidden glyphs",
+      "owner": "SvgGlyphLayout.cs",
+      "reuse": "Lazy font-bound local batch, reset when physical font identity changes; existing repeated-scalar glyph/advance cache remains."
+    },
+    {
+      "scope": "Legacy ligature matching",
+      "owner": "OpenTypeFont.Ligatures.cs",
+      "reuse": "One batch for following component mappings during one candidate search."
+    },
+    {
+      "scope": "Single x-height query and independent callers",
+      "owner": "SvgFontSnapshot.cs / OpenTypeFont.cs",
+      "reuse": "Keep independent validation; these calls have no useful local scalar loop."
+    }
+  ],
+  "regression": {
+    "name": "Latin_light_glyph_mapping_validates_its_cmap_once_per_decode",
+    "beforeValidations": 275,
+    "afterValidations": 1,
+    "beforeEvidence": "Original reader with a narrow execution-context-local preparation probe; synthetic standalone glyph decode fails the count assertion while cleanup passes.",
+    "afterEvidence": "Passes all four affected contexts; mapping call checkpoints remain unchanged.",
+    "newBatchMechanisms": [
+      "BMP domain and supplementary boundaries for formats 4/12 with one validation.",
+      "Independent calls still revalidate.",
+      "Canceled preparation can retry without partial metadata.",
+      "Prepared queries retain scalar-entry cancellation.",
+      "Malformed later/unqueried entries reject on demand and failure is not cached."
+    ],
+    "sourceTestsPreserved": "All existing test declarations/bodies and reference inputs remain; one decoder-count regression and seven direct batch cases are added."
+  },
+  "affectedIntegration": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d72809048ef800916a3f52cb93dec675e3a7078c7bb0b1c0792a608455e26d6f",
+      "testAssemblySha256": "6b8ae48e4afc6c869929173b44d14f71aa3d8ba0dcd7c2fdb3e3c6b6c8a1f434",
+      "selection": "FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgFont|FullyQualifiedName~Text|FullyQualifiedName~Latin|FullyQualifiedName~Ownership|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 43.031233000103384,
+      "counters": {
+        "executed": "26515",
+        "passed": "26515",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "d72809048ef800916a3f52cb93dec675e3a7078c7bb0b1c0792a608455e26d6f",
+      "testAssemblySha256": "a2a0e5cc912e9a8255f5fbed59524f63f6815fa143fcd63a09ec92424a76eaf2",
+      "selection": "FullyQualifiedName~Font|FullyQualifiedName~Text|FullyQualifiedName~Supplied|FullyQualifiedName~Symbol",
+      "exitCode": 1,
+      "seconds": 49.1304080998525,
+      "counters": {
+        "executed": "30268",
+        "passed": "30267",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "d72809048ef800916a3f52cb93dec675e3a7078c7bb0b1c0792a608455e26d6f",
+      "testAssemblySha256": "6b8ae48e4afc6c869929173b44d14f71aa3d8ba0dcd7c2fdb3e3c6b6c8a1f434",
+      "selection": "FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgFont|FullyQualifiedName~Text|FullyQualifiedName~Latin|FullyQualifiedName~Ownership|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 44.05322640016675,
+      "counters": {
+        "executed": "26515",
+        "passed": "26515",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "d72809048ef800916a3f52cb93dec675e3a7078c7bb0b1c0792a608455e26d6f",
+      "testAssemblySha256": "a2a0e5cc912e9a8255f5fbed59524f63f6815fa143fcd63a09ec92424a76eaf2",
+      "selection": "FullyQualifiedName~Font|FullyQualifiedName~Text|FullyQualifiedName~Supplied|FullyQualifiedName~Symbol",
+      "exitCode": 0,
+      "seconds": 45.80238080024719,
+      "counters": {
+        "executed": "30268",
+        "passed": "30268",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "f537d2a5b3b28d7cbc6a0204eb985466df64fee560834a616d01a2d5fd4d5e70",
+      "testAssemblySha256": "463fab3ab047e8cd09ec2769937c8f435dbf7efcf023877f4436cbb5666db00f",
+      "selection": "FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgFont|FullyQualifiedName~Text|FullyQualifiedName~Latin|FullyQualifiedName~Ownership|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 37.1312160002999,
+      "counters": {
+        "executed": "26515",
+        "passed": "26515",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "f537d2a5b3b28d7cbc6a0204eb985466df64fee560834a616d01a2d5fd4d5e70",
+      "testAssemblySha256": "8a49db3076b8a7a898a5aac00228fa3b7ab9c30da1d18b050d66f224e3d7b943",
+      "selection": "FullyQualifiedName~Font|FullyQualifiedName~Text|FullyQualifiedName~Supplied|FullyQualifiedName~Symbol",
+      "exitCode": 1,
+      "seconds": 40.805259000044316,
+      "counters": {
+        "executed": "30268",
+        "passed": "30267",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "f537d2a5b3b28d7cbc6a0204eb985466df64fee560834a616d01a2d5fd4d5e70",
+      "testAssemblySha256": "463fab3ab047e8cd09ec2769937c8f435dbf7efcf023877f4436cbb5666db00f",
+      "selection": "FullyQualifiedName~OpenTypeFont|FullyQualifiedName~SvgFont|FullyQualifiedName~Text|FullyQualifiedName~Latin|FullyQualifiedName~Ownership|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 40.237525899894536,
+      "counters": {
+        "executed": "26515",
+        "passed": "26515",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "f537d2a5b3b28d7cbc6a0204eb985466df64fee560834a616d01a2d5fd4d5e70",
+      "testAssemblySha256": "8a49db3076b8a7a898a5aac00228fa3b7ab9c30da1d18b050d66f224e3d7b943",
+      "selection": "FullyQualifiedName~Font|FullyQualifiedName~Text|FullyQualifiedName~Supplied|FullyQualifiedName~Symbol",
+      "exitCode": 0,
+      "seconds": 41.217279199976474,
+      "counters": {
+        "executed": "30268",
+        "passed": "30268",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "canonicalPublicVerification": [
+    {
+      "host": "windows",
+      "librarySha256": "d72809048ef800916a3f52cb93dec675e3a7078c7bb0b1c0792a608455e26d6f",
+      "nativeExact": 29,
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "d49760ec9625db312a06fc00ed4a60ed25b3dba4014a9aea42011f0657a3e828",
+          "bytes": 1803
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "ce9bfe5f4b839c840d1c81b99590d25482f687b5ba312d654db9c1fdd9c208a1",
+          "bytes": 4409
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "7805ef3193e2e2d06e800a28ae9aee7a1b7f48797e09d5d0f2113c840a88df3d",
+          "bytes": 27534
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "c46e5639a787013798f8e41714aff7843c158b408c5f0a8d119a09640aa99b86",
+          "bytes": 29433
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "35867ab4bd245c0e67274792b026f8fa3558716af8ff7c0e28d503b6b1c85aeb",
+          "bytes": 124081
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "librarySha256": "d72809048ef800916a3f52cb93dec675e3a7078c7bb0b1c0792a608455e26d6f",
+      "nativeExact": 29,
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ]
+    }
+  ],
+  "harnessCorrection": "Preliminary Windows child FontProbe launches used the system dotnet path and failed startup. All eight public qualification cases pass with the pinned SDK PATH; standard four-context results above use the explicit SDK environment. No startup failure is counted as renderer qualification.",
+  "nextActions": [
+    "Commit the coherent correction and qualify full Windows/Linux/runtime/package suites plus every SVGWeb original/context at this shared text milestone.",
+    "Prepare sealed before/after assets and an adequately warmed, coordinated quiet-host comparison; retain all samples, drift and independent native pixels.",
+    "Keep full native-comparator/startup/process-memory scopes and unresolved source authority separate."
+  ]
+}

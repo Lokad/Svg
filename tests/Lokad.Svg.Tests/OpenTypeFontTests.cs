@@ -160,6 +160,21 @@ public sealed partial class OpenTypeFontTests
 
     [Fact]
     [Trait("Layer", "Mechanism")]
+    public void Latin_light_glyph_mapping_validates_its_cmap_once_per_decode()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 0);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
+        RenderBudget budget = new();
+        int validations = 0;
+        using (IDisposable probe = CmapLookupProbe.ArmValidation(() => validations++))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, 1, metrics, 16, budget, CancellationToken.None))
+        { }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(1, validations);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Maps_a_BMP_scalar_through_a_format_4_cmap()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);

@@ -15,6 +15,8 @@ internal static partial class SvgCanonicalText
         BudgetedParserList<SvgShapingGlyph> destination, CancellationToken token)
     {
         if (start < 0 || end < start || end > text.Length) throw new ArgumentOutOfRangeException(nameof(start));
+        OpenTypeFont.CmapLookup lookup = default;
+        bool mappingStarted = false;
         int first = destination.Count, clusterStart = start;
         Span<Rune> decomposed = stackalloc Rune[MaximumDecomposedScalars];
         for (int source = start; source < end;)
@@ -24,7 +26,12 @@ internal static partial class SvgCanonicalText
             int next = source + scalar.Utf16SequenceLength;
             if (next > end) throw new ArgumentException("A shaping run cannot divide a Unicode scalar.", nameof(end));
             if (!GetProperties(scalar).IsMark) clusterStart = source;
-            ushort originalGlyph = OpenTypeFont.GetGlyphIndex(font.Bytes, (uint)scalar.Value, font.Metrics, token);
+            if (!mappingStarted)
+            {
+                lookup = new(font.Bytes, font.Metrics);
+                mappingStarted = true;
+            }
+            ushort originalGlyph = lookup.GetGlyphIndex((uint)scalar.Value, token);
             int count = Decompose(scalar, decomposed);
             bool covered = true;
             if (originalGlyph != 0)
@@ -32,7 +39,7 @@ internal static partial class SvgCanonicalText
                 for (int component = 0; component < count; component++)
                 {
                     token.ThrowIfCancellationRequested();
-                    covered &= OpenTypeFont.GetGlyphIndex(font.Bytes, (uint)decomposed[component].Value, font.Metrics, token) != 0;
+                    covered &= lookup.GetGlyphIndex((uint)decomposed[component].Value, token) != 0;
                 }
             }
             if (!covered) { decomposed[0] = scalar; count = 1; }
@@ -43,7 +50,7 @@ internal static partial class SvgCanonicalText
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Canonical text expansion exceeds the admitted glyph limit.");
                 Rune part = decomposed[component];
                 byte combiningClass = GetProperties(part).CombiningClass;
-                ushort glyph = OpenTypeFont.GetGlyphIndex(font.Bytes, (uint)part.Value, font.Metrics, token);
+                ushort glyph = lookup.GetGlyphIndex((uint)part.Value, token);
                 destination.Add(new(part, glyph, source, clusterStart, next, destination.Count - first, combiningClass, IsDefaultIgnorable(part), 0, 0, SvgGlyphAttachment.None));
             }
             source = next;
@@ -74,7 +81,7 @@ internal static partial class SvgCanonicalText
             if (starter >= 0 && (lastClass == 0 || lastClass < current.CombiningClass)
                 && TryCompose(glyphs[starter].Scalar, current.Scalar, out Rune composite))
             {
-                ushort composedGlyph = OpenTypeFont.GetGlyphIndex(font.Bytes, (uint)composite.Value, font.Metrics, token);
+                ushort composedGlyph = lookup.GetGlyphIndex((uint)composite.Value, token);
                 if (composedGlyph != 0)
                 {
                     SvgShapingGlyph previous = glyphs[starter];

@@ -5,7 +5,8 @@ using Lokad.Svg.Parsing;
 
 /// <summary>
 /// Validates the bounded standalone-TrueType subset required before glyph parsing.
-/// This reader borrows its input and does not retain, copy, or cache font bytes.
+/// Independent queries retain no font bytes. Synchronous batches borrow unchanged
+/// views only for their caller's scope; neither path copies bytes or owns a shared cache.
 /// </summary>
 internal static partial class OpenTypeFont
 {
@@ -123,113 +124,11 @@ internal static partial class OpenTypeFont
     internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, CancellationToken cancellationToken)
         => GetGlyphIndex(bytes, scalar, ParseMetrics(bytes, cancellationToken), cancellationToken);
 
-    /// <summary>Maps one Unicode scalar using metrics already validated for these unchanged caller-owned bytes.</summary>
+    /// <summary>Maps one scalar independently, validating the character map of these unchanged caller-owned bytes.</summary>
     internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        if (scalar > 0x10FFFF || scalar is >= 0xD800 and <= 0xDFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
-        CmapLookupProbe.Started();
-        cancellationToken.ThrowIfCancellationRequested();
-        ReadOnlySpan<byte> data = bytes.Span;
-        OpenTypeTableRange cmap = metrics.Cmap ?? throw InvalidFont("The SFNT font is missing its cmap table.");
-        RequireTableLength(cmap, 4, "cmap");
-        int encodingCount = ReadUInt16(data, cmap.Offset + 2);
-        RequireTableLength(cmap, checked(4 + encodingCount * 8), "cmap");
-        OpenTypeTableRange? format4Candidate = null;
-        OpenTypeTableRange? format12Candidate = null;
-        for (int index = 0; index < encodingCount; index++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            int record = cmap.Offset + 4 + index * 8;
-            ushort platform = ReadUInt16(data, record);
-            ushort encoding = ReadUInt16(data, record + 2);
-            uint relativeOffset = ReadUInt32(data, record + 4);
-            if (relativeOffset > int.MaxValue || relativeOffset > cmap.Length - 2) throw InvalidFont("A cmap encoding record points outside its table.");
-            int offset = checked(cmap.Offset + (int)relativeOffset);
-            ushort format = ReadUInt16(data, offset);
-            bool isUnicodeFormat4 = format == 4 && (platform == 0 || (platform == 3 && encoding == 1));
-            bool isUnicodeFormat12 = format == 12 && (platform == 0 || (platform == 3 && encoding == 10));
-            if (isUnicodeFormat4) format4Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
-            if (isUnicodeFormat12) format12Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
-        }
-        if (format12Candidate is OpenTypeTableRange selected12) return GetFormat12GlyphIndex(data, selected12, scalar, metrics.GlyphCount, cancellationToken);
-        if (format4Candidate is not OpenTypeTableRange selected4) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported Unicode cmap format 4 table.");
-        OpenTypeTableRange format4 = selected4;
-        RequireTableLength(format4, 16, "cmap format 4");
-        int length = ReadUInt16(data, format4.Offset + 2);
-        if (length < 16 || length > format4.Length) throw InvalidFont("The cmap format 4 length is invalid.");
-        int segmentsX2 = ReadUInt16(data, format4.Offset + 6);
-        if (segmentsX2 == 0 || (segmentsX2 & 1) != 0) throw InvalidFont("The cmap format 4 segment count is invalid.");
-        int segments = segmentsX2 / 2;
-        int required = checked(16 + segments * 8);
-        if (required > length) throw InvalidFont("The cmap format 4 arrays are truncated.");
-        int endCodes = format4.Offset + 14;
-        int startCodes = endCodes + segments * 2 + 2;
-        int deltas = startCodes + segments * 2;
-        int ranges = deltas + segments * 2;
-        ValidateFormat4Segments(data, format4, length, segments, endCodes, startCodes, ranges, cancellationToken);
-        for (int index = 0; index < segments; index++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ushort end = ReadUInt16(data, endCodes + index * 2);
-            if (scalar > end) continue;
-            ushort start = ReadUInt16(data, startCodes + index * 2);
-            if (scalar < start) return 0;
-            short delta = ReadInt16(data, deltas + index * 2);
-            ushort rangeOffset = ReadUInt16(data, ranges + index * 2);
-            ushort glyph = rangeOffset == 0
-                ? unchecked((ushort)(scalar + delta))
-                : ApplyDelta(ReadGlyphFromRange(data, format4, length, ranges + index * 2, rangeOffset, scalar - start), delta);
-            if (glyph >= metrics.GlyphCount && glyph != 0) throw InvalidFont("The cmap maps a scalar to a glyph outside maxp.");
-            return glyph;
-        }
-        return 0;
-    }
-
-    private static ushort GetFormat12GlyphIndex(ReadOnlySpan<byte> data, OpenTypeTableRange table, uint scalar, ushort glyphCount, CancellationToken cancellationToken)
-    {
-        RequireTableLength(table, 16, "cmap format 12");
-        uint length = ReadUInt32(data, table.Offset + 4);
-        uint groups = ReadUInt32(data, table.Offset + 12);
-        if (length < 16 || length > (uint)table.Length || groups > (length - 16) / 12) throw InvalidFont("The cmap format 12 length is invalid.");
-        uint previousEnd = 0;
-        ushort glyph = 0;
-        for (uint index = 0; index < groups; index++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            int offset = checked(table.Offset + 16 + (int)index * 12);
-            uint start = ReadUInt32(data, offset);
-            uint end = ReadUInt32(data, offset + 4);
-            uint startGlyph = ReadUInt32(data, offset + 8);
-            if (start > end || end > 0x10FFFF || (index != 0 && start <= previousEnd)) throw InvalidFont("The cmap format 12 groups are not strictly ordered.");
-            previousEnd = end;
-            uint groupLength = end - start;
-            if (startGlyph > uint.MaxValue - groupLength) throw InvalidFont("The cmap format 12 group glyph range overflows.");
-            uint lastGlyph = startGlyph + groupLength;
-            if (lastGlyph >= glyphCount) throw InvalidFont("The cmap maps a scalar to a glyph outside maxp.");
-            if (scalar >= start && scalar <= end) glyph = (ushort)(startGlyph + scalar - start);
-        }
-        return glyph;
-    }
-
-    private static void ValidateFormat4Segments(ReadOnlySpan<byte> data, OpenTypeTableRange format4, int length, int segments, int endCodes, int startCodes, int ranges, CancellationToken cancellationToken)
-    {
-        int glyphIndexArray = checked(ranges + segments * 2);
-        ushort previousEnd = 0;
-        for (int index = 0; index < segments; index++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ushort end = ReadUInt16(data, endCodes + index * 2);
-            ushort start = ReadUInt16(data, startCodes + index * 2);
-            if (start > end || (index != 0 && end <= previousEnd)) throw InvalidFont("The cmap format 4 segments are not strictly ordered.");
-            previousEnd = end;
-            ushort rangeOffset = ReadUInt16(data, ranges + index * 2);
-            if (rangeOffset == 0) continue;
-            if ((rangeOffset & 1) != 0) throw InvalidFont("The cmap format 4 glyph-index offset is not word-aligned.");
-            int firstGlyph = checked(ranges + index * 2 + rangeOffset);
-            int lastGlyph = checked(firstGlyph + (end - start) * 2);
-            if (firstGlyph < glyphIndexArray || lastGlyph > format4.Offset + length - 2) throw InvalidFont("The cmap format 4 glyph-index array is truncated.");
-        }
-        if (previousEnd != ushort.MaxValue) throw InvalidFont("The cmap format 4 segments lack the required sentinel.");
+        CmapLookup lookup = new(bytes, metrics);
+        return lookup.GetGlyphIndex(scalar, cancellationToken);
     }
 
     /// <summary>Gets the validated horizontal advance for one existing glyph index.</summary>
@@ -923,15 +822,6 @@ internal static partial class OpenTypeFont
         int expectedRangeShift = pairCount * 6 - expectedSearchRange;
         if (searchRange != expectedSearchRange || entrySelector != expectedEntrySelector || rangeShift != expectedRangeShift) throw InvalidFont("The legacy kern search fields are invalid.");
     }
-
-    private static ushort ReadGlyphFromRange(ReadOnlySpan<byte> data, OpenTypeTableRange table, int length, int rangeOffsetLocation, ushort rangeOffset, uint relativeGlyphIndex)
-    {
-        int glyphOffset = checked(rangeOffsetLocation + rangeOffset + checked((int)relativeGlyphIndex * 2));
-        if (glyphOffset < table.Offset || glyphOffset > table.Offset + length - 2) throw InvalidFont("The cmap glyph-index array is truncated.");
-        return ReadUInt16(data, glyphOffset);
-    }
-
-    private static ushort ApplyDelta(ushort glyph, short delta) => glyph == 0 ? (ushort)0 : unchecked((ushort)(glyph + delta));
 
     private static OpenTypeTableRange RequiredTable(IReadOnlyDictionary<uint, OpenTypeTableRange> tables, uint tag, string name)
         => tables.TryGetValue(tag, out OpenTypeTableRange range) ? range : throw InvalidFont("The SFNT font is missing its " + name + " table.");

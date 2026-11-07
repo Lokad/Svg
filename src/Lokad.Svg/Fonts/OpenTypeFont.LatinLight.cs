@@ -12,7 +12,8 @@ internal static partial class OpenTypeFont
     {
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted font size exceeds the native coordinate range.");
         cancellationToken.ThrowIfCancellationRequested();
-        bool nonBase = IsNonBase(bytes, glyphIndex, metrics, cancellationToken);
+        CmapLookup lookup = new(bytes, metrics);
+        bool nonBase = IsNonBase(glyphIndex, metrics, ref lookup, cancellationToken);
         using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, cancellationToken, true);
         // Native light outlines average signed 26.6 implied points toward zero.
         if (structure.CompositeHeader is not null)
@@ -20,8 +21,8 @@ internal static partial class OpenTypeFont
             using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, null, OpenTypeCompositeOffsetMath.FontationsLength, budget, cancellationToken);
             SubtractGlyphOrigin(outline.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, cancellationToken), cancellationToken);
             Span<LatinAlignmentZone> compositeZones = stackalloc LatinAlignmentZone[6];
-            int compositeZoneCount = GetLatinAlignmentZones(bytes, metrics, compositeZones, budget, cancellationToken);
-            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, budget, cancellationToken), !nonBase, budget, cancellationToken);
+            int compositeZoneCount = GetLatinAlignmentZones(bytes, metrics, ref lookup, compositeZones, budget, cancellationToken);
+            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, ref lookup, budget, cancellationToken), !nonBase, budget, cancellationToken);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, cancellationToken);
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, TrueTypeImpliedPointRounding.TowardZero, cancellationToken);
             return compositeSegments.Detach();
@@ -30,13 +31,26 @@ internal static partial class OpenTypeFont
         using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, structure.Value, budget, cancellationToken);
         SubtractGlyphOrigin(points.Points, GetHorizontalOrigin(bytes, glyphIndex, metrics, cancellationToken), cancellationToken);
         Span<LatinAlignmentZone> zones = stackalloc LatinAlignmentZone[6];
-        int zoneCount = GetLatinAlignmentZones(bytes, metrics, zones, budget, cancellationToken);
-        LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, budget, cancellationToken), !nonBase, budget, cancellationToken);
+        int zoneCount = GetLatinAlignmentZones(bytes, metrics, ref lookup, zones, budget, cancellationToken);
+        LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, GetLatinStemWidths(bytes, metrics, ref lookup, budget, cancellationToken), !nonBase, budget, cancellationToken);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, cancellationToken);
         BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, TrueTypeImpliedPointRounding.TowardZero, cancellationToken);
         return segments.Detach();
 
-        static bool IsNonBase(ReadOnlyMemory<byte> bytes, ushort glyph, OpenTypeFontMetrics metrics, CancellationToken token)
+        // Measure linked widths and the native edge-merging allowance from one bounded standard glyph.
+        static LatinStemWidths GetLatinStemWidths(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, ref CmapLookup lookup, RenderBudget budget, CancellationToken token)
+        {
+            foreach (char scalar in "oO0")
+            {
+                ushort index = lookup.GetGlyphIndex(scalar, token);
+                if (index == 0) continue;
+                using OpenTypeGlyphPointOutline sample = GetGlyphPointOutline(bytes, index, metrics, null, null, OpenTypeCompositeOffsetMath.FontationsLength, budget, token);
+                return LatinLightHinting.MeasureStemWidths(sample.Points, sample.Ends, metrics.UnitsPerEm, budget, token);
+            }
+            return new(0, metrics.UnitsPerEm * 50 / 2048 / 5);
+        }
+
+        static bool IsNonBase(ushort glyph, OpenTypeFontMetrics metrics, ref CmapLookup lookup, CancellationToken token)
         {
             if (glyph == 0 || metrics.Cmap is null) return false;
             // Skrifa 0.43.2 generated Latin style ranges. Classification belongs
@@ -48,27 +62,21 @@ internal static partial class OpenTypeFont
                 for (int scalar = first; scalar <= last; scalar++)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (GetGlyphIndex(bytes, (uint)scalar, metrics, token) == glyph) return true;
+                    if (lookup.GetGlyphIndex((uint)scalar, token) == glyph) return true;
                 }
             return false;
         }
     }
 
-    /// <summary>Measures linked widths and the native edge-merging allowance from one bounded standard glyph.</summary>
-    private static LatinStemWidths GetLatinStemWidths(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, RenderBudget budget, CancellationToken token)
-    {
-        foreach (char scalar in "oO0")
-        {
-            ushort index = GetGlyphIndex(bytes, scalar, metrics, token);
-            if (index == 0) continue;
-            using OpenTypeGlyphPointOutline sample = GetGlyphPointOutline(bytes, index, metrics, null, null, OpenTypeCompositeOffsetMath.FontationsLength, budget, token);
-            return LatinLightHinting.MeasureStemWidths(sample.Points, sample.Ends, metrics.UnitsPerEm, budget, token);
-        }
-        return new(0, metrics.UnitsPerEm * 50 / 2048 / 5);
-    }
-
     /// <summary>Samples at most six Latin alignment zones into caller-owned storage, borrowing one face and reserving decoded glyph storage.</summary>
     internal static int GetLatinAlignmentZones(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, Span<LatinAlignmentZone> zones, RenderBudget budget, CancellationToken cancellationToken)
+    {
+        CmapLookup lookup = new(bytes, metrics);
+        return GetLatinAlignmentZones(bytes, metrics, ref lookup, zones, budget, cancellationToken);
+    }
+
+    private static int GetLatinAlignmentZones(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, ref CmapLookup lookup,
+        scoped Span<LatinAlignmentZone> zones, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (zones.Length < LatinAlignmentSamples.Length) throw new ArgumentException("The alignment buffer must hold every Latin zone.", nameof(zones));
         int zoneCount = 0;
@@ -82,7 +90,7 @@ internal static partial class OpenTypeFont
             foreach (char scalar in LatinAlignmentSamples[zoneIndex])
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                ushort sampleGlyph = GetGlyphIndex(bytes, scalar, metrics, cancellationToken);
+                ushort sampleGlyph = lookup.GetGlyphIndex(scalar, cancellationToken);
                 if (sampleGlyph == 0) continue;
                 OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, sampleGlyph, metrics, cancellationToken);
                 if (header is null || !header.Value.IsComposite && header.Value.ContourCount == 0) continue;
