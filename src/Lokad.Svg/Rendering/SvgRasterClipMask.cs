@@ -2,18 +2,28 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Borrows canvas coverage from an RGBA tape or separately intersected analytic rectangles.</summary>
-/// <remarks>Owns no storage and retains no cache. The caller keeps the tape alive through
+/// <summary>Borrows canvas coverage from RGBA storage, native clip bitmaps or separately intersected rectangles.</summary>
+/// <remarks>Owns no storage and retains no cache. The caller keeps the tape or bitmap owner alive through
 /// synchronous replay, supplies its canvas stride, and checks cancellation during traversal.
 /// Rectangle coverage uses the same rounding as materialized viewport clips. An empty
-/// tape without a rectangle clips nothing; successive clips still intersect separately.</remarks>
+/// mask with no storage, owner or rectangle clips nothing; successive clips still intersect separately.</remarks>
 internal readonly ref struct SvgRasterClipMask
 {
+    private readonly SvgCpuClipCoverage? _coverage;
+
     internal SvgRasterClipMask(ReadOnlySpan<byte> pixels)
     {
         Pixels = pixels;
         Rectangle = null;
         ParentRectangle = null;
+        _coverage = null;
+    }
+
+    /// <summary>Borrows compact clip samples; the owning clip scope retains its reservations.</summary>
+    internal SvgRasterClipMask(SvgCpuClipCoverage coverage)
+    {
+        Pixels = []; Rectangle = null; ParentRectangle = null;
+        _coverage = coverage;
     }
 
     internal SvgRasterClipMask(SvgClipBox rectangle)
@@ -25,19 +35,21 @@ internal readonly ref struct SvgRasterClipMask
         Pixels = [];
         Rectangle = rectangle;
         ParentRectangle = parentRectangle;
+        _coverage = null;
     }
 
     internal static SvgRasterClipMask Empty => new(ReadOnlySpan<byte>.Empty);
     internal ReadOnlySpan<byte> Pixels { get; }
     internal SvgClipBox? Rectangle { get; }
     internal SvgClipBox? ParentRectangle { get; }
-    internal bool IsEmpty => Pixels.IsEmpty && Rectangle is null;
+    internal bool IsEmpty => Pixels.IsEmpty && Rectangle is null && _coverage is null;
 
     internal byte GetAlpha(int width, int x, int y)
     {
         byte alpha = Rectangle is {} rectangle
             ? SvgAnalyticRectangleClip.GetCoverage((rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom),
                 rectangle.Antialiasing, x, y).Apply(255)
+            : _coverage is {} coverage ? coverage.GetCanvasAlpha(x, y)
             : Pixels.IsEmpty ? (byte)255 : Pixels[(y * width + x) * 4 + 3];
         if (ParentRectangle is {} parent)
         {
@@ -73,6 +85,6 @@ internal readonly ref struct SvgRasterClipMask
     }
 
     internal byte GetAlphaAtOffset(int width, int offset)
-        => Rectangle is null ? Pixels.IsEmpty ? (byte)255 : Pixels[offset + 3]
+        => Rectangle is null && _coverage is null ? Pixels.IsEmpty ? (byte)255 : Pixels[offset + 3]
             : GetAlpha(width, offset / 4 % width, offset / 4 / width);
 }

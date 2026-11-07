@@ -106,7 +106,10 @@ internal static class SvgBinaryViewportCoverage
                     {
                         coverage.SetBorderAlpha(bitmap, pixel, y, 255);
                         if (pixel >= context.Interior.Left && pixel < context.Interior.Right && y >= context.Interior.Top && y < context.Interior.Bottom)
-                            destination[(y * width + pixel) * 4 + 3] = 255;
+                        {
+                            if (coverage.HasCanvasPixels) coverage.SetCanvasAlpha(pixel, y, 255);
+                            else destination[(y * width + pixel) * 4 + 3] = 255;
+                        }
                     }
                     if (end > first) { keptLeft = Math.Min(keptLeft, first); keptTop = Math.Min(keptTop, y); keptRight = Math.Max(keptRight, end); keptBottom = y + 1; }
                 }

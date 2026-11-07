@@ -55,7 +55,9 @@ the frozen Windows DejaVu conflict; all 204 source identities and contexts remai
 The [chart clip-storage profile](chart-clip-storage-profile.json) attributes the next
 shared cost: twelve small symbol viewports materialize canvas-sized clip tapes.
 Two platform profiles and eight allocation controls retain exact unchanged targets;
-shared clip/storage refactoring remains open, with geometry and ownership criteria.
+the [shared viewport storage correction](viewport-clip-storage.json) retains geometry,
+border coverage and lifecycle contracts while removing about 30.5 MB per chart
+conversion. Affected qualification passes; final milestone/quiet timing remain open.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

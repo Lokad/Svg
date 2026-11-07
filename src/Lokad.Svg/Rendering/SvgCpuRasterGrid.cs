@@ -101,6 +101,14 @@ internal readonly struct SvgCpuRasterGrid
         => new(Math.Min(x - 1, _width - 3) / (_tileWidth - 2) * (_tileWidth - 2),
             Math.Min(y - 1, _height - 3) / (_tileHeight - 2) * (_tileHeight - 2));
 
+    /// <summary>Finds the complete native bitmap owning one in-canvas output pixel.</summary>
+    internal SvgAnalyticClipBounds GetOwningBitmap(int x, int y)
+    {
+        SvgCpuBitmapOrigin origin = GetBitmapOrigin(x, y);
+        int left = Math.Max(0, origin.X), top = Math.Max(0, origin.Y);
+        return new(left, top, Math.Min(_width, left + _tileWidth), Math.Min(_height, top + _tileHeight));
+    }
+
     internal Enumerator GetContexts(SvgAnalyticClipBounds drawingBounds)
     {
         if (drawingBounds.Left < 0 || drawingBounds.Top < 0 || drawingBounds.Right > _width || drawingBounds.Bottom > _height || drawingBounds.Right < drawingBounds.Left || drawingBounds.Bottom < drawingBounds.Top) throw new ArgumentOutOfRangeException(nameof(drawingBounds));
