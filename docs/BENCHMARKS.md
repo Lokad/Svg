@@ -23,6 +23,7 @@ owns the pinned toolchain setup. Neither establishes measured renderer performan
 | Supplied-font labels | [SvgSuppliedLabelBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/SvgTextBenchmarks.cs) |
 | PNG encoding across entropy and destination types | [PngBufferBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/PngBufferBenchmarks.cs) |
 | Reference documents and authored icon sheet, wordmark and chart; conversion and rasterization separately | [SvgReferenceDocumentBenchmarks](../benchmarks/Lokad.Svg.Benchmarks/SvgReferenceDocumentBenchmarks.cs) |
+| The 26 upstream documents and three authored workloads through an installed package's public conversion API | [InstalledDocumentBenchmarks](../benchmarks/Lokad.Svg.InstalledBenchmarks/Program.cs) |
 
 List parameterized jobs without executing benchmarks:
 
@@ -80,6 +81,18 @@ The [installed/native preflight](../tests/Research/release-baselines/installed-v
 qualifies package/asset identities and frozen pixels on one fixed runtime. Follow
 the [comparison procedures](../tools/README.md#installed-and-native-comparison-preflight)
 before timing; record native fidelity differences alongside performance results.
+
+The installed benchmark is an isolated project, outside ordinary solution builds.
+Select its package, asset and host explicitly, following the
+[installed benchmark procedure](../tools/README.md#installed-package-benchmarks).
+Use the same source and options for every variant. Compare released and candidate
+net10.0 assets on each fixed runtime; compare candidate net10.0/net11.0 assets on
+the net11.0 host separately. This separates renderer changes from runtime and
+target-framework changes. Retain fidelity differences, including released behavior
+that differs from a current frozen reference; image equality is no timing shortcut.
+The measured public call includes parsing, rasterization and PNG encoding. Input
+I/O and supplied-font acquisition stay outside; bare returned memory is distinct
+from governed ownership and process/native peak memory.
 
 For cold observations, use fresh MemoryProbe processes with
 the [diagnostic procedure](../README.md#diagnostic-tools); report initialization

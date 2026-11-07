@@ -1,6 +1,7 @@
 /artifacts/
 /BenchmarkDotNet.Artifacts/
 /benchmarks/Lokad.Svg.Benchmarks/.bdn/
+/benchmarks/Lokad.Svg.InstalledBenchmarks/.bdn/
 /external/
 **/bin/
 **/obj/

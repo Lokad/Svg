@@ -67,6 +67,34 @@ Timed comparisons belong on the dedicated quiet host described in
 [benchmarks](../docs/BENCHMARKS.md). Neither isolated project joins the ordinary
 solution build or adds a shipping renderer dependency.
 
+## Installed package benchmarks
+
+Use a separate source copy and package cache for each package/asset/host variant.
+Populate a local feed with hash-verified packages first. The explicit environment
+selections also reach BenchmarkDotNet's generated builds; `--runtimes` is rejected
+because the selected package asset and host must stay paired.
+
+```powershell
+$installedProject = "benchmarks/Lokad.Svg.InstalledBenchmarks"
+$installedResults = Join-Path (Get-Location) "artifacts/installed-benchmarks/candidate-net10-on-net11"
+$env:LokadSvgPackageVersion = "0.4.0-dev.1"
+$env:LokadSvgAssetFramework = "net10.0"
+$env:LokadSvgHostFramework = "net11.0"
+$env:NUGET_PACKAGES = "$installedResults/packages"
+dotnet restore $installedProject --source artifacts/package-comparison/feed --source https://api.nuget.org/v3/index.json
+dotnet restore $installedProject --locked-mode --source artifacts/package-comparison/feed --source https://api.nuget.org/v3/index.json
+dotnet run -c Release --no-restore --project $installedProject -- --verify "$installedResults/observed"
+dotnet run -c Release --no-restore --project $installedProject -- --job Short --filter "*" --exporters JSON --artifacts "$installedResults/timed"
+```
+
+Compare verification PNGs with their original platform references before timing.
+Keep every fidelity difference with the timing results. Setup validates immutable
+input/font hashes and retains supplied fonts outside the measured public call.
+The builder pins the project and ignored generated-output locations explicitly;
+its generation, compiler, executor and measurement behavior stay unchanged.
+The lock files live under ignored `artifacts/installed-benchmarks/`. Retain raw
+distributions and allocation/GC data; short jobs do not establish general throughput.
+
 ## Development and qualification
 
 Use the [three test responsibilities](../tests/README.md) to choose a short edit

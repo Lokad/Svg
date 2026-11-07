@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks />
+    <TargetFramework>$(LokadSvgHostFramework)</TargetFramework>
+    <NuGetLockFilePath>$(MSBuildThisFileDirectory)../../artifacts/installed-benchmarks/$(LokadSvgPackageVersion)/$(LokadSvgAssetFramework)/$(LokadSvgHostFramework)/packages.lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="Lokad.Svg" VersionOverride="$(LokadSvgPackageVersion)" GeneratePathProperty="true" ExcludeAssets="all" PrivateAssets="all" />
+    <Reference Include="Lokad.Svg">
+      <HintPath>$(PkgLokad_Svg)/lib/$(LokadSvgAssetFramework)/Lokad.Svg.dll</HintPath>
+    </Reference>
+    <Compile Include="../Lokad.Svg.Benchmarks/BenchmarkCorpus.cs" Link="BenchmarkCorpus.cs" />
+  </ItemGroup>
+  <Target Name="RequireInstalledComparison" BeforeTargets="CollectPackageReferences">
+    <Error Condition="'$(LokadSvgPackageVersion)' == ''" Text="Pass LokadSvgPackageVersion explicitly." />
+    <Error Condition="'$(LokadSvgAssetFramework)' != 'net10.0' and '$(LokadSvgAssetFramework)' != 'net11.0'" Text="Pass LokadSvgAssetFramework explicitly: net10.0 or net11.0." />
+    <Error Condition="'$(LokadSvgHostFramework)' != 'net10.0' and '$(LokadSvgHostFramework)' != 'net11.0'" Text="Pass LokadSvgHostFramework explicitly: net10.0 or net11.0." />
+    <Error Condition="'$(LokadSvgAssetFramework)' == 'net11.0' and '$(LokadSvgHostFramework)' == 'net10.0'" Text="The net11.0 asset requires the net11.0 host." />
+  </Target>
+</Project>
