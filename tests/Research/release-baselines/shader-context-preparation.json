@@ -1,5 +1,5 @@
 {
-  "status": "Draw-local sampling-context preparation is fully qualified across source/runtime/package/original contexts except unchanged frozen Windows DejaVu. Coordinated throughput remains separate and pending.",
+  "status": "Repeated per-pixel draw-context preparation is closed: counted 2706\u21921 regression, seven lifetime cases, full four-context/package/original qualification and exact native outputs. Quiet chart improvements are bounded; icon/control throughput is near neutral.",
   "parentCommit": "7b1a829f437cd84f625bf40096b3657d30040ff6",
   "lead": "cmap-batch-attribution.json",
   "sourceFilesLfSha256": {
@@ -474,8 +474,9 @@
   ],
   "profileScope": "Same net10 public driver on runtime 11 RC3, eight warmups and 100 calls under EventPipe. Local work overlaps, so durations/sample totals establish no throughput claim. Zero lost events, exact reference pixels and no meaningful allocation increase; context preparation is absent from the retained leading frames, which is not proof of zero execution.",
   "nextActions": [
-    "Execute the sealed coordinated comparison with separately configured elapsed warmup for the small control; retain all data and inspect measured-half drift.",
-    "Keep native allocation/live/peak, minimal-consumer startup/IPC/I/O and source-authority scopes separate."
+    "Preserve distinct scope/source/native/platform/ownership contracts; optimize further only with a demonstrated mechanism and benefit.",
+    "Minimal-consumer startup/IPC/I/O, native memory attribution and T18/W1/R85 source authority remain separate."
   ],
-  "fullQualification": "shader-context-qualified.json"
+  "fullQualification": "shader-context-qualified.json",
+  "quietMeasurement": "shader-context-quiet.json"
 }

@@ -1,0 +1,1582 @@
+{
+  "status": "Draw-local shader sampling is closed with coherent correctness/package/original qualification and the predeclared quiet comparison. Chart improves; icon/control rates are near neutral.",
+  "date": "2026-11-07",
+  "qualifiedSourceCommit": "16466c3f6ee8716063ab879d655a0bead5c44444",
+  "precedingMeasurement": "cmap-batch-quiet.json",
+  "correction": "shader-context-preparation.json",
+  "qualification": "shader-context-qualified.json",
+  "beforeSourceCommit": "def8a865ccbd415cba6f41d95f485aca00aa9128",
+  "installedHarnessCommit": "b0d9a22f17cb8b282bd950c329d51c2cecd74061",
+  "installedHarnessSourceSha256Lf": {
+    "benchmarks/Lokad.Svg.InstalledBenchmarks/Program.cs": "feed0c13de10e19d3fa9fb7bd7678ed8d6deeadac8e4d372d8cfda48d8028de2",
+    "benchmarks/Lokad.Svg.InstalledBenchmarks/Lokad.Svg.InstalledBenchmarks.csproj": "2adf3721092b6aad9415aaee434be23de8c90dc21dfee63567a53116ae93c6a6",
+    "benchmarks/Lokad.Svg.Benchmarks/BenchmarkCorpus.cs": "57abdbd63a7a23f96246b7873aa548742246a517f42c8c3f4628fffc71cd4045"
+  },
+  "packages": [
+    {
+      "phase": "before",
+      "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+      "sha256": "5b552044e587e9331e82f56aa64be5524ecc28479dac934c5533ec3d007830d0"
+    },
+    {
+      "phase": "after",
+      "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+      "sha256": "20be2ddd5433a2f5542245749214a0cbacd6166c469902e4a15911424a0e6f2f"
+    }
+  ],
+  "variants": [
+    {
+      "phase": "before",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2"
+    },
+    {
+      "phase": "after",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "librarySha256": "d5503d2f8354a23320dba7a55d2974198755f26fe402402c5f2cb2c7d23c1052"
+    },
+    {
+      "phase": "after",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "librarySha256": "59c1f3dbefeefb0bc084c6bd85096a14d264478e1d664b3daf32c4e23ee11dcb"
+    },
+    {
+      "phase": "before",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e"
+    }
+  ],
+  "dataFilesSha256": {
+    "shader-context-quiet.csv": "60cf5623f76ff47a499ec7cc556b8cf4a0f820ac476b538313975eafd2f02189",
+    "shader-context-quiet-samples.json": "83165a312456545b7eae65e94d484aca1cba98ddab3fd8cd8d632fb830f06024"
+  },
+  "retrieval": {
+    "workersRemaining": 0,
+    "sha256": "fe1f156509c440c094d7079ca7b3de3ded6235dbbb8cbb1dbe3a789cc4f139de",
+    "bytes": 1101200
+  },
+  "environment": {
+    "host": "Ubuntu 24.04.5 LTS; Linux 7.0.0-1017-azure; x86_64",
+    "cpu": "4 AMD EPYC 9V45 virtual CPUs; Microsoft Hyper-V",
+    "sdkAndRuntimeIdentities": [
+      {
+        "sdk": "10.0.403",
+        "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz",
+        "sha512": "b7b3d8461cf98b07d2552ce9199702fa3ad010ac2671a5f8cd5136f7534e50f6855ba7bbb02b11494563f1d04156276a31cda1103b900e5eecd0d9473dc7b9c5",
+        "bytes": 240199984,
+        "metadataUrl": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json",
+        "metadataSha256": "8fa7ae2d46b1f94416d5458c7ed68b0c3cafc5efb8e34d89dea3a98bf0a38b33"
+      },
+      {
+        "sdk": "11.0.100-rc.3.26522.148",
+        "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/11.0.100-rc.3.26522.148/dotnet-sdk-11.0.100-rc.3.26522.148-linux-x64.tar.gz",
+        "sha512": "77ef603622f0632ce59fc631871c9d0ec0c7402399837c659ead5b6fc7ea898f7f64a2632ecdc8d3330e608307416a36bff90a4d10179210489676167b9b80da",
+        "bytes": 210871952,
+        "metadataUrl": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/11.0/releases.json",
+        "metadataSha256": "145bf2e9b4710079f1e3f92b48224eed27184aed5f1492f9d3d9e5770ee4ea99"
+      }
+    ],
+    "affinity": "taskset CPU 0, inherited by benchmark child processes",
+    "explicitDotnetEnvironment": {
+      "DOTNET_gcServer": "0",
+      "DOTNET_gcConcurrent": "1",
+      "DOTNET_TieredCompilation": "1",
+      "DOTNET_TieredPGO": "1"
+    },
+    "powerControl": "Guest scaling governors were not exposed; physical-host frequency/power and neighboring physical workload were not controlled.",
+    "idle": {
+      "idle-before.txt": {
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      },
+      "idle-after.txt": {
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      },
+      "final-idle.txt": {
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      }
+    }
+  },
+  "method": {
+    "route": "Public installed-package ConvertToPng; parse, raster and PNG included. Setup/input I/O/font acquisition excluded.",
+    "order": [
+      "before-net10.0-on-net10.0",
+      "after-net10.0-on-net10.0",
+      "after-net11.0-on-net11.0",
+      "before-net11.0-on-net11.0"
+    ],
+    "orderLimit": "Native target/host pairs only, with reversed before/after order across runtimes. Within-runtime order is not randomized; this does not isolate a runtime effect.",
+    "launches": 3,
+    "warmupIterationsPerLaunch": 40,
+    "measurementIterationsPerLaunch": 8,
+    "invocationsByDocument": {
+      "chart": 8,
+      "icon-sheet": 8,
+      "geometry-rect": 256
+    },
+    "unrollFactor": 1,
+    "outliers": "DontRemove",
+    "jobs": 12,
+    "actualSamples": 288,
+    "libraryMarkersVerified": 36,
+    "memory": "BenchmarkDotNet cumulative managed allocation per operation; not peak/native memory or budget reservation."
+  },
+  "comparisons": [
+    {
+      "asset": "net10.0",
+      "host": "net10.0",
+      "document": "chart",
+      "beforeMedianNs": 175202389.375,
+      "afterMedianNs": 148387299.75,
+      "medianReductionPercent": 15.305207720429815,
+      "beforeAllocatedBytes": 46698265,
+      "afterAllocatedBytes": 46698253
+    },
+    {
+      "asset": "net10.0",
+      "host": "net10.0",
+      "document": "icon-sheet",
+      "beforeMedianNs": 20981711.125,
+      "afterMedianNs": 21044247.625,
+      "medianReductionPercent": -0.2980524306498866,
+      "beforeAllocatedBytes": 25930004,
+      "afterAllocatedBytes": 25930004
+    },
+    {
+      "asset": "net10.0",
+      "host": "net10.0",
+      "document": "geometry-rect",
+      "beforeMedianNs": 1073628.998046875,
+      "afterMedianNs": 1081218.0078125,
+      "medianReductionPercent": -0.7068558859187668,
+      "beforeAllocatedBytes": 234338,
+      "afterAllocatedBytes": 234338
+    },
+    {
+      "asset": "net11.0",
+      "host": "net11.0",
+      "document": "chart",
+      "beforeMedianNs": 158921508.8125,
+      "afterMedianNs": 135927501.9375,
+      "medianReductionPercent": 14.468782134537229,
+      "beforeAllocatedBytes": 46700083,
+      "afterAllocatedBytes": 46702403
+    },
+    {
+      "asset": "net11.0",
+      "host": "net11.0",
+      "document": "icon-sheet",
+      "beforeMedianNs": 18798167.3125,
+      "afterMedianNs": 18954153.1875,
+      "medianReductionPercent": -0.8297929920874525,
+      "beforeAllocatedBytes": 25930004,
+      "afterAllocatedBytes": 25930004
+    },
+    {
+      "asset": "net11.0",
+      "host": "net11.0",
+      "document": "geometry-rect",
+      "beforeMedianNs": 898551.068359375,
+      "afterMedianNs": 904304.369140625,
+      "medianReductionPercent": -0.6402864549206688,
+      "beforeAllocatedBytes": 234338,
+      "afterAllocatedBytes": 234338
+    }
+  ],
+  "untimedPixels": [
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "librarySha256": "d5503d2f8354a23320dba7a55d2974198755f26fe402402c5f2cb2c7d23c1052",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "librarySha256": "59c1f3dbefeefb0bc084c6bd85096a14d264478e1d664b3daf32c4e23ee11dcb",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e",
+      "cases": [
+        {
+          "id": "geometry-rect",
+          "sourceSha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "geometry-cubic",
+          "sourceSha256": "2ca8031425ac3e87af198cf818f59facacbdeadd42b0518d03e0bca32f0d89ea",
+          "pngSha256": "4f114c55bf42721d73a2a01f28640415200e55e5ccffb08a4173671ea2fe5888",
+          "bytes": 2834
+        },
+        {
+          "id": "geometry-arc",
+          "sourceSha256": "43c9a820389edae81e9a305b3afcb22091bd2e26a26e4864260b426f4efa7042",
+          "pngSha256": "cb2e962bcc7c744d1148c2557bc8917447c413006552316402828f8f9e3110f3",
+          "bytes": 2216
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "sourceSha256": "701f301052a919001afc9721968857b1013545aa4dd7cdd9a090bcce69bca3f6",
+          "pngSha256": "2f4d0b99ce21d149d0f263d5ec752185f4b8c80957c0b8ba84f57ec55189808a",
+          "bytes": 2774
+        },
+        {
+          "id": "stroke-round-join",
+          "sourceSha256": "394b0b32e823bf5d1d7fba56cb285cf4c15a110faf61a67cbfe5dfd1c5c750e9",
+          "pngSha256": "2d20d1ef483b5f5618b09998817fb3178158ba7e702a3f9caf7bc603b5cb969d",
+          "bytes": 2523
+        },
+        {
+          "id": "nested-affine",
+          "sourceSha256": "724d7b53462dc38a52377fa820cfc8059a2167e7bc3fe8354f17a2e326f886d9",
+          "pngSha256": "fa0ce9289199898fedfb8b14c68ef0987c7a7978481e4d0bf42917452c539c92",
+          "bytes": 1320
+        },
+        {
+          "id": "symbol-opacity",
+          "sourceSha256": "752d41a823885180cae1744e5976cea9965ba04ab7c6ba67f856a9087709bfc9",
+          "pngSha256": "72e1954f6f80976189dac6eb2ba6105fe0e0b281f35bf7a3399b3df35406cfaa",
+          "bytes": 1309
+        },
+        {
+          "id": "linear-affine",
+          "sourceSha256": "e37765e92d1f0451754d754bb0a45555a435334968a20326374f02780db64d75",
+          "pngSha256": "d390eea036370d1d5ebe15104050545b8d7c0e7f8db36df54aaff15b280eaac1",
+          "bytes": 6418
+        },
+        {
+          "id": "radial-affine",
+          "sourceSha256": "b9fd88a8560293d20dd20cb9b4001fc403020c954faea43fb2174d26c8bca9d4",
+          "pngSha256": "d858214b9598e8c8f5b44161324fbe3152e7d9b0b87d4b5e0c29b5938cafa014",
+          "bytes": 9060
+        },
+        {
+          "id": "object-box-clip",
+          "sourceSha256": "77891bd84318ef4402d4d72a44425799bd19adcd39e37c71d88c531370fc7113",
+          "pngSha256": "7642781e208ff275c68a400709fd76a37c3a11a9238d96dee9e3ee25f500d9fe",
+          "bytes": 1609
+        },
+        {
+          "id": "nested-clip-child",
+          "sourceSha256": "da47d6e01214bf3085cf2d333167f8bde3e7771efcfeb78ac7069899c8e8f4da",
+          "pngSha256": "1014969af7dda86dac74ca9543a3d3bb003798064d481520f3aa05e99f063626",
+          "bytes": 2539
+        },
+        {
+          "id": "clip-child-union",
+          "sourceSha256": "8176c0777f49868282224152c6fc62b0aa8db1aa71bd1c0b7a17a4320131032d",
+          "pngSha256": "eccdd71f7d94eafa3f2111af802561f2b54943334e31d34b16585510b0637397",
+          "bytes": 3192
+        },
+        {
+          "id": "luminance-mask",
+          "sourceSha256": "e7d33a2a64de9ccd7111321870b830b99fd847d523a240d469e30150d33973a8",
+          "pngSha256": "c3770b7fcf58bd0fb1e5aff60953f301bb6f5afa49e3d8bc2cfc4e52fb19f894",
+          "bytes": 2804
+        },
+        {
+          "id": "pattern-viewbox",
+          "sourceSha256": "5131c57be09bab2ee3cde1482ccbd9f71a374c0973482640ec1e110ae373b2bc",
+          "pngSha256": "59f9961b50c1540264180843652e6ee567264809dfeed102a2be2c4b01280387",
+          "bytes": 1785
+        },
+        {
+          "id": "pattern-affine",
+          "sourceSha256": "9679019932fd8cd3886fb8bb7ba87193927b5ca95b446600db7f94ade49bdc00",
+          "pngSha256": "3872505186282d22690d96f70c657a7ff9fd57b2b6d041866287bfae94455eda",
+          "bytes": 5668
+        },
+        {
+          "id": "embedded-png",
+          "sourceSha256": "4e10fee7ee472711cc62ef97944da77b89279fe5f7707ed73c1759a1589edf3f",
+          "pngSha256": "5ade1de8ff89f29f675f2772b1ceee78a149bec7de7828bdff8ad70d6ef27881",
+          "bytes": 3173
+        },
+        {
+          "id": "blur",
+          "sourceSha256": "38427e29a1fe7142afd40999b92ed543fff0c95c5a20aa219cf841c00efd5668",
+          "pngSha256": "9a25abcf6e615508e46319e0f668f71afea2d88f79a69cd23f5b9fe68eb756bf",
+          "bytes": 4709
+        },
+        {
+          "id": "blend-multiply",
+          "sourceSha256": "4a15b64c20bb37716addf58d78986c908d2cbac983fdd29b3004c08e0ecddead",
+          "pngSha256": "a4970b038c3f244bb99c38dae9512d18b6986310af88bc88e020cf174146d435",
+          "bytes": 1405
+        },
+        {
+          "id": "composite-in",
+          "sourceSha256": "15d8befdbc6f2729cb71ae9080e42888d3315d2355beed6fdbabc9d269b16801",
+          "pngSha256": "c798429d843206d633f66f95b36f824a859495d8b56ca8ace1b096fc52bf9ce3",
+          "bytes": 1317
+        },
+        {
+          "id": "merge-color-spaces",
+          "sourceSha256": "dcbbbcd5bd46931132ad774950c9e891bb44c5b18d6e1ba0dc7263e36258dae1",
+          "pngSha256": "b85b83c024c891acc69cad775f574560b1c7543470e73d48a40fcbf9f017b321",
+          "bytes": 1932
+        },
+        {
+          "id": "filter-mask-clip",
+          "sourceSha256": "8440e080604e9e76d1ec4a3010477b8b8e3b5682c3215247a62db95e1344c830",
+          "pngSha256": "6f767ac4acd9f89e57ab6ed05ebd56a878bfde9c548318091f8b20e8f308911b",
+          "bytes": 6091
+        },
+        {
+          "id": "css-priority",
+          "sourceSha256": "32abf276b0e4d0a4bf7288f2e297d81acc70eb00122c1f81ca463f505fdaaa48",
+          "pngSha256": "06a39e9b987b2582bc7398be7da5ae248930584403de03ccd13a0a7a0fa4a3bc",
+          "bytes": 1312
+        },
+        {
+          "id": "text-real-italic",
+          "sourceSha256": "e006f17d0b952289b984b036a57f6179aed25a5bc1feaf4dd82f21bfc5cdb88d",
+          "pngSha256": "448cdca217856b5dcb0e615eb4e4a376bc98cdf63a92f1f360dc94d07b8e7492",
+          "bytes": 1895
+        },
+        {
+          "id": "text-path",
+          "sourceSha256": "46b9cc99973090f86036f041f1b041f43d88b9fc3293b8edeba1f3530decb1ba",
+          "pngSha256": "e599d88bf9a1f09bb027e1dc923f5fb4c2154bd20cfd5d08b8d5c24221d300db",
+          "bytes": 4415
+        },
+        {
+          "id": "wpt-marker-path",
+          "sourceSha256": "02d017dc9dab654d002f56b4acf7b92fd09c12270641405c1ec8a399d5909913",
+          "pngSha256": "82c873128e07d92f5e54ea57979b74092e3fa2fe4420075f0d6ffe964de1da25",
+          "bytes": 5652
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "sourceSha256": "c5c0112954f5bf52f7423fe5a750d6d3a46a96100dc3a73a46800de1f81e75b3",
+          "pngSha256": "669eef7e95f26d1c0e4e90f533a929a98846f198ef895927ec48956e2087e2bc",
+          "bytes": 673
+        },
+        {
+          "id": "icon-sheet",
+          "sourceSha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76",
+          "pngSha256": "a909178566a4e6f1450a192b542ecb48c9af808f17ce47160e27528d72f77caa",
+          "bytes": 28556
+        },
+        {
+          "id": "wordmark",
+          "sourceSha256": "a45bd74b1616363c4418e696ae9bfe55b564789e5a61deae70bce094bed9340b",
+          "pngSha256": "65b7f527a6d8dad4e17d26f2e61d3a2af7ab922b87da62781fbe7383dac96f08",
+          "bytes": 29868
+        },
+        {
+          "id": "chart",
+          "sourceSha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802",
+          "pngSha256": "9fa7894c679a29c767d287d304539df6300c2caf692d5d5deac2924be8432e14",
+          "bytes": 125245
+        }
+      ],
+      "nativeExact": 29
+    }
+  ],
+  "conclusion": "All 288 measured and 1440 warmup iterations retained. Chart median improves 175.2\u2192148.4ms (15.3%) on native net10 and 158.9\u2192135.9ms (14.5%) on native net11. Chart measured-half drift stays below 0.5%. Icon-sheet changes -0.3%/-0.8% and control -0.7%/-0.6% (negative means slower), so no icon/control speedup is claimed. Control measured-half drift stays below 0.6% with its separately predeclared 10240 warmup calls. Allocations are essentially unchanged and all 116 native images exact. Scope is this host, workloads and explicit configuration, not general library/runtime throughput.",
+  "lease": "Canonical exclusive lock retained through shutdown, final idle capture and verified retrieval. Holder 1341835 / handle49319 exited 0 with SHADER_CONTEXT_LOCK_RELEASED; sttropez explicitly notified. No global/service changes.",
+  "remaining": [
+    "Additional glyph/filter/gradient profiling, runtime cause attribution, native comparator scopes, cold startup and process/native memory remain open.",
+    "Frozen Windows DejaVu authority and W1/R85/R86 provenance remain separate correctness gates."
+  ],
+  "withinLaunchSteadiness": [
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "chart",
+      "launch": 1,
+      "firstHalfMedianNs": 174806999.125,
+      "secondHalfMedianNs": 174728768.0625,
+      "secondOverFirst": 0.999552471795228,
+      "lastFiveWarmupMedianNs": 175078002.875
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "chart",
+      "launch": 2,
+      "firstHalfMedianNs": 175313274.375,
+      "secondHalfMedianNs": 175183266.25,
+      "secondOverFirst": 0.9992584239529866,
+      "lastFiveWarmupMedianNs": 175552649.625
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "chart",
+      "launch": 3,
+      "firstHalfMedianNs": 180508004.375,
+      "secondHalfMedianNs": 180030550.4375,
+      "secondOverFirst": 0.997354943127574,
+      "lastFiveWarmupMedianNs": 180792706.0
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "icon-sheet",
+      "launch": 1,
+      "firstHalfMedianNs": 21137592.0625,
+      "secondHalfMedianNs": 20737457.5625,
+      "secondOverFirst": 0.9810700055703188,
+      "lastFiveWarmupMedianNs": 20879065.875
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "icon-sheet",
+      "launch": 2,
+      "firstHalfMedianNs": 20790805.4375,
+      "secondHalfMedianNs": 20701182.875,
+      "secondOverFirst": 0.9956893174355645,
+      "lastFiveWarmupMedianNs": 20747509.5
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "icon-sheet",
+      "launch": 3,
+      "firstHalfMedianNs": 21892831.25,
+      "secondHalfMedianNs": 21566785.5625,
+      "secondOverFirst": 0.9851071940501072,
+      "lastFiveWarmupMedianNs": 21702976.375
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "geometry-rect",
+      "launch": 1,
+      "firstHalfMedianNs": 1123885.013671875,
+      "secondHalfMedianNs": 1124911.15234375,
+      "secondOverFirst": 1.0009130281651524,
+      "lastFiveWarmupMedianNs": 1121513.49609375
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "geometry-rect",
+      "launch": 2,
+      "firstHalfMedianNs": 1065926.1484375,
+      "secondHalfMedianNs": 1065111.884765625,
+      "secondOverFirst": 0.999236097479109,
+      "lastFiveWarmupMedianNs": 1065256.55859375
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "geometry-rect",
+      "launch": 3,
+      "firstHalfMedianNs": 1072630.61328125,
+      "secondHalfMedianNs": 1071917.654296875,
+      "secondOverFirst": 0.9993353173258835,
+      "lastFiveWarmupMedianNs": 1071502.9921875
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "chart",
+      "launch": 1,
+      "firstHalfMedianNs": 148023616.0,
+      "secondHalfMedianNs": 148530125.3125,
+      "secondOverFirst": 1.0034218142090245,
+      "lastFiveWarmupMedianNs": 148930351.5
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "chart",
+      "launch": 2,
+      "firstHalfMedianNs": 164083915.5625,
+      "secondHalfMedianNs": 163894315.125,
+      "secondOverFirst": 0.9988444910224745,
+      "lastFiveWarmupMedianNs": 164747938.375
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "chart",
+      "launch": 3,
+      "firstHalfMedianNs": 146497131.8125,
+      "secondHalfMedianNs": 146598604.4375,
+      "secondOverFirst": 1.0006926594653736,
+      "lastFiveWarmupMedianNs": 146481234.625
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "icon-sheet",
+      "launch": 1,
+      "firstHalfMedianNs": 21193748.375,
+      "secondHalfMedianNs": 20914414.875,
+      "secondOverFirst": 0.9868200048874082,
+      "lastFiveWarmupMedianNs": 21128642.0
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "icon-sheet",
+      "launch": 2,
+      "firstHalfMedianNs": 22590558.125,
+      "secondHalfMedianNs": 22467236.4375,
+      "secondOverFirst": 0.994541007494475,
+      "lastFiveWarmupMedianNs": 22508118.125
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "icon-sheet",
+      "launch": 3,
+      "firstHalfMedianNs": 20468299.9375,
+      "secondHalfMedianNs": 20188524.4375,
+      "secondOverFirst": 0.9863312780810182,
+      "lastFiveWarmupMedianNs": 20547945.875
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "geometry-rect",
+      "launch": 1,
+      "firstHalfMedianNs": 1073206.119140625,
+      "secondHalfMedianNs": 1079003.328125,
+      "secondOverFirst": 1.0054017666140564,
+      "lastFiveWarmupMedianNs": 1074412.41015625
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "geometry-rect",
+      "launch": 2,
+      "firstHalfMedianNs": 1123079.244140625,
+      "secondHalfMedianNs": 1122211.396484375,
+      "secondOverFirst": 0.9992272605332368,
+      "lastFiveWarmupMedianNs": 1121082.32421875
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "geometry-rect",
+      "launch": 3,
+      "firstHalfMedianNs": 1078526.017578125,
+      "secondHalfMedianNs": 1073272.21484375,
+      "secondOverFirst": 0.9951287195220634,
+      "lastFiveWarmupMedianNs": 1078554.65234375
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "chart",
+      "launch": 1,
+      "firstHalfMedianNs": 134882918.1875,
+      "secondHalfMedianNs": 134248000.5625,
+      "secondOverFirst": 0.9952928240763785,
+      "lastFiveWarmupMedianNs": 134564828.375
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "chart",
+      "launch": 2,
+      "firstHalfMedianNs": 135867627.0,
+      "secondHalfMedianNs": 136230166.9375,
+      "secondOverFirst": 1.0026683320045031,
+      "lastFiveWarmupMedianNs": 136312132.0
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "chart",
+      "launch": 3,
+      "firstHalfMedianNs": 136989639.8125,
+      "secondHalfMedianNs": 136972752.8125,
+      "secondOverFirst": 0.9998767279042188,
+      "lastFiveWarmupMedianNs": 137337835.25
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "icon-sheet",
+      "launch": 1,
+      "firstHalfMedianNs": 18954272.375,
+      "secondHalfMedianNs": 18777964.8125,
+      "secondOverFirst": 0.9906982679676724,
+      "lastFiveWarmupMedianNs": 19094163.75
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "icon-sheet",
+      "launch": 2,
+      "firstHalfMedianNs": 19242753.875,
+      "secondHalfMedianNs": 18988232.125,
+      "secondOverFirst": 0.9867731120164317,
+      "lastFiveWarmupMedianNs": 19191914.625
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "icon-sheet",
+      "launch": 3,
+      "firstHalfMedianNs": 19056969.8125,
+      "secondHalfMedianNs": 18710181.4375,
+      "secondOverFirst": 0.9818025437195933,
+      "lastFiveWarmupMedianNs": 18989392.0
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "geometry-rect",
+      "launch": 1,
+      "firstHalfMedianNs": 904456.060546875,
+      "secondHalfMedianNs": 900623.794921875,
+      "secondOverFirst": 0.9957629056930827,
+      "lastFiveWarmupMedianNs": 904834.6171875
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "geometry-rect",
+      "launch": 2,
+      "firstHalfMedianNs": 899667.794921875,
+      "secondHalfMedianNs": 902200.287109375,
+      "secondOverFirst": 1.0028149192421854,
+      "lastFiveWarmupMedianNs": 899367.578125
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "geometry-rect",
+      "launch": 3,
+      "firstHalfMedianNs": 1003448.2578125,
+      "secondHalfMedianNs": 1004878.677734375,
+      "secondOverFirst": 1.0014255044151388,
+      "lastFiveWarmupMedianNs": 1000882.828125
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "chart",
+      "launch": 1,
+      "firstHalfMedianNs": 158870574.875,
+      "secondHalfMedianNs": 159078740.5625,
+      "secondOverFirst": 1.0013102847249327,
+      "lastFiveWarmupMedianNs": 159004397.5
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "chart",
+      "launch": 2,
+      "firstHalfMedianNs": 158160219.0625,
+      "secondHalfMedianNs": 158190545.3125,
+      "secondOverFirst": 1.0001917438543002,
+      "lastFiveWarmupMedianNs": 158239656.375
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "chart",
+      "launch": 3,
+      "firstHalfMedianNs": 159607750.375,
+      "secondHalfMedianNs": 159996527.125,
+      "secondOverFirst": 1.0024358262621118,
+      "lastFiveWarmupMedianNs": 159981211.25
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "icon-sheet",
+      "launch": 1,
+      "firstHalfMedianNs": 18960148.625,
+      "secondHalfMedianNs": 18745458.5625,
+      "secondOverFirst": 0.988676773228617,
+      "lastFiveWarmupMedianNs": 19091267.5
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "icon-sheet",
+      "launch": 2,
+      "firstHalfMedianNs": 19031546.75,
+      "secondHalfMedianNs": 18778107.0,
+      "secondOverFirst": 0.9866831764475475,
+      "lastFiveWarmupMedianNs": 18916420.375
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "icon-sheet",
+      "launch": 3,
+      "firstHalfMedianNs": 18812667.375,
+      "secondHalfMedianNs": 18597963.0,
+      "secondOverFirst": 0.9885872443965432,
+      "lastFiveWarmupMedianNs": 18854608.75
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "geometry-rect",
+      "launch": 1,
+      "firstHalfMedianNs": 956878.884765625,
+      "secondHalfMedianNs": 962005.345703125,
+      "secondOverFirst": 1.0053574815152868,
+      "lastFiveWarmupMedianNs": 952763.3046875
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "geometry-rect",
+      "launch": 2,
+      "firstHalfMedianNs": 896002.86328125,
+      "secondHalfMedianNs": 894849.734375,
+      "secondOverFirst": 0.9987130298869502,
+      "lastFiveWarmupMedianNs": 892666.39453125
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "geometry-rect",
+      "launch": 3,
+      "firstHalfMedianNs": 891840.95703125,
+      "secondHalfMedianNs": 896160.27734375,
+      "secondOverFirst": 1.0048431508762259,
+      "lastFiveWarmupMedianNs": 889606.8359375
+    }
+  ],
+  "predeclaredProtocol": "Four native asset/runtime contexts, three launches, 40 warmup and eight measured iterations. Chart/icon use eight invocations per iteration (320 warmup calls); font-free geometry uses 256 (10240 warmup calls) to provide adequate elapsed JIT/PGO warmup. Retain every iteration/outlier, inspect per-launch measured-half drift; do not rerun adaptively.",
+  "conversionCounts": {
+    "warmup": 130560,
+    "measured": 26112,
+    "rawMeasuredIterations": 288,
+    "rawWarmupIterations": 1440
+  },
+  "precedingWarmedProtocol": "cmap-batch-quiet.json",
+  "campaignProcesses": [
+    {
+      "phase": "before",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "jobs": 3,
+      "launches": 3,
+      "seconds": 385.47428951901384,
+      "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2"
+    },
+    {
+      "phase": "after",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "jobs": 3,
+      "launches": 3,
+      "seconds": 350.137349625933,
+      "librarySha256": "d5503d2f8354a23320dba7a55d2974198755f26fe402402c5f2cb2c7d23c1052"
+    },
+    {
+      "phase": "after",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "jobs": 3,
+      "launches": 3,
+      "seconds": 323.0799173269188,
+      "librarySha256": "59c1f3dbefeefb0bc084c6bd85096a14d264478e1d664b3daf32c4e23ee11dcb"
+    },
+    {
+      "phase": "before",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "jobs": 3,
+      "launches": 3,
+      "seconds": 356.71707744000014,
+      "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e"
+    }
+  ],
+  "retrievalIntegrity": {
+    "archiveSha256": "fe1f156509c440c094d7079ca7b3de3ded6235dbbb8cbb1dbe3a789cc4f139de",
+    "archiveBytes": 1101200,
+    "actualIterations": 288,
+    "warmupIterations": 1440,
+    "libraryMarkers": 36,
+    "hashedVerificationPngs": 116
+  },
+  "leaseReleasedUtc": "2026-11-07T22:45:35Z",
+  "reportedEnvironments": [
+    {
+      "phase": "before",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "hostReport": {
+        "BenchmarkDotNetCaption": "BenchmarkDotNet",
+        "BenchmarkDotNetVersion": "0.16.0-preview.2",
+        "OsVersion": "Linux Ubuntu 24.04.5 LTS (Noble Numbat)",
+        "ProcessorName": "AMD EPYC 9V45",
+        "PhysicalProcessorCount": 1,
+        "PhysicalCoreCount": 4,
+        "LogicalCoreCount": 4,
+        "RuntimeVersion": ".NET 10.0.14 (10.0.14, 10.0.1426.52326)",
+        "Architecture": "X64",
+        "HasAttachedDebugger": false,
+        "HasRyuJit": true,
+        "Configuration": "RELEASE",
+        "DotNetCliVersion": "11.0.100-rc.3.26522.148",
+        "ChronometerFrequency": {
+          "Hertz": 1000000000
+        },
+        "HardwareTimerKind": "Unknown"
+      },
+      "workerRuntimeAndGc": "Runtime = .NET 10.0.14 (10.0.14, 10.0.1426.52326), X64 RyuJIT x86-64-v4; GC = Concurrent Workstation"
+    },
+    {
+      "phase": "after",
+      "asset": "net10.0",
+      "host": "net10.0",
+      "hostReport": {
+        "BenchmarkDotNetCaption": "BenchmarkDotNet",
+        "BenchmarkDotNetVersion": "0.16.0-preview.2",
+        "OsVersion": "Linux Ubuntu 24.04.5 LTS (Noble Numbat)",
+        "ProcessorName": "AMD EPYC 9V45",
+        "PhysicalProcessorCount": 1,
+        "PhysicalCoreCount": 4,
+        "LogicalCoreCount": 4,
+        "RuntimeVersion": ".NET 10.0.14 (10.0.14, 10.0.1426.52326)",
+        "Architecture": "X64",
+        "HasAttachedDebugger": false,
+        "HasRyuJit": true,
+        "Configuration": "RELEASE",
+        "DotNetCliVersion": "11.0.100-rc.3.26522.148",
+        "ChronometerFrequency": {
+          "Hertz": 1000000000
+        },
+        "HardwareTimerKind": "Unknown"
+      },
+      "workerRuntimeAndGc": "Runtime = .NET 10.0.14 (10.0.14, 10.0.1426.52326), X64 RyuJIT x86-64-v4; GC = Concurrent Workstation"
+    },
+    {
+      "phase": "after",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "hostReport": {
+        "BenchmarkDotNetCaption": "BenchmarkDotNet",
+        "BenchmarkDotNetVersion": "0.16.0-preview.2",
+        "OsVersion": "Linux Ubuntu 24.04.5 LTS (Noble Numbat)",
+        "ProcessorName": "AMD EPYC 9V45",
+        "PhysicalProcessorCount": 1,
+        "PhysicalCoreCount": 4,
+        "LogicalCoreCount": 4,
+        "RuntimeVersion": ".NET 11.0.0 (11.0.0-rc.3.26522.148, 11.0.26.52348)",
+        "Architecture": "X64",
+        "HasAttachedDebugger": false,
+        "HasRyuJit": true,
+        "Configuration": "RELEASE",
+        "DotNetCliVersion": "11.0.100-rc.3.26522.148",
+        "ChronometerFrequency": {
+          "Hertz": 1000000000
+        },
+        "HardwareTimerKind": "Unknown"
+      },
+      "workerRuntimeAndGc": "Runtime = .NET 11.0.0 (11.0.0-rc.3.26522.148, 11.0.26.52348), X64 RyuJIT x86-64-v4; GC = Concurrent Workstation"
+    },
+    {
+      "phase": "before",
+      "asset": "net11.0",
+      "host": "net11.0",
+      "hostReport": {
+        "BenchmarkDotNetCaption": "BenchmarkDotNet",
+        "BenchmarkDotNetVersion": "0.16.0-preview.2",
+        "OsVersion": "Linux Ubuntu 24.04.5 LTS (Noble Numbat)",
+        "ProcessorName": "AMD EPYC 9V45",
+        "PhysicalProcessorCount": 1,
+        "PhysicalCoreCount": 4,
+        "LogicalCoreCount": 4,
+        "RuntimeVersion": ".NET 11.0.0 (11.0.0-rc.3.26522.148, 11.0.26.52348)",
+        "Architecture": "X64",
+        "HasAttachedDebugger": false,
+        "HasRyuJit": true,
+        "Configuration": "RELEASE",
+        "DotNetCliVersion": "11.0.100-rc.3.26522.148",
+        "ChronometerFrequency": {
+          "Hertz": 1000000000
+        },
+        "HardwareTimerKind": "Unknown"
+      },
+      "workerRuntimeAndGc": "Runtime = .NET 11.0.0 (11.0.0-rc.3.26522.148, 11.0.26.52348), X64 RyuJIT x86-64-v4; GC = Concurrent Workstation"
+    }
+  ],
+  "controlLimit": "Geometry control uses a separate 256-invocation job: 10240 warmup conversions per launch, compared with 320 for chart/icon. All prior drifting control observations remain retained in cmap-batch-quiet.json; no adaptive rerun or sample removal.",
+  "betweenLaunchVariation": [
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "chart",
+      "rawActualLaunchMediansNs": [
+        174787166.5,
+        175202389.375,
+        180337493.5
+      ]
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "icon-sheet",
+      "rawActualLaunchMediansNs": [
+        20826552.5,
+        20706214.75,
+        21678702.125
+      ]
+    },
+    {
+      "variant": "before-net10.0-on-net10.0",
+      "document": "geometry-rect",
+      "rawActualLaunchMediansNs": [
+        1124911.15234375,
+        1065279.224609375,
+        1072039.791015625
+      ]
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "chart",
+      "rawActualLaunchMediansNs": [
+        148387299.75,
+        163981050.75,
+        146547899.375
+      ]
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "icon-sheet",
+      "rawActualLaunchMediansNs": [
+        21044247.625,
+        22568311.75,
+        20306746.0625
+      ]
+    },
+    {
+      "variant": "after-net10.0-on-net10.0",
+      "document": "geometry-rect",
+      "rawActualLaunchMediansNs": [
+        1075898.37890625,
+        1123079.244140625,
+        1074621.515625
+      ]
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "chart",
+      "rawActualLaunchMediansNs": [
+        134531353.6875,
+        135895695.8125,
+        136972752.8125
+      ]
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "icon-sheet",
+      "rawActualLaunchMediansNs": [
+        18850516.75,
+        19082364.5,
+        18748289.625
+      ]
+    },
+    {
+      "variant": "after-net11.0-on-net11.0",
+      "document": "geometry-rect",
+      "rawActualLaunchMediansNs": [
+        902399.84375,
+        902180.86328125,
+        1004878.677734375
+      ]
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "chart",
+      "rawActualLaunchMediansNs": [
+        158921508.8125,
+        158160219.0625,
+        159756558.75
+      ]
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "icon-sheet",
+      "rawActualLaunchMediansNs": [
+        18798167.3125,
+        18933856.5,
+        18653290.625
+      ]
+    },
+    {
+      "variant": "before-net11.0-on-net11.0",
+      "document": "geometry-rect",
+      "rawActualLaunchMediansNs": [
+        958049.029296875,
+        894849.734375,
+        892798.67578125
+      ]
+    }
+  ],
+  "interpretationLimit": "The net10 after-chart launch medians range 146.5\u2013164.0ms; its slower middle launch is fully retained. Every after-chart launch median remains below every before-chart launch median on its target. Pooled percentages describe this configuration and workload, not a universal speedup or an isolated runtime effect."
+}

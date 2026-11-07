@@ -92,7 +92,8 @@ The [draw sampling preparation](shader-context-preparation.json) records the
 2,706→1 context regression, immutable draw scopes, shared per-pixel origins and
 affected shader/image/text coverage. The [full milestone](shader-context-qualified.json)
 preserves all runtime/package/original contexts with only frozen Windows DejaVu;
-coordinated quiet timing remains separate.
+the [quiet comparison](shader-context-quiet.json) retains all observations and
+closes the shared setup cost, with chart gains and near-neutral icon/control rates.
 The [raster cost map](raster-cost-responsibilities.json) joins the six named chart/icon
 areas to their owners, checks and retained samples; hot frames alone establish no
 additional removable work or safe cache.

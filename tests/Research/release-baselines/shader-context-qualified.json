@@ -416,6 +416,7 @@
   "remaining": [
     "Frozen Windows DejaVu authority remains Open T18; its assertion/target remain intact.",
     "W1 external-resource and R85/R86 source authority remain open.",
-    "Quiet allocation repeat and broader native/profile/memory performance work remain separately owned."
-  ]
+    "Scoped quiet timing closes repeated sampling-context waste; minimal-consumer startup/IPC/I/O and native-memory attribution remain separately owned."
+  ],
+  "performanceEvidence": "shader-context-quiet.json"
 }
