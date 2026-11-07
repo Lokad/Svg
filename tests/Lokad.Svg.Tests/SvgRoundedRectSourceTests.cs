@@ -7,6 +7,27 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgRoundedRectSourceTests
 {
     [Theory]
+    [InlineData(0, 0)]
+    [InlineData(0, 4)]
+    [InlineData(4, 0)]
+    public void Retaining_sharp_rectangle_sources_does_not_allocate_curve_expansion_storage(int radiusX, int radiusY)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='40' height='32'>"
+            + "<rect id='source' x='4' y='5' width='24' height='18' rx='" + radiusX.ToString(CultureInfo.InvariantCulture)
+            + "' ry='" + radiusY.ToString(CultureInfo.InvariantCulture) + "' fill='#2168ad'/></svg>");
+        for (int warmup = 0; warmup < 3; warmup++) _ = ParseAllocation(input);
+        Assert.InRange(ParseAllocation(input), 0, 131_072);
+
+        static long ParseAllocation(byte[] source)
+        {
+            long before = GC.GetAllocatedBytesForCurrentThread();
+            using (SvgRoot scene = SvgRootParser.Parse(source, SvgRenderLimits.Default, new RenderBudget(), null, CancellationToken.None))
+                if (scene.Geometries.Length == 0) throw new InvalidOperationException("The rectangle must remain renderable.");
+            return GC.GetAllocatedBytesForCurrentThread() - before;
+        }
+    }
+
+    [Theory]
     [InlineData("rotate(17 20 16)", "fill='#2168ad'")]
     [InlineData("matrix(1 .25 -.3 .8 8 2)", "fill='#2168ad' stroke='#ab7128' stroke-width='2'")]
     public void Affine_rounded_sources_preserve_conics_instances_and_material_cleanup(string transform, string paint)

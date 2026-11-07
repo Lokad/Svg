@@ -43,6 +43,10 @@ source jobs (190 measured, two explicit native/fallback-route declines), 145
 installed measurements and every raw timing sample. Candidate pixels remain exact;
 released wordmark/chart differences remain visible. New shared-allocation, chart
 raster and runtime observations guide profiling; full performance work remains open.
+The [sharp rectangle allocation trace](sharp-rectangle-storage.json) identifies and
+removes worst-case curved point storage from the four-point sharp branch. Exact
+allocation controls, failing-before cases and four-context native/ownership checks
+remain separate from pending full-milestone and quiet-host qualification.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

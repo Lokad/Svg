@@ -1,0 +1,393 @@
+{
+  "status": "Profiled shared allocation cause corrected without changing rectangle construction/maps or conservative scratch admission. Affected four-context native/core checks pass; full milestone and controlled quiet repeats remain pending.",
+  "parentCommit": "38a80079713279fbe41846c5bb71de8212a27c59",
+  "sourceTextEncoding": "UTF-8 LF",
+  "sourceFiles": {
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryLowerer.cs": "a29cc59e55bdace907b84176e8390d6f67803be9b1ed65687748bebc5900455e",
+    "tests/Lokad.Svg.Tests/SvgRoundedRectSourceTests.cs": "a54b374f618c6a3efc0d7be37d1820cedb869cd2dd7984799dabdc42cb9f3212"
+  },
+  "precedingMeasurement": "quiet-vm-20261107.json",
+  "cause": "Retained sharp rectangle sources reached the axis-aligned rounded-outline lowerer. Its fixed builder allocated the complete four-arc expansion point array even when a zero corner radius emits exactly four points.",
+  "correction": "Use the exact four-point sharp branch capacity. Rounded branches retain the original bound. All vertices/order, mapping, retained source/paint behavior, cancellation and maximum scratch reservation remain unchanged; no growing buffer or new admission/cleanup path is introduced.",
+  "attribution": {
+    "scope": "Local cumulative managed allocation attribution only; no workstation renderer timing claim. Warm eight calls, record 32 calls per case; retain source/font/option setup outside.",
+    "phaseMeaning": "Whole direct conversion; prepared creation with an explicit font-free provider/catalog; conversion of that newly prepared document. Disposal is retained. Prepared font-discovery work is a distinct path from direct conversion, so columns are not an additive partition.",
+    "sourceControls": "Unchanged committed geometry-rect plus authored ID-removal and viewBox-removal diagnostics; input bytes remain separate and original targets untouched.",
+    "controlPixels": "All six after-control PNGs are byte-identical in decoded RGBA/dimensions to before; ID/viewBox diagnostics equal the original geometry-rect pixels.",
+    "allocationRows": [
+      {
+        "phase": "release",
+        "case": "blur",
+        "iterations": 32,
+        "librarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625",
+        "medianAllocatedBytes": {
+          "whole": 1569368.0,
+          "preparation": 72168.0,
+          "render": 1515976.0
+        }
+      },
+      {
+        "phase": "release",
+        "case": "geometry-rect",
+        "iterations": 32,
+        "librarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625",
+        "medianAllocatedBytes": {
+          "whole": 222832.0,
+          "preparation": 62832.0,
+          "render": 170584.0
+        }
+      },
+      {
+        "phase": "release",
+        "case": "object-box-clip",
+        "iterations": 32,
+        "librarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625",
+        "medianAllocatedBytes": {
+          "whole": 578752.0,
+          "preparation": 87408.0,
+          "render": 502472.0
+        }
+      },
+      {
+        "phase": "release",
+        "case": "wpt-nested-viewport",
+        "iterations": 32,
+        "librarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625",
+        "medianAllocatedBytes": {
+          "whole": 294400.0,
+          "preparation": 113256.0,
+          "render": 192624.0
+        }
+      },
+      {
+        "phase": "before",
+        "case": "blur",
+        "iterations": 32,
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "medianAllocatedBytes": {
+          "whole": 1844592.0,
+          "preparation": 339136.0,
+          "render": 1515408.0
+        }
+      },
+      {
+        "phase": "before",
+        "case": "geometry-rect",
+        "iterations": 32,
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "medianAllocatedBytes": {
+          "whole": 496456.0,
+          "preparation": 337208.0,
+          "render": 169600.0
+        }
+      },
+      {
+        "phase": "before",
+        "case": "geometry-rect-no-ids",
+        "iterations": 32,
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "medianAllocatedBytes": {
+          "whole": 203400.0,
+          "preparation": 43784.0,
+          "render": 169600.0
+        }
+      },
+      {
+        "phase": "before",
+        "case": "geometry-rect-no-viewbox",
+        "iterations": 32,
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "medianAllocatedBytes": {
+          "whole": 495928.0,
+          "preparation": 336480.0,
+          "render": 169600.0
+        }
+      },
+      {
+        "phase": "before",
+        "case": "object-box-clip",
+        "iterations": 32,
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "medianAllocatedBytes": {
+          "whole": 863472.0,
+          "preparation": 372296.0,
+          "render": 502072.0
+        }
+      },
+      {
+        "phase": "before",
+        "case": "wpt-nested-viewport",
+        "iterations": 32,
+        "librarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "medianAllocatedBytes": {
+          "whole": 294880.0,
+          "preparation": 113664.0,
+          "render": 192488.0
+        }
+      },
+      {
+        "phase": "after",
+        "case": "blur",
+        "iterations": 32,
+        "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+        "medianAllocatedBytes": {
+          "whole": 1581576.0,
+          "preparation": 76600.0,
+          "render": 1515408.0
+        }
+      },
+      {
+        "phase": "after",
+        "case": "geometry-rect",
+        "iterations": 32,
+        "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+        "medianAllocatedBytes": {
+          "whole": 234184.0,
+          "preparation": 74936.0,
+          "render": 169600.0
+        }
+      },
+      {
+        "phase": "after",
+        "case": "geometry-rect-no-ids",
+        "iterations": 32,
+        "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+        "medianAllocatedBytes": {
+          "whole": 203400.0,
+          "preparation": 43784.0,
+          "render": 169600.0
+        }
+      },
+      {
+        "phase": "after",
+        "case": "geometry-rect-no-viewbox",
+        "iterations": 32,
+        "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+        "medianAllocatedBytes": {
+          "whole": 233656.0,
+          "preparation": 74208.0,
+          "render": 169600.0
+        }
+      },
+      {
+        "phase": "after",
+        "case": "object-box-clip",
+        "iterations": 32,
+        "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+        "medianAllocatedBytes": {
+          "whole": 601200.0,
+          "preparation": 110024.0,
+          "render": 502072.0
+        }
+      },
+      {
+        "phase": "after",
+        "case": "wpt-nested-viewport",
+        "iterations": 32,
+        "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+        "medianAllocatedBytes": {
+          "whole": 294880.0,
+          "preparation": 113664.0,
+          "render": 192488.0
+        }
+      }
+    ],
+    "eventPipe": {
+      "mechanism": "Runtime startup EventPipe collection, standard runtime/private/sample-profiler providers; TraceEvent 3.2.5 conversion and GC allocation tick stacks.",
+      "documentation": "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/eventpipe",
+      "traceSha256": "a7a1a932b637183d6a9676737bccacb99e5acad61195c82022fb17b5305f043f",
+      "selectedStacks": [
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "sampledBytes": 41977600,
+          "ticks": 160,
+          "frames": [
+            "Lokad.Svg.Rendering.SvgContourBuilder..ctor(int32,int32)",
+            "Lokad.Svg.Parsing.SvgOrthogonalGeometryLowering.LowerRoundedRectFill(float64,float64,float64,float64,float64,float64,value class Lokad.Svg.Parsing.SvgResolvedPaintableElement,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewportFrame&gt;,class Lokad.Svg.Rendering.RenderBudget)",
+            "Lokad.Svg.Parsing.SvgLeafParser.LowerRoundedRect(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRectangleSyntax,float64,float64,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewportFrame&gt;,class Lokad.Svg.Parsing.SvgDocumentState)",
+            "Lokad.Svg.Parsing.SvgLeafParser.ParseRectangleCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewportFrame&gt;,class Lokad.Svg.Parsing.SvgDocumentState)",
+            "Lokad.Svg.Parsing.SvgLeafParser.ParseRectangle(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewportFrame&gt;,class Lokad.Svg.Parsing.SvgDocumentState)",
+            "Lokad.Svg.Parsing.SvgDefinitionParser.&lt;TryParse&gt;g__ParseRectangleDefinition|0_10(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewBox&gt;)",
+            "Lokad.Svg.Parsing.SvgDefinitionParser.TryParse(class System.Xml.XmlReader,bool,bool,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class System.Collections.Generic.IReadOnlyDictionary`2&lt;class System.String,value class Lokad.Svg.SvgColor&gt;,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+            "Lokad.Svg.Parsing.SvgDocumentTraversal.TraverseRoot(class System.Xml.XmlReader,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2&lt;class System.String,value class Lokad.Svg.SvgColor&gt;,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Parsing.SvgRootAttributes,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1&lt;value class Lokad.Svg.SvgViewport&gt;,class Lokad.Svg.Parsing.BudgetedParserList`1&lt;value class Lokad.Svg.Parsing.CssRule&gt;,class Lokad.Svg.Parsing.BudgetedParserStringStore,float64,class Lokad.Svg.Parsing.SvgPaintResourceSelection)"
+          ]
+        },
+        {
+          "type": "Lokad.Svg.Rendering.SvgDevicePoint[]",
+          "sampledBytes": 41977600,
+          "ticks": 160,
+          "frames": [
+            "Lokad.Svg.Rendering.SvgContourBuilder..ctor(int32,int32)",
+            "Lokad.Svg.Parsing.SvgOrthogonalGeometryLowering.LowerRoundedRectFill(float64,float64,float64,float64,float64,float64,value class Lokad.Svg.Parsing.SvgResolvedPaintableElement,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewportFrame&gt;,class Lokad.Svg.Rendering.RenderBudget)",
+            "Lokad.Svg.Parsing.SvgLeafParser.LowerRoundedRect(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class Lokad.Svg.Parsing.SvgRectangleSyntax,float64,float64,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewportFrame&gt;,class Lokad.Svg.Parsing.SvgDocumentState)",
+            "Lokad.Svg.Parsing.SvgLeafParser.ParseRectangleCore(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewportFrame&gt;,class Lokad.Svg.Parsing.SvgDocumentState)",
+            "Lokad.Svg.Parsing.SvgLeafParser.ParseRectangle(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewportFrame&gt;,class Lokad.Svg.Parsing.SvgDocumentState)",
+            "Lokad.Svg.Parsing.SvgDefinitionParser.&lt;TryParse&gt;g__ParseRectangleDefinition|0_10(class System.Xml.XmlReader,value class Lokad.Svg.Parsing.SvgPaintableElementContext,class Lokad.Svg.Parsing.SvgDocumentState,value class System.Nullable`1&lt;value class Lokad.Svg.Parsing.SvgViewBox&gt;)",
+            "Lokad.Svg.Parsing.SvgDefinitionParser.TryParse(class System.Xml.XmlReader,bool,bool,value class Lokad.Svg.Parsing.SvgRootAttributes,class Lokad.Svg.Parsing.SvgDocumentState,class Lokad.Svg.SvgRenderLimits,class System.Collections.Generic.IReadOnlyDictionary`2&lt;class System.String,value class Lokad.Svg.SvgColor&gt;,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken)",
+            "Lokad.Svg.Parsing.SvgDocumentTraversal.TraverseRoot(class System.Xml.XmlReader,class Lokad.Svg.SvgRenderLimits,class Lokad.Svg.Rendering.RenderBudget,class System.Collections.Generic.IReadOnlyDictionary`2&lt;class System.String,value class Lokad.Svg.SvgColor&gt;,class Lokad.Svg.Fonts.SvgFontSnapshot,value class System.Threading.CancellationToken,value class Lokad.Svg.Parsing.SvgRootAttributes,value class Lokad.Svg.Rendering.SvgAffineTransform,value class System.Nullable`1&lt;value class Lokad.Svg.SvgViewport&gt;,class Lokad.Svg.Parsing.BudgetedParserList`1&lt;value class Lokad.Svg.Parsing.CssRule&gt;,class Lokad.Svg.Parsing.BudgetedParserStringStore,float64,class Lokad.Svg.Parsing.SvgPaintResourceSelection)"
+          ]
+        }
+      ],
+      "scope": "Sampled stack weights identify the constructor/call path; exact per-conversion amounts come from the separate uninstrumented allocation controls."
+    },
+    "probeIdentity": "Every accepted result binds the loaded library SHA256. Initial local shared-project trials selected a neighboring old DLL via CandidateAssemblyFiles and were rejected; explicit source/items and isolated package roots remove that ambiguity."
+  },
+  "regression": {
+    "before": [
+      {
+        "name": "Lokad.Svg.Tests.SvgRoundedRectSourceTests.Retaining_sharp_rectangle_sources_does_not_allocate_curve_expansion_storage(radiusX: 4, radiusY: 0)",
+        "outcome": "Failed"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgRoundedRectSourceTests.Retaining_sharp_rectangle_sources_does_not_allocate_curve_expansion_storage(radiusX: 0, radiusY: 0)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "Lokad.Svg.Tests.SvgRoundedRectSourceTests.Retaining_sharp_rectangle_sources_does_not_allocate_curve_expansion_storage(radiusX: 0, radiusY: 4)",
+        "outcome": "Failed"
+      }
+    ],
+    "meaning": "The one-zero-radius cases fail before; both-zero is a retained positive control. The test warms synchronous lowering and checks a broad managed-allocation ceiling, independent of a particular buffer implementation. Existing native/geometry/ownership tests protect behavior.",
+    "afterFocusedCoreChecks": 64
+  },
+  "affectedIntegration": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "a6518835a5add19503de1bdf1808d571690c297c16c2a89e50d96461ee823a98",
+      "testAssemblySha256": "bc28a405844786bbc6f363f1d9169f97c9c93fbad710adb0d9de4e31e37a8a1e",
+      "selection": "FullyQualifiedName~SvgRoundedRect|FullyQualifiedName~SvgContourBuilder|FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 11.293380099814385,
+      "counters": {
+        "executed": "3941",
+        "passed": "3941",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "a6518835a5add19503de1bdf1808d571690c297c16c2a89e50d96461ee823a98",
+      "testAssemblySha256": "c3862a57d61ac972aac356534120b375ce49814f4a8dea69a83096d6c54ccb63",
+      "selection": "FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests",
+      "exitCode": 0,
+      "seconds": 34.24198090005666,
+      "counters": {
+        "executed": "1691",
+        "passed": "1691",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "a6518835a5add19503de1bdf1808d571690c297c16c2a89e50d96461ee823a98",
+      "testAssemblySha256": "bc28a405844786bbc6f363f1d9169f97c9c93fbad710adb0d9de4e31e37a8a1e",
+      "selection": "FullyQualifiedName~SvgRoundedRect|FullyQualifiedName~SvgContourBuilder|FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 19.101084599737078,
+      "counters": {
+        "executed": "3941",
+        "passed": "3941",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "a6518835a5add19503de1bdf1808d571690c297c16c2a89e50d96461ee823a98",
+      "testAssemblySha256": "c3862a57d61ac972aac356534120b375ce49814f4a8dea69a83096d6c54ccb63",
+      "selection": "FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests",
+      "exitCode": 0,
+      "seconds": 26.852870299946517,
+      "counters": {
+        "executed": "1691",
+        "passed": "1691",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+      "testAssemblySha256": "37a137088e1f9ec1a05c96f77386802d6aefa54f31dfd104b1464fff7abfa1de",
+      "selection": "FullyQualifiedName~SvgRoundedRect|FullyQualifiedName~SvgContourBuilder|FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 13.911956900265068,
+      "counters": {
+        "executed": "3941",
+        "passed": "3941",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+      "testAssemblySha256": "d4a275f11317675549ba6da187f0ce12303031c21f3634a7f1b10f06e86bc8a4",
+      "selection": "FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests",
+      "exitCode": 0,
+      "seconds": 18.61901989998296,
+      "counters": {
+        "executed": "1691",
+        "passed": "1691",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+      "testAssemblySha256": "37a137088e1f9ec1a05c96f77386802d6aefa54f31dfd104b1464fff7abfa1de",
+      "selection": "FullyQualifiedName~SvgRoundedRect|FullyQualifiedName~SvgContourBuilder|FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgConversionApiContractTests",
+      "exitCode": 0,
+      "seconds": 15.369710300117731,
+      "counters": {
+        "executed": "3941",
+        "passed": "3941",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "f399640594eb9b05e6a4d56cc4b44ec5e28a57640b38ca8ae5745c7097b90941",
+      "testAssemblySha256": "d4a275f11317675549ba6da187f0ce12303031c21f3634a7f1b10f06e86bc8a4",
+      "selection": "FullyQualifiedName~SvgRoundedRectReferenceTests|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgRectangleShaderFrameReferenceTests|FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests",
+      "exitCode": 0,
+      "seconds": 25.02339420001954,
+      "counters": {
+        "executed": "1691",
+        "passed": "1691",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "preserved": [
+    "No reference/input/font mutation, tolerance or image-comparison change.",
+    "No public API, ownership, private memory cap, package version or release/tag change.",
+    "Existing coarse budget denial, cleanup/retry and output/scene lifetimes remain covered."
+  ],
+  "nextActions": [
+    "Commit the coherent fix and run full Windows/Linux/runtime/package qualification at this renderer milestone.",
+    "Arrange another canonical quiet-VM slot only after preparation; compare sealed before/after assets with independent launches and explicit GC/tiering/order.",
+    "Keep chart raster profiling, native comparisons and the separate runtime icon-sheet observation open."
+  ]
+}

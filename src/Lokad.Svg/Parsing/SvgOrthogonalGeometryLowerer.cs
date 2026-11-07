@@ -528,7 +528,10 @@ internal ref struct SvgOrthogonalGeometryLowering
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
         using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(4, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1) + 2 * ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(4) + ParserCollectionMemory.GetArrayByteCount<int>(SampledOutlineCapacity(4, ShapeSegmentsPerShape)), SvgMemoryCategory.Geometry);
-        SvgContourBuilder builder = new(SampledOutlineCapacity(4, ShapeSegmentsPerShape), 1);
+        // A zero corner radius emits exactly four sharp points, with no curve expansion.
+        // Keep the existing conservative scratch admission and every construction/map stage.
+        int outlineCapacity = mappedRadiusX == 0 || mappedRadiusY == 0 ? 4 : SampledOutlineCapacity(4, ShapeSegmentsPerShape);
+        SvgContourBuilder builder = new(outlineCapacity, 1);
         // Degenerate rects share one corner center with zero-length edges, which meets the implicit close
         // outside the substitution model, so only full-edged rects retain arc spans.
         if (mappedRadiusX < shifted.Width / 2 && mappedRadiusY < shifted.Height / 2) builder.EnableCubicSpanRetention();
