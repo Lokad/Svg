@@ -1,5 +1,5 @@
 {
-  "status": "Profiled shared allocation cause corrected without changing rectangle construction/maps or conservative scratch admission. Affected four-context native/core checks pass; full milestone and controlled quiet repeats remain pending.",
+  "status": "Profiled shared allocation cause corrected and qualified across all four host/runtime contexts, installed packages, all SVGWeb originals/contexts and a controlled three-launch quiet repeat. Frozen Windows DejaVu remains the sole unrelated full-suite failure.",
   "parentCommit": "38a80079713279fbe41846c5bb71de8212a27c59",
   "sourceTextEncoding": "UTF-8 LF",
   "sourceFiles": {
@@ -385,9 +385,11 @@
     "No public API, ownership, private memory cap, package version or release/tag change.",
     "Existing coarse budget denial, cleanup/retry and output/scene lifetimes remain covered."
   ],
-  "nextActions": [
-    "Commit the coherent fix and run full Windows/Linux/runtime/package qualification at this renderer milestone.",
-    "Arrange another canonical quiet-VM slot only after preparation; compare sealed before/after assets with independent launches and explicit GC/tiering/order.",
-    "Keep chart raster profiling, native comparisons and the separate runtime icon-sheet observation open."
-  ]
+  "closure": {
+    "qualifiedSourceCommit": "247fd6da7c4c09313663a9aa7a378f7df074f5d3",
+    "qualification": "sharp-rectangle-qualified.json",
+    "controlledRepeat": "sharp-rectangle-quiet.json",
+    "findingClosed": "Worst-case curved point allocation for a four-point sharp rectangle outline. Geometry, maps, conservative scratch admission, cancellation and native targets preserved.",
+    "remaining": "Broader chart/native/runtime/memory profiling remains P6; T18 and source provenance remain separate gates."
+  }
 }

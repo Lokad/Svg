@@ -46,7 +46,12 @@ raster and runtime observations guide profiling; full performance work remains o
 The [sharp rectangle allocation trace](sharp-rectangle-storage.json) identifies and
 removes worst-case curved point storage from the four-point sharp branch. Exact
 allocation controls, failing-before cases and four-context native/ownership checks
-remain separate from pending full-milestone and quiet-host qualification.
+remain separate from the [full runtime/package/original-context qualification](sharp-rectangle-qualified.json)
+and the [controlled quiet-host repeat](sharp-rectangle-quiet.json). Three launches
+per input/runtime retain 384 raw samples and 116 exact native comparisons. Each
+affected conversion removes about 262 KB managed allocation; bounded timing medians
+improve 2.8–10.5%, with an unchanged-allocation control. Full suites preserve solely
+the frozen Windows DejaVu conflict; all 204 source identities and contexts remain accounted for.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)
