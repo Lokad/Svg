@@ -35,9 +35,14 @@ startup-heavy validation timings establish no speedup.
 The [qualification/provenance trace](qualification-provenance-claim-trace.json)
 completes the finite support review, condenses test guidance and corrects the
 stale chart-shadow blocker. The packaged primary asset preserves all three
-authored workloads exactly on both hosts; timed performance stays unmeasured.
+authored workloads exactly on both hosts; that replay is functional evidence.
 Its retention/release audit verifies the published tag and package identities;
 explicit LF rules and fresh installed checks close checkout-dependent package text.
+The [first quiet-VM measurements](quiet-vm-20261107.json) retain all 192 selected
+source jobs (190 measured, two explicit native/fallback-route declines), 145
+installed measurements and every raw timing sample. Candidate pixels remain exact;
+released wordmark/chart differences remain visible. New shared-allocation, chart
+raster and runtime observations guide profiling; full performance work remains open.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

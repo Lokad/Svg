@@ -94,6 +94,17 @@ The measured public call includes parsing, rasterization and PNG encoding. Input
 I/O and supplied-font acquisition stay outside; bare returned memory is distinct
 from governed ownership and process/native peak memory.
 
+The [first quiet-VM measurements](../tests/Research/release-baselines/quiet-vm-20261107.json)
+retain [190 source measurements and two platform-route declines](../tests/Research/release-baselines/quiet-vm-current.csv),
+plus [145 installed-package measurements](../tests/Research/release-baselines/quiet-vm-installed.csv).
+Every normalized sample is retained. All candidate reference comparisons are exact;
+the released package's two authored-workload differences stay attached to its rows.
+One launch with eight samples establishes observations on this VM, with runtime
+defaults and uncontrolled physical-host power. It does not establish general
+throughput or cross-launch variance. Shared allocation growth, chart raster cost
+and the icon-sheet runtime difference are the next profiling targets; native,
+cold-process and broader memory comparisons remain separate work.
+
 For cold observations, use fresh MemoryProbe processes with
 the [diagnostic procedure](../README.md#diagnostic-tools); report initialization
 and input/output work separately. Verify output pixels when comparing changes.

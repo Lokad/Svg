@@ -1,0 +1,350 @@
+{
+  "status": "First quiet-VM current-source and installed-package measurements retained. P6 remains open for profiling, native comparisons, broader memory scopes and repeated explicitly configured campaigns.",
+  "date": "2026-11-07",
+  "sourceBenchmarkCommit": "a7d1c15b00e0d8cad346a80b91747553ea94cd50",
+  "qualifiedProductionSourceCommit": "0ba18ed1e838746aed8463a628fb472f55bca45d",
+  "installedHarnessCommit": "b0d9a22f17cb8b282bd950c329d51c2cecd74061",
+  "installedHarnessSourceSha256Lf": {
+    "benchmarks/Lokad.Svg.InstalledBenchmarks/Program.cs": "feed0c13de10e19d3fa9fb7bd7678ed8d6deeadac8e4d372d8cfda48d8028de2",
+    "benchmarks/Lokad.Svg.InstalledBenchmarks/Lokad.Svg.InstalledBenchmarks.csproj": "2adf3721092b6aad9415aaee434be23de8c90dc21dfee63567a53116ae93c6a6",
+    "benchmarks/Lokad.Svg.Benchmarks/BenchmarkCorpus.cs": "57abdbd63a7a23f96246b7873aa548742246a517f42c8c3f4628fffc71cd4045"
+  },
+  "dataFilesSha256": {
+    "quiet-vm-current.csv": "7d7e6db210defcca7d009d389ca463822e324b3711dd028e08de403b0a0d20f0",
+    "quiet-vm-current-samples.json": "aff3d4e952d8019d2585a2c401b8db903fdc0bf1d6706cb12b7370d158cede13",
+    "quiet-vm-installed.csv": "a2cd813389bb76e1bf1a567a29f103ac16c2fd9f63cd26e9bec1f50c6779281e",
+    "quiet-vm-installed-samples.json": "2aa5b5f0936ff8eafd231657562cc5bbe69d84eedafd659b986a4fb7686b5a45"
+  },
+  "environment": {
+    "os": "Ubuntu 24.04.5 LTS; Linux 7.0.0-1017-azure; x86_64",
+    "cpu": "4 AMD EPYC 9V45 virtual CPUs; Microsoft Hyper-V",
+    "memoryBytes": 16760344576,
+    "inheritedCpuAffinity": "0-3",
+    "powerControl": "Guest scaling governors were not exposed; physical-host frequency/power and neighboring physical workload were not controlled.",
+    "benchmarkDotNet": "0.16.0-preview.2",
+    "sdks": [
+      {
+        "sdk": "10.0.403",
+        "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz",
+        "sha512": "b7b3d8461cf98b07d2552ce9199702fa3ad010ac2671a5f8cd5136f7534e50f6855ba7bbb02b11494563f1d04156276a31cda1103b900e5eecd0d9473dc7b9c5",
+        "bytes": 240199984,
+        "metadataUrl": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json",
+        "metadataSha256": "8fa7ae2d46b1f94416d5458c7ed68b0c3cafc5efb8e34d89dea3a98bf0a38b33"
+      },
+      {
+        "sdk": "11.0.100-rc.3.26522.148",
+        "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/11.0.100-rc.3.26522.148/dotnet-sdk-11.0.100-rc.3.26522.148-linux-x64.tar.gz",
+        "sha512": "77ef603622f0632ce59fc631871c9d0ec0c7402399837c659ead5b6fc7ea898f7f64a2632ecdc8d3330e608307416a36bff90a4d10179210489676167b9b80da",
+        "bytes": 210871952,
+        "metadataUrl": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/11.0/releases.json",
+        "metadataSha256": "145bf2e9b4710079f1e3f92b48224eed27184aed5f1492f9d3d9e5770ee4ea99"
+      }
+    ],
+    "nativeAtan2Probe": "0x3E114D77 (Legacy), fixed unrelated MathF.Atan2(1,7); no output-selected target.",
+    "runtimePolicy": "Runtime-default GC/tiering; no environment overrides. Both libraries use the same harness/configuration within each runtime. Cross-runtime observations include runtime defaults.",
+    "quietChecks": {
+      "sourceBefore": {
+        "utc": "2026-11-07T17:14:35Z",
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      },
+      "sourceAfter": {
+        "utc": "2026-11-07T17:32:11Z",
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      },
+      "installedBefore": {
+        "utc": "2026-11-07T17:45:18Z",
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      },
+      "installedAfter": {
+        "utc": "2026-11-07T17:59:28Z",
+        "sinceBootRowExcluded": true,
+        "samples": [
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          },
+          {
+            "idlePercent": 100,
+            "waitPercent": 0,
+            "stealPercent": 0
+          }
+        ]
+      }
+    },
+    "reservation": "Exclusive canonical flock held through setup, serial timing, worker shutdown and artifact retrieval. No concurrent VM installs/builds/captures during timing. All workers terminal and lease released; no global/service changes."
+  },
+  "measurement": {
+    "launches": 1,
+    "warmupIterations": 3,
+    "measurementIterations": 8,
+    "targetIterationMilliseconds": 250,
+    "outliers": "DontRemove",
+    "allocationMeaning": "BenchmarkDotNet cumulative managed bytes/operation and collections/1000 operations; not peak live/process/native memory.",
+    "statistics": "CSV retains mean, median, range and standard deviation; JSON retains every normalized timing sample and raw memory diagnostic. Short single-launch observations do not establish general throughput or cross-launch variance."
+  },
+  "currentSource": {
+    "selectedJobs": 192,
+    "measuredJobs": 190,
+    "rawSamples": 1520,
+    "declinedJobs": [
+      {
+        "method": "SvgTextBenchmarks.ConvertFallbackLabel",
+        "runtime": "net10.0",
+        "reason": "Existing VerifyFallbackRoute rejects native coverage on this Linux host. Original fixture and guard retained; no fallback timing claimed."
+      },
+      {
+        "method": "SvgTextBenchmarks.ConvertFallbackLabel",
+        "runtime": "net11.0",
+        "reason": "Existing VerifyFallbackRoute rejects native coverage on this Linux host. Original fixture and guard retained; no fallback timing claimed."
+      }
+    ],
+    "wallSeconds": 1055.385272142943,
+    "compiledLibrarySha256": {
+      "net10.0": "4271ff52eec83a60ce61d33bd5f52cd1eea85929793558a80f01fd0521f7c84f",
+      "net11.0": "81cafa659c594669e9d5754be57ef4ae61b27de4d32094fa5993a5c0c126fbd4"
+    },
+    "binaryScope": "Source benchmarks rebuild the same production tree; their compiler/path/source identities are separate from the sealed installed package assets."
+  },
+  "installed": {
+    "selectedAndMeasuredJobs": 145,
+    "rawSamples": 1160,
+    "variants": [
+      {
+        "label": "0.3.0-net10.0-on-net10.0",
+        "seconds": 161.86682203190867,
+        "exitCode": 0,
+        "measuredJobs": 29,
+        "loadedLibrarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625",
+        "setupMarkers": 29
+      },
+      {
+        "label": "0.4.0-dev.1-net10.0-on-net10.0",
+        "seconds": 172.17853071691934,
+        "exitCode": 0,
+        "measuredJobs": 29,
+        "loadedLibrarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "setupMarkers": 29
+      },
+      {
+        "label": "0.3.0-net10.0-on-net11.0",
+        "seconds": 164.1663179040188,
+        "exitCode": 0,
+        "measuredJobs": 29,
+        "loadedLibrarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625",
+        "setupMarkers": 29
+      },
+      {
+        "label": "0.4.0-dev.1-net10.0-on-net11.0",
+        "seconds": 174.4127917230362,
+        "exitCode": 0,
+        "measuredJobs": 29,
+        "loadedLibrarySha256": "464c0582ce9648b47e1297ea8a8988cb7cc2252695b14ea0fd343e987868dc17",
+        "setupMarkers": 29
+      },
+      {
+        "label": "0.4.0-dev.1-net11.0-on-net11.0",
+        "seconds": 173.3669990800554,
+        "exitCode": 0,
+        "measuredJobs": 29,
+        "loadedLibrarySha256": "2a002f4124ce52c6cdcfd085119ace235c85d0066f956f542d34a7fde346927d",
+        "setupMarkers": 29
+      }
+    ],
+    "packages": [
+      {
+        "name": "Lokad.Svg.0.3.0.nupkg",
+        "sha256": "422b55321cf709dd004f2b8bb3d6dbee2b6a4bc5aef46e835d403835064f46f5"
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "b3172ec23cd5a34a567aacde73bc0f994f38a16a397a9df14edab630a29782bc"
+      }
+    ],
+    "loadedLibraryIdentity": "Every job emits a setup-only source/library SHA256 marker; all 145 match the selected sealed package asset.",
+    "publicCall": "SvgConverter.ConvertToPng(ReadOnlyMemory<byte>, SvgRenderOptions, CancellationToken.None), bare memory; parsing/raster/PNG included. Source reads, options, manifest checks and supplied-font acquisition excluded.",
+    "fixtureScope": "All 26 unchanged upstream documents and three authored workloads; same inputs, dimensions, scale, background and supplied font bytes across all five contexts.",
+    "fidelity": {
+      "comparisons": 145,
+      "candidateExact": 87,
+      "releasedExact": 54,
+      "releasedDifferencesPerRuntime": [
+        {
+          "id": "wordmark",
+          "changedPixels": 10837
+        },
+        {
+          "id": "chart",
+          "changedPixels": 29
+        }
+      ],
+      "decision": "All original targets retained. Released differences stay attached to their timing rows; their workload cost is not equivalent-output authority."
+    }
+  },
+  "toolValidation": {
+    "linux": "All five package/asset/runtime contexts build with warnings as errors, locked restore and 29 verification renders. Generated-host dry checks pass on net10/net11, with actual loaded library hashes.",
+    "windows": "All 29 released verification renders retained; the same two authored differences remain. Final generated net11 host and conflicting-runtime rejection pass; loaded library SHA matches the release asset.",
+    "projectDiscovery": "Two earlier default-discovery runs stalled and were explicitly reaped. The narrow builder overrides only project/output locations, retaining original settings, validation, generation and executor; the generated Windows dry job then completes in about 10 seconds. No renderer speed claim.",
+    "libraryReferencesAndFixtureTargetsChanged": false
+  },
+  "untimedPngStorage": {
+    "measurement": "renderer-owned storage reservations; excludes caller inputs, stream capacity and process/native memory",
+    "width": 512,
+    "height": 512,
+    "framework": ".NET 11.0.0-rc.3.26522.148",
+    "librarySha256": "81cafa659c594669e9d5754be57ef4ae61b27de4d32094fa5993a5c0c126fbd4",
+    "highEntropy": {
+      "rgbaSha256": "b9a56eb486a3f0de877bfc5063efc387683db561edd38f0273fcc3078153980a",
+      "encodedBytes": 1049663,
+      "pngSha256": "f7180018ee0e458d5d036d081254c10a47f76b91cbc397ed26ac546e660e2632",
+      "owned": {
+        "currentBytes": 0,
+        "peakBytes": 2099077,
+        "deniedReservationCount": 0,
+        "bytesByCategory": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "stream": {
+        "currentBytes": 0,
+        "peakBytes": 100353,
+        "deniedReservationCount": 0,
+        "bytesByCategory": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "lowEntropy": {
+      "rgbaSha256": "f1b8eae743293993f56bd1424645f7cbcb2e2942143f41ea7725013984a9a4b0",
+      "encodedBytes": 6254,
+      "pngSha256": "c351dd6713763f3c85eadecc54c0f3dc1bb591bea442083a28fc4e422bf5a3fd",
+      "owned": {
+        "currentBytes": 0,
+        "peakBytes": 12451,
+        "deniedReservationCount": 0,
+        "bytesByCategory": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "stream": {
+        "currentBytes": 0,
+        "peakBytes": 14337,
+        "deniedReservationCount": 0,
+        "bytesByCategory": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "nextActions": [
+    "Profile the shared allocation increase before special-case fixes: on net10/net10 geometry-rect grows from 223 KB to 497 KB per operation; several simple inputs add about 274 KB. Retain all increases and failing-before evidence for any fix.",
+    "Separate runtime behavior: the unchanged icon-sheet workload is about 2x slower on net11 than net10 for both release and candidate. Repeat/trace before attributing the difference to renderer code.",
+    "Profile chart raster work (about 202 ms/77 MB per conversion on net11); raster-only scope is about 184 ms. Use these observations to choose dominant stacks, not to infer their cause.",
+    "Run independent launches with explicit GC/tiering settings and controlled order; retain the current default-runtime observations.",
+    "Complete persistent native comparison, profiling, cold startup/IPC/I/O and process/native peak scopes separately. No full P6 closure or full Windows release-gate claim."
+  ]
+}
