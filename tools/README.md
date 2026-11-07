@@ -61,9 +61,15 @@ cargo run --release --locked --manifest-path tools/resvg-comparison/Cargo.toml -
 
 Both tools require a new output directory. Compare every PNG with its manifest's
 platform reference using the [pixel comparison procedure](#pixel-comparison).
-Chrome remains the oracle; retain native differences. This preflight does not
-measure parse/raster/PNG cost, startup, IPC, I/O, allocations or governed memory.
-Timed comparisons belong on the dedicated quiet host described in
+Chrome remains the oracle; retain native differences. To collect optional serial
+resvg timings, append `--timing <warmup-count> <sample-count>` to its arguments.
+Both counts must be positive. The report retains each warmup and sample for full
+parse/raster/PNG conversion, parsing, rasterization of the prepared tree into a
+fresh bitmap, and PNG encoding of the verified pixels. Inputs/fonts and report
+I/O stay outside timing; temporary allocation and destruction stay inside.
+The default preflight performs no timing. Neither route measures startup, IPC,
+process/native memory or governed storage. Timed comparisons belong on the
+dedicated quiet host described in
 [benchmarks](../docs/BENCHMARKS.md). Neither isolated project joins the ordinary
 solution build or adds a shipping renderer dependency.
 

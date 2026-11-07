@@ -50,6 +50,13 @@ makes the number of warmup calls explicit; retain the drifting samples and
 predeclare a longer-warmup comparison before claiming warmed performance. Keep
 cold-start and tier-transition observations separate.
 
+The [persistent resvg runner](../tools/README.md#installed-and-native-comparison-preflight)
+can retain serial samples for full conversion, parsing, prepared-tree rasterization
+and PNG encoding. Its input/font setup and output I/O are excluded; temporary
+native allocation/destruction is included. Match those boundaries and workloads
+before comparing results with managed benchmarks. Native pixels retain their
+own differences from the browser references.
+
 BenchmarkDotNet allocation counts measure cumulative managed traffic per operation,
 not peak live memory. Returning a byte count from a timed method does not turn it
 into a reported memory metric. Print tracked encoder storage separately:

@@ -1,0 +1,305 @@
+{
+  "status": "Optional persistent native timing routes qualified on Windows/Linux; local smoke observations establish no throughput comparison.",
+  "sourceBaseline": "8ac032ff9",
+  "renderer": "resvg 0.49.0",
+  "priorNativePreflight": "installed-version-comparison.json",
+  "sourceSha256Lf": {
+    "tools/resvg-comparison/src/main.rs": "a2c1e6059424cb51b2a3a95872dd7ef61659d007133ef52a1a656a516f6df0f9",
+    "tools/resvg-comparison/Cargo.toml": "a3d82d5caeebf254ccfdc897f4477d4adebaa00d69e816389091f0eb558e483e",
+    "tools/resvg-comparison/Cargo.lock": "09ccfdaa4a4f86198c7d93c3d26dc4ab27fa3f59c312c382962bd5982d07c7a1"
+  },
+  "optimizedBinarySha256": {
+    "windows": "1b072811cc6ef43756a409b2c3d70370c91d76edac94087f2f52f8f15a77f3a2",
+    "linux": "610b802c2a6b5de8d602bc85fc6e3eb64bce5836d6ddbc89652e24e0950aeb59"
+  },
+  "hosts": [
+    {
+      "host": "windows",
+      "cases": 29,
+      "repeatRasterCallsPerTree": 2,
+      "timingStages": 4,
+      "warmupObservations": 232,
+      "sampleObservations": 348,
+      "defaultAndTimingPngsByteIdentical": 29,
+      "pngs": [
+        {
+          "id": "geometry-rect",
+          "pngSha256": "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7"
+        },
+        {
+          "id": "geometry-cubic",
+          "pngSha256": "8bf45bb6922b574df35715d9a744c5f5b5a10b9231021fbacc5611528d0c1a24"
+        },
+        {
+          "id": "geometry-arc",
+          "pngSha256": "cbf44d4c2f8bbeca8fecf9cfd27a70316486ee466943f88cd077b3fe9bfa0431"
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "pngSha256": "1a382b515c25170186ef588ccbe74ff17f126d70bde3da7b06810f532ac910b6"
+        },
+        {
+          "id": "stroke-round-join",
+          "pngSha256": "0fae808fd19c07d869c40f3a58fc085bef7e6f66a9586454308851e190057d29"
+        },
+        {
+          "id": "nested-affine",
+          "pngSha256": "8d662b5de69b1eea7ff5560b13bbbda78f64463ac4d158d1fba88c2d1496c869"
+        },
+        {
+          "id": "symbol-opacity",
+          "pngSha256": "4f77982029f7eda1a737b0fefd515b03dcba6f60d62d930dbfd6f2902c9be2fe"
+        },
+        {
+          "id": "linear-affine",
+          "pngSha256": "4e86ea6e81f2afac5160e2847ef3f7c7403c11c02020cdabb87482c3ff1e8da6"
+        },
+        {
+          "id": "radial-affine",
+          "pngSha256": "73c42e1d9e9f326bbb71a2de205a52de30ac14e2217a297799b48b72f815d0a6"
+        },
+        {
+          "id": "object-box-clip",
+          "pngSha256": "2f9a7194c457ea96616b34285cdd09b83509e90293c918bd0b65069f36264d32"
+        },
+        {
+          "id": "nested-clip-child",
+          "pngSha256": "fba3cf56e1a3521f4d81cf00ae2f0100cd221f5a922e722247b2f400b6e2f8e5"
+        },
+        {
+          "id": "clip-child-union",
+          "pngSha256": "7ae8c46b0fa7ca99c51bcac06219b5e9fdbbe07b977d6c374728e1c859dd855b"
+        },
+        {
+          "id": "luminance-mask",
+          "pngSha256": "d0e88abd509cc422f0b7b0b2f405d3dbdae40093c7b0d284efe945b2813c126e"
+        },
+        {
+          "id": "pattern-viewbox",
+          "pngSha256": "561779912f5c2feda40167d6602fe6f9e4cafcf5b9d0908d9c6261248079494a"
+        },
+        {
+          "id": "pattern-affine",
+          "pngSha256": "0e07e86d5a1c6c924a750024209af86416b7557ab739036c5dee276f183655f2"
+        },
+        {
+          "id": "embedded-png",
+          "pngSha256": "8aa61614b03b6885c1799e57a8c89fd5fc6b2ae0af88b5667df8f532b6524738"
+        },
+        {
+          "id": "blur",
+          "pngSha256": "48b900732019da3f387e038d1782f377744522e361ddd0a8257ad07240ae9bc8"
+        },
+        {
+          "id": "blend-multiply",
+          "pngSha256": "a3c7ce4ba94fe4a7ae687e000ae7f1d963338d89ebda63f0b5eaf5d0e9ba4da8"
+        },
+        {
+          "id": "composite-in",
+          "pngSha256": "893f913e0854a9e5acad8a7ac3162e31bc17fb2ee82ec8b46813263c8a117b4c"
+        },
+        {
+          "id": "merge-color-spaces",
+          "pngSha256": "78ec0709ed9fa6e7dcea801354d3f1c811bcb4cc0e37ee18a5d4ef9f7d3d4ea4"
+        },
+        {
+          "id": "filter-mask-clip",
+          "pngSha256": "b3cf9f0ac76d9273954b9a442f953b25db2c543b5e7fed18c0d31b2c3b88f844"
+        },
+        {
+          "id": "css-priority",
+          "pngSha256": "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7"
+        },
+        {
+          "id": "text-real-italic",
+          "pngSha256": "6950e7faaf84efbb6834d292a8b6813a3d6d2cf7ecb5ead09d57ed8a8f5d85b4"
+        },
+        {
+          "id": "text-path",
+          "pngSha256": "a180862cdcc6e465ab008497c0cbefd768adabc6f4c8f0e9f62fd49b15a7b077"
+        },
+        {
+          "id": "wpt-marker-path",
+          "pngSha256": "c2237414f8fa08787d2bbb4c60dae7008c345b51c1dfba3a61e651579a4f863d"
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "pngSha256": "20de25b1f6c739e7c8ed0027577d4cb5a9ff35a3d664ffed5f204224e0334ef4"
+        },
+        {
+          "id": "icon-sheet",
+          "pngSha256": "dd858d710fe925d318c1abdb335861d1862b295c76c11fe3fec1940e9f88f7bf"
+        },
+        {
+          "id": "wordmark",
+          "pngSha256": "84529b0ef61e5940427d01a0405d909eb092867021289de094e1f5104c6d55ff"
+        },
+        {
+          "id": "chart",
+          "pngSha256": "5ba25cdb07873c8aef646794c19f924d3a02d883d8410c293c14546949780ee6"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "cases": 29,
+      "repeatRasterCallsPerTree": 2,
+      "timingStages": 4,
+      "warmupObservations": 232,
+      "sampleObservations": 348,
+      "defaultAndTimingPngsByteIdentical": 29,
+      "pngs": [
+        {
+          "id": "geometry-rect",
+          "pngSha256": "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7"
+        },
+        {
+          "id": "geometry-cubic",
+          "pngSha256": "8bf45bb6922b574df35715d9a744c5f5b5a10b9231021fbacc5611528d0c1a24"
+        },
+        {
+          "id": "geometry-arc",
+          "pngSha256": "cbf44d4c2f8bbeca8fecf9cfd27a70316486ee466943f88cd077b3fe9bfa0431"
+        },
+        {
+          "id": "stroke-dashed-circle",
+          "pngSha256": "1a382b515c25170186ef588ccbe74ff17f126d70bde3da7b06810f532ac910b6"
+        },
+        {
+          "id": "stroke-round-join",
+          "pngSha256": "0fae808fd19c07d869c40f3a58fc085bef7e6f66a9586454308851e190057d29"
+        },
+        {
+          "id": "nested-affine",
+          "pngSha256": "8d662b5de69b1eea7ff5560b13bbbda78f64463ac4d158d1fba88c2d1496c869"
+        },
+        {
+          "id": "symbol-opacity",
+          "pngSha256": "4f77982029f7eda1a737b0fefd515b03dcba6f60d62d930dbfd6f2902c9be2fe"
+        },
+        {
+          "id": "linear-affine",
+          "pngSha256": "4e86ea6e81f2afac5160e2847ef3f7c7403c11c02020cdabb87482c3ff1e8da6"
+        },
+        {
+          "id": "radial-affine",
+          "pngSha256": "73c42e1d9e9f326bbb71a2de205a52de30ac14e2217a297799b48b72f815d0a6"
+        },
+        {
+          "id": "object-box-clip",
+          "pngSha256": "2f9a7194c457ea96616b34285cdd09b83509e90293c918bd0b65069f36264d32"
+        },
+        {
+          "id": "nested-clip-child",
+          "pngSha256": "fba3cf56e1a3521f4d81cf00ae2f0100cd221f5a922e722247b2f400b6e2f8e5"
+        },
+        {
+          "id": "clip-child-union",
+          "pngSha256": "7ae8c46b0fa7ca99c51bcac06219b5e9fdbbe07b977d6c374728e1c859dd855b"
+        },
+        {
+          "id": "luminance-mask",
+          "pngSha256": "d0e88abd509cc422f0b7b0b2f405d3dbdae40093c7b0d284efe945b2813c126e"
+        },
+        {
+          "id": "pattern-viewbox",
+          "pngSha256": "561779912f5c2feda40167d6602fe6f9e4cafcf5b9d0908d9c6261248079494a"
+        },
+        {
+          "id": "pattern-affine",
+          "pngSha256": "0e07e86d5a1c6c924a750024209af86416b7557ab739036c5dee276f183655f2"
+        },
+        {
+          "id": "embedded-png",
+          "pngSha256": "8aa61614b03b6885c1799e57a8c89fd5fc6b2ae0af88b5667df8f532b6524738"
+        },
+        {
+          "id": "blur",
+          "pngSha256": "48b900732019da3f387e038d1782f377744522e361ddd0a8257ad07240ae9bc8"
+        },
+        {
+          "id": "blend-multiply",
+          "pngSha256": "a3c7ce4ba94fe4a7ae687e000ae7f1d963338d89ebda63f0b5eaf5d0e9ba4da8"
+        },
+        {
+          "id": "composite-in",
+          "pngSha256": "893f913e0854a9e5acad8a7ac3162e31bc17fb2ee82ec8b46813263c8a117b4c"
+        },
+        {
+          "id": "merge-color-spaces",
+          "pngSha256": "78ec0709ed9fa6e7dcea801354d3f1c811bcb4cc0e37ee18a5d4ef9f7d3d4ea4"
+        },
+        {
+          "id": "filter-mask-clip",
+          "pngSha256": "b3cf9f0ac76d9273954b9a442f953b25db2c543b5e7fed18c0d31b2c3b88f844"
+        },
+        {
+          "id": "css-priority",
+          "pngSha256": "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7"
+        },
+        {
+          "id": "text-real-italic",
+          "pngSha256": "6950e7faaf84efbb6834d292a8b6813a3d6d2cf7ecb5ead09d57ed8a8f5d85b4"
+        },
+        {
+          "id": "text-path",
+          "pngSha256": "a180862cdcc6e465ab008497c0cbefd768adabc6f4c8f0e9f62fd49b15a7b077"
+        },
+        {
+          "id": "wpt-marker-path",
+          "pngSha256": "c2237414f8fa08787d2bbb4c60dae7008c345b51c1dfba3a61e651579a4f863d"
+        },
+        {
+          "id": "wpt-nested-viewport",
+          "pngSha256": "20de25b1f6c739e7c8ed0027577d4cb5a9ff35a3d664ffed5f204224e0334ef4"
+        },
+        {
+          "id": "icon-sheet",
+          "pngSha256": "dd858d710fe925d318c1abdb335861d1862b295c76c11fe3fec1940e9f88f7bf"
+        },
+        {
+          "id": "wordmark",
+          "pngSha256": "84529b0ef61e5940427d01a0405d909eb092867021289de094e1f5104c6d55ff"
+        },
+        {
+          "id": "chart",
+          "pngSha256": "5ba25cdb07873c8aef646794c19f924d3a02d883d8410c293c14546949780ee6"
+        }
+      ]
+    }
+  ],
+  "cliAdmission": [
+    {
+      "case": "zero-warmup",
+      "exitCode": 1,
+      "createdOutput": false
+    },
+    {
+      "case": "zero-samples",
+      "exitCode": 1,
+      "createdOutput": false
+    },
+    {
+      "case": "negative-count",
+      "exitCode": 1,
+      "createdOutput": false
+    },
+    {
+      "case": "unknown-flag",
+      "exitCode": 1,
+      "createdOutput": false
+    },
+    {
+      "case": "existing-output",
+      "exitCode": 1,
+      "overwroteOutput": false
+    }
+  ],
+  "unchangedPriorWindowsNativeOutputs": 26,
+  "frozenReferenceChanges": 0,
+  "method": "Serial Instant samples in one optimized process; every input and explicit font database loaded before operations. Full conversion parses a new tree, allocates a fresh transparent bitmap, rasterizes and encodes PNG; parse and prepared-raster stages include their own temporary allocation/destruction; PNG encodes the verified pixels. All temporary results are consumed through black_box and destroyed inside timing. Input/font acquisition, reference checks, report I/O, startup and IPC are excluded. All raw warmup/sample records remain in generated reports; two/three local smoke counts are tool checks, not warmed performance evidence.",
+  "remaining": [
+    "Coordinate an adequately warmed native/managed comparison on the quiet host with matched workload/options and explicit stage differences.",
+    "Keep native pixel differences, cold startup/IPC/I/O and process/native-memory metrics separate."
+  ]
+}
