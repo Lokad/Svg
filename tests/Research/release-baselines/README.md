@@ -96,6 +96,8 @@ coordinated quiet timing remains separate.
 The [raster cost map](raster-cost-responsibilities.json) joins the six named chart/icon
 areas to their owners, checks and retained samples; hot frames alone establish no
 additional removable work or safe cache.
+The [current package sizes](current-package-size.json) record sealed archive/member
+bytes and dependency-free payloads separately from runtime/process memory.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

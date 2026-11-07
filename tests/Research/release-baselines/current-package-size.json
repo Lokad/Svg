@@ -1,0 +1,126 @@
+{
+  "status": "Current sealed development package/symbol sizes and dependency-free payload inspected.",
+  "sourceCommit": "16466c3f6ee8716063ab879d655a0bead5c44444",
+  "qualification": "shader-context-qualified.json",
+  "packages": [
+    {
+      "file": "Lokad.Svg.0.4.0-dev.1.nupkg",
+      "sha256": "20be2ddd5433a2f5542245749214a0cbacd6166c469902e4a15911424a0e6f2f",
+      "archiveBytes": 2467143,
+      "uncompressedMemberBytes": 7596301,
+      "runtimeDependencyCount": 0,
+      "members": [
+        {
+          "file": "_rels/.rels",
+          "bytes": 476,
+          "compressedBytes": 265
+        },
+        {
+          "file": "Lokad.Svg.nuspec",
+          "bytes": 998,
+          "compressedBytes": 550
+        },
+        {
+          "file": "CHANGELOG.md",
+          "bytes": 19635,
+          "compressedBytes": 7364
+        },
+        {
+          "file": "LICENSE.txt",
+          "bytes": 1062,
+          "compressedBytes": 635
+        },
+        {
+          "file": "README.md",
+          "bytes": 2731,
+          "compressedBytes": 1357
+        },
+        {
+          "file": "THIRD_PARTY_NOTICES.txt",
+          "bytes": 26126,
+          "compressedBytes": 6733
+        },
+        {
+          "file": "icon.png",
+          "bytes": 14667,
+          "compressedBytes": 14672
+        },
+        {
+          "file": "lib/net10.0/Lokad.Svg.dll",
+          "bytes": 2883584,
+          "compressedBytes": 1061641
+        },
+        {
+          "file": "lib/net10.0/Lokad.Svg.xml",
+          "bytes": 877660,
+          "compressedBytes": 153558
+        },
+        {
+          "file": "lib/net11.0/Lokad.Svg.dll",
+          "bytes": 2883584,
+          "compressedBytes": 1061647
+        },
+        {
+          "file": "lib/net11.0/Lokad.Svg.xml",
+          "bytes": 877660,
+          "compressedBytes": 153558
+        },
+        {
+          "file": "licenses/FreeType/FTL.TXT",
+          "bytes": 6743,
+          "compressedBytes": 2873
+        },
+        {
+          "file": "[Content_Types].xml",
+          "bytes": 716,
+          "compressedBytes": 231
+        },
+        {
+          "file": "package/services/metadata/core-properties/nuget.psmdcp",
+          "bytes": 659,
+          "compressedBytes": 397
+        }
+      ]
+    },
+    {
+      "file": "Lokad.Svg.0.4.0-dev.1.snupkg",
+      "sha256": "8cb77a852e98c331ff13ee9502afccd28e93c18c6bd38b0fe70127ad0b5dc0a6",
+      "archiveBytes": 731654,
+      "uncompressedMemberBytes": 1576386,
+      "runtimeDependencyCount": 0,
+      "members": [
+        {
+          "file": "_rels/.rels",
+          "bytes": 476,
+          "compressedBytes": 265
+        },
+        {
+          "file": "Lokad.Svg.nuspec",
+          "bytes": 882,
+          "compressedBytes": 493
+        },
+        {
+          "file": "lib/net10.0/Lokad.Svg.pdb",
+          "bytes": 786508,
+          "compressedBytes": 364582
+        },
+        {
+          "file": "lib/net11.0/Lokad.Svg.pdb",
+          "bytes": 787396,
+          "compressedBytes": 364924
+        },
+        {
+          "file": "[Content_Types].xml",
+          "bytes": 465,
+          "compressedBytes": 215
+        },
+        {
+          "file": "package/services/metadata/core-properties/nuget.psmdcp",
+          "bytes": 659,
+          "compressedBytes": 397
+        }
+      ]
+    }
+  ],
+  "scope": "Byte counts of the sealed ZIP archives and their members, with ZIP compressed member sizes distinct from whole-archive bytes/metadata. No historical version comparison, download/decompression performance, process working set, native allocation or runtime/framework footprint claim."
+}
