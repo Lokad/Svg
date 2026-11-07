@@ -128,7 +128,7 @@
     "Zero, negative and invalid conversion counts reject before creating output."
   ],
   "scope": "A new CLI route reuses the unchanged installed fixture and conversion method. Six snapshots distinguish setup, first conversion, repeated conversions, explicit font cleanup and forced GC while the probe frame remains live. RSS/HWM include observer/benchmark-host/runtime/input/output; managed allocation and heap estimates are different quantities. External launch-to-marker/exit includes bootstrap/communication; OS file caches are not flushed. This is neither a minimal-host startup result nor an IPC-only/native-memory metric.",
-  "quietMeasurements": "Pending separate coordinated collection; local checks establish behavior only.",
+  "quietMeasurements": "installed-process-quiet.json",
   "unchangedInstalledFixtureSourceTail": true,
   "checks": [
     "Both targets build with warnings as errors and locked restore",

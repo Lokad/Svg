@@ -84,6 +84,10 @@ and images while recording any additional warmup as an explicit operations/durat
 The [installed process probe](installed-process-probe.json) separates first-call/setup
 observations, managed traffic/heap estimates and whole-process resident/peak storage;
 its qualification preserves the existing warmed fixture and canonical images.
+The [quiet native stages](native-warm.json) retain all fixed samples and aggregate
+warmup extensions, alongside their browser differences. The [fresh-process observations](installed-process-quiet.json)
+retain every call and snapshot; benchmark-host startup, resident memory and warmed
+throughput keep separate scopes.
 The [geometry/instance trace](geometry-instance-trace.json) binds retained sources,
 fixed-length domains and source-ancestor exclusion to current owners and checks.
 The [geometry/admission qualification](geometry-admission-qualification.json)

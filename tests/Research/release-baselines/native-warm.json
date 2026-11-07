@@ -1,0 +1,377 @@
+{
+  "status": "Quiet persistent native stages measured with all samples retained; engines retain distinct browser accuracy.",
+  "toolQualification": "native-warmup-floor.json",
+  "managedMeasurement": "cmap-batch-quiet.json",
+  "protocol": {
+    "renderer": "resvg 0.49.0",
+    "toolSourceCommit": "5c5be10eb920b6a980b27120d3fbda946ad0231b",
+    "documents": [
+      "chart",
+      "geometry-rect",
+      "icon-sheet"
+    ],
+    "warmupConversionsPerStagePerLaunch": 320,
+    "measuredConversionsPerStagePerLaunch": 64,
+    "freshLaunches": 3,
+    "stages": [
+      "parse-raster-png",
+      "parse",
+      "prepared-raster",
+      "png"
+    ],
+    "affinity": "CPU0",
+    "allSamplesRetained": true,
+    "binarySha256": "7a885cf790811c015050f518ddcefaaccc9dc20968d03cb2a93909baf0a38d7c",
+    "payloadSha256": "a22463eae32b25835d2246f8642f6bb1a53cfb586db0372b1bafeec60b1df6ab",
+    "comparison": "Public managed full conversion from cmap-batch-quiet.json, same source/font inputs and dimensions. Native single-operation clock samples vs managed eight-call BDN measurements; preserve the harness/output-lifetime differences, native/browser differences and bounded host scope. No startup, IPC, I/O or allocation/peak-memory comparison.",
+    "startCondition": "Coordinated 21:25-21:45 UTC exclusive slot; acquire canonical flock before VM access and release after terminal workers/retrieval/idle.",
+    "sourceFiles": [
+      {
+        "file": "tests/Research/upstream-static-documents/fonts/NotoSans-Regular.ttf",
+        "sha256": "6b04c8dd65af6b73eb4279472ed1580b29102d6496a377340e80a40cdb3b22c9"
+      },
+      {
+        "file": "tests/Research/upstream-static-documents/fonts/NotoSans-Italic.ttf",
+        "sha256": "35600501daadd3e9030ee6ed8098fd3c7f31bfd898ca58da8edf793a3231c48b"
+      },
+      {
+        "file": "tests/Research/benchmark-workloads/chart.svg",
+        "sha256": "4b49044e17b25ecf37e992c985759d8f09615f3461eae6a089e6c5dd9951f802"
+      },
+      {
+        "file": "tests/Research/upstream-static-documents/inputs/geometry-rect.svg",
+        "sha256": "1704df88ea3d6a0133ce74d4c3176dc169a0d01389b89fb577c6c31537b0a1ed"
+      },
+      {
+        "file": "tests/Research/benchmark-workloads/icon-sheet.svg",
+        "sha256": "b1c1789d83a985cb31b0f382b75ce1638058a18fd0ec05441e830c4fa5db8e76"
+      }
+    ],
+    "minimumWarmupMillisecondsPerStage": 2000,
+    "warmupRetention": "320 fixed individual observations plus any extension as an explicit operations/duration batch"
+  },
+  "retrieval": {
+    "workersRemaining": 0,
+    "bytes": 330829,
+    "sha256": "2e2eadeb1fa66a14ab4199028846daa7ae8d55f86fdb6bfc08670c66fd0a5665"
+  },
+  "sampleFile": "native-warm-samples.json",
+  "sampleFileSha256": "6b029ea24c99130b2e6494f2f5363076c6daad4aa07e394ed8b379e90459b04c",
+  "fixedWarmupCalls": 11520,
+  "extraWarmupCalls": 1300956,
+  "measuredCalls": 2304,
+  "stageRows": 36,
+  "terminalProcesses": [
+    {
+      "launch": 1,
+      "exitCode": 0,
+      "seconds": 73.90675469697453
+    },
+    {
+      "launch": 2,
+      "exitCode": 0,
+      "seconds": 74.24837372591719
+    },
+    {
+      "launch": 3,
+      "exitCode": 0,
+      "seconds": 73.7086409459589
+    }
+  ],
+  "images": [
+    {
+      "launch": 1,
+      "document": "chart",
+      "pngSha256": "5ba25cdb07873c8aef646794c19f924d3a02d883d8410c293c14546949780ee6",
+      "changedPixelsFromLocalNative": 0
+    },
+    {
+      "launch": 1,
+      "document": "geometry-rect",
+      "pngSha256": "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7",
+      "changedPixelsFromLocalNative": 0
+    },
+    {
+      "launch": 1,
+      "document": "icon-sheet",
+      "pngSha256": "dd858d710fe925d318c1abdb335861d1862b295c76c11fe3fec1940e9f88f7bf",
+      "changedPixelsFromLocalNative": 0
+    },
+    {
+      "launch": 2,
+      "document": "chart",
+      "pngSha256": "5ba25cdb07873c8aef646794c19f924d3a02d883d8410c293c14546949780ee6",
+      "changedPixelsFromLocalNative": 0
+    },
+    {
+      "launch": 2,
+      "document": "geometry-rect",
+      "pngSha256": "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7",
+      "changedPixelsFromLocalNative": 0
+    },
+    {
+      "launch": 2,
+      "document": "icon-sheet",
+      "pngSha256": "dd858d710fe925d318c1abdb335861d1862b295c76c11fe3fec1940e9f88f7bf",
+      "changedPixelsFromLocalNative": 0
+    },
+    {
+      "launch": 3,
+      "document": "chart",
+      "pngSha256": "5ba25cdb07873c8aef646794c19f924d3a02d883d8410c293c14546949780ee6",
+      "changedPixelsFromLocalNative": 0
+    },
+    {
+      "launch": 3,
+      "document": "geometry-rect",
+      "pngSha256": "bc8892b7847978a0350a46373c853810be6fd36a8976a946180e770bdf15d3e7",
+      "changedPixelsFromLocalNative": 0
+    },
+    {
+      "launch": 3,
+      "document": "icon-sheet",
+      "pngSha256": "dd858d710fe925d318c1abdb335861d1862b295c76c11fe3fec1940e9f88f7bf",
+      "changedPixelsFromLocalNative": 0
+    }
+  ],
+  "fullConversionComparisons": [
+    {
+      "document": "chart",
+      "nativeMedianOfEightCallMeansNs": 72183567.3125,
+      "managedAfter": [
+        {
+          "asset": "net10.0",
+          "host": "net10.0",
+          "medianNs": 177083711.875
+        },
+        {
+          "asset": "net11.0",
+          "host": "net11.0",
+          "medianNs": 159383293.625
+        }
+      ]
+    },
+    {
+      "document": "geometry-rect",
+      "nativeMedianOfEightCallMeansNs": 446115.0625,
+      "managedAfter": [
+        {
+          "asset": "net10.0",
+          "host": "net10.0",
+          "medianNs": 1147953.8125
+        },
+        {
+          "asset": "net11.0",
+          "host": "net11.0",
+          "medianNs": 905969.1875
+        }
+      ]
+    },
+    {
+      "document": "icon-sheet",
+      "nativeMedianOfEightCallMeansNs": 5202569.75,
+      "managedAfter": [
+        {
+          "asset": "net10.0",
+          "host": "net10.0",
+          "medianNs": 21783373.3125
+        },
+        {
+          "asset": "net11.0",
+          "host": "net11.0",
+          "medianNs": 18992552.9375
+        }
+      ]
+    }
+  ],
+  "scope": "Native single-operation Instant observations are also grouped into eight-call means; managed BenchmarkDotNet measurements use eight invocations and calibrated overhead. Native temporary destruction is synchronous; managed output reclamation follows GC. Both routes include parse/raster/PNG and exclude input/font setup and I/O. Native follows the managed campaign rather than randomized engine order. These are bounded host/configuration observations, with distinct browser pixel differences and no fidelity-equivalence, startup or memory claim.",
+  "remaining": [
+    "Cold startup/IPC/I/O and process/native memory remain separately owned.",
+    "Optional additional engines and deeper gradient/filter/path attribution remain open."
+  ],
+  "lease": {
+    "releasedUtc": "2026-11-07T21:42:17Z",
+    "holder": 1340071,
+    "holderExitCode": 0,
+    "workersRemaining": 0,
+    "peerNotified": true
+  },
+  "environmentEvidence": "cmap-batch-quiet.json",
+  "environment": {
+    "BenchmarkDotNetCaption": "BenchmarkDotNet",
+    "BenchmarkDotNetVersion": "0.16.0-preview.2",
+    "OsVersion": "Linux Ubuntu 24.04.5 LTS (Noble Numbat)",
+    "ProcessorName": "AMD EPYC 9V45",
+    "PhysicalProcessorCount": 1,
+    "PhysicalCoreCount": 4,
+    "LogicalCoreCount": 4,
+    "RuntimeVersion": ".NET 10.0.14 (10.0.14, 10.0.1426.52326)",
+    "Architecture": "X64",
+    "HasAttachedDebugger": false,
+    "HasRyuJit": true,
+    "Configuration": "RELEASE",
+    "DotNetCliVersion": "11.0.100-rc.3.26522.148",
+    "ChronometerFrequency": {
+      "Hertz": 1000000000
+    },
+    "HardwareTimerKind": "Unknown"
+  },
+  "nativeBrowserDifferenceColumns": [
+    "id",
+    "changedPixels",
+    "maximumChannelError"
+  ],
+  "nativeBrowserDifferences": [
+    [
+      "geometry-rect",
+      401,
+      64
+    ],
+    [
+      "icon-sheet",
+      9279,
+      140
+    ],
+    [
+      "chart",
+      236096,
+      156
+    ]
+  ],
+  "comparisonLimits": [
+    "Every selected native image differs from the browser reference; these engines render distinct pixels, so timing rates establish neither equal fidelity nor interchangeability.",
+    "The preceding managed geometry control is unstable and provides no qualified engine or runtime ranking.",
+    "Native measurements use individual Instant calls grouped into eight-call means; managed measurements use calibrated eight-invocation BenchmarkDotNet observations. Engine order is not randomized and output reclamation differs."
+  ],
+  "stageSummary": [
+    {
+      "document": "chart",
+      "mode": "parse-raster-png",
+      "medianNanoseconds": 72251796.0,
+      "measuredHalfRatioRange": [
+        0.9988037699397484,
+        1.0006100461402154
+      ]
+    },
+    {
+      "document": "chart",
+      "mode": "parse",
+      "medianNanoseconds": 580938.0,
+      "measuredHalfRatioRange": [
+        0.996506302777907,
+        1.000326331518472
+      ]
+    },
+    {
+      "document": "chart",
+      "mode": "prepared-raster",
+      "medianNanoseconds": 61381310.0,
+      "measuredHalfRatioRange": [
+        0.9898500601856778,
+        1.0003384177702574
+      ]
+    },
+    {
+      "document": "chart",
+      "mode": "png",
+      "medianNanoseconds": 9690470.0,
+      "measuredHalfRatioRange": [
+        1.0000902863995906,
+        1.0002041154441041
+      ]
+    },
+    {
+      "document": "geometry-rect",
+      "mode": "parse-raster-png",
+      "medianNanoseconds": 444423.5,
+      "measuredHalfRatioRange": [
+        0.9990826431922164,
+        1.0009364771351004
+      ]
+    },
+    {
+      "document": "geometry-rect",
+      "mode": "parse",
+      "medianNanoseconds": 5478.0,
+      "measuredHalfRatioRange": [
+        0.9926847110460864,
+        1.0055570738817527
+      ]
+    },
+    {
+      "document": "geometry-rect",
+      "mode": "prepared-raster",
+      "medianNanoseconds": 35142.5,
+      "measuredHalfRatioRange": [
+        0.99686101839358,
+        1.000142336597586
+      ]
+    },
+    {
+      "document": "geometry-rect",
+      "mode": "png",
+      "medianNanoseconds": 401269.0,
+      "measuredHalfRatioRange": [
+        0.9975043437055757,
+        1.0006009398100182
+      ]
+    },
+    {
+      "document": "icon-sheet",
+      "mode": "parse-raster-png",
+      "medianNanoseconds": 5194427.5,
+      "measuredHalfRatioRange": [
+        0.9905672588483614,
+        1.0011697372832509
+      ]
+    },
+    {
+      "document": "icon-sheet",
+      "mode": "parse",
+      "medianNanoseconds": 658949.0,
+      "measuredHalfRatioRange": [
+        0.9991648265289326,
+        1.0018251859020646
+      ]
+    },
+    {
+      "document": "icon-sheet",
+      "mode": "prepared-raster",
+      "medianNanoseconds": 1355569.0,
+      "measuredHalfRatioRange": [
+        0.9983740848707089,
+        1.0002991528183995
+      ]
+    },
+    {
+      "document": "icon-sheet",
+      "mode": "png",
+      "medianNanoseconds": 2945369.0,
+      "measuredHalfRatioRange": [
+        0.9996384833749461,
+        1.0003636593296446
+      ]
+    }
+  ],
+  "conclusion": "Persistent native baseline is measured and retained: chart full conversion about 72.2ms, prepared raster 61.4ms; icons full 5.2ms, prepared raster 1.36ms, PNG 2.95ms. All native images preserve prior native pixels and their browser differences. These stage observations and current managed sample attribution prioritize raster/gradient/filter/path costs; they establish no correctness defect or equal-fidelity performance ranking.",
+  "idleRecords": {
+    "idle-before.txt": [
+      "procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------",
+      " r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu",
+      " 0  0      0 629668 496700 14747904    0    0     0    75  303    0  0  0 99  0  0  0",
+      " 0  0      0 629536 496700 14748024    0    0     0     0  179   95  0  0 100  0  0  0",
+      " 0  0      0 634032 496700 14748024    0    0     0     0  156   87  0  0 100  0  0  0",
+      " 0  0      0 634032 496700 14748024    0    0     0     0  165   86  0  0 100  0  0  0",
+      " 0  0      0 634032 496700 14748024    0    0     0     0  201   94  0  0 100  0  0  0"
+    ],
+    "idle-after.txt": [
+      "procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------",
+      " r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu",
+      " 0  0      0 634292 496700 14748532    0    0     0    75  303    0  0  0 99  0  0  0",
+      " 0  0      0 634300 496700 14748656    0    0     0     0  195   89  0  0 100  0  0  0",
+      " 0  0      0 634300 496700 14748656    0    0     0     4  239  111  0  0 100  0  0  0",
+      " 0  0      0 634300 496700 14748656    0    0     0     0  133   66  0  0 100  0  0  0",
+      " 0  0      0 633292 496700 14748656    0    0     0     0  245  117  0  0 100  0  0  0"
+    ]
+  }
+}

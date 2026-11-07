@@ -1,0 +1,157 @@
+{
+  "status": "Fresh-process benchmark-host setup/first-call and whole-process memory observations retained; all 18 first PNGs and every intra-process repeat exact.",
+  "qualification": "installed-process-probe.json",
+  "rendererQualification": "cmap-batch-qualified.json",
+  "protocol": {
+    "toolSourceCommit": "dea8e19f81802ed8e69672bd4cea236b156d0fe0",
+    "rendererQualification": "cmap-batch-qualified.json",
+    "launches": 3,
+    "documents": [
+      "chart",
+      "geometry-rect",
+      "icon-sheet"
+    ],
+    "conversionsPerFreshProcess": 32,
+    "warmupConversions": 0,
+    "environment": {
+      "DOTNET_gcServer": "0",
+      "DOTNET_gcConcurrent": "1",
+      "DOTNET_TieredCompilation": "1",
+      "DOTNET_TieredPGO": "1"
+    },
+    "affinity": "CPU0",
+    "osCaches": "Not flushed; files already used by preceding native campaign.",
+    "outerTimers": "Launch to first completed-conversion marker and process exit include taskset/time, benchmark-host bootstrap and communication.",
+    "memoryScope": "OS whole-process maxRSS plus six managed/runtime snapshots. Neither a native-memory-only nor governed-budget metric; first PNG retained for repeat checks.",
+    "hosts": {
+      "net10.0": {
+        "driverSha256": "2e575c8794e5a1a54be980a3717c0008658fea81aa9482b9cba3c0454d7e9a0f",
+        "librarySha256": "09e37a6e81fe13bb83207b20eead74c2a0ca3f2756ca4427a1bb9556eeedf0e2"
+      },
+      "net11.0": {
+        "driverSha256": "07fed28afa36e3544813be824f08999ce90946525e6387a6f9449234d6f27bdf",
+        "librarySha256": "38c67f35f69c70bdbd7c60d9eeab9164a36455989be3c068f8bdc1f40d3d658e"
+      }
+    },
+    "payloadSha256": "6ec8d7fc9025dca56d7ee2d0f4d6d2f5e124e21c3ce735890791c01f56ff7412",
+    "fontPackSha256": "3ba4fb9c2c7b40df7b9f3c060ba1e5c98e461894e102684585da9effb80ce990",
+    "setupCorrection": "First deployment lacked the committed font-pack manifest and stopped before any conversion; preserve its log/time under setup-failure. Qualified retry adds the source-bound manifest, changes only output directory, and retains every real observation."
+  },
+  "retrieval": {
+    "workersRemaining": 0,
+    "bytes": 884041,
+    "sha256": "b8d1f8e121ffa933ec604b81a7c4271876039a05e5d4fd9bb141ac9e7c967f65"
+  },
+  "sampleFile": "installed-process-quiet-samples.json",
+  "sampleFileSha256": "d2586fbac4178966f5d047f2ea2e5eb289a0067df03a1788cdf9a542adec46e9",
+  "processes": 18,
+  "conversions": 576,
+  "snapshots": 108,
+  "summary": [
+    {
+      "framework": "net10.0",
+      "document": "chart",
+      "launchToFirstMarkerMedianMs": 1144.7592889890075,
+      "setupMedianMs": 54.8461,
+      "firstConversionMedianMs": 1056.765,
+      "maximumResidentBytesRange": [
+        135634944,
+        157609984
+      ]
+    },
+    {
+      "framework": "net10.0",
+      "document": "geometry-rect",
+      "launchToFirstMarkerMedianMs": 260.1824289886281,
+      "setupMedianMs": 33.2918,
+      "firstConversionMedianMs": 193.8808,
+      "maximumResidentBytesRange": [
+        82358272,
+        82571264
+      ]
+    },
+    {
+      "framework": "net10.0",
+      "document": "icon-sheet",
+      "launchToFirstMarkerMedianMs": 589.9084489792585,
+      "setupMedianMs": 54.0892,
+      "firstConversionMedianMs": 503.0601,
+      "maximumResidentBytesRange": [
+        105873408,
+        105955328
+      ]
+    },
+    {
+      "framework": "net11.0",
+      "document": "chart",
+      "launchToFirstMarkerMedianMs": 1134.2590360436589,
+      "setupMedianMs": 48.7649,
+      "firstConversionMedianMs": 1056.8575,
+      "maximumResidentBytesRange": [
+        137785344,
+        142721024
+      ]
+    },
+    {
+      "framework": "net11.0",
+      "document": "geometry-rect",
+      "launchToFirstMarkerMedianMs": 254.82996099162847,
+      "setupMedianMs": 28.907,
+      "firstConversionMedianMs": 198.9009,
+      "maximumResidentBytesRange": [
+        81698816,
+        81940480
+      ]
+    },
+    {
+      "framework": "net11.0",
+      "document": "icon-sheet",
+      "launchToFirstMarkerMedianMs": 592.0705479802564,
+      "setupMedianMs": 49.609,
+      "firstConversionMedianMs": 513.9515,
+      "maximumResidentBytesRange": [
+        104935424,
+        105926656
+      ]
+    }
+  ],
+  "setupCorrection": {
+    "stage": "before first conversion",
+    "exception": "FileNotFoundException",
+    "missingInput": "tests/Research/upstream-static-documents/font-pack.json",
+    "retainedLogSha256": "8113d3a8703c6920da7f142b8679c14cdca57f12e93aa0b3f3cae00c19936102",
+    "resolution": "Supplied the committed manifest and repeated the unchanged probe in a new directory. No successful measurement discarded."
+  },
+  "scope": "Fresh processes with warm filesystem caches, explicit GC/tiering/PGO and CPU0. Outer launch-to-marker/exit includes taskset/time, benchmark-host bootstrap and communication. Individual conversion timers exclude exactness checks/snapshots. OS maxRSS covers the entire host process; snapshots distinguish resident/peak, managed heap estimates and cumulative allocations. First output retained for exactness; explicit cleanup/full GC observes a live probe frame. No warmed throughput, minimum-consumer startup, IPC-only, native-only memory or governed-budget claim.",
+  "remaining": [
+    "Disaggregate a minimal consumer startup and IPC/I/O with a dedicated protocol.",
+    "Native allocation/live/peak attribution and deeper renderer costs remain separate."
+  ],
+  "lease": {
+    "releasedUtc": "2026-11-07T21:42:17Z",
+    "holder": 1340071,
+    "holderExitCode": 0,
+    "workersRemaining": 0,
+    "peerNotified": true
+  },
+  "idleRecords": {
+    "idle-before.txt": [
+      "procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------",
+      " r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu",
+      " 0  0      0 496232 496836 14860024    0    0     0    75  303    0  0  0 99  0  0  0",
+      " 0  0      0 496232 496836 14860032    0    0     0     0  297  137  0  0 100  0  0  0",
+      " 0  0      0 496232 496836 14860032    0    0     0     0  249  118  0  0 100  0  0  0",
+      " 0  0      0 496232 496836 14860032    0    0     0     0  177   83  0  0 100  0  0  0",
+      " 0  0      0 497728 496836 14860032    0    0     0     4  296  145  0  0 100  0  0  0"
+    ],
+    "idle-after.txt": [
+      "procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------",
+      " r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu",
+      " 0  0      0 477228 496860 14861468    0    0     0    75  303    0  0  0 99  0  0  0",
+      " 0  0      0 477396 496860 14861380    0    0     0     0  253  108  0  0 100  0  0  0",
+      " 0  0      0 477396 496860 14861380    0    0     0     8  169   76  0  0 100  0  0  0",
+      " 0  0      0 481588 496860 14861380    0    0     0     0  198   97  0  0 100  0  0  0",
+      " 0  0      0 485052 496860 14861380    0    0     0     0  160   73  0  0 100  0  0  0"
+    ]
+  }
+}
