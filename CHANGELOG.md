@@ -2,214 +2,31 @@
 
 ## Unreleased
 
-- Retain the linear shadow transform's input sampling guard, preserving rounded
-  source coverage through cropped filter captures and compositor tiles.
-- Share shadow foreground compositing with merge inputs, preserving deferred
-  color-filter precision and alpha rounding without a second drawing loop.
-- Reconstruct embedded PNG scanlines in their admitted buffer, removing two
-  scratch rows and the per-row copy while preserving pixel and ownership behavior.
-- Reject embedded PNG `cICP` color-space declarations through the existing
-  unsupported color-management boundary instead of ignoring their sample encoding.
-- Paint text decorations with their own source fragments, preserving mixed-font
-  and mixed-color glyph overlap through the shared direct/path painter.
-- Resolve fixed CSS stroke widths before optimized axis-line lowering, including
-  physical-unit zero widths. Reject extra length suffixes in text-path percentages.
-- Reject invalid unescaped CSS selector names while retaining quoted numeric
-  attribute values and numeric SVG ID references.
-- Evaluate filter pixels only along final-result dependencies, avoiding unused
-  intermediate planes and source-capture halos while preserving declaration,
-  region and scalar validation.
-- Preserve source trailing spacing in text decorations and stretch ink-gap padding
-  with glyphs while retaining text layout.
-- Share canonical glyph contours with decoration ink clipping and preserve separately
-  rounded exclusion rectangles, fixing transformed and curved underlines.
-- Admit finite singular element transforms through shared source-bound retention,
-  preserving enclosing filter output and required text metrics without constructing
-  paint under a collapsed map.
-- Preserve native fill and stroke commands for affine use instances independently
-  of source visibility and solid, gradient or pattern paint.
-- Preserve enclosing filter output when stroke-only children have zero element
-  opacity; keep child opacity inside its parent filter.
-- Keep native source strokes for retained rectangles independently of solid or
-  shader material, including inherited and use-supplied strokes.
-- Preserve retained canvas stages and bitmap-local clip classification in isolated
-  symbol/nested-viewport draws. Support nonuniform symbol strokes backed by native
-  source commands, removing the obsolete orthogonal-contour restriction.
-- Preserve non-scaling stroke bounds and width rounding, isolated bitmap origins
-  and transparent picture padding through gradient/pattern effect contexts.
-- Preserve recorded AA fringes and native viewport clip classification when filter
-  sources use cropped storage, retaining source aliases and deferred color filters.
-- Borrow retained scene command ranges during filter replay, removing per-capture
-  subtree copies while preserving source ownership and rendering.
+Development targets 0.4.0.
 
-- Preserve fragment drawing coordinates and separate physical font/canvas stages
-  for text gradients and patterns, fixing stroke repeat edges and transformed color
-  differences while retaining glyph layout. Form physical source rectangles before
-  rotation and compose pattern origins before narrowing to preserve fractional-scale
-  paint bounds.
-- Support supplied text in clip paths through shared shaping and ordered mask
-  replay, preserving layout bounds, source opacity, intersections and group isolation.
-- Preserve native rectangle-call and coordinate-buffer boundaries when sampling
-  embedded PNGs, including fractional edge rows and bitmap clips.
-- Construct culled dashes in their owning bitmap before thin-stroke or outline
-  painting, preserving source calibration, phase and bitmap-origin rounding.
-- Resolve scalar/list text positions in fixed CSS units and em using each
-  declaration's computed font size, including span and instance replay.
-- Shape covered Latin combining sequences with canonical Unicode ordering,
-  font-covered composition, selected substitutions and actual mark attachments;
-  preserve source clusters through both text-length fitting modes.
-- Paint large transformed glyphs as canonical unhinted paths, preserving
-  translucent solid/gradient fills and clipping without oversized glyph masks.
-- Preserve source indices, text ownership and path bindings through Turkic and
-  Lithuanian conditional casing. Empty font needs no longer acquire a font program;
-  emitted combining marks remain subject to the documented shaping subset.
-- Support default-language capitalization with full Unicode titlecase mappings,
-  original word context and source-indexed SVG positions.
-- Retain terminal colour programs through offset sampling and destination coverage,
-  preserving low-alpha rounding through integer, fractional and zero offsets.
-- Use the shared per-bitmap filter path for fractional offsets, preserving final
-  colour transfer, opacity and clipping during destination composition.
-- Preserve locally enclosed drawable bounds when constructing filter source images,
-  keeping gradient sampling and dither origins exact through aliases and matrices.
-- Preserve compact filter-source origins in later compositor bitmaps, preventing
-  displaced or missing source drawings in tiled filter graphs.
-- Add all four color-matrix modes with retained color operations, finite image views
-  and exact filter-chain, crop, sampling and alpha behavior.
-- Share span/path child-style resolution across layout and font discovery, retaining
-  computed CSS anchors and consistent plain/xlink path-reference limits.
-- Keep groups inside clip resources dormant while preserving their IDs for
-  independent geometry and font-bearing instances.
-- Admit validated `line-height` on explicitly positioned text without changing
-  layout; require contiguous number/unit tokens in inert typography.
-- Add default Unicode lowercase and source-context final-sigma handling across
-  spans and paths; keep font discovery's whitespace and text lifetimes distinct.
-- Add pinned Unicode uppercase conversion with original SVG character addressing,
-  transformed font discovery and governed expansion storage.
-- Preserve a uniform child anchor when joining direct text and text-path ranges,
-  using the same source-style comparison as interval compaction.
-- Preserve ligatures across anchor-only style intervals that select the same
-  font face and size, retaining source positioning and actual shaping boundaries.
-- Admit inert `text-align` declarations on supported preformatted text and
-  containers, preserving anchors and explicit positioning.
-- Preserve the parent bitmap's drawing-matrix rounding when capturing filtered
-  paints, including draws without a recorded transform chain.
-- Preserve antialiased coverage beside bitmap borders when an output row is
-  narrower than the mask's complete scan window; reserve span scratch separately.
-- Ignore unknown and inapplicable SVG attributes consistently while retaining
-  validation of applicable rendering features.
-- Use initial gradient units for invalid values, preserving template explicitness.
-- Respect Windows tiny-glyph program admission and default scanner thresholds,
-  preserving scaled-child execution and instruction-free parent scanner state.
-- Produce reproducible NuGet and symbol-package ZIP timestamps.
-- Correct Windows glyph contours when a font applies conditional vertical pixel shifts.
-- Keep Windows fitted glyph originals/current points in their aligned metric frame;
-  preserve the child paint origin independently of composite parent-program phantoms.
-- Resolve CSS/presentation text anchors through shared inheritance and chunk
-  boundaries, preserving anchor-only span changes during interval compaction.
-- Preserve native fixed-point precision for expanded Windows initial glyph
-  coordinates in both simple outlines and composite children.
-- Admit inactive hover/active/focus selectors and inert float declarations in SVG
-  images. Share inline-style source diagnostics and preserve stylesheet locations.
-- Ignore inert event attributes and character-data script elements during static
-  conversion. Preserve switch/pattern selection, lexical node accounting and text
-  boundaries without executing scripts, resolving their URLs or retaining bodies.
-- Resolve GPOS extension payloads consistently through validation and kerning;
-  execute the TrueType freedom-from-projection instruction without changing other state.
-- Respect unitless font sizes in SVG inline styles while preserving stylesheet
-  length admission, inherited/span styles and prepared font requests.
-- Share foreign-description traversal and pattern declaration locations across
-  preparation and lowering; preserve the original unsupported-source diagnostic
-  when a later text node encounters the rejection.
-- Share fixed CSS length conversion across roots, markers and stroke metrics;
-  admit physical units for stroke widths, dash entries and offsets, including zero
-  widths during font/resource selection.
-- Retain shallow authored curves that flatten to a single segment across solid,
-  gradient, pattern and clip fills, preserving their ink against the closing chord.
-- Preserve parent/child canvas concatenation across path clips, keeping resource
-  normalization separate from the referencing transform and clip construction.
-- Materialize clip-child transforms before reference and device placement,
-  retaining curve controls, conic arcs and independent clip enclosures.
-- Keep analytic coverage intermediates as byte alpha before additive accumulation,
-  preserving cubic fringes and filtered sources while reducing row scratch storage.
-- Preserve fractional root image layout before uniform output scaling, and apply
-  image-boundary coverage at each paint or isolated-layer restoration without a
-  full-canvas clip allocation.
-- Admit nonuniform viewport maps of clipped strokes with an unpainted fill channel;
-  retain source-command requirements for painted curves.
-- Preserve color-filter shader rounding when black or SourceAlpha filter results
-  restore over backdrops, including Gaussian aliases.
-- Preserve authored curves and placement in referenced clip children.
-- Capture filtered sources per destination bitmap and preserve source-image padding
-  during geometry and clip-resource construction; restore each output pixel once
-  across bitmap borders.
-- Preserve gradient declarations, local/reference matrices and recorded bitmap
-  stages across fills, strokes and instances, including clipped and inherited paints.
-- Preserve opaque-gradient source reduction and coverage interpolation, retaining
-  conical/translucent programs and distinct direct-span/A8 mask rounding.
-- Retain completed curve-strip fringes within the paint clip, keeping mask storage
-  and clip-definition construction bounded independently.
-- Preserve visible-source remapping before residual scaling for clipped fractional
-  root images, including the distinct float rounding stages.
-- Retain authored visual bounds and recording/destination maps through filter-source
-  capture, preserving fractional-root gradients and zero-blur aliases.
-- Use complete drawing references for gradient source captures, preserving source
-  colors through nonzero blur on fractional root images.
-- Enclose recorded primitive strokes before placement and bind hairlines to the
-  active layer's raster scope, preserving isolated opacity and captured-source origins.
-- Preserve radial factory coordinates through primitive and instance placement,
-  sharing retained local/reference maps instead of rescaling circle fields.
-- Preserve source path bounds across clipped stroke lowering; retain filter image
-  padding, cropping and sampling colour transfer through affine restoration.
-- Compose affine image placement in the owning bitmap and store enclosing-opacity
-  pixels before packed alpha modulation.
-- Skip empty affine-filter restoration areas within software tiles, preserving
-  painting in intersecting tiles.
-- Resolve explicit local paint fallbacks consistently across fills, strokes,
-  inherited/instanced content and prepared text, preserving selective font acquisition.
-- Resolve gradient percentages and defaults in each definition or alias viewport;
-  retain authored units through unit overrides and partial cross-kind templates.
-- Inherit radial center, radius and focal coordinates independently, retaining
-  original definition coordinates and sharing storage only for unchanged aliases.
-- Accept bounded identity metadata on gradient stops; preserve stop values and
-  inherited linear/radial painting.
-- Share polygon contour storage across paint bindings and transfer its memory
-  charge during repainting and mask stamping, avoiding refusal caused by charging
-  reused arrays twice. Preserve source ownership when paint or placement fails.
-- Transfer instance-mapping reservations to retained polygons instead of charging
-  the same mapped arrays as both temporary and scene storage. Borrow definition
-  contours during temporary inherited-fill preparation, preserving source ownership.
-- Remove the obsolete destructive polygon-clip backend; retain native clip scenes
-  and their source geometry, transforms and coverage.
-- Preserve recorded path-baseline metrics and per-glyph pattern matrices through
-  texture sizing and sampling, correcting fractional-scale text paint seams.
-- Share native drawing-stage preparation across text gradients and patterns;
-  retain paint-server recording scopes independently of pattern-content selection.
+- Multi-target .NET 10 and .NET 11.
+- Add opt-in HTTP font packs with verified caching, structured acquisition failures
+  and shared memory admission.
+- Extend Unicode casing and Latin combining-mark shaping; support supplied text in
+  clip paths. Correct text positioning, decorations, paint and Windows glyph fitting.
+- Add all four color-matrix modes; correct filter crops, offsets, shadows, source
+  placement and alpha/color rounding.
+- Correct transformed strokes, gradients, patterns, clips, masks and embedded-image
+  sampling, including fractional scaling and partially transparent backgrounds.
+- Tighten applicable CSS/length validation, ignore inert static content consistently,
+  and reject unsupported PNG color-space declarations.
+- Reduce duplicate geometry, image and raster scratch storage; avoid evaluating
+  unused filter stages and repeating shader setup. Make package ZIPs reproducible.
 
-Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
-
-- Multi-target .NET 10 and .NET 11; use the pinned .NET 11 RC SDK for development
-  and extensive qualification, with explicit .NET 10 compatibility checks.
-- Add opt-in host-configured HTTP font packs with coalesced acquisition, verified
-  program caching, structured failures and shared memory admission. Retain one
-  document preparation and dispose governed PNG results to release their charges.
-- Remove PNG encoding, parser and raster fuel quotas; retain structural, numerical,
-  size/admission and cancellation contracts. Stop compressor finalization from
-  retrying a refused allocation and keep canceled symbol sealing transactional.
-- API migration: remove `maximumAccountedBytes` and `maximumWorkUnits` from
-  `SvgRenderLimits` constructor calls and stop reading their properties. Limits
-  constructors now take six, seven or eight explicit arguments for input/output
-  and structure. Recompile consumers: the former constructors and quota getters
-  are binary-incompatible. Borrow host admission with
-  `SvgRenderOptions.WithMemoryBudget`; governed retained output uses disposable
-  `ConvertToOwnedPng`/`ConvertToOwnedPngAsync` results. Font snapshot overloads
-  accept the host budget/options and retain metadata charges until disposal.
-  The memory probe uses `--memory-budget-bytes` and removes the former quota options.
-  Existing font-snapshot overloads remain available. Failure-stage switches should
-  also handle the new `Transport`, `Timeout` and `Size` values.
-- Fail memory admission rather than selecting storage-pressure rendering paths;
-  retain direct numerical routes and independent native references.
-- Correct partially transparent backgrounds and prevent zero-alpha background
-  RGB from tinting rendered content.
+**Breaking API changes:** remove `maximumAccountedBytes` and `maximumWorkUnits`
+from `SvgRenderLimits` calls and stop reading their properties. Constructors now
+require six, seven or eight explicit arguments; consumers must recompile. Encoding,
+parser and raster fuel quotas are removed; structural limits and cancellation remain.
+Use `SvgRenderOptions.WithMemoryBudget` for host admission and dispose governed
+`ConvertToOwnedPng`/`ConvertToOwnedPngAsync` results. New font-snapshot overloads
+accept budgets/options and retain metadata charges until disposal; existing
+overloads remain. Failure-stage switches must handle `Transport`, `Timeout` and
+`Size`. The memory probe replaces quota options with `--memory-budget-bytes`.
 
 ## 0.3.0 - 2026-10-28
 

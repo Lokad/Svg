@@ -70,7 +70,6 @@ dotnet run -c Release --framework net11.0 --project benchmarks/Lokad.Svg.Benchma
 [BENCHMARKS](docs/BENCHMARKS.md) describes workloads and measurement conditions.
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) explains the renderer;
 [Tests and provenance](tests/README.md) describes regression collections and admission.
-The [documentation index](docs/README.md) maps the remaining guides.
 
 ## Diagnostic tools
 

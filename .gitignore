@@ -5,6 +5,7 @@
 /external/
 **/bin/
 **/obj/
+__pycache__/
 .vs/
 TestResults/
 /PLAN.md
