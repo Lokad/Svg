@@ -99,7 +99,7 @@
       "lokad.svg.fontprobe": {
         "type": "Project",
         "dependencies": {
-          "Lokad.Svg": "[0.4.0-dev.1, )"
+          "Lokad.Svg": "[0.4.0, )"
         }
       }
     },
@@ -201,7 +201,7 @@
       "lokad.svg.fontprobe": {
         "type": "Project",
         "dependencies": {
-          "Lokad.Svg": "[0.4.0-dev.1, )"
+          "Lokad.Svg": "[0.4.0, )"
         }
       }
     }

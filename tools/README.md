@@ -60,7 +60,7 @@ fresh root so NuGet, generated files and outputs cannot be reused across variant
 $comparisonRoot = Join-Path (Get-Location) "artifacts/package-comparison/candidate-net11"
 $comparisonFeed = Join-Path (Get-Location) "artifacts/package-comparison/feed"
 $comparisonArgs = @(
-    "-p:LokadSvgPackageVersion=0.4.0-dev.1"
+    "-p:LokadSvgPackageVersion=0.4.0"
     "-p:LokadSvgAssetFramework=net11.0"
     "-p:BaseIntermediateOutputPath=$comparisonRoot/obj/"
     "-p:MSBuildProjectExtensionsPath=$comparisonRoot/obj/"
@@ -115,7 +115,7 @@ because the selected package asset and host must stay paired.
 ```powershell
 $installedProject = "benchmarks/Lokad.Svg.InstalledBenchmarks"
 $installedResults = Join-Path (Get-Location) "artifacts/installed-benchmarks/candidate-net10-on-net11"
-$env:LokadSvgPackageVersion = "0.4.0-dev.1"
+$env:LokadSvgPackageVersion = "0.4.0"
 $env:LokadSvgAssetFramework = "net10.0"
 $env:LokadSvgHostFramework = "net11.0"
 $env:NUGET_PACKAGES = "$installedResults/packages"

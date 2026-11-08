@@ -11,12 +11,11 @@ for the exact boundaries and unsupported outcomes.
 Install [Lokad.Svg from NuGet](https://www.nuget.org/packages/Lokad.Svg):
 
 ```powershell
-dotnet add package Lokad.Svg --version 0.3.0
+dotnet add package Lokad.Svg --version 0.4.0
 ```
 
-This command selects the published release. The HTTP resolver, shared admission,
-owned-result API and .NET 11 asset described below belong to the development
-build; use a qualified development package for that integration flow.
+Version 0.4.0 is prepared for release. Until publication, use the generated
+packages in `artifacts/nuget/` as a local NuGet source.
 
 [CHANGELOG](CHANGELOG.md) records release notes.
 
