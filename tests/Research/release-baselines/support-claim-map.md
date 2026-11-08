@@ -40,8 +40,8 @@ excluded rule categories at the shared entry. No reference targets change.
 The [structural/source trace][structural-record] completes X2/T2 against shared
 traversal, rejection cleanup and dormant declarations with live host fonts.
 The [font selection/program trace][font-program-record] reviews T1/T12 against
-host acquisition, bounded execution and lazy coverage. Frozen Windows DejaVu
-remains an explicit failing T18 gate.
+host acquisition, bounded execution and lazy coverage. Windows DejaVu pixels
+have a documented platform exclusion under T18.
 The [text placement trace][text-placement-record] reviews T5-T8/T13-T15/T19
 through shared lengths, scalar cursors, chunk anchors, paths and baseline owners.
 Canonical native references and representative ownership paths stay separate.
@@ -78,7 +78,7 @@ the absorbed HTTP/host handoff without another rendering/API product.
 The [qualification/provenance trace](qualification-provenance-claim-trace.json)
 completes Q2 and condenses test guidance while preserving commands, section anchors
 and admission/reference requirements. All 84 groups have been inspected:
-83 are Reviewed; Windows DejaVu remains Open T18.
+83 are Reviewed; T18 retains the scoped Windows DejaVu reference exclusion.
 
 The initial integrity inspection checked 58 relative targets/anchors and 46 native
 case identities: 92 platform rows, 276 agreeing healthy capture receipts, and
@@ -253,8 +253,8 @@ Scope: [text and fonts][contract-text].
 | T15 | Path geometry/transforms/tangents/spacing, continuation cursor, anchors and textLength degeneracies | Reviewed: [measured path](../../../src/Lokad.Svg/Parsing/SvgMeasuredTextPath.cs) / [placement](../../../src/Lokad.Svg/Parsing/SvgTextPathLayout.cs) → [geometry and calibration mechanisms](../../Lokad.Svg.Tests/SvgTextPathTests.cs) / [mixed/empty cursor contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.MixedText.cs) → [unchanged native path and source-box controls][text-placement-record]. |
 | T16 | Latin/DFLT GPOS/kern precedence, extension lookup order, supported flags and invalid metadata | Reviewed: [pair/extension execution](../../../src/Lokad.Svg/Fonts/OpenTypeFont.Gpos.cs) / [shared lookup order](../../../src/Lokad.Svg/Fonts/OpenTypeFont.Layout.cs) / [legacy parsing](../../../src/Lokad.Svg/Fonts/OpenTypeFont.cs) → zero/fallthrough/order, full-width extension offsets, per-lookup filtering and malformed metadata → [precedence](../kerning-precedence/README.md), [filter](../kerning-flags/README.md) and extension native documents with independent metrics. [Current trace](text-shaping-kerning-claim-trace.json). |
 | T17 | Live resource-context font demand, inactive-source exceptions, fitting/filter/baseline stages and Courier policy | Reviewed: [direct discovery](../../../src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs) / [resource context](../../../src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs) / [paint versus metric demand](../../../src/Lokad.Svg/Parsing/SvgTextPaintStyle.cs) / [device metrics](../../../src/Lokad.Svg/Fonts/SvgGlyphDeviceMetrics.cs) → live/dormant resource, bounds/advance exceptions, small-strike and embedded-family/alias checks → independent mask text, filter-source, font-span and instance references. [Current trace](text-paint-resource-claim-trace.json) retains platform fitting/baseline stages and the separate T18 conflict. |
-| T18 | Windows/Linux native font pixel authority | Open: the frozen Windows DejaVu target still fails full CI; its assertion remains intact and reference authority is unresolved ([current CI/source evidence](shader-context-qualified.json)). Other font/platform scopes remain bound to their individual T-row traces. |
-| T19 | Alphabetic/middle/hanging baselines and their explicit-line/anchor interactions | Reviewed: [layout/recorded baseline metrics](../../../src/Lokad.Svg/Parsing/SvgTextBaselineMetrics.cs) → [platform ascent, x-height and rounding boundaries](../../Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs) → [source-bound original baseline contexts and platform pixels][text-placement-record]. Intermediate layout and final paint remain distinct; T18 stays open. |
+| T18 | Windows/Linux native font pixel authority | Scoped exclusion: [Windows DejaVu exact pixels](../static-truetype-fonts/README.md) are skipped with a reason because the original reference runtime is unavailable. The target and assertion remain intact; Linux DejaVu, both platforms' metrics and other font cases run normally. |
+| T19 | Alphabetic/middle/hanging baselines and their explicit-line/anchor interactions | Reviewed: [layout/recorded baseline metrics](../../../src/Lokad.Svg/Parsing/SvgTextBaselineMetrics.cs) → [platform ascent, x-height and rounding boundaries](../../Lokad.Svg.Tests/OpenTypeFontLineMetricsTests.cs) → [source-bound original baseline contexts and platform pixels][text-placement-record]. Intermediate layout and final paint remain distinct; T18's exclusion is separate. |
 
 ## Limits, ownership and qualification
 

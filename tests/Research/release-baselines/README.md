@@ -185,9 +185,10 @@ completes X2/T2 with shared traversal, 372 focused checks and twelve packaged
 category probes, retaining font and rendering authority in their own support rows.
 The [font selection/program trace](font-selection-program-claim-trace.json) reviews
 T1/T12 with 2,928 passing core checks, retained browser/program/contour bindings and
-focused rendering checks. Both Windows runtimes retain the known DejaVu failure;
-its frozen target and the separate open T18 gate remain unchanged. A stale private
-study locator is replaced with the committed contour record's explicit scope.
+focused rendering checks. That qualification retained the Windows DejaVu failure;
+the [current Windows-only skip](../static-truetype-fonts/README.md) documents its
+reason while preserving the target and assertion. A stale private study locator
+is replaced with the committed contour record's explicit scope.
 The [text placement trace](text-placement-claim-trace.json) reviews eight more groups
 with 7,212 affected passing checks, all 855 canonical text-node references and
 distinct original capture receipts. Baseline metric checks lose a duplicate

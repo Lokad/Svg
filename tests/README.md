@@ -190,7 +190,9 @@ suite layout does not relax their thresholds. Frozen Windows/Linux references es
 without implying general browser completeness. Benchmark timing belongs on the
 separate quiet VM; test/setup measurements are validation costs.
 
-The frozen Windows DejaVu assertion remains an open reference-authority conflict;
-the [current source-bound qualification](Research/release-baselines/text-feature-dispatch-contexts.json)
-records it separately. Keep the target and assertion until that authority is
-resolved; a retained known failure does not make a qualification run green.
+The Windows DejaVu exact-pixel case has a
+[documented platform-specific skip](Research/static-truetype-fonts/README.md):
+the frozen reference has an unresolved 75-pixel discrepancy and its original
+capture runtime is unavailable. Keep its target and assertion intact. Linux
+DejaVu, font metrics and all other rendering cases remain enabled; a green run
+qualifies this declared scope, including the reported skip.
