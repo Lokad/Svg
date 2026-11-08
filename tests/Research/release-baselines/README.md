@@ -1,5 +1,8 @@
 # Release baselines
 
+The [0.4.0 publication](0.4.0.json) binds the signed NuGet package to its exact
+source commit and `v0.4.0`, matching unsigned payloads and green Windows/Linux CI.
+
 [Shared shaping qualification](text-feature-dispatch-contexts.json) closes the four
 dispatch/coverage findings in the [source-bound review](text-feature-dispatch-review.json)
 and refines applicability of unsupported contexts without adding their execution.

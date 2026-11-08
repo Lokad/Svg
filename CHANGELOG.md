@@ -2,6 +2,9 @@
 
 ## 0.4.0 - 2026-11-08
 
+Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.4.0).
+Source tag: `v0.4.0`.
+
 - Multi-target .NET 10 and .NET 11.
 - Add opt-in HTTP font packs with verified caching, structured acquisition failures
   and shared memory admission.

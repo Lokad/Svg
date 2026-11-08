@@ -14,9 +14,6 @@ Install [Lokad.Svg from NuGet](https://www.nuget.org/packages/Lokad.Svg):
 dotnet add package Lokad.Svg --version 0.4.0
 ```
 
-Version 0.4.0 is prepared for release. Until publication, use the generated
-packages in `artifacts/nuget/` as a local NuGet source.
-
 [CHANGELOG](CHANGELOG.md) records release notes.
 
 `SvgConverter` provides synchronous and asynchronous output to independently

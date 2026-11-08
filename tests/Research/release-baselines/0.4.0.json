@@ -1,0 +1,29 @@
+{
+  "version": "0.4.0",
+  "sourceCommit": "2678357ac48f2d13d8dc1df6fbd52fed6ad2e07e",
+  "tag": "v0.4.0",
+  "publishedUtc": "2026-11-08T14:58:14.88+00:00",
+  "publishedPackage": {
+    "url": "https://api.nuget.org/v3-flatcontainer/lokad.svg/0.4.0/lokad.svg.0.4.0.nupkg",
+    "sha256": "3276b03fd9bfcd898f4a8607488a0014e31a164174e78887a05736b1656e62c3",
+    "librarySha256": {
+      "net10.0": "242df83673e4151015dd9cbf50eaa9d44212b0368e5331fa81d087e176acac99",
+      "net11.0": "94fbc0da477594f32c8b5fb3c6950180de4e65a26024e5e0b0564c1fa982d906"
+    }
+  },
+  "unsignedPackageSha256": "52657cfc3dce97888db84a5114c9d4c7052837b2e17273802fd5b56b98449f81",
+  "symbolsSha256": "32bd0d1cd3f4a4662ecd3b6e1629303c2ab18bacec17000732baea4b457c8514",
+  "payloadComparison": {
+    "equalMembers": 14,
+    "onlyAddedEntry": ".signature.p7s",
+    "scope": "Published NuGet payload compared byte-for-byte with the locally qualified unsigned release; signing changes the archive hash."
+  },
+  "qualification": {
+    "ciRun": 42487155119,
+    "windows": "success",
+    "linux": "success",
+    "installedConsumerContexts": 4,
+    "installedReferenceImages": 104,
+    "windowsPixelExclusion": "Only the DejaVu frozen-pixel row is skipped with its documented reference/runtime reason; Linux DejaVu and both platforms' metrics run."
+  }
+}
